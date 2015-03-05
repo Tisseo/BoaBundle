@@ -12,7 +12,7 @@
     "license" : "MIT",
     "require" : {
         "php": ">=5.4.3",
-        "djlambert/doctrine2-spatial": "0.0.1"
+        "creof/doctrine2-spatial": "0.0.1"
     },
     "autoload" : {
         "psr-0" : { "Tisseo\\BOABundle\\" : "" }
