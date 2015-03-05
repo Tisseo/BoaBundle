@@ -8,7 +8,7 @@
 namespace Tisseo\BOABundle\Services;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Translation\TranslationInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class UserManager
 {
@@ -18,7 +18,7 @@ class UserManager
 
     public function __construct(
         ObjectManager $om,
-        TranslationInterface $translator,
+        TranslatorInterface $translator,
         $container
     )
     {
