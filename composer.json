@@ -1,0 +1,28 @@
+{
+    "name" : "tisseo/boa-bundle",
+    "description" : "An interface tool consisting in public transport data edition.",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Vincent Passama",
+        "email" : "vincent.passama@capgemini.com"
+    }],
+    "keywords" : [
+        "tisseo boa bundle"
+    ],
+    "license" : "MIT",
+    "require" : {
+        "php": ">=5.4.3",
+        "djlambert/doctrine2-spatial": "0.0.1"
+    },
+    "autoload" : {
+        "psr-0" : { "Tisseo\\BOABundle\\" : "" }
+    },
+    "target-dir" : "Tisseo/BOABundle",
+    "repositories" : [{
+    }],
+    "extra" : {
+    "branch-alias" : {
+            "dev-master" : "0.1-dev"
+        }
+    }
+}

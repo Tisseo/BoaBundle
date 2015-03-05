@@ -1,0 +1,20 @@
+parameters:
+    tisseo_boa.perimeter.class: Tisseo\BOABundle\Services\PerimeterManager
+    tisseo_boa.user.class: Tisseo\BOABundle\Services\UserManager
+
+services:
+    tisseo_boa.perimeter_manager:
+       class: %tisseo_boa.perimeter.class%
+       arguments: ['@doctrine.orm.default_entity_manager']
+    tisseo_boa.user_manager:
+       class: %tisseo_boa.user.class%
+       arguments: ['@doctrine.orm.default_entity_manager', '@translator', '@service_container']
+
+    form.type.datepicker:
+        class: Tisseo\BOABundle\Form\Type\DatepickerType
+        tags:
+            - { name: form.type, alias: datepicker }
+    tisseo.boa.ajax_form_listener:
+        class: CanalTP\SamCoreBundle\EventListener\AjaxFormListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

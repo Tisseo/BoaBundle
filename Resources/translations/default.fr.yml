@@ -1,0 +1,16 @@
+welcome: "Bienvenue sur TID"
+
+network:
+    list: Liste des réseaux
+    add: Ajouter un réseau
+    external_coverage_id: Région
+    external_id: Réseau
+    token: Token
+
+customer:
+    list: Liste des clients
+    name: Nom du client
+    perimeters: Périmètre(s)
+    no_item: Pas de périmètre
+    actions:
+        assign_twig: Assigner

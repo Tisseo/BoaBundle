@@ -1,0 +1,53 @@
+global:
+    actions: Actions
+    edit: Éditer
+    preview: Prévisualiser
+    validate: Valider
+    save: Enregistrer
+    close: Fermer
+    delete: Supprimer
+    cancel: Annuler
+    status: Statut
+    warning: Avertissement
+    generatePdf: Générer le PDF
+    remove: Retirer
+    add: Ajouter
+    publish: Publier
+    unpublish: Dépublier
+    line_label: Ligne
+    downloadPdf: Télécharger le PDF
+    upload: Téléverser
+    network: Réseau
+    direction: Direction
+    mode: Mode
+    hours: Heures
+    minutes: Minutes
+    hour_label: h
+    annotations: Annotations
+    stop_point_code: Code
+    exceptions:
+        add: Y compris le %date%
+        remove: Sauf le %date%
+    direction: Direction
+    remaining_chars: %nb_chars% caractères restant(s)
+    please_choose: Veuillez choisir...
+    no_items: Aucun élément à afficher
+    period_title: Dates
+    validity_period:
+        start: du
+        end: au
+        and: et
+
+error:
+    navitia_network_id: "%string% n'est pas conforme au format navitia."
+    greater_than_field: Ce champ doit être supérieur au champ %field%.
+
+menu:
+    networks: Réseaux
+    networks_manage: Gestion des réseaux
+    customer_manage: Gestion des Clients
+
+#should be in error namespace above
+network:
+    error:
+        wrong_token: Le token n'est pas correct

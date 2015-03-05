@@ -1,0 +1,50 @@
+{% extends "::base.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'bundles/tisseoboa/css/main.css'
+                   filter='cssrewrite' output='css/full_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block head_config %}
+    {{ parent() }}
+    {% include 'TisseoBOABundle::config.js.html.twig' %}
+{% endblock %}
+
+{% block title -%}
+{{ parent() }}
+- BOA
+    {% if pageTitle %}
+    - {{ pageTitle|trans }}
+    {% endif %}
+{% endblock %}
+{% block navbar_brand %}<a href="{% if externalNetworkId %}{{ path('tisseo_boa_homepage', {'externalNetworkId':externalNetworkId }) }}{% else %}{{ path('tisseo_boa_homepage') }}{% endif %}">BOA</a>{% endblock %}
+
+{% block root_breadcrumb %}
+    <ol class="breadcrumb">
+        {% if currentNetwork %}
+            <li>
+                <a href="{{ path('tisseo_boa_homepage', {'externalNetworkId':currentNetwork.externalId }) }}">
+                    {{ currentNetwork.name }}
+                </a>
+            </li>
+        {% endif %}
+        {% block breadcrumb %}
+            {% if pageTitle %}
+                <li>{{ pageTitle|trans }}</li>
+            {% endif %}
+        {% endblock %}
+    </ol>
+{% endblock %}
+
+{% block body %}
+    {% block subheader %}
+    {% endblock %}
+    {% block container %}
+    {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

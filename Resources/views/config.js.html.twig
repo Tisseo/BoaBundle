@@ -1,0 +1,29 @@
+<script>
+requirejs.config({
+    urlArgs: '{{ assets_version }}',
+    paths: {
+        'jquery/textfill':                  'bundles/tisseoboa/js/jquery.textfill.min',
+        textfill:                           'bundles/tisseoboa/js/textfill',
+        datatables:                         'bundles/tisseoboa/js/jquery.dataTables.min',
+        natural:                            'bundles/tisseoboa/js/natural',
+        boa_datatables:                     'bundles/tisseoboa/js/list/dataTables',
+        boa_left_menu:                      'bundles/tisseoboa/js/left_menu',
+        'boa/form':                         'bundles/tisseoboa/js/form'
+    },
+    shim: {
+        'jquery/textfill': {
+            deps: ['jquery']
+        },
+        textfill: {
+            deps: ['jquery/textfill']
+        },
+        datatables: {
+            deps: ['jquery']
+        },
+        boa_datatables: {
+            deps: ['datatables']
+        }
+    },
+    deps: ['utils', 'jquery', 'boa/form']
+});
+</script>

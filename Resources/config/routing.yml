@@ -1,0 +1,3 @@
+tisseo_boa_homepage:
+    pattern:  /{externalNetworkId}
+    defaults: { _controller: TisseoBOABundle:Default:index , externalNetworkId: null}

@@ -1,0 +1,5 @@
+parameters:
+    boa.permissions:
+        BUSINESS_MANAGE_EXAMPLE:
+            label: Example de droit d'administration
+            description: Donner des droits.

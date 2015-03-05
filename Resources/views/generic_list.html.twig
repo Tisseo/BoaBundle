@@ -1,0 +1,24 @@
+{% extends no_left_menu == true ? "TisseoBOABundle::container.html.twig" : "TisseoBOABundle::container_and_menu.html.twig" %}
+
+{% import "CanalTPSamEcoreUserManagerBundle::macros.html.twig" as macros %}
+
+{% block main_content -%}
+    <h1>{% block list_title -%}{% endblock %}</h1>
+    {% block line_comment -%}{% endblock %}
+    {% block list_menu -%}{% endblock %}
+    <table class="table {% block table_classes -%}table-hover{% endblock %}">
+        <thead>
+            <tr>
+               {% block table_head -%}{% endblock %}
+            </tr>
+        </thead>
+        <tbody>
+        {% block table_body -%}
+        {% endblock %}
+        </tbody>
+    </table>
+
+    {% block list_pagination -%}
+    {% endblock %}
+
+{% endblock %}
