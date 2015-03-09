@@ -10,11 +10,11 @@ services:
        class: %tisseo_boa.user.class%
        arguments: ['@doctrine.orm.default_entity_manager', '@translator', '@service_container']
 
-    form.type.datepicker:
+    form.type.datepicker_boa:
         class: Tisseo\BOABundle\Form\Type\DatepickerType
         tags:
-            - { name: form.type, alias: datepicker }
-    tisseo.boa.ajax_form_listener:
+            - { name: form.type, alias: datepicker_boa }
+    tisseo_boa.ajax_form_listener:
         class: CanalTP\SamCoreBundle\EventListener\AjaxFormListener
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

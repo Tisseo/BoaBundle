@@ -1,5 +1,8 @@
 parameters:
     boa.permissions:
-        BUSINESS_MANAGE_EXAMPLE:
-            label: Example de droit d'administration
-            description: Donner des droits.
+        BUSINESS_LIST_LINE:
+            label: Afficher la liste des lignes
+            description: Afficher la liste des lignes.
+        BUSINESS_MANAGE_LINE:
+            label: Administrer les lignes
+            description: Administrer les lignes.
