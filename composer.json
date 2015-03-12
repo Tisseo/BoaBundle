@@ -12,7 +12,7 @@
     "license" : "MIT",
     "require" : {
         "php": ">=5.4.3",
-        "creof/doctrine2-spatial": "0.0.1"
+        "tisseo/endiv-bundle": "dev-master"
     },
     "autoload" : {
         "psr-0" : { "Tisseo\\BOABundle\\" : "" }
@@ -21,7 +21,7 @@
     "repositories" : [{
     }],
     "extra" : {
-    "branch-alias" : {
+        "branch-alias" : {
             "dev-master" : "0.1-dev"
         }
     }
