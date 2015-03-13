@@ -1,5 +1,70 @@
 boa_welcome: "Bienvenue sur BOA"
 
+agency:
+    list:
+        columns:
+            name: Nom
+            url: Adresse web
+            timezone: Fuseau horaire
+            lang: Langue
+            phone: Téléphone
+        title: Réseaux
+    edit: Editer un réseau
+    create: Créer un réseau
+    created: Réseau sauvegardé
+
+datasource:
+    list:
+        columns:
+            name: Nom
+            agency: Réseau
+        title: Sources de données
+    edit: Editer une source de données
+    create: Créer une source de données
+    created: Source de données sauvegardé
+
+exception_type:
+    list:
+        columns:
+            label: Nom
+            exceptionText: Description
+            gridCalendarPattern: Pattern pour gridCalendar
+            tripCalendarPattern: pattern pour tripCalendar
+        title: Exception Type
+    edit: Editer une exception type
+    create: Créer une exception type
+    created: Exception type sauvegardée
+
+log:
+    list:
+        columns:
+            datetime: Date
+            table: Table
+            action: Action
+            previousData: Donnée précédente
+            insertedData: Donnée insérée
+            user: Utilisateur
+        title: Logs
+
+physical_mode:
+    list:
+        columns:
+            name: Nom
+            type: Type
+        title: Modes de transport
+    edit: Editer un mode de transport
+    create: Créer un mode de transport
+    created: Mode de transport sauvegardé
+
+poi_type:
+    list:
+        columns:
+            name: Nom
+        title: Types de POI
+    edit: Editer un type de POI
+    create: Créer un type de POI
+    created: Type de POI sauvegardé
+
 network:
     list: Liste des réseaux
     add: Ajouter un réseau

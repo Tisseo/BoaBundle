@@ -1,24 +1,34 @@
-{% macro line_number(object, type, size) %}
-    {% if type == 'lineVersion' %}
-        {% if object.line.number is defined %}
-            {% if size == 'small' %}
-        <div class="line-number line-small" style="color:{{ object.fgHexaColor }}; background-color:{{ object.bgHexaColor}}; font-family:sans-serif; font-weight: bold;">
-            {% elseif size == 'big' %}
-        <div class="line-number line-big" style="color:{{ object.fgHexaColor }}; background-color:{{ object.bgHexaColor}}; font-family:sans-serif; font-weight: bold;">      
-            {% endif %}
-            <span>{{ object.line.number }}</span>
-        </div>
-        {% endif %}
-    {% elseif type == 'line' %}
-        {% if object.LastLineVersion is defined %}
-            {% set lineVersion = object.LastLineVersion %}
-            {% if size == 'small' %}
-        <div class="line-number line-small" style="color:{{ lineVersion.fgHexaColor }}; background-color:{{ lineVersion.bgHexaColor}}; font-family:sans-serif; font-weight: bold;">
-            {% elseif size == 'big' %}
-        <div class="line-number line-big" style="color:{{ lineVersion.fgHexaColor }}; background-color:{{ lineVersion.bgHexaColor}}; font-family:sans-serif; font-weight: bold;">      
-            {% endif %}
-            <span>{{ object.number }}</span>
-        </div>
-        {% endif %}
+{% macro line_version_startDate(lineVersion) %}
+    {% if not lineVersion.status %}
+        {{ lineVersion.processStatus }}
+    {% endif %}
+
+    {% if lineVersion.status == "new" %}
+        <span class="label label-info">{{ lineVersion.startDate|date('d/m/Y') }}</span>
+    {% elseif lineVersion.status == "wip" %}
+        <span class="label label-warning">{{ lineVersion.startDate|date('d/m/Y') }}</span>
+    {% elseif lineVersion.status == "published" %}
+        <span class="label label-success">{{ lineVersion.startDate|date('d/m/Y') }}</span>
+    {% endif %}
+{% endmacro %}
+
+{% macro line_version_status(lineVersion) %}
+    {% if not lineVersion.status %}
+        {{ lineVersion.processStatus }}
+    {% endif %}
+    {{ ("line_version.labels." ~ lineVersion.status)|trans({}, 'messages') }}
+{% endmacro %}
+
+{% macro line_offers_history(line) %}
+    {% set lineVersions = line.HistoryLineVersions %}
+    {% if lineVersions is empty %}
+    <span>{{ 'line_version.no_offers'|trans({}, 'messages') }}</span>
+    {% else %}
+        <select style="max-width:60px;" id="tid_line_offers_{{ line.number }}" name="tid_line[offer]" class="select-offer form-control">
+            <option disabled="disabled" selected="selected"></option>
+        {% for lineVersion in lineVersions %}
+            <option data-toggle="modal" data-target="#base-modal" value="{{ lineVersion.id }}">{{ lineVersion.version }}</option>
+        {% endfor %}
+        </select>
     {% endif %}
 {% endmacro %}

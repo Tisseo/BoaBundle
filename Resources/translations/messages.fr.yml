@@ -40,12 +40,47 @@ global:
 
 error:
     navitia_network_id: "%string% n'est pas conforme au format navitia."
-    greater_than_field: Ce champ doit être supérieur au champ %field%.
+    greater_than_field: "Ce champ doit être supérieur au champ %field%."
 
 menu:
-    networks: Réseaux
-    networks_manage: Gestion des réseaux
-    customer_manage: Gestion des Clients
+    configuration_manage: Configuration
+    physical_mode: Modes de transport
+    accessibility_mode: Modes d'accessibilité
+    agency: Réseaux
+    datasource: Sources de données
+    exception_type: Exception type
+    poi_type: Types de poi
+    colors: Couleurs
+    log: Logs
+
+agency:
+    labels:
+        name: Nom
+        url: Adresse web
+        timezone: Fuseau horaire
+        lang: Langue
+        phone: Téléphone
+
+datasource:
+    labels:
+        name: Nom
+        agency: Réseau
+
+exception_type:
+    labels:
+        label: Nom
+        exceptionText: Description
+        gridCalendarPattern: Pattern pour gridCalendar
+        tripCalendarPattern: pattern pour tripCalendar
+        
+physical_mode:
+    labels:
+        name: Nom
+        type: Type
+
+poi_type:
+    labels:
+        name: Nom
 
 #should be in error namespace above
 network:

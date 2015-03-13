@@ -1,8 +1,5 @@
 parameters:
     boa.permissions:
-        BUSINESS_LIST_LINE:
-            label: Afficher la liste des lignes
-            description: Afficher la liste des lignes.
-        BUSINESS_MANAGE_LINE:
-            label: Administrer les lignes
-            description: Administrer les lignes.
+        BUSINESS_MANAGE_CONFIGURATION:
+            label: Administrer la configuration
+            description: Administrer la configuration.
