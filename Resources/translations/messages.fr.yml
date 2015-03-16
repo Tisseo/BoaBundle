@@ -41,6 +41,7 @@ global:
 error:
     navitia_network_id: "%string% n'est pas conforme au format navitia."
     greater_than_field: "Ce champ doit être supérieur au champ %field%."
+    hexa_color: Ce champ doit être un code couleur en hexadécimal (ex: \#ffffff)
 
 menu:
     configuration_manage: Configuration
@@ -50,8 +51,12 @@ menu:
     datasource: Sources de données
     exception_type: Exception type
     poi_type: Types de poi
-    colors: Couleurs
+    color: Couleurs
     log: Logs
+
+accessibility_mode:
+    labels:
+        name: Nom
 
 agency:
     labels:
@@ -60,6 +65,20 @@ agency:
         timezone: Fuseau horaire
         lang: Langue
         phone: Téléphone
+
+color:
+    labels:
+        name: Nom
+        html: html
+        pantoneOc: pantoneOc
+        hoxis: hoxis
+        cmykCyan: cmykCyan
+        cmykMagenta: cmykMagenta
+        cmykYellow: cmykYellow
+        cmykBlack: cmykBlack
+        rgbRed: rgbRed
+        rgbGreen: rgbGreen
+        rgbBlue: rgbBlue
 
 datasource:
     labels:

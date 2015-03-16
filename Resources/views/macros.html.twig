@@ -1,34 +1,6 @@
-{% macro line_version_startDate(lineVersion) %}
-    {% if not lineVersion.status %}
-        {{ lineVersion.processStatus }}
-    {% endif %}
-
-    {% if lineVersion.status == "new" %}
-        <span class="label label-info">{{ lineVersion.startDate|date('d/m/Y') }}</span>
-    {% elseif lineVersion.status == "wip" %}
-        <span class="label label-warning">{{ lineVersion.startDate|date('d/m/Y') }}</span>
-    {% elseif lineVersion.status == "published" %}
-        <span class="label label-success">{{ lineVersion.startDate|date('d/m/Y') }}</span>
-    {% endif %}
-{% endmacro %}
-
-{% macro line_version_status(lineVersion) %}
-    {% if not lineVersion.status %}
-        {{ lineVersion.processStatus }}
-    {% endif %}
-    {{ ("line_version.labels." ~ lineVersion.status)|trans({}, 'messages') }}
-{% endmacro %}
-
-{% macro line_offers_history(line) %}
-    {% set lineVersions = line.HistoryLineVersions %}
-    {% if lineVersions is empty %}
-    <span>{{ 'line_version.no_offers'|trans({}, 'messages') }}</span>
-    {% else %}
-        <select style="max-width:60px;" id="tid_line_offers_{{ line.number }}" name="tid_line[offer]" class="select-offer form-control">
-            <option disabled="disabled" selected="selected"></option>
-        {% for lineVersion in lineVersions %}
-            <option data-toggle="modal" data-target="#base-modal" value="{{ lineVersion.id }}">{{ lineVersion.version }}</option>
-        {% endfor %}
-        </select>
-    {% endif %}
+{% macro color_display(object) %}
+	{% if object.name is defined %}
+		<div  class="line-number line-small" style="width:60px; height:20px;border: 1px solid black;color:{{ object.html }}; background-color:{{ object.html }}">
+		</div>
+	{% endif %}
 {% endmacro %}

@@ -2,12 +2,26 @@ tisseo_boa_homepage:
     pattern:  /{externalNetworkId}
     defaults: { _controller: TisseoBOABundle:Default:index , externalNetworkId: null}
 
+tisseo_boa_accessibility_mode_list:
+    pattern: /accessibility_mode/list
+    defaults: { _controller: TisseoBOABundle:AccessibilityMode:list }
+tisseo_boa_accessibility_mode_edit:
+    pattern: /accessibility_mode/edit/{AccessibilityModeId}
+    defaults: { _controller: TisseoBOABundle:AccessibilityMode:edit, AccessibilityModeId: null }
+
 tisseo_boa_agency_list:
     pattern: /agency/list
     defaults: { _controller: TisseoBOABundle:Agency:list }
 tisseo_boa_agency_edit:
     pattern: /agency/edit/{AgencyId}
     defaults: { _controller: TisseoBOABundle:Agency:edit, AgencyId: null }
+
+tisseo_boa_color_list:
+    pattern: /color/list
+    defaults: { _controller: TisseoBOABundle:Color:list }
+tisseo_boa_color_edit:
+    pattern: /color/edit/{ColorId}
+    defaults: { _controller: TisseoBOABundle:Color:edit, ColorId: null }
 
 tisseo_boa_datasource_list:
     pattern: /datasource/list

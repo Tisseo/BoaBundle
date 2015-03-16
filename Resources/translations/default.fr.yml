@@ -1,5 +1,14 @@
 boa_welcome: "Bienvenue sur BOA"
 
+accessibility_mode:
+    list:
+        columns:
+            name: Nom
+        title: Mode d'accessibilité
+    edit: Editer un mode d'accessibilité
+    create: Créer un mode d'accessibilité
+    created: Mode d'accessibilité sauvegardé
+
 agency:
     list:
         columns:
@@ -13,6 +22,25 @@ agency:
     create: Créer un réseau
     created: Réseau sauvegardé
 
+color:
+    list:
+        columns:
+            name: Nom
+            html: html
+            pantoneOc: pantoneOc
+            hoxis: hoxis
+            cmykCyan: cmykCyan
+            cmykMagenta: cmykMagenta
+            cmykYellow: cmykYellow
+            cmykBlack: cmykBlack
+            rgbRed: rgbRed
+            rgbGreen: rgbGreen
+            rgbBlue: rgbBlue
+        title: Couleurs
+    edit: Editer une couleur
+    create: Créer une couleur
+    created: Couleur sauvegardée
+    
 datasource:
     list:
         columns:
