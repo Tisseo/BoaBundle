@@ -1,0 +1,57 @@
+{% extends "TisseoBOABundle::datatable_list.html.twig" %}
+
+{% import "TisseoBOABundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{'color.list.title'|trans({}, 'default')}}
+	-
+	<a href="{{ path('tisseo_boa_color_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+		<span class="glyphicon glyphicon-plus"></span> {{'color.create'|trans({}, 'default')}}
+	</a>
+{% endblock %}
+
+{% block table_head -%}
+    <th>{{'color.list.title'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.name'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.html'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.pantoneOc'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.hoxis'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.cmykCyan'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.cmykMagenta'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.cmykYellow'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.cmykBlack'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.rgbRed'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.rgbGreen'|trans({}, 'default')}}</th>
+    <th>{{'color.list.columns.rgbBlue'|trans({}, 'default')}}</th>
+	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if colors|length == 0 %}
+        <tr>
+            <td colspan="3"> {{'global.no_items'|trans}} </td>
+        </tr>
+    {% else %}
+        {% for color in colors %}
+            <tr>
+				<td> {{ render.color_display(color) }} </td>				
+                <td> {{ color.name }} </td>
+                <td> {{ color.html }} </td>
+                <td> {{ color.pantoneOc }} </td>
+                <td> {{ color.hoxis }} </td>
+                <td> {{ color.cmykCyan }} </td>
+                <td> {{ color.cmykMagenta }} </td>
+                <td> {{ color.cmykYellow }} </td>
+                <td> {{ color.cmykBlack }} </td>
+                <td> {{ color.rgbRed }} </td>
+                <td> {{ color.rgbGreen }} </td>
+                <td> {{ color.rgbBlue }} </td>
+                <td>
+					<a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'ColorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
+						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+					</a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

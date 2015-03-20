@@ -1,0 +1,37 @@
+{% extends "TisseoBOABundle::datatable_list.html.twig" %}
+
+{% import "TisseoBOABundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{'agency.list.title'|trans({}, 'default')}}
+	-
+	<a href="{{ path('tisseo_boa_datasource_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+		<span class="glyphicon glyphicon-plus"></span> {{'datasource.create'|trans({}, 'default')}}
+	</a>
+{% endblock %}
+
+{% block table_head -%}
+    <th>{{'datasource.list.columns.name'|trans({}, 'default')}}</th>
+    <th>{{'datasource.list.columns.agency'|trans({}, 'default')}}</th>
+	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if datasources|length == 0 %}
+        <tr>
+            <td colspan="3"> {{'global.no_items'|trans}} </td>
+        </tr>
+    {% else %}
+        {% for datasource in datasources %}
+            <tr>
+                <td> {{ datasource.name }} </td>
+                <td> {{ datasource.agency.name }} </td>
+                <td>
+					<a class="btn btn-default" href="{{ path('tisseo_boa_datasource_edit', {'DatasourceId': datasource.id}) }}" data-toggle="modal" data-target="#base-modal">
+						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+					</a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

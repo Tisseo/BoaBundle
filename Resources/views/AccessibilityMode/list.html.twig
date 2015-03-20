@@ -1,0 +1,35 @@
+{% extends "TisseoBOABundle::datatable_list.html.twig" %}
+
+{% import "TisseoBOABundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{'accessibility_mode.list.title'|trans({}, 'default')}}
+	-
+	<a href="{{ path('tisseo_boa_accessibility_mode_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+		<span class="glyphicon glyphicon-plus"></span> {{'accessibility_mode.create'|trans({}, 'default')}}
+	</a>
+{% endblock %}
+
+{% block table_head -%}
+    <th>{{'accessibility_mode.list.columns.name'|trans({}, 'default')}}</th>
+	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if accessibility_modes|length == 0 %}
+        <tr>
+            <td colspan="3"> {{'global.no_items'|trans}} </td>
+        </tr>
+    {% else %}
+        {% for accessibility_mode in accessibility_modes %}
+            <tr>
+                <td> {{ accessibility_mode.name }} </td>
+                <td>
+					<a class="btn btn-default" href="{{ path('tisseo_boa_accessibility_mode_edit', {'AccessibilityModeId': accessibility_mode.id}) }}" data-toggle="modal" data-target="#base-modal">
+						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+					</a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,78 @@
+Tisseo\EndivBundle\Entity\AccessibilityMode:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 30
+Tisseo\EndivBundle\Entity\Agency:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 30
+        url:
+            - Length:
+                max: 100
+        timezone:
+            - NotBlank: ~
+            - Length:
+                max: 30
+        lang:
+            - Length:
+                max: 3
+        phone:
+            - Length:
+                max: 20
+Tisseo\EndivBundle\Entity\Calendar:
+    properties:
+        calendarType:
+            - Choice: { callback: getcalendarTypes }
+Tisseo\EndivBundle\Entity\Color:
+    properties:
+        name:
+            - NotBlank: ~
+        html:
+            - NotBlank: ~
+            - Tisseo\BOABundle\Validator\Constraints\HexaColor: ~
+        cmykCyan:
+            - NotBlank: ~
+        cmykMagenta:
+            - NotBlank: ~
+        cmykYellow:
+            - NotBlank: ~
+        cmykBlack:
+            - NotBlank: ~
+        rgbRed:
+            - NotBlank: ~
+        rgbGreen:
+            - NotBlank: ~
+        rgbBlue:
+            - NotBlank: ~
+Tisseo\EndivBundle\Entity\Datasource:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 30
+Tisseo\EndivBundle\Entity\ExceptionType:
+    properties:
+        label:
+            - Length:
+                max: 5
+        gridCalendarPattern:
+            - Tisseo\BOABundle\Validator\Constraints\CalendarPattern: ~
+        tripCalendarPattern:
+            - Tisseo\BOABundle\Validator\Constraints\CalendarPattern: ~
+Tisseo\EndivBundle\Entity\PhysicalMode:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 30
+        type:
+            - NotBlank: ~
+            - Length:
+                max: 30
+Tisseo\EndivBundle\Entity\PoiType:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 50

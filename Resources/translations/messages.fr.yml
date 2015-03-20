@@ -12,6 +12,7 @@ global:
     generatePdf: Générer le PDF
     remove: Retirer
     add: Ajouter
+    empty: Vider
     publish: Publier
     unpublish: Dépublier
     line_label: Ligne
@@ -53,6 +54,8 @@ menu:
     poi_type: Types de poi
     color: Couleurs
     log: Logs
+    calendar_manage: Gestion des calendriers
+    calendar: Calendriers
 
 accessibility_mode:
     labels:
@@ -66,7 +69,22 @@ agency:
         lang: Langue
         phone: Téléphone
 
-color:
+calendar:
+    labels:
+        name: Nom
+        type: Type
+        lineVersion: Ligne
+        calendarElements: Elements
+        
+calendar_element:
+    labels:
+        startDate: Début
+        endDate: Fin
+        positive: Signe
+        interval: Récurrence
+        includedCalendar: Calendrier
+
+        color:
     labels:
         name: Nom
         html: html
@@ -90,7 +108,7 @@ exception_type:
         label: Nom
         exceptionText: Description
         gridCalendarPattern: Pattern pour gridCalendar
-        tripCalendarPattern: pattern pour tripCalendar
+        tripCalendarPattern: Pattern pour tripCalendar
         
 physical_mode:
     labels:

@@ -22,6 +22,30 @@ agency:
     create: Créer un réseau
     created: Réseau sauvegardé
 
+calendar:
+    list:
+        columns:
+            name: Nom
+            type: Type
+            line: Ligne
+            startDate: Début
+            endDate: Fin
+        title: Calendriers
+    edit: Editer un calendrier
+    create: Créer un calendrier
+    created: Calendrier sauvegardé
+    empty_elements: Confirmez-vous la suppression de tous les éléments du calendrier ?
+
+calendar_element:
+    list:
+        columns:
+            order: Ordre
+            startDate: Début
+            endDate: Fin
+            calendar: Calendrier
+            positive: Signe
+            interval: Récurrence
+
 color:
     list:
         columns:

@@ -1,0 +1,43 @@
+{% extends "TisseoBOABundle::datatable_list.html.twig" %}
+
+{% import "TisseoBOABundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{'agency.list.title'|trans({}, 'default')}}
+	-
+	<a href="{{ path('tisseo_boa_agency_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+		<span class="glyphicon glyphicon-plus"></span> {{'agency.create'|trans({}, 'default')}}
+	</a>
+{% endblock %}
+
+{% block table_head -%}
+    <th>{{'agency.list.columns.name'|trans({}, 'default')}}</th>
+    <th>{{'agency.list.columns.url'|trans({}, 'default')}}</th>
+    <th>{{'agency.list.columns.timezone'|trans({}, 'default')}}</th>
+    <th>{{'agency.list.columns.lang'|trans({}, 'default')}}</th>
+    <th>{{'agency.list.columns.phone'|trans({}, 'default')}}</th>
+	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if agencies|length == 0 %}
+        <tr>
+            <td colspan="3"> {{'global.no_items'|trans}} </td>
+        </tr>
+    {% else %}
+        {% for agency in agencies %}
+            <tr>
+                <td> {{ agency.name }} </td>
+                <td> {{ agency.url }} </td>
+                <td> {{ agency.timezone }} </td>
+                <td> {{ agency.lang }} </td>
+                <td> {{ agency.phone }} </td>
+                <td>
+					<a class="btn btn-default" href="{{ path('tisseo_boa_agency_edit', {'AgencyId': agency.id}) }}" data-toggle="modal" data-target="#base-modal">
+						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+					</a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

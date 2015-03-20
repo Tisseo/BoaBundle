@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BoaBundle\Form\Type;
+namespace Tisseo\TidBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -23,6 +23,6 @@ class DatepickerType extends AbstractType
 
     public function getName()
     {
-        return 'datepicker_boa';
+        return 'datepicker_tid';
     }
 }

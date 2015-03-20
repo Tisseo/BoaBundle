@@ -16,6 +16,20 @@ tisseo_boa_agency_edit:
     pattern: /agency/edit/{AgencyId}
     defaults: { _controller: TisseoBOABundle:Agency:edit, AgencyId: null }
 
+tisseo_boa_calendar_list:
+    pattern: /calendar/list/{CalendarType}
+    defaults: { _controller: TisseoBOABundle:Calendar:list, CalendarType: null }
+tisseo_boa_calendar_edit:
+    pattern: /calendar/edit/{CalendarId}
+    defaults: { _controller: TisseoBOABundle:Calendar:edit, CalendarId: null }
+
+tisseo_boa_calendar_element_list:
+    pattern: /calendar_element/list/{Calendar}
+    defaults: { _controller: TisseoBOABundle:CalendarElement:list, Calendar: null }
+tisseo_boa_calendar_element_edit:
+    pattern: /calendar_element/edit/{CalendarElementId}
+    defaults: { _controller: TisseoBOABundle:CalendarElement:edit, CalendarId: null }
+
 tisseo_boa_color_list:
     pattern: /color/list
     defaults: { _controller: TisseoBOABundle:Color:list }

@@ -1,3 +1,14 @@
 #application-navbar.container .navbar.navbar-default .navbar-brand a {
     font-size: 1em;
 }
+
+.type-select {
+    width: 200px;
+}
+
+.form-edit {
+    padding:10px 10px 10px 0;
+    margin:10px 10px;
+    display:inline-block;
+    width:50%;
+}

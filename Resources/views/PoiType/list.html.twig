@@ -1,0 +1,37 @@
+{% extends "TisseoBOABundle::datatable_list.html.twig" %}
+
+{% import "TisseoBOABundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{'poi_type.list.title'|trans({}, 'default')}}
+	-
+	<a href="{{ path('tisseo_boa_poi_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+		<span class="glyphicon glyphicon-plus"></span> {{'poi_type.create'|trans({}, 'default')}}
+	</a>
+{% endblock %}
+
+{% block table_head -%}
+    <th>{{'poi_type.list.columns.name'|trans({}, 'default')}}</th>
+	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if poi_types|length == 0 %}
+        <tr>
+            <td colspan="3"> {{'global.no_items'|trans}} </td>
+			{# prevent warning from datatables #}
+			<td></td>
+        </tr>
+    {% else %}
+        {% for poi_type in poi_types %}
+            <tr>
+                <td> {{ poi_type.name }} </td>
+                <td>
+					<a class="btn btn-default" href="{{ path('tisseo_boa_poi_type_edit', {'PoiTypeId': poi_type.id}) }}" data-toggle="modal" data-target="#base-modal">
+						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+					</a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -3,3 +3,7 @@ parameters:
         BUSINESS_MANAGE_CONFIGURATION:
             label: Administrer la configuration
             description: Administrer la configuration.
+
+        BUSINESS_MANAGE_CALENDARS:
+            label: Administrer les calendriers
+            description: Administrer les calendriers.

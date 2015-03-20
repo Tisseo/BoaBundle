@@ -1,0 +1,35 @@
+<td>
+{% if disabled is not empty and disabled == true%}
+	{{ form_widget(form.startDate, {'attr': {"readonly":true}}) }}
+{% else %}
+	{{ form_widget(form.startDate) }}
+{% endif %}
+</td>
+<td>
+{% if disabled is not empty and disabled == true%}
+	{{ form_widget(form.endDate, {'attr': {"readonly":true}}) }}
+{% else %}
+	{{ form_widget(form.endDate) }}
+{% endif %}
+</td>
+<td>
+{% if disabled is not empty and disabled == true%}
+	{{ form_widget(form.includedCalendar, {'attr': {"readonly":true}}) }}
+{% else %}
+	{{ form_widget(form.includedCalendar) }}
+{% endif %}
+</td>
+<td>
+{% if disabled is not empty and disabled == true%}
+	{{ form_widget(form.operator, {'attr': {"readonly":true}}) }}
+{% else %}
+	{{ form_widget(form.operator) }}
+{% endif %}
+</td>
+<td>
+{% if disabled is not empty and disabled == true%}
+	{{ form_widget(form.interval, {'attr': {"readonly":true}}) }}
+{% else %}
+	{{ form_widget(form.interval) }}
+{% endif %}
+</td>
