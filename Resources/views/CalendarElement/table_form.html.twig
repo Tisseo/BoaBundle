@@ -1,0 +1,20 @@
+{% form_theme form 'TisseoBOABundle:Form:table_fields.html.twig' %}
+
+<td>
+	{{ form_widget(form.rank, {'attr': {"disabled":true}}) }}
+</td>
+<td>
+	{{ form_widget(form.startDate) }}
+</td>
+<td>
+	{{ form_widget(form.endDate) }}
+</td>
+<td>
+	{{ form_widget(form.includedCalendar) }}
+</td>
+<td>
+	{{ form_widget(form.operator) }}
+</td>
+<td>
+	{{ form_widget(form.interval) }}
+</td>
