@@ -1,39 +1,70 @@
 {% extends "TisseoBOABundle::container.html.twig" %}
 
-{% form_theme form 'TisseoBOABundle:Form:fields.html.twig' %}
+{% form_theme calendarForm 'TisseoBOABundle:Form:fields.html.twig' %}
 
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
 
-    {{ form_start(form) }}
+    {{ form_start(calendarForm) }}
+		{{ form_errors(calendarForm) }}
+		{{ form_widget(calendarForm._token) }}
 		<div class="form form-edit">
-			{{ form_row(form.name) }}
-			{{ form_row(form.calendarType) }}
-			{{ form_row(form.lineVersion) }}
+			{{ form_row(calendarForm.name) }}
+			{{ form_row(calendarForm.calendarType) }}
+			{{ form_row(calendarForm.lineVersion) }}
+			<button type="submit" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
+				 {{'global.save'|trans}}
+			</button>			
 		</div>
-		
-		<table id='calendar_elements' 
+	{{ form_end(calendarForm)}}
+	
+	{{ form_start(calendarElementForm) }}
+	{{ form_errors(calendarElementForm) }}
+	{{ form_widget(calendarElementForm._token) }}
+
+	{{ dump(tmp) }}
+
+	<div id="divRemoveElement" 
+			style="display: none;" 
+			data-prototype="{% filter escape %}{% include 'TisseoBOABundle:CalendarElement:remove_form.html.twig' with { 'form': calendarElementForm.remove_element.vars.prototype } %}{% endfilter %}"
+	>
+	</div>
+
+	<table id='calendar_elements'
 			class="table table-hover dataTable no-footer" 
-			data-prototype="{% filter escape %}{% include 'TisseoBOABundle:CalendarElement:form.html.twig' with { 'form': form.calendar_elements.vars.prototype } %} {% endfilter %}">
-		<thead>
-			<th>Ordre</th>
-			<th>Début</th>
-			<th>Fin</th>
-			<th>Calendrier</th>
-			<th>Signe</th>
-			<th>Récurrence</th>
-			<th>Actions</th>
-		</thead>
-		<tbody>
-		{% for calendar_element in form.calendar_elements %}
-			<tr>
-				{% include 'TisseoBOABundle:CalendarElement:form.html.twig' with { 'form': calendar_element, 'disabled': true } %}
-				{#<td><ul><li><a href="#">Add</a></li><li><a href="#">Remove</a></li></ul>#}
-				<td><input type="checkbox" name="remove" value="remove">{{'global.delete'|trans}}</td>				
-			</tr>
-		{% endfor %}
-		</tbody></table>		
+			data-prototype="{% filter escape %}{% include 'TisseoBOABundle:CalendarElement:form.html.twig' with { 'form': calendarElementForm.calendar_element.vars.prototype } %} {% endfilter %}"
+	>	
+	<thead>
+		<th>Ordre</th>
+		<th>Début</th>
+		<th>Fin</th>
+		<th>Calendrier</th>
+		<th>Signe</th>
+		<th>Récurrence</th>
+		<th>Actions</th>
+	</thead>
+	<tbody>
+	{% set line_counter = 0 %}
+	{% for calendar_element in calendarElements %}
+		{% set line_counter = line_counter+1 %}
+		<tr>
+			<input type="hidden" id="id_{{ line_counter }}" value="{{  calendar_element.id }}">
+			<td> {{  calendar_element.rank }} </td>
+			<td> {{  calendar_element.startDate|date("d/m/Y") }} </td>
+			<td> {{  calendar_element.endDate|date("d/m/Y") }} </td>
+			{% set includedCalendar = "" %}
+			{% if calendar_element.includedCalendar is not null %}
+				{% set includedCalendar = calendar_element.includedCalendar.getName() %}
+			{% endif %}
+			<td> {{ includedCalendar }} </td>
+			<td> {{  calendar_element.operator }} </td>
+			<td> {{  calendar_element.interval }} </td>
+			<td> <input type="checkbox"  class="remove_checkbox">{{'global.delete'|trans}} </td>
+			
+		</tr>
+	{% endfor %}
+	</tbody></table>	
 
 	<div class="row">
 		<div class="col-md-9">
@@ -41,40 +72,58 @@
 				 {{'global.save'|trans}}
 			</button>
 		</div>
+	{{ form_end(calendarElementForm, {'render_rest': false}) }}
+		
 		<div class="col-md-3">
 			<label class="control-label">Eléments: </label>
 			<a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans({}, 'messages')}}</a>
 			<a class="btn btn-default"  id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.empty'|trans({}, 'messages')}}</a>
 		</div>
 	</div>
-	
-	{{ form_end(form) }}	
 {% endblock %}
-
 
 {% block javascripts %}
    <script>
 		require(['jquery'], function($) {
 			var $collectionHolder = $('#calendar_elements');
+			var $removeCollectionHolder = $('#divRemoveElement');
 			
 			function add(){
+				var $index = $('#calendar_elements >tbody >tr').length + 1;
+				
 				var $prototype = $collectionHolder.attr('data-prototype');
-				var $newForm = $prototype.replace(/__name__/g, $collectionHolder.children().length-1);
+				var $newLine = $prototype.replace(/__name__/g, $index);
+
 				$('#calendar_elements >tbody')
-					.append("<tr><td><span class=\"form-control\" disabled=\"1\"></span></td>" + 
-								$newForm + "<td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>{{'global.delete'|trans({}, 'messages')}}</a></td></tr>");
+					.append("<tr>" + 
+								$newLine + 
+								"<td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>{{'global.delete'|trans({}, 'messages')}}</a></td></tr>");
 			};
-			
+
 			$('#empty_elements').click(function(event) {
 				if(!confirm("{{'calendar.empty_elements'|trans({}, 'default')}}") )
 					return false;
 				$("#calendar_elements > tbody").html("");
 			});
-			
-			
-			$('#add_element').click(function(event) {
-				add();
+
+			//$('.remove_checkbox').click(function(event) {
+			$( ".remove_checkbox" ).on( "click", function() {
+				var $index = $(this).closest('tr').index() + 1; 
+				if(this.checked) {
+					var $IdClass = '#id_' + $index;
+					var $IdValue = $($IdClass).val();
+					var $prototype = $removeCollectionHolder.attr('data-prototype');
+					var $newInput = $prototype.replace(/__name__/g, $index).replace("%id_value%", $IdValue).replace(/%remove_class%/g, "class_remove_" + $index);
+					$(this).closest('td').append($newInput);
+				} else {
+					var $name = "#boa_calendar_element_remove_element_" + $index + "_id";
+					$($name).remove();
+					$name = "#boa_calendar_element_remove_element_" + $index + "_remove";
+					$($name).remove();
+				}
 			});
+			
+			$('#add_element').click(function(event) { add(); });
 			
 			$('#calendar_elements').on('click',  "a", function(event) {
 				event.preventDefault();

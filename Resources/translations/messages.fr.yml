@@ -55,6 +55,11 @@ menu:
     color: Couleurs
     log: Logs
     calendar_manage: Gestion des calendriers
+    calendar_jour: Jour
+    calendar_periode: Période
+    calendar_accessibilite: Accessibilité
+    calendar_mixte: Mixte
+    calendar_brique: Brique
     calendar: Calendriers
 
 accessibility_mode:
@@ -78,6 +83,7 @@ calendar:
         
 calendar_element:
     labels:
+        rank: Ordre
         startDate: Début
         endDate: Fin
         positive: Signe

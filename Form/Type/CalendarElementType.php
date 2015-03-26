@@ -16,18 +16,26 @@ class CalendarElementType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('startDate', 'date', 
+        $builder->add('rank', 'integer',
+				array(
+					'label' => 'calendar_element.labels.rank',
+					'required' => false
+				)
+		);
+       $builder->add('startDate', 'date', 
 				array(
                     'label' => 'calendar_element.labels.startDate',
                     'widget' => 'single_text',
-                    'format' => 'dd/MM/yyyy'
+                    'format' => 'dd/MM/yyyy',
+					'required' => false
                 )
 		);
         $builder->add('endDate', 'date',  
 				array(
                     'label' => 'calendar_element.labels.endDate',
                     'widget' => 'single_text',
-                    'format' => 'dd/MM/yyyy'
+                    'format' => 'dd/MM/yyyy',
+					'required' => false
                 )
 		);
 		$builder->add('operator', 'choice',  
@@ -52,6 +60,13 @@ class CalendarElementType extends AbstractType
 		
 		);
 		
+		$builder->add('remove', 'checkbox', 
+				array(
+					'label' => 'global.delete',
+					'required'  => false,
+					'mapped' => false
+		));		
+		
         $builder->setAction($options['action']);
     }
 
@@ -75,4 +90,26 @@ class CalendarElementType extends AbstractType
     {
         return 'boa_calendar_elements';
     }
+}
+
+class RemoveElementType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('id', 'integer', array(
+			'label'     => 'element id to remove',
+			'required'  => false,
+		));
+		$builder->add('remove', 'checkbox', array(
+			'label'     => 'remove if true',
+			'required'  => false,
+			'attr'     => array('checked'   => 'checked')
+		));
+		$builder->setAction($options['action']);
+	}
+	
+    public function getName()
+    {
+        return 'boa_remove_elements';
+    }	
 }

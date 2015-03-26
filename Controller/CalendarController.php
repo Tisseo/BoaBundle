@@ -5,9 +5,94 @@ namespace Tisseo\BOABundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Calendar;
 use Tisseo\BOABundle\Form\Type\CalendarType;
+use Tisseo\BOABundle\Form\Type\CalendarElementType;
+use Tisseo\BOABundle\Form\Type\RemoveElementType;
 
 class CalendarController extends AbstractController
 {
+    public function editAction(Request $request, $CalendarId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_CALENDARS');
+		
+		//current calendar
+		$CalendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $calendar = $CalendarManager->find($CalendarId);		
+        if (empty($calendar)) $calendar = new Calendar($CalendarManager);
+        $calendarForm = $this->createForm( new CalendarType($CalendarManager), 
+				$calendar,
+				array('action' => $this->generateUrl('tisseo_boa_calendar_edit',
+														array('CalendarId' => $CalendarId)
+											)
+				)
+        );
+		
+		//calendar elements
+		$CalendarElementManager = $this->get('tisseo_endiv.calendar_element_manager');
+		if (!empty($CalendarId)) {
+			$calendarElements = $CalendarElementManager->findbyCalendar($CalendarId);
+		} else {
+			$calendarElements = new CalendarElement($CalendarElementManager);
+		}
+		
+		//build calendar element form
+		$calendarElementsFormBuilder = $this->get('form.factory')
+													 ->createNamedBuilder('boa_calendar_element', 'form', NULL, array());													 
+		//new items container
+		$calendarElementsFormBuilder->add('calendar_element', 'collection', array(
+																'type' => new CalendarElementType(),
+																'allow_add' => true,
+																'by_reference' => false
+														));
+		//calendar_elements to remove
+		$calendarElementsFormBuilder->add('remove_element', 'collection', array(
+																'type' => new RemoveElementType(),
+																'allow_add' => true,
+																'by_reference' => false
+														));
+		$calendarElementsForm = $calendarElementsFormBuilder->getForm();
+		$datas = null;
+		$calendarElementDatas = null;
+		if('POST' === $request->getMethod()) {
+			if ($request->request->has('boa_calendar')) {
+				$calendarForm->handleRequest($request);
+				if ($calendarForm->isValid()) {
+					$datas = $calendarForm->getData();		
+					$CalendarManager->save($datas);
+				}
+			}
+			
+			if ($request->request->has('boa_calendar_element')) {
+				$calendarElementsForm->handleRequest($request);
+				if ($calendarElementsForm->isValid())  {
+					$new_datas = $calendarElementsForm->get('calendar_element')->getData();
+					$remove_datas = $calendarElementsForm->get('remove_element')->getData();
+					
+					foreach($new_datas as $calendarElement) {
+						$CalendarElementManager->save($CalendarId, $calendarElement);
+					}
+					
+					foreach($remove_datas as $removeElement) {
+						$CalendarElementManager->delete($removeElement["id"]);
+					}
+				}
+			}
+			
+            return $this->redirect( $this->generateUrl('tisseo_boa_calendar_edit', array('CalendarId' => $CalendarId)));
+		}
+		
+		return $this->render(
+			'TisseoBOABundle:Calendar:form.html.twig',
+			array(
+				'calendarForm' => $calendarForm->createView(),
+				'calendarElementForm' => $calendarElementsForm->createView(),
+				'calendarElements' => $calendarElements,
+				'tmp' => $calendarElementDatas,
+				'title' => ($CalendarId ? 'calendar.edit' : 'calendar.create')
+			)
+		);
+	}
+
+	
     public function listAction(Request $request, $CalendarType)
     {
         $this->isGranted('BUSINESS_MANAGE_CALENDARS');
@@ -23,11 +108,11 @@ class CalendarController extends AbstractController
 							'accessibilite' => 'accessibilite', 
 							'mixte' => 'mixte', 
 							'brique' => 'brique'),
+						'data' => $CalendarType,
 						'attr' => array("onchange" => 
 							"javascript: this.form.submit();")))
 				->getForm();
 		
-		 $value = 'value';
 		 $filterForm->handleRequest($request);
 		 if ($filterForm->isValid()) {
 			 if(array_key_exists ('calendarType', $request->request->get('form'))){
@@ -45,65 +130,5 @@ class CalendarController extends AbstractController
 				'filterForm' => $filterForm->createView()
             )
         );
-    }
-	
-    public function editAction(Request $request, $CalendarId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_CALENDARS');
-		
-		$CalendarManager = $this->get('tisseo_endiv.calendar_manager');
-		$form = $this->buildForm($CalendarId, $CalendarManager);
-        $render = $this->processForm($request, $form);
-		if (!$render) {
-			
-			
-            return $this->render(
-                'TisseoBOABundle:Calendar:form.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'title' => ($CalendarId ? 'calendar.edit' : 'calendar.create')
-                )
-            );
-        }
-        return ($render);
-    }
-
-    private function buildForm($CalendarId, $CalendarManager)
-    {
-        $calendar = $CalendarManager->find($CalendarId);
-        if (empty($calendar)) {
-            $calendar = new Calendar();
-        }		
-
-        $form = $this->createForm( new CalendarType(), $calendar,
-            array(
-                'action' => $this->generateUrl('tisseo_boa_calendar_edit',
-											array('CalendarId' => $CalendarId)
-                )
-            )
-        );
-		
-		return ($form);
     }	
-
-    private function processForm(Request $request, $form)
-    {
-        $form->handleRequest($request);
-        $CalendarManager = $this->get('tisseo_endiv.calendar_manager');
-        if ($form->isValid()) {
-            $CalendarManager->save($form->getData());
-            $this->get('session')->getFlashBag()->add('success',
-                $this->get('translator')->trans(
-                    'calendar.created',
-                    array(),
-                    'default'
-                )
-            );
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_calendar_list')
-            );
-        }
-        return (null);
-    }
-
 }

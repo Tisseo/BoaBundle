@@ -1,5 +1,12 @@
 <td>
 {% if disabled is not empty and disabled == true%}
+	{{ form_widget(form.rank, {'attr': {"readonly":true}}) }}
+{% else %}
+	{{ form_widget(form.rank, {'attr': {"disabled":true}}) }}
+{% endif %}
+</td>
+<td>
+{% if disabled is not empty and disabled == true%}
 	{{ form_widget(form.startDate, {'attr': {"readonly":true}}) }}
 {% else %}
 	{{ form_widget(form.startDate) }}

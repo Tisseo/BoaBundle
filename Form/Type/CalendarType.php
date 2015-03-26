@@ -6,17 +6,28 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+
 use Tisseo\EndivBundle\Entity\Calendar;
 
 class CalendarType extends AbstractType
 {
+	private $CalendarElementManager;
+		
+    public function __construct($CalendarElementManager)
+    {
+        $this->calendarElementManager = $CalendarElementManager;
+    }	
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'calendar.labels.name'));
+
+		$builder->add('name', 'text',  array('label' => 'calendar.labels.name'));
 		$builder->add('calendarType', 'choice',  
 			array(			
 				'label' => 'calendar.labels.type',
@@ -30,16 +41,7 @@ class CalendarType extends AbstractType
 					'label' => 'calendar.labels.lineVersion'
 				)
 		);
-		$builder->add('calendar_elements', 'collection',
-				array(
-                    'label' => False,
-                    'type' => new CalendarElementType(),
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-					'cascade_validation' => true
-				)
-		);
+		
 		$builder->setAction($options['action']);
     }
 
