@@ -9,13 +9,21 @@
     {{ form_start(calendarForm) }}
 		{{ form_errors(calendarForm) }}
 		{{ form_widget(calendarForm._token) }}
-		<div class="form form-edit">
-			{{ form_row(calendarForm.name) }}
-			{{ form_row(calendarForm.calendarType) }}
-			{{ form_row(calendarForm.lineVersion) }}
-			<button type="submit" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
-				 {{'global.save'|trans}}
-			</button>			
+		<div class="form form-edit col-md-12">
+			<div class="col-md-4">
+				{{ form_row(calendarForm.name) }}
+			</div>
+			<div class="col-md-2">
+				{{ form_row(calendarForm.calendarType) }}
+			</div>
+			<div class="col-md-3">			
+				{{ form_row(calendarForm.lineVersion) }}
+			</div>
+			<div class="col-md-3">			
+				<button type="submit" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
+					 {{'global.save'|trans}}
+				</button>			
+			</div>
 		</div>
 	{{ form_end(calendarForm, {'render_rest': false})}}
 	
