@@ -79,6 +79,8 @@ calendar:
         name: Nom
         type: Type
         lineVersion: Ligne
+        computedStartDate: Début
+        computedEndDate: Fin
         calendarElements: Elements
         
 calendar_element:

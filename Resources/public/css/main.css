@@ -12,3 +12,29 @@
     display:inline-block;
     width:50%;
 }
+
+
+.calendar_table {
+	color: white;
+	font-weight: bold;
+	background-color: gray;
+	width: 400px;
+}
+
+.calendar_cell {
+	color: black;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.month_cell {
+	vertical-align: middle;
+}
+
+.inaccessible {
+    background-color: silver;
+}
+
+.accessible {
+    background-color: green;
+}

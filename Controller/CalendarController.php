@@ -4,9 +4,11 @@ namespace Tisseo\BOABundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Calendar;
+use Tisseo\EndivBundle\Entity\CalendarElement;
 use Tisseo\BOABundle\Form\Type\CalendarType;
 use Tisseo\BOABundle\Form\Type\CalendarElementType;
 use Tisseo\BOABundle\Form\Type\RemoveElementType;
+
 
 class CalendarController extends AbstractController
 {
@@ -58,6 +60,7 @@ class CalendarController extends AbstractController
 				if ($calendarForm->isValid()) {
 					$datas = $calendarForm->getData();		
 					$CalendarManager->save($datas);
+					$CalendarId = $datas->getId();
 				}
 			}
 			
@@ -86,7 +89,7 @@ class CalendarController extends AbstractController
 				'calendarForm' => $calendarForm->createView(),
 				'calendarElementForm' => $calendarElementsForm->createView(),
 				'calendarElements' => $calendarElements,
-				'tmp' => $calendarElementDatas,
+				'calendarId' => $CalendarId,
 				'title' => ($CalendarId ? 'calendar.edit' : 'calendar.create')
 			)
 		);

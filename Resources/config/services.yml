@@ -18,3 +18,8 @@ services:
         class: CanalTP\SamCoreBundle\EventListener\AjaxFormListener
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    tisseo_boa.type.calendar_selector:
+        class: Tisseo\BOABundle\Form\Type\CalendarSelectorType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: form.type, alias: calendar_selector }            

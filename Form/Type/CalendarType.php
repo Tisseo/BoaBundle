@@ -42,6 +42,9 @@ class CalendarType extends AbstractType
 				)
 		);
 		
+		$builder->add('computedStartDate', 'datetime',  array('label' => 'calendar.labels.computedStartDate'));
+		$builder->add('computedEndDate', 'datetime',  array('label' => 'calendar.labels.computedEndDate'));
+
 		$builder->setAction($options['action']);
     }
 

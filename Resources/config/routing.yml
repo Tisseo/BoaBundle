@@ -71,4 +71,12 @@ tisseo_boa_poi_type_list:
 tisseo_boa_poi_type_edit:
     pattern: /poi_type/edit/{PoiTypeId}
     defaults: { _controller: TisseoBOABundle:PoiType:edit, PoiTypeId: null }
+    
+tisseo_boa_json_calendars:
+    pattern: /json/villes
+    defaults: { _controller: "TisseoBOABundle:Json:calendars"}
+   
+tisseo_boa_json_bitmask:
+    pattern: /json/bitmask
+    defaults: { _controller: "TisseoBOABundle:Json:bitmask"}
 

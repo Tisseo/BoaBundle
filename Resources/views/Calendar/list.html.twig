@@ -42,9 +42,13 @@
             <tr>
                 <td> {{ calendar.name }} </td>
                 <td> {{ calendar.calendarType }} </td>
-                <td> {{ calendar.lineVersion.line.number ~ '_' ~  calendar.lineVersion.version }} </td>
-                <td> {{ calendar.startDate }} </td>
-                <td> {{ calendar.endDate }} </td>
+                <td>
+					{% if calendar.lineVersion is not null %}
+						{{ calendar.lineVersion.line.number ~ '_' ~  calendar.lineVersion.version }}
+					{% endif %}
+					</td>
+                <td> {{ calendar.computedStartDate|date("d/m/Y") }} </td>
+                <td> {{ calendar.computedEndDate|date("d/m/Y") }} </td>
                 <td>
 					<a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': calendar.id}) }}">
 						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}

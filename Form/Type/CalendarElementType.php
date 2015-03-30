@@ -50,6 +50,9 @@ class CalendarElementType extends AbstractType
 					'required' => false
 				)
 		);
+		$builder->add('includedCalendar', 'calendar_selector',
+				array('required' => false));
+/*		
 		$builder->add('includedCalendar','entity',
 				array(
 					'required' => false,
@@ -59,7 +62,7 @@ class CalendarElementType extends AbstractType
 				)
 		
 		);
-		
+*/		
 		$builder->add('remove', 'checkbox', 
 				array(
 					'label' => 'global.delete',
