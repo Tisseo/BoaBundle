@@ -55,7 +55,7 @@
 					</a>
                 </td>
                 <td>
-				{% if (calendar.periodTrips is empty)  and (calendar.dayTrips is empty) and (calendar.includedCalendarElements is empty) and (calendar.accessibilityTypes is empty) %}
+				{% if (calendar.periodTrips is empty)  and (calendar.dayTrips is empty) and (calendar.accessibilityTypes is empty) %}
 					<a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': calendar.id}) }}">
 						<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
 					</a>

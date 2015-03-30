@@ -19,20 +19,21 @@
 			<div class="col-md-3">			
 				{{ form_row(calendarForm.lineVersion) }}
 			</div>
-			<div class="col-md-3">			
+			<div class="col-md-3 btn_form_submit">
 				<button type="submit" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
 					 {{'global.save'|trans}}
 				</button>			
 			</div>
 		</div>
 	{{ form_end(calendarForm, {'render_rest': false})}}
-	
+
+
 	{{ form_start(calendarElementForm) }}
 	{{ form_errors(calendarElementForm) }}
 	{{ form_widget(calendarElementForm._token) }}
-{#
-	{{ dump(tmp) }}
-#}
+  
+	<h3>Eléments</h3>
+
 	<div id="divRemoveElement" 
 			style="display: none;" 
 			data-prototype="{% filter escape %}{% include 'TisseoBOABundle:CalendarElement:remove_form.html.twig' with { 'form': calendarElementForm.remove_element.vars.prototype } %}{% endfilter %}"
@@ -88,14 +89,26 @@
 			<a class="btn btn-default"  id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.empty'|trans({}, 'messages')}}</a>
 		</div>
 	</div>
-		
-	<div>
+
+	<hr>
+	<div class="calendar_div">
 		<form>
-			<input type="date" id='start_date_picker'>
-			<input type="date" id='end_date_picker'>
-			<button type="button" id='refresh_button' data-url="{{ path('tisseo_boa_json_bitmask') }}">Rafraîchir</button>
+			<div class="row">
+				<div class="col-md-2">
+					<input type="date" id='start_date_picker'>
+				</div>
+				<div class="col-md-2">
+					<input type="date" id='end_date_picker'>
+				</div>
+				<div class="col-md-2">
+					<button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
+					<span class="glyphicon glyphicon-refresh"></span>
+						Rafraîchir
+					</button>
+				</div>
+			</div>
 		</form>
-		<div id='calendar_view'>
+		<div id='calendar_view' class="calendar_view">
 		</div>
 	</div>
 {% endblock %}
@@ -123,7 +136,7 @@
 				var table_html = "<table class='calendar_table'>";
 				table_html += "<thead><tr><th></th><th>Lu</th><th>Ma</th><th>Me</th><th>Je</th><th>Ve</th><th>Sa</th><th>Di</th></tr></thead>";
 				
-				
+				//days before month
 				if(Beginning.getDay() != 1){
 					table_html += "<tr>";
 					table_html += "<td>" + Beginning.toDateString().split(' ')[1] + " " + Beginning.toDateString().split(' ')[3] + "</td>";
@@ -132,19 +145,41 @@
 					}
 				}
 				
-				var pattern_index = 0;
+				var pattern_index = 1;				
+				var changeMonth = false;
 				for (var currentDate = Beginning; currentDate <= Ending; currentDate.setDate(currentDate.getDate() + 1)) {
+					var td_class = "calendar_cell ";
+					if(changeMonth) {
+						if(currentDate.getDate() > 7) { 
+							td_class += "last_week_of_month ";
+						} else {
+							if(currentDate.getDate() == 1) td_class += "first_day_of_month ";
+							if(currentDate.getDate() >= 1) td_class += "first_week_of_month ";
+							if(currentDate.getDay() == 0) changeMonth = false;
+						}						
+					}
+					if($calendarPattern[pattern_index] ==  1)  {
+						td_class += "accessible ";
+					} else {
+						td_class += "inaccessible ";
+					}
+					table_html += "<td class='" + td_class + "'>" + currentDate.getDate() + "</td>";
+
+					{#
 					if($calendarPattern[pattern_index] ==  1)  {
 						table_html += "<td class='calendar_cell accessible'>" + currentDate.getDate() + "</td>";
 					} else {
 						table_html += "<td class='calendar_cell inaccessible'>" + currentDate.getDate() + "</td>";
 					}
+					#}
+					
 					if(currentDate.getDay() == 0){
 						table_html += "</tr><tr>";
 						
 						var next_week_month = new Date(currentDate.getTime());
 						next_week_month.setDate(next_week_month.getDate() + 7);
 						if(next_week_month.getMonth() != currentDate.getMonth()) {
+							changeMonth = true;
 							table_html += "<td class='month_cell'>" + next_week_month.toDateString().split(' ')[1] + " " + next_week_month.toDateString().split(' ')[3] + "</td>";
 						} else {
 							table_html += "<td class='month_cell'></td>";
@@ -263,6 +298,8 @@
 					$(this).closest("tr").remove(); 
 				}
 			});
+			
+			$("#refresh_button").click()
 		 });
     </script>
 {% endblock %}

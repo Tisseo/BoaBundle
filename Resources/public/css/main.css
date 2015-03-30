@@ -2,6 +2,10 @@
     font-size: 1em;
 }
 
+hr {
+	border-top: 1px solid black;
+}
+
 .type-select {
     width: 200px;
 }
@@ -10,7 +14,36 @@
     padding:10px 10px 10px 0;
     margin:10px 10px;
     display:inline-block;
-    width:50%;
+    width:100%;
+}
+
+.btn_form_submit {
+	padding-top: 21px;
+}
+
+
+.calendar_div {
+	padding-top: 20px;
+}
+
+.last_week_of_month {
+	border-bottom: thin solid white;
+}
+
+.first_day_of_month {
+	border-left: thin solid white;
+}
+
+.first_week_of_month {
+	border-top: thin solid white;
+}
+
+.calendar_view {
+	padding-top: 10px;
+}
+
+.calendar_button {
+	padding-top: 10px;
 }
 
 
