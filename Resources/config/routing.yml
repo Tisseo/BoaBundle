@@ -2,6 +2,7 @@ tisseo_boa_homepage:
     pattern:  /{externalNetworkId}
     defaults: { _controller: TisseoBOABundle:Default:index , externalNetworkId: null}
 
+#Accessibility administration
 tisseo_boa_accessibility_mode_list:
     pattern: /accessibility_mode/list
     defaults: { _controller: TisseoBOABundle:AccessibilityMode:list }
@@ -9,6 +10,7 @@ tisseo_boa_accessibility_mode_edit:
     pattern: /accessibility_mode/edit/{AccessibilityModeId}
     defaults: { _controller: TisseoBOABundle:AccessibilityMode:edit, AccessibilityModeId: null }
 
+#Agencies administration
 tisseo_boa_agency_list:
     pattern: /agency/list
     defaults: { _controller: TisseoBOABundle:Agency:list }
@@ -16,13 +18,19 @@ tisseo_boa_agency_edit:
     pattern: /agency/edit/{AgencyId}
     defaults: { _controller: TisseoBOABundle:Agency:edit, AgencyId: null }
 
+#Calendars administration
 tisseo_boa_calendar_list:
     pattern: /calendar/list/{CalendarType}
     defaults: { _controller: TisseoBOABundle:Calendar:list, CalendarType: null }
 tisseo_boa_calendar_edit:
     pattern: /calendar/edit/{CalendarId}
     defaults: { _controller: TisseoBOABundle:Calendar:edit, CalendarId: null }
+tisseo_boa_calendar_delete:
+    pattern:  /calendar/delete/{CalendarId}/{CalendarType}
+    defaults: { _controller: TisseoBOABundle:Calendar:delete}
+    
 
+#Calendar elements administration
 tisseo_boa_calendar_element_list:
     pattern: /calendar_element/list/{Calendar}
     defaults: { _controller: TisseoBOABundle:CalendarElement:list, Calendar: null }
@@ -30,6 +38,7 @@ tisseo_boa_calendar_element_edit:
     pattern: /calendar_element/edit/{CalendarElementId}
     defaults: { _controller: TisseoBOABundle:CalendarElement:edit, CalendarId: null }
 
+#Color administration
 tisseo_boa_color_list:
     pattern: /color/list
     defaults: { _controller: TisseoBOABundle:Color:list }
@@ -37,6 +46,7 @@ tisseo_boa_color_edit:
     pattern: /color/edit/{ColorId}
     defaults: { _controller: TisseoBOABundle:Color:edit, ColorId: null }
 
+#Data sources administration
 tisseo_boa_datasource_list:
     pattern: /datasource/list
     defaults: { _controller: TisseoBOABundle:Datasource:list }
@@ -44,6 +54,7 @@ tisseo_boa_datasource_edit:
     pattern: /datasource/edit/{DatasourceId}
     defaults: { _controller: TisseoBOABundle:Datasource:edit, DatasourceId: null }
 
+#Exception types administration
 tisseo_boa_exception_type_list:
     pattern: /exception_type/list
     defaults: { _controller: TisseoBOABundle:ExceptionType:list }
@@ -51,6 +62,7 @@ tisseo_boa_exception_type_edit:
     pattern: /exception_type/edit/{ExceptionTypeId}
     defaults: { _controller: TisseoBOABundle:ExceptionType:edit, ExceptionTypeId: null }
 
+#Log administration
 tisseo_boa_log_list:
     pattern: /log/list
     defaults: { _controller: TisseoBOABundle:Log:list }
@@ -73,7 +85,7 @@ tisseo_boa_poi_type_edit:
     defaults: { _controller: TisseoBOABundle:PoiType:edit, PoiTypeId: null }
     
 tisseo_boa_json_calendars:
-    pattern: /json/villes
+    pattern: /json/calendars
     defaults: { _controller: "TisseoBOABundle:Json:calendars"}
    
 tisseo_boa_json_bitmask:

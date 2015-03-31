@@ -50,8 +50,16 @@ class CalendarElementType extends AbstractType
 					'required' => false
 				)
 		);
+		
 		$builder->add('includedCalendar', 'calendar_selector',
+//		$builder->add('includedCalendar', 'text',
 				array('required' => false));
+				
+		$builder->add('calendarName', 'text',				
+				array(
+					'required' => false,
+					'mapped' => false));
+		
 /*		
 		$builder->add('includedCalendar','entity',
 				array(

@@ -2,6 +2,11 @@
     font-size: 1em;
 }
 
+.ui-helper-hidden-accessible {
+	position: absolute; 
+	left: -9999px; 
+}
+
 hr {
 	border-top: 1px solid black;
 }
@@ -45,7 +50,6 @@ hr {
 .calendar_button {
 	padding-top: 10px;
 }
-
 
 .calendar_table {
 	color: white;

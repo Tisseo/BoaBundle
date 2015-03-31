@@ -8,10 +8,12 @@
 	{{ form_widget(form.endDate) }}
 </td>
 <td>
-	{{ form_widget(form.includedCalendar, {
+	{{ form_widget(form.includedCalendar, { 'attr': {'class': 'hide'} }) }}
+	{{ form_widget(form.calendarName, {
 				'attr': {
 					'data-id' : 'calendar',
-					'data-url' : path('tisseo_boa_json_calendars')
+					'data-url' : path('tisseo_boa_json_calendars'),
+					'mapped': false
 				}} ) 
 	}}
 </td>

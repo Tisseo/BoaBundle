@@ -38,8 +38,9 @@ class CalendarController extends AbstractController
 		
 		//build calendar element form
 		$calendarElementsFormBuilder = $this->get('form.factory')
-													 ->createNamedBuilder('boa_calendar_element', 'form', NULL, array());													 
-		//new items container
+													 ->createNamedBuilder('boa_calendar_element', 'form', NULL, array());
+													 													 
+		//new calendar_elements container
 		$calendarElementsFormBuilder->add('calendar_element', 'collection', array(
 																'type' => new CalendarElementType(),
 																'allow_add' => true,
@@ -58,9 +59,13 @@ class CalendarController extends AbstractController
 			if ($request->request->has('boa_calendar')) {
 				$calendarForm->handleRequest($request);
 				if ($calendarForm->isValid()) {
-					$datas = $calendarForm->getData();		
-					$CalendarManager->save($datas);
-					$CalendarId = $datas->getId();
+						$datas = $calendarForm->getData();		
+						try {
+							$CalendarManager->save($datas);
+							$CalendarId = $datas->getId();
+						} catch(\Exception $e) {
+							$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+						}
 				}
 			}
 			
@@ -70,12 +75,16 @@ class CalendarController extends AbstractController
 					$new_datas = $calendarElementsForm->get('calendar_element')->getData();
 					$remove_datas = $calendarElementsForm->get('remove_element')->getData();
 					
-					foreach($new_datas as $calendarElement) {
-						$CalendarElementManager->save($CalendarId, $calendarElement);
-					}
-					
-					foreach($remove_datas as $removeElement) {
-						$CalendarElementManager->delete($removeElement["id"]);
+					try {
+						foreach($new_datas as $calendarElement) {
+							$CalendarElementManager->save($CalendarId, $calendarElement);
+						}
+						
+						foreach($remove_datas as $removeElement) {
+							$CalendarElementManager->delete($removeElement["id"]);
+						}
+					} catch(\Exception $e) {
+						$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 					}
 				}
 			}
@@ -105,7 +114,6 @@ class CalendarController extends AbstractController
 				->add('calendarType', 'choice', 
 						array(
 						'choices'   => array(
-							'tous' => 'tous', 
 							'jour' => 'jour', 
 							'periode' => 'periode', 
 							'accessibilite' => 'accessibilite', 
@@ -132,6 +140,18 @@ class CalendarController extends AbstractController
                 'calendars' => ($CalendarType ? $CalendarManager->findbyType($CalendarType) : $CalendarManager->findAll()),
 				'filterForm' => $filterForm->createView()
             )
+        );
+    }	
+	
+	
+    public function deleteAction(Request $request, $CalendarId,  $CalendarType)
+    {
+        $this->isGranted('BUSINESS_MANAGE_CALENDARS');
+        $CalendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $CalendarManager->delete($CalendarId);
+
+        return $this->redirect(
+            $this->generateUrl('tisseo_boa_calendar_list', array('CalendarType' => $CalendarType))
         );
     }	
 }

@@ -10,13 +10,13 @@ class JsonController extends AbstractController
     public function CalendarsAction()
     {
         $request = $this->get('request');
- 
+		
         if($request->isXmlHttpRequest())
         {
-            $term = $request->request->get('calendar');
+            $term = $request->request->get('term');
             $array= $this->get('tisseo_endiv.calendar_manager')
                 ->findCalendarsLike($term);
- 
+				
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
@@ -33,7 +33,7 @@ class JsonController extends AbstractController
 			$id = $request->request->get('id');
             $startDate = $request->request->get('startDate');
             $endDate = $request->request->get('endDate');
-
+			
             $array= $this->get('tisseo_endiv.calendar_manager')
                 ->getCalendarsBitmask($id, $startDate, $endDate);
 				
