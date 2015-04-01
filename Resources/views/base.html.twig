@@ -15,7 +15,7 @@
 
 {% block title -%}
 {{ parent() }}
-- {{ 'app_name'|trans() }}
+- {{ 'boa_app_name'|trans({}, 'default') }}
     {% if pageTitle %}
     - {{ pageTitle|trans }}
     {% endif %}

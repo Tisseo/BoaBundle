@@ -1,5 +1,5 @@
 boa_welcome: "Bienvenue sur Boa"
-app_name: "Boa"
+boa_app_name: "Boa"
 
 accessibility_mode:
     list:
