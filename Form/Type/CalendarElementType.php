@@ -47,12 +47,12 @@ class CalendarElementType extends AbstractType
         $builder->add('interval', 'text',
 				array(
 					'label' => 'calendar_element.labels.interval',
+					'data' => '1',
 					'required' => false
 				)
 		);
 		
 		$builder->add('includedCalendar', 'calendar_selector',
-//		$builder->add('includedCalendar', 'text',
 				array('required' => false));
 				
 		$builder->add('calendarName', 'text',				
@@ -60,17 +60,6 @@ class CalendarElementType extends AbstractType
 					'required' => false,
 					'mapped' => false));
 		
-/*		
-		$builder->add('includedCalendar','entity',
-				array(
-					'required' => false,
-					'class' => 'TisseoEndivBundle:Calendar',
-					'property' => 'name',
-					'label' => 'calendar_element.labels.includedCalendar'
-				)
-		
-		);
-*/		
 		$builder->add('remove', 'checkbox', 
 				array(
 					'label' => 'global.delete',

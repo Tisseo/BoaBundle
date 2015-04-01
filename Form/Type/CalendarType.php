@@ -38,7 +38,8 @@ class CalendarType extends AbstractType
 				array(
 					'class' => 'TisseoEndivBundle:LineVersion',
 					'property' => 'FormattedLineVersion',
-					'label' => 'calendar.labels.lineVersion'
+					'label' => 'calendar.labels.lineVersion',
+					'required' => false,
 				)
 		);
 		

@@ -1,26 +1,15 @@
 {% extends "TisseoBoaBundle::datatable_list.html.twig" %}
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
-
+{#
 {% form_theme filterForm 'TisseoBoaBundle:Form:fields.html.twig' %}
-
+#}
 {% block list_title -%}
     {{'calendar.list.title'|trans({}, 'default')}}
 	-
 	<a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
 		<span class="glyphicon glyphicon-plus"></span> {{'calendar.create'|trans({}, 'default')}}
 	</a>	
-{% endblock %}
-
-{% block list_menu -%}
-{#	{{ dump(app.request.get('CalendarType')) }}	#}
-
-	{{ form_start(filterForm)}}
-	{{ form_errors(filterForm) }}
-		{{ 'calendar.list.columns.type'|trans({}, 'default') ~ ':' }}
-		{{ form_widget(filterForm.calendarType, {'attr': {'class': 'type-select'}}) }}
-	{{ form_end(filterForm)}}
-	<br>
 {% endblock %}
 
 {% block table_head -%}
@@ -49,9 +38,17 @@
 						{{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
 					{% endif %}
 					</td>
-                <td> {{ calendar.calendar.computedStartDate|date("d/m/Y") }} </td>
-                <td> {{ calendar.calendar.computedEndDate|date("d/m/Y") }} </td>
                 <td>
+					{% if calendar.calendar.computedStartDate is not null %}
+						{{ calendar.calendar.computedStartDate|date("d/m/Y") }}
+					{% endif %}
+				</td>
+                <td> 
+					{% if calendar.calendar.computedEndDate is not null %}
+						{{ calendar.calendar.computedEndDate|date("d/m/Y") }}
+					{% endif %}
+                 </td>
+				<td>
 					<a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': calendar.calendar.id}) }}">
 						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
 					</a>

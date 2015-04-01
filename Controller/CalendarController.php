@@ -112,35 +112,11 @@ class CalendarController extends AbstractController
         $this->isGranted('BUSINESS_MANAGE_CALENDARS');
 		$CalendarManager = $this->get('tisseo_endiv.calendar_manager');
 		
-		$filterForm = $this->createFormBuilder()
-				->add('calendarType', 'choice', 
-						array(
-						'choices'   => array(
-							'jour' => 'jour', 
-							'periode' => 'periode', 
-							'accessibilite' => 'accessibilite', 
-							'mixte' => 'mixte', 
-							'brique' => 'brique'),
-						'data' => $CalendarType,
-						'attr' => array("onchange" => 
-							"javascript: this.form.submit();")))
-				->getForm();
-		
-		 $filterForm->handleRequest($request);
-		 if ($filterForm->isValid()) {
-			 if(array_key_exists ('calendarType', $request->request->get('form'))){
-				 if('tous' !== $request->request->get('form')['calendarType']) {
-					 $CalendarType = $request->request->get('form')['calendarType'];
-				 }
-			 }
-		 }
-		
         return $this->render(
             'TisseoBoaBundle:Calendar:list.html.twig',
             array(
                 'pageTitle' => 'menu.calendar',
-                'calendars' => ($CalendarType ? $CalendarManager->findbyType($CalendarType) : $CalendarManager->findAll()),
-				'filterForm' => $filterForm->createView()
+                'calendars' => ($CalendarType ? $CalendarManager->findbyType($CalendarType) : $CalendarManager->findAll())
             )
         );
     }	

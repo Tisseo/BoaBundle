@@ -84,7 +84,7 @@
 
 	<div class="row">
 		<div class="col-md-9">
-			<button type="submit" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
+			<button type="submit" id='save-calendar-element' class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
 				 {{'global.save'|trans}}
 			</button>
 		</div>
@@ -120,28 +120,41 @@
 	</div>
 {% endblock %}
 
+
 {% block javascripts %}
    <script>
 		require(['jquery', 'jquery_ui_autocomplete'], function($) {
 
 			var calendarID="{{ calendarId }}";
 			
-			var firstDate = new Date();
-			firstDate.setMonth(firstDate.getMonth());
-			var lastDate = new Date();
-			lastDate.setMonth(lastDate.getMonth()+3);
-			
-			var month = (firstDate.getMonth()<10 ? "0" + firstDate.getMonth() : firstDate.getMonth());
-			var sFirstDate = firstDate.getFullYear() + '-' + month + '-01';
-			$('#start_date_picker').val(sFirstDate);		
-			
-			month = (lastDate.getMonth()<10 ? "0" + lastDate.getMonth() : lastDate.getMonth());			
-			var sLastDate = lastDate.getFullYear() + '-' + month + '-01';
-			$('#end_date_picker').val(sLastDate);
+			var data_stored = null;
+			if( calendarID != '' )  { 
+				data_stored = sessionStorage.getItem(calendarID);
+				if( data_stored != null )  { 
+					var res = data_stored.split("##");
+					$('#start_date_picker').val(res[0]);
+					$('#end_date_picker').val(res[1]);
+				}
+			}
+			if( data_stored == null )  { 
+				var today = new Date();
+				var firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
+				var lastDate = new Date(today.getFullYear(), today.getMonth()+2, 0);
+				
+				var month = (firstDate.getMonth()<10 ? "0" + firstDate.getMonth() : firstDate.getMonth());
+				var sFirstDate = firstDate.getFullYear() + '-' + month + '-01';
+				$('#start_date_picker').val(sFirstDate);		
+				
+				month = (lastDate.getMonth()<10 ? "0" + (lastDate.getMonth()+1) : (lastDate.getMonth()+1));
+				var sLastDate = lastDate.getFullYear() + '-' + month + '-' + lastDate.getDate();
+				$('#end_date_picker').val(sLastDate);
+			}
 			
 			function displayCalendar($FirstDate, $LastDate, $calendarPattern){
 				var Beginning = new Date($FirstDate);
-				var Ending = new Date($LastDate)
+				Beginning.setHours(0,0,0,0);
+				var Ending = new Date($LastDate);
+				Ending.setHours(0,0,0,0);
 				
 				var table_html = "<table class='calendar_table'>";
 				table_html += "<thead><tr><th></th><th>Lu</th><th>Ma</th><th>Me</th><th>Je</th><th>Ve</th><th>Sa</th><th>Di</th></tr></thead>";
@@ -176,20 +189,23 @@
 					table_html += "<td class='" + td_class + "'>" + currentDate.getDate() + "</td>";
 
 					if(currentDate.getDay() == 0){
-						table_html += "</tr><tr>";
-						
-						var next_week_month = new Date(currentDate.getTime());
-						next_week_month.setDate(next_week_month.getDate() + 7);
-						if(next_week_month.getMonth() != currentDate.getMonth()) {
-							changeMonth = true;
-							table_html += "<td class='month_cell'>" + next_week_month.toDateString().split(' ')[1] + " " + next_week_month.toDateString().split(' ')[3] + "</td>";
+						if(+currentDate == +Ending) {
+							table_html += "</tr>";
 						} else {
-							table_html += "<td class='month_cell'></td>";
+							table_html += "</tr><tr>";
+							
+							var next_week_month = new Date(currentDate.getTime());
+							next_week_month.setDate(next_week_month.getDate() + 7);
+							if(next_week_month.getMonth() != currentDate.getMonth()) {
+								changeMonth = true;
+								table_html += "<td class='month_cell'>" + next_week_month.toDateString().split(' ')[1] + " " + next_week_month.toDateString().split(' ')[3] + "</td>";
+							} else {
+								table_html += "<td class='month_cell'></td>";
+							}
 						}
 					}
 					pattern_index += 1;
 				}
-				table_html += "</tr>";
 				
 				table_html += "</table>";
 				
@@ -270,6 +286,7 @@
 					if( checkbox.length ){
 						checkbox.prop('checked', true);
 						checkbox.triggerHandler( "click" );
+						$('#save-calendar-element').click();
 					} else {
 						$(this).remove();
 					}
@@ -308,11 +325,43 @@
 					alert("Vous devez d'abord enregistrer le calendrier");
 					return false;
 				}
-				
-				
-				
 			});
+
+			function display_dates_save() {
+				if( calendarID != '' )  { 
+					sessionStorage.setItem(calendarID, $("#start_date_picker").val() + '##' + $("#end_date_picker").val());
+				}
+			}
 			
+			function display_dates_validation(item) {
+				re = /^\d{4}-\d{1,2}-\d{1,2}$/;
+				var value = item.val();
+				if(value != '' && !value.match(re)) {
+					alert("format de date invalide: " + value);
+					item.focus();
+					return false;
+				}
+				
+				if($("#start_date_picker").val() > $("#end_date_picker").val()) {
+					alert("les dates d'affichage sont incorrectes");
+					item.focus();
+					return false;
+				}	
+				
+				return true;
+			}
+			
+			$('#start_date_picker').blur(function() {
+				if (!display_dates_validation($("#start_date_picker"))) return false;
+
+				display_dates_save();
+			});
+
+			$('#end_date_picker').blur(function() {
+				if (!display_dates_validation($("#end_date_picker"))) return false;
+				
+				display_dates_save();
+			});
 			
 			if( calendarID != '' )  { $("#refresh_button").click(); }
 		 });
