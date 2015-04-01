@@ -63,7 +63,7 @@
 						(calendar.nb_elements > 0)) %}
 						<a class="btn btn-default" 
 						{% set calendarType = app.request.get('CalendarType') %}
-							href="{{ path('tisseo_boa_calendar_delete', {'CalendarId': calendar.calendar.id, 'CalendarType': 'calendarType' }) }}">
+							href="{{ path('tisseo_boa_calendar_delete', {'CalendarId': calendar.calendar.id, 'CalendarType': calendarType }) }}">
 							<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
 						</a>
 					{% endif %}

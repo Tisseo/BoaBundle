@@ -80,7 +80,9 @@ class CalendarController extends AbstractController
 							$CalendarElementManager->save($CalendarId, $calendarElement);
 						}
 						
-						foreach($remove_datas as $removeElement) {
+						for (end($remove_datas); key($remove_datas)!==null; prev($remove_datas)){
+							$removeElement = current($remove_datas);
+							
 							$CalendarElementManager->delete($removeElement["id"]);
 						}
 					} catch(\Exception $e) {
@@ -142,13 +144,17 @@ class CalendarController extends AbstractController
             )
         );
     }	
-	
-	
+		
     public function deleteAction(Request $request, $CalendarId,  $CalendarType)
     {
         $this->isGranted('BUSINESS_MANAGE_CALENDARS');
+		
         $CalendarManager = $this->get('tisseo_endiv.calendar_manager');
-        $CalendarManager->delete($CalendarId);
+		try {
+			$CalendarManager->delete($CalendarId);
+		} catch(\Exception $e) {
+			$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+		}
 
         return $this->redirect(
             $this->generateUrl('tisseo_boa_calendar_list', array('CalendarType' => $CalendarType))

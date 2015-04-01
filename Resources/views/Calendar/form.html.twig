@@ -10,8 +10,6 @@
     {% endstylesheets %}
 {% endblock %}
 
-
-
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
@@ -271,6 +269,7 @@
 					var checkbox = $(this).find("input.remove_checkbox[type=checkbox]");
 					if( checkbox.length ){
 						checkbox.prop('checked', true);
+						checkbox.triggerHandler( "click" );
 					} else {
 						$(this).remove();
 					}
@@ -279,7 +278,7 @@
 
 			$( ".remove_checkbox" ).on( "click", function() {
 				var $index = $(this).closest('tr').index() + 1; 
-				if(this.checked) {
+				if(this.checked) {					
 					var $IdClass = '#id_' + $index;
 					var $IdValue = $($IdClass).val();
 					var $prototype = $removeCollectionHolder.attr('data-prototype');
