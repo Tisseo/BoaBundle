@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\DataFixtures\ORM;
+namespace Tisseo\BoaBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -15,14 +15,14 @@ class FixturesRole extends AbstractFixture implements OrderedFixtureInterface
 
     private $roles = array(
         array(
-            'name'          => 'User BOA',
+            'name'          => 'User Boa',
             'reference'     => 'user-boa',
             'application'   => 'app-boa',
             'isEditable'    => true,
             'permissions'   => array()
         ),
         array(
-            'name'          => 'Admin BOA',
+            'name'          => 'Admin Boa',
             'reference'     => 'admin-boa',
             'application'   => 'app-boa',
             'isEditable'    => true,

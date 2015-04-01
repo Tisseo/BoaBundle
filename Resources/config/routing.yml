@@ -1,94 +1,94 @@
 tisseo_boa_homepage:
     pattern:  /{externalNetworkId}
-    defaults: { _controller: TisseoBOABundle:Default:index , externalNetworkId: null}
+    defaults: { _controller: TisseoBoaBundle:Default:index , externalNetworkId: null}
 
 #Accessibility administration
 tisseo_boa_accessibility_mode_list:
     pattern: /accessibility_mode/list
-    defaults: { _controller: TisseoBOABundle:AccessibilityMode:list }
+    defaults: { _controller: TisseoBoaBundle:AccessibilityMode:list }
 tisseo_boa_accessibility_mode_edit:
     pattern: /accessibility_mode/edit/{AccessibilityModeId}
-    defaults: { _controller: TisseoBOABundle:AccessibilityMode:edit, AccessibilityModeId: null }
+    defaults: { _controller: TisseoBoaBundle:AccessibilityMode:edit, AccessibilityModeId: null }
 
 #Agencies administration
 tisseo_boa_agency_list:
     pattern: /agency/list
-    defaults: { _controller: TisseoBOABundle:Agency:list }
+    defaults: { _controller: TisseoBoaBundle:Agency:list }
 tisseo_boa_agency_edit:
     pattern: /agency/edit/{AgencyId}
-    defaults: { _controller: TisseoBOABundle:Agency:edit, AgencyId: null }
+    defaults: { _controller: TisseoBoaBundle:Agency:edit, AgencyId: null }
 
 #Calendars administration
 tisseo_boa_calendar_list:
     pattern: /calendar/list/{CalendarType}
-    defaults: { _controller: TisseoBOABundle:Calendar:list, CalendarType: null }
+    defaults: { _controller: TisseoBoaBundle:Calendar:list, CalendarType: null }
 tisseo_boa_calendar_edit:
     pattern: /calendar/edit/{CalendarId}
-    defaults: { _controller: TisseoBOABundle:Calendar:edit, CalendarId: null }
+    defaults: { _controller: TisseoBoaBundle:Calendar:edit, CalendarId: null }
 tisseo_boa_calendar_delete:
     pattern:  /calendar/delete/{CalendarId}/{CalendarType}
-    defaults: { _controller: TisseoBOABundle:Calendar:delete}
+    defaults: { _controller: TisseoBoaBundle:Calendar:delete}
     
 
 #Calendar elements administration
 tisseo_boa_calendar_element_list:
     pattern: /calendar_element/list/{Calendar}
-    defaults: { _controller: TisseoBOABundle:CalendarElement:list, Calendar: null }
+    defaults: { _controller: TisseoBoaBundle:CalendarElement:list, Calendar: null }
 tisseo_boa_calendar_element_edit:
     pattern: /calendar_element/edit/{CalendarElementId}
-    defaults: { _controller: TisseoBOABundle:CalendarElement:edit, CalendarId: null }
+    defaults: { _controller: TisseoBoaBundle:CalendarElement:edit, CalendarId: null }
 
 #Color administration
 tisseo_boa_color_list:
     pattern: /color/list
-    defaults: { _controller: TisseoBOABundle:Color:list }
+    defaults: { _controller: TisseoBoaBundle:Color:list }
 tisseo_boa_color_edit:
     pattern: /color/edit/{ColorId}
-    defaults: { _controller: TisseoBOABundle:Color:edit, ColorId: null }
+    defaults: { _controller: TisseoBoaBundle:Color:edit, ColorId: null }
 
 #Data sources administration
 tisseo_boa_datasource_list:
     pattern: /datasource/list
-    defaults: { _controller: TisseoBOABundle:Datasource:list }
+    defaults: { _controller: TisseoBoaBundle:Datasource:list }
 tisseo_boa_datasource_edit:
     pattern: /datasource/edit/{DatasourceId}
-    defaults: { _controller: TisseoBOABundle:Datasource:edit, DatasourceId: null }
+    defaults: { _controller: TisseoBoaBundle:Datasource:edit, DatasourceId: null }
 
 #Exception types administration
 tisseo_boa_exception_type_list:
     pattern: /exception_type/list
-    defaults: { _controller: TisseoBOABundle:ExceptionType:list }
+    defaults: { _controller: TisseoBoaBundle:ExceptionType:list }
 tisseo_boa_exception_type_edit:
     pattern: /exception_type/edit/{ExceptionTypeId}
-    defaults: { _controller: TisseoBOABundle:ExceptionType:edit, ExceptionTypeId: null }
+    defaults: { _controller: TisseoBoaBundle:ExceptionType:edit, ExceptionTypeId: null }
 
 #Log administration
 tisseo_boa_log_list:
     pattern: /log/list
-    defaults: { _controller: TisseoBOABundle:Log:list }
+    defaults: { _controller: TisseoBoaBundle:Log:list }
 tisseo_boa_log_edit:
     pattern: /log/edit/{LogId}
-    defaults: { _controller: TisseoBOABundle:Log:edit, LogId: null }
+    defaults: { _controller: TisseoBoaBundle:Log:edit, LogId: null }
 
 tisseo_boa_physical_mode_list:
     pattern: /physical_mode/list
-    defaults: { _controller: TisseoBOABundle:PhysicalMode:list }
+    defaults: { _controller: TisseoBoaBundle:PhysicalMode:list }
 tisseo_boa_physical_mode_edit:
     pattern: /physical_mode/edit/{PhysicalModeId}
-    defaults: { _controller: TisseoBOABundle:PhysicalMode:edit, PhysicalModeId: null }
+    defaults: { _controller: TisseoBoaBundle:PhysicalMode:edit, PhysicalModeId: null }
 
 tisseo_boa_poi_type_list:
     pattern: /poi_type/list
-    defaults: { _controller: TisseoBOABundle:PoiType:list }
+    defaults: { _controller: TisseoBoaBundle:PoiType:list }
 tisseo_boa_poi_type_edit:
     pattern: /poi_type/edit/{PoiTypeId}
-    defaults: { _controller: TisseoBOABundle:PoiType:edit, PoiTypeId: null }
+    defaults: { _controller: TisseoBoaBundle:PoiType:edit, PoiTypeId: null }
     
 tisseo_boa_json_calendars:
     pattern: /json/calendars
-    defaults: { _controller: "TisseoBOABundle:Json:calendars"}
+    defaults: { _controller: "TisseoBoaBundle:Json:calendars"}
    
 tisseo_boa_json_bitmask:
     pattern: /json/bitmask
-    defaults: { _controller: "TisseoBOABundle:Json:bitmask"}
+    defaults: { _controller: "TisseoBoaBundle:Json:bitmask"}
 

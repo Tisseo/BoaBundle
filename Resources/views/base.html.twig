@@ -10,17 +10,17 @@
 
 {% block head_config %}
     {{ parent() }}
-    {% include 'TisseoBOABundle::config.js.html.twig' %}
+    {% include 'TisseoBoaBundle::config.js.html.twig' %}
 {% endblock %}
 
 {% block title -%}
 {{ parent() }}
-- BOA
+- {{ 'app_name'|trans() }}
     {% if pageTitle %}
     - {{ pageTitle|trans }}
     {% endif %}
 {% endblock %}
-{% block navbar_brand %}<a href="{% if externalNetworkId %}{{ path('tisseo_boa_homepage', {'externalNetworkId':externalNetworkId }) }}{% else %}{{ path('tisseo_boa_homepage') }}{% endif %}">BOA</a>{% endblock %}
+{% block navbar_brand %}<a href="{% if externalNetworkId %}{{ path('tisseo_boa_homepage', {'externalNetworkId':externalNetworkId }) }}{% else %}{{ path('tisseo_boa_homepage') }}{% endif %}">Boa</a>{% endblock %}
 
 {% block root_breadcrumb %}
     <ol class="breadcrumb">

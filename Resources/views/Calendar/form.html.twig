@@ -1,6 +1,6 @@
-{% extends "TisseoBOABundle::container.html.twig" %}
+{% extends "TisseoBoaBundle::container.html.twig" %}
 
-{% form_theme calendarForm 'TisseoBOABundle:Form:fields.html.twig' %}
+{% form_theme calendarForm 'TisseoBoaBundle:Form:fields.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -45,13 +45,13 @@
 
 	<div id="divRemoveElement" 
 			style="display: none;" 
-			data-prototype="{% filter escape %}{% include 'TisseoBOABundle:CalendarElement:remove_form.html.twig' with { 'form': calendarElementForm.remove_element.vars.prototype } %}{% endfilter %}"
+			data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:remove_form.html.twig' with { 'form': calendarElementForm.remove_element.vars.prototype } %}{% endfilter %}"
 	>
 	</div>
 
 	<table id='calendar_elements'
 			class="table table-hover dataTable no-footer" 
-			data-prototype="{% filter escape %}{% include 'TisseoBOABundle:CalendarElement:form.html.twig' with { 'form': calendarElementForm.calendar_element.vars.prototype } %} {% endfilter %}"
+			data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarElementForm.calendar_element.vars.prototype } %} {% endfilter %}"
 	>	
 	<thead>
 		<th>Ordre</th>

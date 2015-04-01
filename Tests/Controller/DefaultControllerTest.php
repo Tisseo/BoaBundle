@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\Tests\Controller;
+namespace Tisseo\BoaBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

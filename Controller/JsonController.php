@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

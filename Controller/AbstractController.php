@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Datasource;
-use Tisseo\BOABundle\Form\Type\DatasourceType;
+use Tisseo\BoaBundle\Form\Type\DatasourceType;
 
 class DatasourceController extends AbstractController
 {
@@ -14,7 +14,7 @@ class DatasourceController extends AbstractController
 		
 		$DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
         return $this->render(
-            'TisseoBOABundle:Datasource:list.html.twig',
+            'TisseoBoaBundle:Datasource:list.html.twig',
             array(
                 'pageTitle' => 'menu.datasource',
                 'datasources' => $DatasourceManager->findAll()
@@ -31,7 +31,7 @@ class DatasourceController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:Datasource:form.html.twig',
+                'TisseoBoaBundle:Datasource:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($DatasourceId ? 'datasource.edit' : 'datasource.create')

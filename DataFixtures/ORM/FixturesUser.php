@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\DataFixtures\ORM;
+namespace Tisseo\BoaBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -15,9 +15,9 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
     private $users = array(
         array(
             'id'        => null,
-            'username'  => 'utilisateur BOA',
+            'username'  => 'utilisateur Boa',
             'firstname' => 'utilisateur',
-            'lastname'  => 'BOA',
+            'lastname'  => 'Boa',
             'email'     => 'user-boa@tisseo.fr',
             'password'  => 'tid',
             'roles'     => array('role-user-boa'),
@@ -25,9 +25,9 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
         ),
         array(
             'id'        => null,
-            'username'  => 'admin BOA',
+            'username'  => 'admin Boa',
             'firstname' => 'admin',
-            'lastname'  => 'BOA',
+            'lastname'  => 'Boa',
             'email'     => 'admin-boa@tisseo.fr',
             'password'  => 'admin',
             'roles'     => array('role-admin-boa'),

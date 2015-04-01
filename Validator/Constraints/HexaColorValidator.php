@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\Validator\Constraints;
+namespace Tisseo\BoaBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;

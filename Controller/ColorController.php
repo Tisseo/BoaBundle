@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Color;
-use Tisseo\BOABundle\Form\Type\ColorType;
+use Tisseo\BoaBundle\Form\Type\ColorType;
 
 class ColorController extends AbstractController
 {
@@ -14,7 +14,7 @@ class ColorController extends AbstractController
 		
 		$ColorManager = $this->get('tisseo_endiv.color_manager');
         return $this->render(
-            'TisseoBOABundle:Color:list.html.twig',
+            'TisseoBoaBundle:Color:list.html.twig',
             array(
                 'pageTitle' => 'menu.color',
                 'colors' => $ColorManager->findAll()
@@ -31,7 +31,7 @@ class ColorController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:Color:form.html.twig',
+                'TisseoBoaBundle:Color:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($ColorId ? 'color.edit' : 'color.create')

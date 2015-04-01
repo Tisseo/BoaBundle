@@ -1,9 +1,9 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Tisseo\BOABundle\Form\Type\CustomerType;
+use Tisseo\BoaBundle\Form\Type\CustomerType;
 
 /*
  * CalendarController
@@ -23,7 +23,7 @@ class CustomerController extends AbstractController
         }
 
         return $this->render(
-            'TisseoBOABundle:Customer:list.html.twig',
+            'TisseoBoaBundle:Customer:list.html.twig',
             array(
                 'externalNetworkId' => $externalNetworkId,
                 'customers' => $customers

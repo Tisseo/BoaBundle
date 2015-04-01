@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\ExceptionType;
-use Tisseo\BOABundle\Form\Type\ExceptionTypeType;
+use Tisseo\BoaBundle\Form\Type\ExceptionTypeType;
 
 class ExceptionTypeController extends AbstractController
 {
@@ -14,7 +14,7 @@ class ExceptionTypeController extends AbstractController
 		
 		$ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
         return $this->render(
-            'TisseoBOABundle:ExceptionType:list.html.twig',
+            'TisseoBoaBundle:ExceptionType:list.html.twig',
             array(
                 'pageTitle' => 'menu.exception_type',
                 'exception_types' => $ExceptionTypeManager->findAll()
@@ -31,7 +31,7 @@ class ExceptionTypeController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:ExceptionType:form.html.twig',
+                'TisseoBoaBundle:ExceptionType:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($ExceptionTypeId ? 'exception_type.edit' : 'exception_type.create')

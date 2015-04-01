@@ -1,6 +1,6 @@
 parameters:
-    tisseo_boa.perimeter.class: Tisseo\BOABundle\Services\PerimeterManager
-    tisseo_boa.user.class: Tisseo\BOABundle\Services\UserManager
+    tisseo_boa.perimeter.class: Tisseo\BoaBundle\Services\PerimeterManager
+    tisseo_boa.user.class: Tisseo\BoaBundle\Services\UserManager
 
 services:
     tisseo_boa.perimeter_manager:
@@ -11,7 +11,7 @@ services:
        arguments: ['@doctrine.orm.default_entity_manager', '@translator', '@service_container']
 
     form.type.datepicker_boa:
-        class: Tisseo\BOABundle\Form\Type\DatepickerType
+        class: Tisseo\BoaBundle\Form\Type\DatepickerType
         tags:
             - { name: form.type, alias: datepicker_boa }
     tisseo_boa.ajax_form_listener:
@@ -19,7 +19,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     tisseo_boa.type.calendar_selector:
-        class: Tisseo\BOABundle\Form\Type\CalendarSelectorType
+        class: Tisseo\BoaBundle\Form\Type\CalendarSelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: calendar_selector }            
