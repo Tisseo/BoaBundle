@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\DataFixtures\ORM;
+namespace Tisseo\BoaBundle\DataFixtures\ORM;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;

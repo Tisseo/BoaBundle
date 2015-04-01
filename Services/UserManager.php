@@ -5,7 +5,7 @@
  *
  * @author vdegroote
  */
-namespace Tisseo\BOABundle\Services;
+namespace Tisseo\BoaBundle\Services;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Translation\TranslatorInterface;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Agency;
-use Tisseo\BOABundle\Form\Type\AgencyType;
+use Tisseo\BoaBundle\Form\Type\AgencyType;
 
 class AgencyController extends AbstractController
 {
@@ -14,7 +14,7 @@ class AgencyController extends AbstractController
 		
 		$AgencyManager = $this->get('tisseo_endiv.agency_manager');
         return $this->render(
-            'TisseoBOABundle:Agency:list.html.twig',
+            'TisseoBoaBundle:Agency:list.html.twig',
             array(
                 'pageTitle' => 'menu.agency',
                 'agencies' => $AgencyManager->findAll()
@@ -31,7 +31,7 @@ class AgencyController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:Agency:form.html.twig',
+                'TisseoBoaBundle:Agency:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($AgencyId ? 'agency.edit' : 'agency.create')

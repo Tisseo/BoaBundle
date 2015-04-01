@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\PhysicalMode;
-use Tisseo\BOABundle\Form\Type\PhysicalModeType;
+use Tisseo\BoaBundle\Form\Type\PhysicalModeType;
 
 class PhysicalModeController extends AbstractController
 {
@@ -14,7 +14,7 @@ class PhysicalModeController extends AbstractController
 		
 		$physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
         return $this->render(
-            'TisseoBOABundle:PhysicalMode:list.html.twig',
+            'TisseoBoaBundle:PhysicalMode:list.html.twig',
             array(
                 'pageTitle' => 'menu.physical_mode',
                 'physical_modes' => $physicalModeManager->findAll()
@@ -31,7 +31,7 @@ class PhysicalModeController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:PhysicalMode:form.html.twig',
+                'TisseoBoaBundle:PhysicalMode:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($PhysicalModeId ? 'physical_mode.edit' : 'physical_mode.create')

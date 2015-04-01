@@ -1,13 +1,13 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Calendar;
 use Tisseo\EndivBundle\Entity\CalendarElement;
-use Tisseo\BOABundle\Form\Type\CalendarType;
-use Tisseo\BOABundle\Form\Type\CalendarElementType;
-use Tisseo\BOABundle\Form\Type\RemoveElementType;
+use Tisseo\BoaBundle\Form\Type\CalendarType;
+use Tisseo\BoaBundle\Form\Type\CalendarElementType;
+use Tisseo\BoaBundle\Form\Type\RemoveElementType;
 
 
 class CalendarController extends AbstractController
@@ -95,7 +95,7 @@ class CalendarController extends AbstractController
 		}
 		
 		return $this->render(
-			'TisseoBOABundle:Calendar:form.html.twig',
+			'TisseoBoaBundle:Calendar:form.html.twig',
 			array(
 				'calendarForm' => $calendarForm->createView(),
 				'calendarElementForm' => $calendarElementsForm->createView(),
@@ -136,7 +136,7 @@ class CalendarController extends AbstractController
 		 }
 		
         return $this->render(
-            'TisseoBOABundle:Calendar:list.html.twig',
+            'TisseoBoaBundle:Calendar:list.html.twig',
             array(
                 'pageTitle' => 'menu.calendar',
                 'calendars' => ($CalendarType ? $CalendarManager->findbyType($CalendarType) : $CalendarManager->findAll()),

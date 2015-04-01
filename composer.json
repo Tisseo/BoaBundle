@@ -15,9 +15,9 @@
         "tisseo/endiv-bundle": "dev-master"
     },
     "autoload" : {
-        "psr-0" : { "Tisseo\\BOABundle\\" : "" }
+        "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
     },
-    "target-dir" : "Tisseo/BOABundle",
+    "target-dir" : "Tisseo/BoaBundle",
     "repositories" : [{
     }],
     "extra" : {

@@ -33,7 +33,7 @@ Tisseo\EndivBundle\Entity\Color:
             - NotBlank: ~
         html:
             - NotBlank: ~
-            - Tisseo\BOABundle\Validator\Constraints\HexaColor: ~
+            - Tisseo\BoaBundle\Validator\Constraints\HexaColor: ~
         cmykCyan:
             - NotBlank: ~
         cmykMagenta:
@@ -59,9 +59,9 @@ Tisseo\EndivBundle\Entity\ExceptionType:
             - Length:
                 max: 5
         gridCalendarPattern:
-            - Tisseo\BOABundle\Validator\Constraints\CalendarPattern: ~
+            - Tisseo\BoaBundle\Validator\Constraints\CalendarPattern: ~
         tripCalendarPattern:
-            - Tisseo\BOABundle\Validator\Constraints\CalendarPattern: ~
+            - Tisseo\BoaBundle\Validator\Constraints\CalendarPattern: ~
 Tisseo\EndivBundle\Entity\PhysicalMode:
         name:
             - NotBlank: ~

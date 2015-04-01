@@ -1,13 +1,13 @@
 <?php
 
-namespace Tisseo\BOABundle\Form\Type;
+namespace Tisseo\BoaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Tisseo\BOABundle\Form\DataTransformer\CalendarTransformer;
+use Tisseo\BoaBundle\Form\DataTransformer\CalendarTransformer;
 
 class CalendarSelectorType extends AbstractType
 {

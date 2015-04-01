@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\AccessibilityMode;
-use Tisseo\BOABundle\Form\Type\AccessibilityModeType;
+use Tisseo\BoaBundle\Form\Type\AccessibilityModeType;
 
 class AccessibilityModeController extends AbstractController
 {
@@ -14,7 +14,7 @@ class AccessibilityModeController extends AbstractController
 		
 		$AccessibilityModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
         return $this->render(
-            'TisseoBOABundle:AccessibilityMode:list.html.twig',
+            'TisseoBoaBundle:AccessibilityMode:list.html.twig',
             array(
                 'pageTitle' => 'menu.accessibility_mode',
                 'accessibility_modes' => $AccessibilityModeManager->findAll()
@@ -31,7 +31,7 @@ class AccessibilityModeController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:AccessibilityMode:form.html.twig',
+                'TisseoBoaBundle:AccessibilityMode:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($AccessibilityModeId ? 'accessibility_mode.edit' : 'accessibility_mode.create')

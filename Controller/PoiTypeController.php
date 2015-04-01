@@ -1,10 +1,10 @@
 <?php
 
-namespace Tisseo\BOABundle\Controller;
+namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\PoiType;
-use Tisseo\BOABundle\Form\Type\PoiTypeType;
+use Tisseo\BoaBundle\Form\Type\PoiTypeType;
 
 class PoiTypeController extends AbstractController
 {
@@ -14,7 +14,7 @@ class PoiTypeController extends AbstractController
 		
 		$PoiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
         return $this->render(
-            'TisseoBOABundle:PoiType:list.html.twig',
+            'TisseoBoaBundle:PoiType:list.html.twig',
             array(
                 'pageTitle' => 'menu.poi_type',
                 'poi_types' => $PoiTypeManager->findAll()
@@ -31,7 +31,7 @@ class PoiTypeController extends AbstractController
         $render = $this->processForm($request, $form);
 		if (!$render) {
             return $this->render(
-                'TisseoBOABundle:PoiType:form.html.twig',
+                'TisseoBoaBundle:PoiType:form.html.twig',
                 array(
                     'form' => $form->createView(),
                     'title' => ($PoiTypeId ? 'poi_type.edit' : 'poi_type.create')

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\DataFixtures\ORM;
+namespace Tisseo\BoaBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -14,7 +14,7 @@ class FixturesApplication extends AbstractFixture implements OrderedFixtureInter
 
     public function load(ObjectManager $om)
     {
-        $this->createApplication($om, 'BOA', '/boa', 'boa');
+        $this->createApplication($om, 'Boa', '/boa', 'boa');
         $om->flush();
     }
 

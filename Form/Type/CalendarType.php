@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\Form\Type;
+namespace Tisseo\BoaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

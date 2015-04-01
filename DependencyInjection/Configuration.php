@@ -1,6 +1,6 @@
 <?php
 
-namespace Tisseo\BOABundle\DependencyInjection;
+namespace Tisseo\BoaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
