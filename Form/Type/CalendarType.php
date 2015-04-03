@@ -11,6 +11,10 @@ use Symfony\Component\Form\FormEvents;
 
 use Tisseo\EndivBundle\Entity\Calendar;
 
+use Tisseo\BoaBundle\Form\Type\CalendarElementType;
+use Tisseo\BoaBundle\Form\Type\RemoveElementType;
+
+
 class CalendarType extends AbstractType
 {
 	private $CalendarElementManager;
@@ -45,6 +49,24 @@ class CalendarType extends AbstractType
 		
 		$builder->add('computedStartDate', 'datetime',  array('label' => 'calendar.labels.computedStartDate'));
 		$builder->add('computedEndDate', 'datetime',  array('label' => 'calendar.labels.computedEndDate'));
+		
+		//new calendar_elements container
+		$builder->add('calendar_element', 'collection', array(
+														'type' => new CalendarElementType(),
+														'allow_add' => true,
+														'by_reference' => false,
+														'mapped' => false
+														));
+		//calendar_elements to remove
+		$builder->add('remove_element', 'collection', array(
+														'type' => new RemoveElementType(),
+														'allow_add' => true,
+														'by_reference' => false,
+														'mapped' => false
+														));
+		
+		
+		
 
 		$builder->setAction($options['action']);
     }

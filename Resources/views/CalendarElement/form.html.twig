@@ -2,10 +2,10 @@
 	{{ form_widget(form.rank, {'attr': {"readonly":true}}) }}
 </td>
 <td>
-	{{ form_widget(form.startDate) }}
+	{{ form_widget(form.startDate, { 'attr': {'class': 'element-date'} }) }}
 </td>
 <td>
-	{{ form_widget(form.endDate) }}
+	{{ form_widget(form.endDate, { 'attr': {'class': 'element-date'} }) }}
 </td>
 <td>
 	{{ form_widget(form.includedCalendar, { 'attr': {'class': 'hide'} }) }}

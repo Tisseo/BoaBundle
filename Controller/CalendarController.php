@@ -27,7 +27,7 @@ class CalendarController extends AbstractController
 											)
 				)
         );
-		
+	
 		//calendar elements
 		$CalendarElementManager = $this->get('tisseo_endiv.calendar_element_manager');
 		if (!empty($CalendarId)) {
@@ -35,26 +35,7 @@ class CalendarController extends AbstractController
 		} else {
 			$calendarElements = new CalendarElement($CalendarElementManager);
 		}
-		
-		//build calendar element form
-		$calendarElementsFormBuilder = $this->get('form.factory')
-													 ->createNamedBuilder('boa_calendar_element', 'form', NULL, array());
-													 													 
-		//new calendar_elements container
-		$calendarElementsFormBuilder->add('calendar_element', 'collection', array(
-																'type' => new CalendarElementType(),
-																'allow_add' => true,
-																'by_reference' => false
-														));
-		//calendar_elements to remove
-		$calendarElementsFormBuilder->add('remove_element', 'collection', array(
-																'type' => new RemoveElementType(),
-																'allow_add' => true,
-																'by_reference' => false
-														));
-		$calendarElementsForm = $calendarElementsFormBuilder->getForm();
-		$datas = null;
-		$calendarElementDatas = null;
+
 		if('POST' === $request->getMethod()) {
 			if ($request->request->has('boa_calendar')) {
 				$calendarForm->handleRequest($request);
@@ -63,34 +44,27 @@ class CalendarController extends AbstractController
 						try {
 							$CalendarManager->save($datas);
 							$CalendarId = $datas->getId();
+							
+							$new_datas = $calendarForm->get('calendar_element')->getData();
+							$remove_datas = $calendarForm->get('remove_element')->getData();
+							
+							foreach($new_datas as $calendarElement) {
+								$CalendarElementManager->save($CalendarId, $calendarElement);
+							}
+							
+							for (end($remove_datas); key($remove_datas)!==null; prev($remove_datas)){
+								$removeElement = current($remove_datas);
+								
+								$CalendarElementManager->delete($removeElement["id"]);
+							}
+							
+							
+							
 						} catch(\Exception $e) {
 							$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 						}
 				}
 			}
-			
-			if ($request->request->has('boa_calendar_element')) {
-				$calendarElementsForm->handleRequest($request);
-				if ($calendarElementsForm->isValid())  {
-					$new_datas = $calendarElementsForm->get('calendar_element')->getData();
-					$remove_datas = $calendarElementsForm->get('remove_element')->getData();
-					
-					try {
-						foreach($new_datas as $calendarElement) {
-							$CalendarElementManager->save($CalendarId, $calendarElement);
-						}
-						
-						for (end($remove_datas); key($remove_datas)!==null; prev($remove_datas)){
-							$removeElement = current($remove_datas);
-							
-							$CalendarElementManager->delete($removeElement["id"]);
-						}
-					} catch(\Exception $e) {
-						$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-					}
-				}
-			}
-			
             return $this->redirect( $this->generateUrl('tisseo_boa_calendar_edit', array('CalendarId' => $CalendarId)));
 		}
 		
@@ -98,7 +72,7 @@ class CalendarController extends AbstractController
 			'TisseoBoaBundle:Calendar:form.html.twig',
 			array(
 				'calendarForm' => $calendarForm->createView(),
-				'calendarElementForm' => $calendarElementsForm->createView(),
+				// 'calendarElementForm' => $calendarElementsForm->createView(),
 				'calendarElements' => $calendarElements,
 				'calendarId' => $CalendarId,
 				'title' => ($CalendarId ? 'calendar.edit' : 'calendar.create')
@@ -116,10 +90,12 @@ class CalendarController extends AbstractController
             'TisseoBoaBundle:Calendar:list.html.twig',
             array(
                 'pageTitle' => 'menu.calendar',
-                'calendars' => ($CalendarType ? $CalendarManager->findbyType($CalendarType) : $CalendarManager->findAll())
+                'calendars' => ($CalendarType ? $CalendarManager->findbyType($CalendarType) : $CalendarManager->findAll()),
+				'calendarType' => $CalendarType
             )
         );
     }	
+		
 		
     public function deleteAction(Request $request, $CalendarId,  $CalendarType)
     {

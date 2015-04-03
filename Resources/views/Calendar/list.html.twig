@@ -5,7 +5,7 @@
 {% form_theme filterForm 'TisseoBoaBundle:Form:fields.html.twig' %}
 #}
 {% block list_title -%}
-    {{'calendar.list.title'|trans({}, 'default')}}
+    {{ 'calendar.list.title'|trans({}, 'default') ~ ' ' ~ calendarType }}
 	-
 	<a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
 		<span class="glyphicon glyphicon-plus"></span> {{'calendar.create'|trans({}, 'default')}}
@@ -14,8 +14,9 @@
 
 {% block table_head -%}
 	<th>{{'calendar.list.columns.name'|trans({}, 'default')}}</th>
-    <th>{{'calendar.list.columns.type'|trans({}, 'default')}}</th>
-    <th>{{'calendar.list.columns.line'|trans({}, 'default')}}</th>
+	{% if calendarType == 'mixte' or calendarType == 'periode' %}
+		<th>{{'calendar.list.columns.line'|trans({}, 'default')}}</th>
+	{% endif %}
     <th>{{'calendar.list.columns.startDate'|trans({}, 'default')}}</th>
     <th>{{'calendar.list.columns.endDate'|trans({}, 'default')}}</th>
 	<th class="no-sort">{{'global.edit'|trans({}, 'messages')}}</th>
@@ -32,12 +33,13 @@
         {% for calendar in calendars %}
             <tr>
                 <td> {{ calendar.calendar.name }} </td>
-                <td> {{ calendar.calendar.calendarType }} </td>
+					{% if calendarType == 'mixte' or calendarType == 'periode' %}
                 <td>
-					{% if calendar.calendar.lineVersion is not null %}
-						{{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
+						{% if calendar.calendar.lineVersion is not null %}
+							{{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
+						{% endif %}
+				</td>
 					{% endif %}
-					</td>
                 <td>
 					{% if calendar.calendar.computedStartDate is not null %}
 						{{ calendar.calendar.computedStartDate|date("d/m/Y") }}
