@@ -33,9 +33,8 @@ class FixturesCustomer extends AbstractFixture implements OrderedFixtureInterfac
     {
         $navitiaToken = $this->container->getParameter('nmm.navitia.token');
         $samFixturePerimeters = $this->container->getParameter('sam_fixture_perimeters');
-        $this->createCustomer($om, 'Tisseo', 'nmm-ihm@tisseo.fr', 'tisseo');
 
-        $this->addCustomerToApplication($om, 'app-boa', 'customer-tisseo', $navitiaToken);
+        //$this->addCustomerToApplication($om, 'app-boa', 'customer-tisseo', $navitiaToken);
 
         foreach($samFixturePerimeters as $key => $value) {
             $this->addPerimeterToCustomer($om, $value['coverage'], $value['network'], 'customer-tisseo');
