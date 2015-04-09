@@ -1,0 +1,193 @@
+{% extends "TisseoBoaBundle::container2.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
+                   filter='cssrewrite' output='css/stop_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block main_content %}
+    <h1>{{ title|trans({}, 'default') }}</h1>
+    <hr/>
+
+	{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_widget(form._token) }}
+		<div class="row">
+			<div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
+			<div class = "col-md-4"> {{ form_widget(form.short_name, {'attr': {"readonly":true}}) }} </div> 
+{#			<div class = "col-md-4"> {{ form.short_name.vars.full_name }} </div>#}
+		</div>
+		<div class="row">
+			<div class = "col-md-2"> {{ form_label(form.long_name) }} </div>
+			<div class = "col-md-4"> {{ form_widget(form.long_name, {'attr': {"readonly":true}}) }} </div>
+		</div>
+		
+		{# stop area #}
+		<div  class="row">
+			<div class = "col-md-2"> {{ form_label(form.stopArea) }} </div>
+			<div class = "col-md-4">
+				{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
+				<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
+			</div>
+			<div class = "col-md-2">
+				<a href="" class="btn btn-success" id="new_stop">
+					<span class="glyphicon glyphicon-zoom-in"></span> {{'stop.see'|trans({}, 'default')}}
+				</a>
+			</div>
+		</div>
+
+		{# datasources #}
+		<div class="row">
+			{% set datasource = form.stopDatasources[0] %}
+			<div class = "col-md-2"> {{ form_label(form.stopDatasources) }} </div>			
+			<div class = "col-md-3">
+				{{ form_widget(datasource.datasource) }} 
+			</div>
+			<div class = "col-md-3">
+				{{ form_widget(datasource.code) }} 
+			</div>
+		</div>
+		
+		{# masterStop #}
+		<div  class="row">
+			<div class = "col-md-2"> {{ form_label(form.masterStop) }} </div>
+			<div class = "col-md-4">
+				{{ form_widget(form.masterStop, { 'attr': {'class': 'hide'}}) }}
+				<input type="text" id="master_stop"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}" value='{{ masterStopLabel }}'>
+			</div>
+		</div>
+		
+		{# form buttons #}
+		<div class="row" style="padding: 10px 0 0">
+			<div class = "col-md-2 col-md-offset-3">
+				<button type="submit" id="save-form" class="btn btn-success">
+					<span class="glyphicon glyphicon-pencil"></span>
+					 {{'global.save'|trans}}
+				</button>			
+			</div>
+			<div class = "col-md-2">
+				<a href="" class="btn btn-success" id="reset">
+					<span class="glyphicon glyphicon-repeat"></span> Annuler
+				</a>
+			</div>
+		</div>
+
+		{# stop history #}
+		<div>
+			<div class="stop_table_header">Historique</div>
+			<table class="table table-hover dataTable no-footer">
+			<thead>			
+				<th>{{ form_label(form.stopHistories.vars.prototype["startDate"]) }}</th>
+				<th>{{ form_label(form.stopHistories.vars.prototype["endDate"]) }}</th>
+				<th>{{ form_label(form.stopHistories.vars.prototype["shortName"]) }}</th>
+				<th>{{ form_label(form.stopHistories.vars.prototype["longName"]) }}</th>
+			</thead>
+			<tbody>
+			{% for sh in form.stopHistories %}
+				<tr>
+				<td>{{ form_widget(sh.startDate) }}</td>
+				<td>{{ form_widget(sh.endDate) }}</td>
+				<td>{{ form_widget(sh.shortName) }}</td>
+				<td>{{ form_widget(sh.longName) }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			</table>
+		</div>
+		
+		{# stop accessibility #}
+		{% if form.stopAccessibilities is not empty %}
+			<div>
+				<div class="stop_table_header">Accessibilité</div>
+				<table class="table table-hover dataTable no-footer">
+				<thead>
+					<th>{{ 'stop.accessibility.columns.startTime' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.endTime' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.isRecursive' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.accessibilityMode' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.calendar' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.startDate' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.endDate' | trans }}</th>
+					<th>{{ 'stop.accessibility.columns.datasource' | trans }}</th>
+				</thead>
+				<tbody>
+					{% for sa in form.stopAccessibilities %}
+						<tr>
+							<td>{{ form_widget(sa.accessibilityType.startTime) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.endTime) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.isRecursive) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.accessibilityMode) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.calendar.name) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.calendar.computedStartDate) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.calendar.computedEndDate) }}</td>
+							<td>{{ form_widget(sa.accessibilityType.calendar.calendarDatasources[0].datasource) }}</td>
+						</tr>
+					{% endfor %}				
+				</tbody>
+				</table>
+			</div
+		{% endif %}
+
+		{{ form_end(form, { 'render_rest': false} ) }}
+{% endblock %}
+
+{% block javascripts %}
+   <script>
+		require(['jquery', 'jquery_ui_autocomplete'], function($) {
+
+			$("#stop_area").autocomplete({
+				source: function (request, response) {
+					var objData = { term: request.term };
+					var url = $(this.element).attr('data-url');
+					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+						success: function (data) {
+							response($.map(JSON.parse(data.content), function (item) {									
+								return {				
+									label: item.name, 
+									value: item.name, 
+									id: item.id
+								};
+							}));
+						},
+					});
+				},
+				select: function (event, ui) {
+					$("#boa_stop_stopArea").val(ui.item.id);
+				},					
+				minLength: 3,
+				delay: 300
+			});
+
+			$("#master_stop").autocomplete({
+				source: function (request, response) {
+					var objData = { term: request.term };
+					var url = $(this.element).attr('data-url');
+					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+						success: function (data) {
+							response($.map(JSON.parse(data.content), function (item) {									
+								return {				
+									label: item.name, 
+									value: item.name, 
+									id: item.id
+								};
+							}));
+						},
+					});
+				},
+				select: function (event, ui) {
+					$("#boa_stop_masterStop").val(ui.item.id);
+				},					
+				minLength: 3,
+				delay: 300
+			});
+
+
+			
+			$("#stop_area").val($("#boa_stop_stopArea option:selected").text());
+		 });
+    </script>
+{% endblock %}
+

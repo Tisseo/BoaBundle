@@ -23,3 +23,8 @@ services:
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: calendar_selector }            
+    tisseo_boa.type.stop_selector:
+        class: Tisseo\BoaBundle\Form\Type\StopSelectorType
+        arguments: ["@doctrine.orm.endiv_entity_manager"]
+        tags:
+            - { name: form.type, alias: stop_selector }            

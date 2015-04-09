@@ -17,20 +17,20 @@
     {{ form_start(calendarForm) }}
 		{{ form_errors(calendarForm) }}
 		{{ form_widget(calendarForm._token) }}
-		<div class="form form-edit col-md-12">
+		<div id='calendar-fields' class="form form-edit col-md-12">
 			<div class="col-md-4">
 				{{ form_row(calendarForm.name) }}
 			</div>
-			<div class="col-md-2">
-				{{ form_row(calendarForm.calendarType) }}
+			<div class="col-md-2" >
+				{{ form_row(calendarForm.calendarType, { 'attr': {'class': 'select-type'}}) }}
 			</div>
 			{% if calendarForm.calendarType.vars.value == 'mixte' or calendarForm.calendarType.vars.value== 'periode' %}			
-				<div class="col-md-3">			
-					{{ form_row(calendarForm.lineVersion) }}
-				</div>
+				<div id='div-line' class="col-md-3">			
 			{% else %}
-				{{ form_widget(calendarForm.lineVersion, { 'attr': {'class': 'hide'} }) }}
+				<div id='div-line' class="hide col-md-3">
 			{% endif %}
+					{{ form_row(calendarForm.lineVersion, { 'attr': {'class': 'select-line-version'}}) }}
+				</div>
 		</div>
 
 		<div id="divRemoveElement" 
@@ -93,10 +93,10 @@
 		<form id="calendarDisplayForm">
 			<div class="row">
 				<div class="col-md-2">
-					<input type="text" id='start_date_picker' name="start_date" class='input-date' readonly>
+					<input type="text" id='start_date_picker' name="start_date" class='input-date calendar_date' readonly>
 				</div>
 				<div class="col-md-2">
-					<input type="text" id='end_date_picker'  name="end_date" class='input-date' readonly>
+					<input type="text" id='end_date_picker'  name="end_date" class='input-date calendar_date' readonly>
 				</div>
 				<div class="col-md-2">
 					<button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
@@ -376,18 +376,14 @@
 				}
 			});
 			
-			$('#calendar_element_form').submit(function() {
-				if( calendarID == '' ) {
-					alert("Vous devez d'abord enregistrer le calendrier");
-					return false;
+			$('.select-type').change(function() {			
+				if( $(this).val() == 'mixte' || $(this).val() == 'periode' ) {
+					$('#div-line').removeClass('hide');
+				} else {
+					$('#div-line').addClass('hide');
+					$('.select-line-version').val("");
 				}
 			});
-
-			function display_dates_save() {
-				if( calendarID != '' )  { 
-					sessionStorage.setItem(calendarID, $("#start_date_picker").val() + '##' + $("#end_date_picker").val());
-				}
-			}
 
 			if( calendarID != '' )  { $("#refresh_button").click(); }
 		 });

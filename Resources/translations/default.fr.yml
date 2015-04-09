@@ -24,6 +24,16 @@ agency:
     created: Réseau sauvegardé
 
 calendar:
+    elements:
+            order: Ordre
+            startDate: Début
+            endDate: Fin
+            calendar: Calendrier
+            positive: Signe
+            interval: Récurrence    
+            delete: Supprimer
+            add: Ajouter un élément
+            dateValidationMessage: la date de début ne peut être supérieure à la date de fin
     list:
         columns:
             name: Nom
@@ -36,6 +46,7 @@ calendar:
     create: Créer un calendrier
     created: Calendrier sauvegardé
     empty_elements: Confirmez-vous la suppression de tous les éléments du calendrier ?
+    not_saved: Vous devez d'abord enregistrer le calendrier
 
 calendar_element:
     list:
@@ -132,3 +143,11 @@ customer:
     no_item: Pas de périmètre
     actions:
         assign_twig: Assigner
+        
+stop:
+    title: Point d'arrêt
+    create: Créer un point d'arrêt
+    edit: Editer un point d'arrêt
+    validate: Valider
+    see: Voir
+        

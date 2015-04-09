@@ -65,14 +65,16 @@ class CalendarController extends AbstractController
 						}
 				}
 			}
-            return $this->redirect( $this->generateUrl('tisseo_boa_calendar_edit', array('CalendarId' => $CalendarId)));
+            return $this->redirect( $this->generateUrl('tisseo_boa_calendar_edit', 
+												array(
+													'CalendarId' => $CalendarId
+													)));
 		}
 		
 		return $this->render(
 			'TisseoBoaBundle:Calendar:form.html.twig',
 			array(
 				'calendarForm' => $calendarForm->createView(),
-				// 'calendarElementForm' => $calendarElementsForm->createView(),
 				'calendarElements' => $calendarElements,
 				'calendarId' => $CalendarId,
 				'title' => ($CalendarId ? 'calendar.edit' : 'calendar.create')

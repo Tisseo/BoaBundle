@@ -61,6 +61,8 @@ menu:
     calendar_mixte: Mixte
     calendar_brique: Brique
     calendar: Calendriers
+    stop_manage: Arrêts
+    stop_point: Point d'arrêt
 
 accessibility_mode:
     labels:
@@ -110,6 +112,7 @@ datasource:
     labels:
         name: Nom
         agency: Réseau
+        code: Code
 
 exception_type:
     labels:
@@ -127,6 +130,51 @@ poi_type:
     labels:
         name: Nom
 
+stop:
+    accessibility:
+        columns:
+            startTime: De
+            endTime: A
+            isRecursive: Récursif
+            accessibilityMode: Mode
+            calendar: Calendrier
+            startDate: Date début
+            endDate: Date fin
+            datasource: Datasource
+    labels:
+        shortName: Nom du point d'arrêt 
+        longName: Nom long
+        stopArea: Zone d'arrêt
+        masterStop: Fantôme de
+        datasource: Datasource
+        
+stop_area:
+    labels:
+        shortName: Nom du point d'arrêt 
+        longName: Nom long
+        city: Ville
+
+stop_datasource:
+    labels:
+        datasource: Réseau
+        code: Code
+
+stop_history:
+    labels:
+        shortName: Nom
+        longName: Nom long
+        startDate: Du
+        endDate: Au
+        x: X
+        y: Y
+
+accessibility_type:
+    labels:
+        startTime: De
+        endTime: A
+        isRecursive: Récursif
+        accessibilityMode: Mode
+        
 #should be in error namespace above
 network:
     error:
