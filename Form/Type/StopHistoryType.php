@@ -20,7 +20,7 @@ class StopHistoryType extends AbstractType
          $builder->add('shortName', 'text',
 				array(
 					'label' => 'stop_history.labels.shortName',
-					'required' => false
+					'required' => true
 				)
 		);
         $builder->add('longName', 'text',
@@ -46,14 +46,14 @@ class StopHistoryType extends AbstractType
 					'required' => false
                 )
 		);
-/*		
+/*
         $builder->add('theGeom', 'text',  
 				array(
 					'data-class' =>new Point(),
 					'required' => false
                 )
 		);
-
+		
 	private $id;
     private $theGeom;
 */	

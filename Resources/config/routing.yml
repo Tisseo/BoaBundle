@@ -97,12 +97,20 @@ tisseo_boa_json_stop_area:
     pattern: /json/stop_area
     defaults: { _controller: "TisseoBoaBundle:Json:stopArea"}
 
-    
-#Stop administration
+#Stop/StopArea administration
 tisseo_boa_stop_search:
     pattern: /stop/search
     defaults: { _controller: TisseoBoaBundle:Stop:search }
 tisseo_boa_stop_edit:
     pattern: /stop/edit/{StopId}
     defaults: { _controller: TisseoBoaBundle:Stop:edit, StopId: null }
+tisseo_boa_stop_new:
+    pattern: /stop/new/
+    defaults: { _controller: TisseoBoaBundle:Stop:new}
+tisseo_boa_stop_area_search:
+    pattern: /stop_area/search
+    defaults: { _controller: TisseoBoaBundle:StopArea:search }
+tisseo_boa_stop_area_edit:
+    pattern: /stop_area/edit/{StopAreaId}
+    defaults: { _controller: TisseoBoaBundle:StopArea:edit, StopAreaId: null }
 

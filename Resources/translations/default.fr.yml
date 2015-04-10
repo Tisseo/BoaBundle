@@ -151,3 +151,5 @@ stop:
     validate: Valider
     see: Voir
         
+stop_area:
+    title: Zone d'arrêt

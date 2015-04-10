@@ -63,6 +63,7 @@ menu:
     calendar: Calendriers
     stop_manage: Arrêts
     stop_point: Point d'arrêt
+    stop_area: Zone d'arrêt
 
 accessibility_mode:
     labels:
@@ -147,6 +148,7 @@ stop:
         stopArea: Zone d'arrêt
         masterStop: Fantôme de
         datasource: Datasource
+        phantoms: Fantômes de l'arrêt
         
 stop_area:
     labels:
