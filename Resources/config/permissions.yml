@@ -7,3 +7,7 @@ parameters:
         BUSINESS_MANAGE_CALENDARS:
             label: Administrer les calendriers
             description: Administrer les calendriers.
+
+        BUSINESS_MANAGE_ROUTES:
+            label: Gerer les routes
+            description: Gerer les routes
