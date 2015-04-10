@@ -38,12 +38,15 @@ class RouteController extends AbstractController
 
     public function routeAction(Request $request) {
         $id = $request->request->get("lineId");
+        $idRoute = $request->get('idroute');
         $routeManager = $this->get('tisseo_endiv.route_manager');
+        $routes = $routeManager->findAllByLine($idRoute);
+       
         if(isset($id) && ($request->getMethod()) == "POST") {
             $routes = $routeManager->findAllByLine($id);
 
         }
-        return new Response("id ".$routes,200);
+
       return $this->render("TisseoBoaBundle:Route:route.html.twig", array(
            'pageTitle' => 'création de routes',
            'routes' => $routes
