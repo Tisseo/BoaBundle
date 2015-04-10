@@ -6,7 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class AgencyType extends AbstractType
+use Tisseo\EndivBundle\Entity\StopArea;
+
+class StopAreaType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -14,13 +16,33 @@ class AgencyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'agency.labels.name'));
-        $builder->add('url', 'text',  array('label' => 'agency.labels.url'));
-        $builder->add('timezone', 'text',  array('label' => 'agency.labels.timezone'));
-        $builder->add('lang', 'text',  array('label' => 'agency.labels.lang'));
-        $builder->add('phone', 'text',  array('label' => 'agency.labels.phone','required' => false));
+		$builder->add('shortName', 'text',
+				array(
+					'label' => 'stop_area.labels.shortName',
+					'required' => false
+				)
+		);
+        $builder->add('longName', 'text',
+				array(
+					'label' => 'stop_area.labels.longName',
+					'required' => false
+				)
+		);
+		
+		$builder->add('city', 'entity',
+			array(
+				'label' => 'stop_area.labels.city',
+				'class' => 'TisseoEndivBundle:City',
+				'property' => 'name'
+			)
+		);		
+
         $builder->setAction($options['action']);
-    }
+  /*
+    private $transferDuration;
+    private $theGeom;
+*/		
+  }
 
     /**
      * @param OptionsResolverInterface $resolver
@@ -29,7 +51,7 @@ class AgencyType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\Agency'
+                'data_class' => 'Tisseo\EndivBundle\Entity\StopArea'
             )
         );	
 	}
@@ -40,6 +62,6 @@ class AgencyType extends AbstractType
      */
     public function getName()
     {
-        return 'boa_agency';
+        return 'boa_stop_area';
     }
 }

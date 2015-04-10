@@ -1,0 +1,75 @@
+{% extends "TisseoBoaBundle::container.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
+                   filter='cssrewrite' output='css/stop_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block main_content %}
+    <h1>{{ title|trans({}, 'default') }}</h1>
+	<br>
+	<div class="col-md-12">
+		<div class = "row">
+			<div class = "col-md-4">
+				<a href="" class="btn btn-success" id="new_stop">
+					<span class="glyphicon glyphicon-plus"></span> {{'stop.create'|trans({}, 'default')}}
+				</a>
+			</div>
+		</div>
+		<br>
+		<div class = "row">
+			<div class = "col-md-4">
+				<input type="hidden" id="stop_id">
+				<input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}">
+			</div>
+			<div class = "col-md-4">
+				<a href="{{ path('tisseo_boa_stop_edit') }}" class="btn btn-success" id="stop_edit">
+					<span class="glyphicon glyphicon-check"></span> {{'stop.validate'|trans({}, 'default')}}
+				</a>
+			</div>				
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+   <script>
+		require(['jquery', 'jquery_ui_autocomplete'], function($) {
+
+			$("#stop_search").autocomplete({
+				source: function (request, response) {
+					var objData = { term: request.term };
+					var url = $(this.element).attr('data-url');
+					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+						success: function (data) {
+							response($.map(JSON.parse(data.content), function (item) {									
+								return {				
+									label: item.name, 
+									value: item.name, 
+									id: item.id
+								};
+							}));
+						},
+					});
+				},
+				select: function (event, ui) {
+					$("#stop_id").val(ui.item.id);
+				},					
+				minLength: 3,
+				delay: 300
+			});
+			
+			$( "#stop_edit" ).click(function() {
+				var stop_id = $("#stop_id").val();
+				if(stop_id == '') {
+					alert( "Vous n'avez pas sélectionné de point d'arrêt valide." );
+					return false;
+				}
+				$(this).attr("href", $(this).attr("href") + "/" + stop_id);
+			});
+			
+		 });
+    </script>
+{% endblock %}

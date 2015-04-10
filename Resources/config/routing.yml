@@ -86,12 +86,27 @@ tisseo_boa_poi_type_edit:
     
 tisseo_boa_json_calendars:
     pattern: /json/calendars
-    defaults: { _controller: "TisseoBoaBundle:Json:calendars"}
-   
+    defaults: { _controller: "TisseoBoaBundle:Json:calendars"}   
 tisseo_boa_json_bitmask:
     pattern: /json/bitmask
     defaults: { _controller: "TisseoBoaBundle:Json:bitmask"}
+tisseo_boa_json_stop:
+    pattern: /json/stop
+    defaults: { _controller: "TisseoBoaBundle:Json:stop"}
+tisseo_boa_json_stop_area:
+    pattern: /json/stop_area
+    defaults: { _controller: "TisseoBoaBundle:Json:stopArea"}
 
+    
+#Stop administration
+tisseo_boa_stop_search:
+    pattern: /stop/search
+    defaults: { _controller: TisseoBoaBundle:Stop:search }
+tisseo_boa_stop_edit:
+    pattern: /stop/edit/{StopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:edit, StopId: null }
+
+#gestion ds Routes
 tisseo_boa_route_list:
     pattern: /routes/list
     defaults: { _controller: TisseoBoaBundle:Route:list }
