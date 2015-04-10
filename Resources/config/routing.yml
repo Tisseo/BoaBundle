@@ -92,3 +92,10 @@ tisseo_boa_json_bitmask:
     pattern: /json/bitmask
     defaults: { _controller: "TisseoBoaBundle:Json:bitmask"}
 
+tisseo_boa_route_list:
+    pattern: /routes/list
+    defaults: { _controller: TisseoBoaBundle:Route:list }
+
+tisseo_boa_route_create:
+    pattern: /routes/create
+    defaults: { _controller: TisseoBoaBundle:Route:route }
