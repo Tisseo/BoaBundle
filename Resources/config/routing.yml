@@ -114,3 +114,11 @@ tisseo_boa_stop_area_edit:
     pattern: /stop_area/edit/{StopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:edit, StopAreaId: null }
 
+#gestion ds Routes
+tisseo_boa_route_list:
+    pattern: /routes/list
+    defaults: { _controller: TisseoBoaBundle:Route:list }
+
+tisseo_boa_route_create:
+    pattern: /routes/create
+    defaults: { _controller: TisseoBoaBundle:Route:route }
