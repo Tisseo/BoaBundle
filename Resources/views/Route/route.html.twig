@@ -19,13 +19,18 @@
                            {{ route.name }}
                         </td>
                         {% set wayPointfirst = route.routeStops[0].waypoint  %}
-                        <td> {{ dump(wayPointfirst.OdtArea) }}</td>
+                        {%  for stop in stops %}
+                         {%  if stop.id == wayPointfirst.id  %}
+                        <td>{{ dump(stop.stopArea.shortName) }} </td>
+                        {% endif %}
+                        {%  endfor %}
                         <td> {{ route.id }}</td>
                         <td> {{ route.comment }}</td>
                         <td> {{ route.way }}</td>
                         <td><button value="editer" class="btn btn-defaul">Editer</button></td>
 
                     </tr>
+
                 {%  endfor %}
 
                 {% endblock %}
