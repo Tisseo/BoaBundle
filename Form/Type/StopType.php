@@ -18,6 +18,8 @@ class StopType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 		$stop= $builder->getData();
+		
+		$builder->add('id', 'text');
 			
 		$builder->add('short_name', 'entity',
 			array(
@@ -28,6 +30,8 @@ class StopType extends AbstractType
 				'query_builder' => function(EntityRepository $er)  use ( $stop ) {
 					return $er->createQueryBuilder('s')
 						->where("IDENTITY(s.stop) = :id")
+						->andWhere("s.startDate <= CURRENT_DATE()")
+						->andWhere("s.endDate IS NULL or s.endDate >= CURRENT_DATE()")
 						->setParameter('id', $stop);
 				}
 			)
@@ -42,6 +46,8 @@ class StopType extends AbstractType
 				'query_builder' => function(EntityRepository $er)  use ( $stop ) {
 					return $er->createQueryBuilder('s')
 						->where("IDENTITY(s.stop) = :id")
+						->andWhere("s.startDate <= CURRENT_DATE()")
+						->andWhere("s.endDate IS NULL or s.endDate >= CURRENT_DATE()")
 						->setParameter('id', $stop);
 				}
 			)
@@ -62,7 +68,16 @@ class StopType extends AbstractType
 				'by_reference' => false,
 			)
 		);
-		
+
+		$builder->add('phantoms', 'collection', 
+			array(
+				'label' => 'stop.labels.phantoms',
+				'type' => new StopPhantomType(),
+				'by_reference' => false,
+			)
+		);
+
+/*		
 		$builder->add('stopHistories', 'collection', 
 			array(
 				'type' => new StopHistoryType(),
@@ -70,7 +85,7 @@ class StopType extends AbstractType
 				'by_reference' => false,
 			)
 		);
-
+*/
 		$builder->add('stopAccessibilities', 'collection', 
 			array(
 				'type' => new StopAccessibilityType(),

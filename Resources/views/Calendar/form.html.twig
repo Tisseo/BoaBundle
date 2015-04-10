@@ -146,7 +146,7 @@
 			.on('show', function () {
 				previousDate = $(this).val();
 			})
-			// Replace with previous date if no date is picked or if same date is picked to avoide toggle error
+			// Replace with previous date if no date is picked or if same date is picked to avoid toggle error
 			.on('hide', function () {
 				if ($(this).val() === '' || $(this).val() === null) {
 					$(this).val(previousDate).datepicker('update');

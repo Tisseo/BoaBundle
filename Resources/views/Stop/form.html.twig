@@ -1,5 +1,12 @@
 {% extends "TisseoBoaBundle::container2.html.twig" %}
 
+{% macro getStopName(stopHistories) %}
+	{% for sh in stopHistories if ( sh.startDate.date|date('Ymd') <= 'now'|date('Ymd') and ( sh.endDate is empty or sh.endDate.date|date('Ymd') <= 'now'|date('Ymd') ) ) %}
+		{{ sh.shortName }}
+	{% endfor %}
+{% endmacro %}
+
+
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
@@ -15,14 +22,15 @@
 	{{ form_start(form) }}
 		{{ form_errors(form) }}
 		{{ form_widget(form._token) }}
+		{{ form_widget(form.id, { 'attr': {'class': 'hide'}}) }}
+		
 		<div class="row">
 			<div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
-			<div class = "col-md-4"> {{ form_widget(form.short_name, {'attr': {"readonly":true}}) }} </div> 
-{#			<div class = "col-md-4"> {{ form.short_name.vars.full_name }} </div>#}
+			<div class = "col-md-4"> {{ form_widget(form.short_name, {'attr': {"readonly":true, "disabled":true}}) }} </div> 
 		</div>
 		<div class="row">
 			<div class = "col-md-2"> {{ form_label(form.long_name) }} </div>
-			<div class = "col-md-4"> {{ form_widget(form.long_name, {'attr': {"readonly":true}}) }} </div>
+			<div class = "col-md-4"> {{ form_widget(form.long_name, {'attr': {"readonly":true, "disabled":true}}) }} </div>
 		</div>
 		
 		{# stop area #}
@@ -32,11 +40,13 @@
 				{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
 				<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
 			</div>
+{#			
 			<div class = "col-md-2">
 				<a href="" class="btn btn-success" id="new_stop">
 					<span class="glyphicon glyphicon-zoom-in"></span> {{'stop.see'|trans({}, 'default')}}
 				</a>
 			</div>
+#}			
 		</div>
 
 		{# datasources #}
@@ -59,7 +69,7 @@
 				<input type="text" id="master_stop"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}" value='{{ masterStopLabel }}'>
 			</div>
 		</div>
-		
+
 		{# form buttons #}
 		<div class="row" style="padding: 10px 0 0">
 			<div class = "col-md-2 col-md-offset-3">
@@ -74,24 +84,55 @@
 				</a>
 			</div>
 		</div>
+				
+		{# phantoms #}
+		{% if phantoms is not empty and form.masterStop is empty %}
+			<div>
+				<div class="stop_table_header">Fantomes</div>
+				<table class="table table-hover dataTable no-footer">
+				<thead>			
+					<th>Réseau</th>
+					<th>Arrêt</th>
+					<th>Code</th>
+				</thead>
+				<tbody>
+				{% for f in phantoms %}
+					<tr>
+					<td>{{ f.stopDatasources[0].datasource.name }}</td>
+					<td>{{ _self.getStopName(f.stopHistories) }}</td>
+					<td>{{ f.stopDatasources[0].code }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+			</div>
+		{% endif %}
 
 		{# stop history #}
 		<div>
 			<div class="stop_table_header">Historique</div>
 			<table class="table table-hover dataTable no-footer">
 			<thead>			
-				<th>{{ form_label(form.stopHistories.vars.prototype["startDate"]) }}</th>
-				<th>{{ form_label(form.stopHistories.vars.prototype["endDate"]) }}</th>
-				<th>{{ form_label(form.stopHistories.vars.prototype["shortName"]) }}</th>
-				<th>{{ form_label(form.stopHistories.vars.prototype["longName"]) }}</th>
+				<th>Du</th>
+				<th>Au</th>
+				<th>Nom</th>
+				<th>Nom long</th>
+				<th>X</th>
+				<th>Y</th>
 			</thead>
 			<tbody>
-			{% for sh in form.stopHistories %}
+			{% for sh in stopHistories %}
 				<tr>
-				<td>{{ form_widget(sh.startDate) }}</td>
-				<td>{{ form_widget(sh.endDate) }}</td>
-				<td>{{ form_widget(sh.shortName) }}</td>
-				<td>{{ form_widget(sh.longName) }}</td>
+				<td> {{ sh.startDate|date("d/m/Y") }} </td>
+				<td>
+				{% if sh.endDate is not empty %}
+					{{ sh.endDate|date("d/m/Y") }}
+				{% endif %}
+				</td>
+				<td>{{ sh.shortName }}</td>
+				<td>{{ sh.longName }}</td>
+				<td>{{ sh.theGeom.x }}</td>
+				<td>{{ sh.theGeom.y }}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
@@ -99,7 +140,7 @@
 		</div>
 		
 		{# stop accessibility #}
-		{% if form.stopAccessibilities is not empty %}
+		{% if accessibilities is not empty %}
 			<div>
 				<div class="stop_table_header">Accessibilité</div>
 				<table class="table table-hover dataTable no-footer">
@@ -114,16 +155,24 @@
 					<th>{{ 'stop.accessibility.columns.datasource' | trans }}</th>
 				</thead>
 				<tbody>
-					{% for sa in form.stopAccessibilities %}
+					{% for sa in accessibilities %}
 						<tr>
-							<td>{{ form_widget(sa.accessibilityType.startTime) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.endTime) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.isRecursive) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.accessibilityMode) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.calendar.name) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.calendar.computedStartDate) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.calendar.computedEndDate) }}</td>
-							<td>{{ form_widget(sa.accessibilityType.calendar.calendarDatasources[0].datasource) }}</td>
+							<td>
+							{% if sa.accessibilityType.startTime is not empty %}
+								{{ sa.accessibilityType.startTime|date("H:i") }}
+							{% endif %}
+							</td>
+							<td>
+							{% if sa.accessibilityType.endTime is not empty %}
+								{{ sa.accessibilityType.endTime|date("H:i") }}
+							{% endif %}
+							</td>
+							<td>{{ sa.accessibilityType.isRecursive }}</td>
+							<td>{{ sa.accessibilityType.accessibilityMode.name }}</td>
+							<td>{{ sa.accessibilityType.calendar.name }}</td>
+							<td>{{ sa.accessibilityType.calendar.computedStartDate.date|date("d/m/Y") }}</td>
+							<td>{{ sa.accessibilityType.calendar.computedEndDate.date|date("d/m/Y") }}</td>
+							<td>{{ sa.accessibilityType.calendar.calendarDatasources[0].datasource.name }}</td>
 						</tr>
 					{% endfor %}				
 				</tbody>

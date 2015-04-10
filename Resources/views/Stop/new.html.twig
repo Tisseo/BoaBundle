@@ -1,0 +1,132 @@
+{% extends "::modal.html.twig" %}
+
+{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+	{{ form_widget(form._token) }}
+	
+{#	{{ dump(form.stopDatasources.vars.prototype.datasource) }}	#}
+	
+	<div class="form form-edit">
+		<div class="col-md-12">
+			<div id="name-div" class="row" data-prototype="{{ form_widget(form.stopHistories.vars.prototype.shortName)|e }}">
+				<label class="control-label required"> Nom</label>
+			</div>
+		</div>
+		
+		<div class="col-md-12">
+			<div id="longName-div" class="row" data-prototype="{{ form_widget(form.stopHistories.vars.prototype.longName)|e }}">
+				<label class="control-label"> Nom long</label>
+			</div>
+		</div>
+		
+		<div class="col-md-12">
+			<div id="date-div" class="row" data-prototype="{{ form_widget(form.stopHistories.vars.prototype.startDate)|e }}">
+				<label class="control-label required"> Début</label>
+			</div>
+		</div>
+		
+		<div class="col-md-6">
+			<div id="datasource-div" class="row" data-prototype="{{ form_widget(form.stopDatasources.vars.prototype.datasource)|e }}">
+				<label class="control-label required"> Datasource</label>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div id="code-div" class="row" data-prototype="{{ form_widget(form.stopDatasources.vars.prototype.code)|e }}">
+				<label class="control-label required"> Code</label>
+			</div>
+		</div>
+		
+		<div class="col-md-12">
+			<div class="row">
+				{{ form_label(form.stopArea) }}
+				{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}	
+				<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}" required>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form, { 'render_rest': false}) }}
+	
+   <script>
+		require(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
+			$("#stop_area").autocomplete({
+				source: function (request, response) {
+					var objData = { term: request.term };
+					var url = $(this.element).attr('data-url');
+					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+						success: function (data) {
+							response($.map(JSON.parse(data.content), function (item) {									
+								return {				
+									label: item.name, 
+									value: item.name, 
+									id: item.id
+								};
+							}));
+						},
+					});
+				},
+				select: function (event, ui) {
+					$("#boa_new_stop_stopArea").val(ui.item.id);
+				},					
+				minLength: 3,
+				delay: 300
+			});
+
+			var $NameInput = $('#name-div').attr('data-prototype').replace(/__name__/g, '0');
+			$('#name-div').append($NameInput);
+			
+			var $longNameInput = $('#longName-div').attr('data-prototype').replace(/__name__/g, '0');
+			$('#longName-div').append($longNameInput);
+
+			var $DateInput = $('#date-div').attr('data-prototype').replace(/__name__/g, '0');
+			$('#date-div').append($DateInput);
+			$( "#boa_new_stop_stopHistories_0_startDate" ).addClass( "input-date readonly" );
+
+			
+			var $DatasourceInput = $('#datasource-div').attr('data-prototype').replace(/__name__/g, '0');
+			$('#datasource-div').append($DatasourceInput);
+			var $DatasourceInput = $('#code-div').attr('data-prototype').replace(/__name__/g, '0');
+			$('#code-div').append($DatasourceInput);
+
+			$(".readonly").keydown(function(e){
+				e.preventDefault();
+			});
+
+			var previousDate;
+			$('#boa_new_stop_stopHistories_0_startDate').datepicker({
+					language: '{{ app.request.locale }}',
+					todayHighlight: true,
+					autoclose: true
+				})
+				// Save date picked
+				.on('show', function () {
+					previousDate = $(this).val();
+				})
+				// Replace with previous date if no date is picked or if same date is picked to avoid toggle error
+				.on('hide', function () {
+					if ($(this).val() === '' || $(this).val() === null) {
+						$(this).val(previousDate).datepicker('update');
+					}
+				});
+			
+
+			$("#stop_area").val($("#boa_stop_stopArea option:selected").text());
+		 });
+    </script>		
+{% endblock %}
