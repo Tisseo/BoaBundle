@@ -172,10 +172,31 @@ stop:
         
 stop_area:
     labels:
-        shortName: Nom du point d'arrêt 
+        shortName: Nom de la zone d'arrêt 
         longName: Nom long
         city: Ville
+        datasource: Datasource
+        alias: Alias
+        internal_transfert: Transferts internes
+        external_transfert: Transferts externes
+        geometries: Géométries
+    stop:
+        header: Liste des points d'arrêt
+        columns:
+            agency: Réseau
+            code: Code
+            name: Nom
+            x: X
+            y: Y
+            lines: Lignes
+    alias:
+        name: Nom
 
+stop_area_datasource:
+    labels:
+        datasource: Réseau
+        code: Code
+        
 stop_datasource:
     labels:
         datasource: Réseau

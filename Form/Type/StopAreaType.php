@@ -29,14 +29,21 @@ class StopAreaType extends AbstractType
 				)
 		);
 		
-		$builder->add('city', 'entity',
+		$builder->add('city', 'city_selector',
 			array(
-				'label' => 'stop_area.labels.city',
-				'class' => 'TisseoEndivBundle:City',
-				'property' => 'name'
+				'label' =>  'stop_area.labels.city',
+				'required' => false
 			)
-		);		
-
+		);
+		
+		$builder->add('stopAreaDatasources', 'collection', 
+			array(
+				'label' => 'stop_area.labels.datasource',
+				'type' => new StopAreaDatasourceType(),
+				'by_reference' => false,
+			)
+		);
+		
         $builder->setAction($options['action']);
   /*
     private $transferDuration;

@@ -53,8 +53,7 @@ class CalendarTransformer implements DataTransformerInterface
 
         $calendar = $this->om
             ->getRepository('TisseoEndivBundle:Calendar')
-            ->findOneBy(array('id' => $id))
-        ;
+            ->findOneBy(array('id' => $id));
 
         if (null === $calendar) {
 			return null;

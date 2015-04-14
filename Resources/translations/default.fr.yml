@@ -155,3 +155,6 @@ stop:
         
 stop_area:
     title: Zone d'arrêt
+    edit: Editer une zone d'arrêt
+    alias: Alias
+    
