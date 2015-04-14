@@ -36,11 +36,10 @@ class AccessibilityTypeType extends AbstractType
 					'required' => false
 				)
 		);
-         $builder->add('isRecursive', 'choice',
+         $builder->add('isRecursive', 'checkbox',
 				array(
 					'label' => 'accessibility_type.labels.isRecursive',
-					'required' => false,
-					'choices'   => array(true => 'OUI', false => 'NON')
+					'required' => false
 				)
 		);		
 		$builder->add('accessibilityMode', 'entity',  
@@ -52,12 +51,11 @@ class AccessibilityTypeType extends AbstractType
 			)
 		);
 		
-		$builder->add('calendar', new CalendarAccessibilityType(), 
+		$builder->add('calendar', 'calendar_selector',
 			array(
-				'data_class' => 'Tisseo\EndivBundle\Entity\Calendar'
+				'label' => 'Calendrier'
 			)
-		);
-		
+		);		
 		
         $builder->setAction($options['action']);
     }

@@ -1,0 +1,54 @@
+{% extends "::modal.html.twig" %}
+
+{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+	{{ form_widget(form._token) }}
+	
+{#	{{ dump(form) }}	#}
+	{{ form_row(form.alias) }}
+	
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form, { 'render_rest': false}) }}
+{#
+	<script>   
+		require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
+			var previousDate;
+			$('.datepicker').datepicker({
+					language: '{{ app.request.locale }}',
+					todayHighlight: true,
+					autoclose: true
+				})
+				// Save date picked
+				.on('show', function () {
+					previousDate = $(this).val();
+				})
+				// Replace with previous date if no date is picked or if same date is picked to avoid toggle error
+				.on('hide', function () {
+					if ($(this).val() === '' || $(this).val() === null) {
+						$(this).val(previousDate).datepicker('update');
+					}
+				})
+				.on('changeDate', function(e) {
+					if (!($(this).val() === '' || $(this).val() === null)) {
+						$(e.target.name).datepicker('update');					
+					}
+				});
+			});
+    </script>		
+#}	
+{% endblock %}

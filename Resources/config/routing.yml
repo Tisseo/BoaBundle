@@ -85,8 +85,8 @@ tisseo_boa_poi_type_edit:
     defaults: { _controller: TisseoBoaBundle:PoiType:edit, PoiTypeId: null }
     
 tisseo_boa_json_calendars:
-    pattern: /json/calendars
-    defaults: { _controller: "TisseoBoaBundle:Json:calendars"}   
+    pattern: /json/calendars/{CalendarType}
+    defaults: { _controller: "TisseoBoaBundle:Json:calendars", CalendarType: null}   
 tisseo_boa_json_bitmask:
     pattern: /json/bitmask
     defaults: { _controller: "TisseoBoaBundle:Json:bitmask"}
@@ -96,8 +96,11 @@ tisseo_boa_json_stop:
 tisseo_boa_json_stop_area:
     pattern: /json/stop_area
     defaults: { _controller: "TisseoBoaBundle:Json:stopArea"}
+tisseo_boa_json_city:
+    pattern: /json/city
+    defaults: { _controller: "TisseoBoaBundle:Json:city"}
 
-#Stop/StopArea administration
+#Stop administration
 tisseo_boa_stop_search:
     pattern: /stop/search
     defaults: { _controller: TisseoBoaBundle:Stop:search }
@@ -107,13 +110,30 @@ tisseo_boa_stop_edit:
 tisseo_boa_stop_new:
     pattern: /stop/new/
     defaults: { _controller: TisseoBoaBundle:Stop:new}
+tisseo_boa_stop_accessibility_new:
+    pattern: /stop_accessibility/new/{StopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:newAccessibility, StopId: null}
+tisseo_boa_stop_accessibility_delete:
+    pattern: /stop_accessibility/delete/{StopId}/{StopAccessibilityId}
+    defaults: { _controller: TisseoBoaBundle:Stop:removeStopAccessibility}
+tisseo_boa_stop_history_new:
+    pattern: /stop_history/new/{StopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:newStopHistory, StopId: null}    
+tisseo_boa_stop_history_delete:
+    pattern: /stop_history/delete/{StopId}/{StopHistoryId}
+    defaults: { _controller: TisseoBoaBundle:Stop:removeStopHistory}
+
+#StopArea administration
 tisseo_boa_stop_area_search:
     pattern: /stop_area/search
     defaults: { _controller: TisseoBoaBundle:StopArea:search }
 tisseo_boa_stop_area_edit:
     pattern: /stop_area/edit/{StopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:edit, StopAreaId: null }
-
+tisseo_boa_stop_area_alias:
+    pattern: /stop_area/edit/alias/{StopAreaId}
+    defaults: { _controller: TisseoBoaBundle:StopArea:alias}
+  
 #gestion ds Routes
 tisseo_boa_linesv_list:
     pattern: /routes/lines/list

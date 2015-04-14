@@ -1,0 +1,71 @@
+{% extends "::modal.html.twig" %}
+
+{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+	{{ form_widget(form._token) }}
+
+	<div class="form form-edit">
+		<div class="col-md-12">
+			{{ form_row(form.accessibilityType.accessibilityMode) }}		
+		</div>
+		<div class="col-md-12">
+			{{ form_label(form.accessibilityType.calendar) }}
+			{{ form_widget(form.accessibilityType.calendar, { 'attr': {'class': 'hide'}}) }}	
+			<input type="text" id="accessibility_calendar"  class="form-control" data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'accessibilite' }) }}" required>
+		</div>
+		<div class="col-md-12">
+			{{ form_row(form.accessibilityType.startTime) }}		
+		</div>
+
+		<div class="col-md-12">
+			{{ form_row(form.accessibilityType.endTime) }}		
+		</div>
+
+		<div class="col-md-12">
+			{{ form_row(form.accessibilityType.isRecursive) }}		
+		</div>
+	</div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form, { 'render_rest': false}) }}
+   <script>   
+		require(['jquery', 'jquery_ui_autocomplete'], function($) {
+			$("#accessibility_calendar").autocomplete({
+				source: function (request, response) {
+					var objData = { term: request.term };
+					var url = $(this.element).attr('data-url');
+					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+						success: function (data) {
+							response($.map(JSON.parse(data.content), function (item) {									
+								return {				
+									label: item.name, 
+									value: item.name, 
+									id: item.id
+								};
+							}));
+						},
+					});
+				},
+				select: function (event, ui) {
+					$('#boa_stop_accessibility_accessibilityType_calendar').val(ui.item.id);
+				},					
+				minLength: 3,
+				delay: 300
+			});
+		 });
+    </script>		
+{% endblock %}

@@ -14,7 +14,7 @@
 	<div class="col-md-12">
 		<div class = "row">
 			<div class = "col-md-4">
-				<a href="{{ path('tisseo_boa_stop_edit') }}" class="btn btn-success" id="new_stop">
+				<a href="{{ path('tisseo_boa_stop_area_edit') }}" class="btn btn-success" id="new_stop">
 					<span class="glyphicon glyphicon-plus"></span> {{'stop.create'|trans({}, 'default')}}
 				</a>
 			</div>
@@ -22,11 +22,11 @@
 		<br>
 		<div class = "row">
 			<div class = "col-md-4">
-				<input type="hidden" id="stop_id">
-				<input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}">
+				<input type="hidden" id="stop_area_id">
+				<input type="text" id="stop_area_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
 			</div>
 			<div class = "col-md-4">
-				<a href="{{ path('tisseo_boa_stop_edit') }}" class="btn btn-success" id="stop_edit">
+				<a href="{{ path('tisseo_boa_stop_area_edit') }}" class="btn btn-success" id="stop_area_btn">
 					<span class="glyphicon glyphicon-check"></span> {{'stop.validate'|trans({}, 'default')}}
 				</a>
 			</div>				
@@ -38,7 +38,7 @@
    <script>
 		require(['jquery', 'jquery_ui_autocomplete'], function($) {
 
-			$("#stop_search").autocomplete({
+			$("#stop_area_search").autocomplete({
 				source: function (request, response) {
 					var objData = { term: request.term };
 					var url = $(this.element).attr('data-url');
@@ -55,19 +55,19 @@
 					});
 				},
 				select: function (event, ui) {
-					$("#stop_id").val(ui.item.id);
+					$("#stop_area_id").val(ui.item.id);
 				},					
 				minLength: 3,
 				delay: 300
 			});
 			
-			$( "#stop_edit" ).click(function() {
-				var stop_id = $("#stop_id").val();
-				if(stop_id == '') {
-					alert( "Vous n'avez pas sélectionné de point d'arrêt valide." );
+			$( "#stop_area_btn" ).click(function() {
+				var stop_area_id = $("#stop_area_id").val();
+				if(stop_area_id == '') {
+					alert( "Vous n'avez pas sélectionné de zone d'arrêt valide." );
 					return false;
 				}
-				$(this).attr("href", $(this).attr("href") + "/" + stop_id);
+				$(this).attr("href", $(this).attr("href") + "/" + stop_area_id);
 			});
 			
 		 });

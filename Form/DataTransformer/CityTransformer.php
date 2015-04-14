@@ -6,9 +6,9 @@ use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use Tisseo\EndivBundle\Entity\Stop;
+use Tisseo\EndivBundle\Entity\City;
 
-class StopTransformer implements DataTransformerInterface
+class CityTransformer implements DataTransformerInterface
 {
     /**
      * @var ObjectManager
@@ -24,26 +24,26 @@ class StopTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms an object (stop) to a string (id).
+     * Transforms an object (city) to a string (id).
      *
-     * @param  Stop|null $stop
+     * @param  City|null $city
      * @return string
      */
-    public function transform($stop)
+    public function transform($city)
     {
-        if (null === $stop) {
+        if (null === $city) {
             return "";
         }
 
-        return $stop->getId();
+        return $city->getId();
     }
 
     /**
-     * Transforms a string (id) to an object (stop).
+     * Transforms a string (id) to an object (city).
      *
      * @param  string $id
-     * @return Stop|null
-     * @throws TransformationFailedException if object (stop) is not found.
+     * @return City|null
+     * @throws TransformationFailedException if object (city) is not found.
      */
     public function reverseTransform($id)
     {
@@ -51,11 +51,11 @@ class StopTransformer implements DataTransformerInterface
 			return null; 
 		}
 
-        $stop = $this->om
-            ->getRepository('TisseoEndivBundle:Stop')
+        $city = $this->om
+            ->getRepository('TisseoEndivBundle:City')
             ->findOneBy(array('id' => $id));
 
-        if (null === $stop) {
+        if (null === $city) {
 			return null;
 /*			
             throw new TransformationFailedException(sprintf(
@@ -65,7 +65,7 @@ class StopTransformer implements DataTransformerInterface
 */			
         }
 
-        return $stop;
+        return $city;
     }
 }
 

@@ -22,9 +22,14 @@ services:
         class: Tisseo\BoaBundle\Form\Type\CalendarSelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
-            - { name: form.type, alias: calendar_selector }            
+            - { name: form.type, alias: calendar_selector }
     tisseo_boa.type.stop_selector:
         class: Tisseo\BoaBundle\Form\Type\StopSelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
-            - { name: form.type, alias: stop_selector }            
+            - { name: form.type, alias: stop_selector }
+    tisseo_boa.type.city_selector:
+        class: Tisseo\BoaBundle\Form\Type\CitySelectorType
+        arguments: ["@doctrine.orm.endiv_entity_manager"]
+        tags:
+            - { name: form.type, alias: city_selector }

@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 
 use Tisseo\EndivBundle\Entity\Stop;
+use Tisseo\EndivBundle\Entity\StopHistory;
 
 class NewStopType extends AbstractType
 {
@@ -42,6 +43,36 @@ class NewStopType extends AbstractType
 			)
 		);
 
+		$builder->add('x', 'text',
+			array(
+				'mapped' => false,
+				'required' => true
+			)
+		);
+		$builder->add('y', 'text',
+			array(
+				'mapped' => false,
+				'required' => true
+			)
+		);
+		
+		$builder->add('srid', 'text', 
+			array(
+				'mapped' => false,
+				'label' => 'SRID',
+				'data' => '3943'
+			)
+		);
+/*	
+		$builder->add('srid', 'choice',  
+			array(		
+				'mapped' => false,
+				'label' => 'SRID',
+				'choices'    => StopHistory::getSridList(),
+				'data' => 1
+			)
+		);
+*/			
 
         $builder->setAction($options['action']);
     }
