@@ -10,7 +10,7 @@ $(document).ready(function(){
        var data = { lineId: idLine};
 
        //simulate a form and submit idLine to get routes//
-       var url = 'create';
+       var url = '../list';
        var form = $('<form action="' + url + '" method="post">' +
        '<input type="text" name="lineId" value="' + idLine + '" />' +
        '</form>');
@@ -18,4 +18,6 @@ $(document).ready(function(){
        form.submit();
 
     });
+
+
 });

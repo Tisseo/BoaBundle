@@ -115,10 +115,30 @@ tisseo_boa_stop_area_edit:
     defaults: { _controller: TisseoBoaBundle:StopArea:edit, StopAreaId: null }
 
 #gestion ds Routes
+tisseo_boa_linesv_list:
+    pattern: /routes/lines/list
+    defaults: { _controller: TisseoBoaBundle:Route:list }
+
 tisseo_boa_route_list:
     pattern: /routes/list
-    defaults: { _controller: TisseoBoaBundle:Route:list }
+    defaults: { _controller: TisseoBoaBundle:Route:route }
+
+tisseo_boa_route_edit:
+    pattern: /routes/edit/{id}
+    defaults: { _controller: TisseoBoaBundle:Route:edit }
+    requirements:
+        id: \d+
+    options:
+        expose: true/route
+
+tisseo_boa_route_delete:
+    pattern: /routes/delete/{id}
+    defaults: { _controller: TisseoBoaBundle:Route:delete }
+    requirements:
+        id: \d+
 
 tisseo_boa_route_create:
     pattern: /routes/create
-    defaults: { _controller: TisseoBoaBundle:Route:route }
+    defaults: { _controller: TisseoBoaBundle:Route:create }
+    requirements:
+        id: \d+

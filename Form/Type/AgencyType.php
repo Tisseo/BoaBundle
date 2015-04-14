@@ -31,7 +31,7 @@ class AgencyType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Agency'
             )
-        );	
+        );
 	}
 
 			
