@@ -46,6 +46,26 @@ class StopHistoryType extends AbstractType
 					'required' => false
                 )
 		);
+		$builder->add('x', 'text',
+			array(
+				'mapped' => false,
+				'required' => true
+			)
+		);
+		$builder->add('y', 'text',
+			array(
+				'mapped' => false,
+				'required' => true
+			)
+		);
+		$builder->add('srid', 'text', 
+			array(
+				'mapped' => false,
+				'label' => 'SRID',
+				'data' => '3943'
+			)
+		);
+		
 /*
         $builder->add('theGeom', 'text',  
 				array(

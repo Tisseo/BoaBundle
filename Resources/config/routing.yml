@@ -85,8 +85,8 @@ tisseo_boa_poi_type_edit:
     defaults: { _controller: TisseoBoaBundle:PoiType:edit, PoiTypeId: null }
     
 tisseo_boa_json_calendars:
-    pattern: /json/calendars
-    defaults: { _controller: "TisseoBoaBundle:Json:calendars"}   
+    pattern: /json/calendars/{CalendarType}
+    defaults: { _controller: "TisseoBoaBundle:Json:calendars", CalendarType: null}   
 tisseo_boa_json_bitmask:
     pattern: /json/bitmask
     defaults: { _controller: "TisseoBoaBundle:Json:bitmask"}
@@ -113,7 +113,19 @@ tisseo_boa_stop_area_search:
 tisseo_boa_stop_area_edit:
     pattern: /stop_area/edit/{StopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:edit, StopAreaId: null }
-
+tisseo_boa_stop_accessibility_new:
+    pattern: /stop_accessibility/new/{StopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:newAccessibility, StopId: null}
+tisseo_boa_stop_accessibility_delete:
+    pattern: /stop_accessibility/delete/{StopId}/{StopAccessibilityId}
+    defaults: { _controller: TisseoBoaBundle:Stop:removeStopAccessibility}
+tisseo_boa_stop_history_new:
+    pattern: /stop_history/new/{StopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:newStopHistory, StopId: null}    
+tisseo_boa_stop_history_delete:
+    pattern: /stop_history/delete/{StopId}/{StopHistoryId}
+    defaults: { _controller: TisseoBoaBundle:Stop:removeStopHistory}
+  
 #gestion ds Routes
 tisseo_boa_route_list:
     pattern: /routes/list

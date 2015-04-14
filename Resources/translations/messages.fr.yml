@@ -133,6 +133,9 @@ poi_type:
 
 stop:
     accessibility:
+        isRecursive: OUI
+        header: Historique d'inaccessibilité
+        phantom_header: Historique d'inaccessibilité du stop
         columns:
             startTime: De
             endTime: A
@@ -142,6 +145,21 @@ stop:
             startDate: Date début
             endDate: Date fin
             datasource: Datasource
+    history:
+        header: Historique du point d'arrêt
+        columns:
+            startDate: Du
+            endDate: Au
+            shortName: Nom
+            longName: Nom long
+            x: X
+            y: Y    
+    phantom:
+        header: Fantômes de l'arrêt
+        columns:
+            agency: Réseau
+            stop: Arrêt
+            code: Code
     labels:
         shortName: Nom du point d'arrêt 
         longName: Nom long
@@ -149,6 +167,8 @@ stop:
         masterStop: Fantôme de
         datasource: Datasource
         phantoms: Fantômes de l'arrêt
+    modifyStop: Modifier point d'arrêt
+    modifyAccessibility: Modifier accessibilité
         
 stop_area:
     labels:

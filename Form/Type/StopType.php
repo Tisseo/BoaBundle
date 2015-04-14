@@ -85,7 +85,7 @@ class StopType extends AbstractType
 				'by_reference' => false,
 			)
 		);
-*/
+
 		$builder->add('stopAccessibilities', 'collection', 
 			array(
 				'type' => new StopAccessibilityType(),
@@ -93,7 +93,7 @@ class StopType extends AbstractType
 				'by_reference' => false,
 			)
 		);
-		
+*/		
 		
 		$builder->add('masterStop', 'stop_selector',
 			array(

@@ -150,6 +150,8 @@ stop:
     edit: Editer un point d'arrêt
     validate: Valider
     see: Voir
+    add_inaccessibility: Ajout d'inaccessibilité
+    add_history: Modifier point d'arrêt 
         
 stop_area:
     title: Zone d'arrêt

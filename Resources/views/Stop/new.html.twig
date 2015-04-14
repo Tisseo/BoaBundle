@@ -14,36 +14,36 @@
     {{ form_errors(form) }}
 	{{ form_widget(form._token) }}
 	
-{#	{{ dump(form.stopDatasources.vars.prototype.datasource) }}	#}
+{#	{{ dump(form) }}		#}
 	
 	<div class="form form-edit">
 		<div class="col-md-12">
 			<div id="name-div" class="row" data-prototype="{{ form_widget(form.stopHistories.vars.prototype.shortName)|e }}">
-				<label class="control-label required"> Nom</label>
+				<label class="control-label required">Nom</label>
 			</div>
 		</div>
 		
 		<div class="col-md-12">
 			<div id="longName-div" class="row" data-prototype="{{ form_widget(form.stopHistories.vars.prototype.longName)|e }}">
-				<label class="control-label"> Nom long</label>
+				<label class="control-label">Nom long</label>
 			</div>
 		</div>
 		
 		<div class="col-md-12">
 			<div id="date-div" class="row" data-prototype="{{ form_widget(form.stopHistories.vars.prototype.startDate)|e }}">
-				<label class="control-label required"> Début</label>
+				<label class="control-label required">Début</label>
 			</div>
 		</div>
 		
 		<div class="col-md-6">
 			<div id="datasource-div" class="row" data-prototype="{{ form_widget(form.stopDatasources.vars.prototype.datasource)|e }}">
-				<label class="control-label required"> Datasource</label>
+				<label class="control-label required">Datasource</label>
 			</div>
 		</div>
 
 		<div class="col-md-6">
 			<div id="code-div" class="row" data-prototype="{{ form_widget(form.stopDatasources.vars.prototype.code)|e }}">
-				<label class="control-label required"> Code</label>
+				<label class="control-label required">Code</label>
 			</div>
 		</div>
 		
@@ -54,6 +54,25 @@
 				<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}" required>
 			</div>
 		</div>
+
+		<div class="col-md-12">
+			<div class="row">
+				{{ form_row(form.x) }}
+			</div>
+		</div>
+		
+		<div class="col-md-12">
+			<div class="row">
+				{{ form_row(form.y) }}
+			</div>
+		</div>
+		
+		<div class="col-md-12">
+			<div class="row">
+				{{ form_row(form.srid) }}
+			</div>
+		</div>
+		
 	</div>
 {% endblock %}
 
