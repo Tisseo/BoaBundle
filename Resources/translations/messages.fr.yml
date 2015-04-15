@@ -177,9 +177,10 @@ stop_area:
         city: Ville
         datasource: Datasource
         alias: Alias
-        internal_transfert: Transferts internes
-        external_transfert: Transferts externes
+        internal_transfert: Transferts intra-zone
+        external_transfert: Transferts extra-zone
         geometries: Géométries
+        tranfer_duration: Temps des transferts intra-zone par défaut (en minutes)
     stop:
         header: Liste des points d'arrêt
         columns:
@@ -191,6 +192,15 @@ stop_area:
             lines: Lignes
     alias:
         name: Nom
+    transfer:
+        internalHeader: Transferts intra-zone
+        columns:
+            startStop: Point d'arrêt de départ
+            endStop: Point d'arrêt de destination
+            duration: Durée en minutes (99 pour interdit)
+            distance: Distance en mètre
+            longName: Description
+            theGeom: Géométrie
 
 stop_area_datasource:
     labels:

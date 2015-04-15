@@ -14,9 +14,38 @@
     {{ form_errors(form) }}
 	{{ form_widget(form._token) }}
 	
-{#	{{ dump(form) }}	#}
-	{{ form_row(form.alias) }}
-	
+	<div>
+{#		{{ form_widget(form.alias, { 'attr': {'class': 'hide'}}) }}	#}
+		<div class="stop_table_header">Alias de la zone "{{ stopAreaLabel }}"</div>
+		<table 
+			id='alias_table'
+			class="table table-hover dataTable no-footer"
+			data-prototype="{% filter escape %}{{ form_widget(form.alias.vars.prototype['name']) }} {% endfilter %}"
+{#			data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendar_element.vars.prototype } %} {% endfilter %}"		#}
+		>
+		<thead>
+			<th>Nom</th>
+			<th>Action</th>
+		</thead>
+		<tbody>
+		{%  for alias in form.alias %}
+		<tr>
+			<td>
+				{{ form_widget(alias.name) }}
+			</td>
+			<td>
+				<a class="btn btn-default" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.delete'|trans({}, 'messages')}}</a>
+			</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans({}, 'messages')}}</a>
+		</div>
+	</div>
 {% endblock %}
 
 {% block modal_actions %}
@@ -24,31 +53,25 @@
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
-{#
 	<script>   
 		require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
-			var previousDate;
-			$('.datepicker').datepicker({
-					language: '{{ app.request.locale }}',
-					todayHighlight: true,
-					autoclose: true
-				})
-				// Save date picked
-				.on('show', function () {
-					previousDate = $(this).val();
-				})
-				// Replace with previous date if no date is picked or if same date is picked to avoid toggle error
-				.on('hide', function () {
-					if ($(this).val() === '' || $(this).val() === null) {
-						$(this).val(previousDate).datepicker('update');
-					}
-				})
-				.on('changeDate', function(e) {
-					if (!($(this).val() === '' || $(this).val() === null)) {
-						$(e.target.name).datepicker('update');					
-					}
-				});
+			$('#add_element').click(function(event) {
+				var $index = $('#alias_table >tbody >tr').length + 1;
+				var $prototype = $('#alias_table').attr('data-prototype');
+				var $newLine = $prototype.replace(/__name__/g, $index);
+				$('#alias_table >tbody')
+					.append("<tr><td>" + 
+								$newLine + 
+								"</td><td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>{{'global.delete'|trans({}, 'messages')}}</a></td></tr>");
 			});
+		});
+		
+		$('#alias_table').on('click',  "a", function(event) {
+			event.preventDefault();
+			if ($(this).text() === "{{'global.delete'|trans({}, 'messages')}}") { 
+				$(this).closest("tr").remove(); 
+			}
+		});
+		
     </script>		
-#}	
 {% endblock %}

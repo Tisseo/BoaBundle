@@ -88,7 +88,9 @@
 						{{ stop.stopHistories[0].shortName }}
 					</td>
 					{% if stop.masterStop is not empty %}
-						<td colspan="3">FANTOME !!!</td>
+{#						<td colspan="3">{{ dump(stop.masterStop.stopHistories[0].startDate) }}</td>	
+						<td colspan="3">FANTOME !!!</td>	#}
+						<td colspan="3"><b>{{ 'Fantôme de ' ~ stop.getMasterStopLabel }}</b></td>
 					{% else %}
 						<td>{{ stop.stopHistories[0].theGeom.x }}</td>
 						<td>{{ stop.stopHistories[0].theGeom.y }}</td>
@@ -106,7 +108,9 @@
 		{# buttons #}
 		<div class="row" style="padding: 10px 0 0">
 			<div class = "col-md-12">
-				<a class="btn btn-default" id="internal-transfert" href="#">
+				<a class="btn btn-default" id="internal-transfert" 
+					href="{{ path('tisseo_boa_transfer_edit', {'StopAreaId': stopArea.id }) }}"
+					data-toggle="modal" data-target="#base-modal" >
 					<span class="glyphicon glyphicon-resize-small"></span>
 					{{ 'stop_area.labels.internal_transfert' | trans }}
 					</a>
