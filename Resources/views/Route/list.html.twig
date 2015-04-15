@@ -1,9 +1,16 @@
 {% extends "TisseoBoaBundle::base.html.twig" %}
+
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 
 {% block container %}
-
+    {% block stylesheets %}
+        {{ parent() }}
+        {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
+        filter='cssrewrite' output='css/datatables_tid.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+        {% endstylesheets %}
+    {% endblock %}
 <div class="row">
     <div class="col-md-12" role="main">
         {% block main_content %}
@@ -24,8 +31,8 @@
                 </td>
                 <td> {{ line.line.physicalMode.name }}</td>
                 <td> {{ line.version }}</td>
-                <td> {{ line.startDate.date }}</td>
-                <td> {{ line.plannedEndDate.date }}</td>
+                <td> {{ line.startDate.date | date('d/m/Y') }}</td>
+                <td> {{ line.plannedEndDate.date | date('d/m/Y') }}</td>
 
             </tr>
         {%  endfor %}
@@ -40,7 +47,7 @@
     {{ parent }}
 
     {% javascripts '@TisseoBoaBundle/Resources/public/js/listlines.js' %}
-            <script src="{{ asset_url }}"></script>
+                 <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
 {%  endblock %}

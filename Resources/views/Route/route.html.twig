@@ -4,6 +4,11 @@
 
     <div class="row">
                 <div class="col-md-12" role="main">
+                    {% for flashMessage in app.session.flashbag.get('suppression') %}
+                        <div class="flash-notice">
+                            {{ flashMessage }}
+                        </div>
+                    {% endfor %}
             {% block main_content %}
             <hr />
             <table class="table datatable table-hover dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
@@ -12,44 +17,49 @@
                     <th>Nom route</th><th>Départ</th><th>Arrivée</th><th>Commentaire</th><th>Sens</th><th>Editer</th>
                     </thead>
                 </tr>
-                {%  set serv = [] %}
                 {% for route in routes %}
-                  
-                    <tr role="row" class="{{ (loop.index%2==0) ? "odd" : "even" }}">
-                        <td id="{{ route.id }}">
-                           {{ route.name }}
-                        </td>
-                        {% set size = (route.routeStops | length)  %}
+                        <tr role="row" class="{{ (loop.index%2==0) ? "odd" : "even" }}">
+                            <td id="{{ route.id }}">
+                               {{ route.name }}
+                            </td>
+                            {% set size = (route.routeStops | length)  %}
 
-                        {% set wayPoints = [] %}
-                        {%  set indexo = loop.index %}
+                            {%  set indexo = loop.index %}
 
-                        {%  set serv = serv|merge({(indexo-1):[]})  %}
-                        {% for waypoint in route.routeStops %}
+                            {% for waypoint in route.routeStops %}
 
-                            {%  if (waypoint.rank == 1) %}
-                                {%  set serv = serv|merge({ (indexo-1):waypoint.waypoint.id})  %}
+                                {%  if (waypoint.rank == 1) %}
+                                    <td>{{ (waypoint.waypoint.Stop.stopArea.shortName) }}</td>
+                                {% endif %}
+
+                                {%  if (waypoint.rank == size) %}
+                                    <td>{{ (waypoint.waypoint.Stop.stopArea.shortName) }}</td>
+                                {% endif %}
+
+
+                            {%  endfor %}
+
+
+                            {%  for stop in stops %}
+
+                            {% endfor %}
+
+                            {% if route.routeStops.waypoint is null %}
+                                <td></td><td></td>
                             {% endif %}
-                            {%  if (waypoint.rank == size) %}
-                                {% set serv = serv|merge({ (indexo-1):waypoint.waypoint.id})  %}
-                            {% endif %}
-                        {%  endfor %}
+
+                            <td> {{ route.comment }}</td>
+                            <td> {{ route.way }}</td>
+
+                            <td><a href="{{path('tisseo_boa_route_edit',{id:route.id})}}" class="editRoute btn btn-default"><span class="glyphicon glyphicon-edit"></span>Editer</a></td>
+                            <td><a href="{{path('tisseo_boa_route_delete',{id: route.id, idLine: route.lineVersion.id})}}" class="editRoute btn btn-default" >Supprimer</a></td>
 
 
-                        {%  for stop in stops %}
+                        </tr>
 
-                        {% endfor %}
-                        <td> </td>
-                        <td></td>
-                        <td> {{ route.comment }}</td>
-                        <td> {{ route.way }}</td>
-                        <td id="idRoute">{{ route.id }}</td>
-                        <td><button value="editer" class="editRoute btn btn-default"><a href="{{path('tisseo_boa_route_edit',{id:route.id})}}">Editer</a></button></td>
-                        <td><button value="creer" class="editRoute btn btn-default"><a href="{{path('tisseo_boa_route_create',{idLine:route.lineVersion.id})}}">Créer</a></button></td>
 
-                    </tr>
-
-                {%  endfor %}
+                    {%  endfor %}
+                <td><a href="{{path('tisseo_boa_route_create',{idLine:id})}}" class="editRoute btn btn-default" >Créer</a></td>
 
                 {% endblock %}
             </table>

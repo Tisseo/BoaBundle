@@ -1,12 +1,13 @@
 {% macro line_number(object, type, size) %}
        {% if type == 'lineVersion' %}
+
            {% if object.line.number is defined %}
                {% if size == 'small' %}
              <div class="line-number line-small" style="color:{{ object.fgColor.html }}; background-color:{{ object.bgColor.html }}; font-family:sans-serif; font-weight: bold;">
                      {% elseif size == 'big' %}
            <div class="line-number line-big" style="color:{{ object.fgColor.html }}; background-color:{{ object.bgColor.html }}; font-family:sans-serif; font-weight: bold;">
                {% endif %}
-               <span>{{ object.line.number }}</span>
+               <span style="font-size: 15px;">{{ object.line.number }}</span>
           </div>
           {% endif %}
       {% elseif type == 'line' %}

@@ -1,0 +1,34 @@
+{% extends "TisseoBoaBundle::base.html.twig" %}
+{% block container %}
+    {% for stop in route.routeStops  %}
+        {{ dump(stop.waypoint.area) }}
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-12" role="main">
+            {% block main_content %}
+            <hr />
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.way) }}
+                {{ form_row(form.direction) }}
+            {{ form_row(form.modifier) }}
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+           </div>
+    </div>
+{% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent }}
+
+
+  {% javascripts '@TisseoBoaBundle/Resources/public/js/route.js' %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+    <script src="{{ asset_url }}"></script>
+
+    {%  endjavascripts %}
+
+{%  endblock %}

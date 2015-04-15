@@ -3,6 +3,7 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Date;
@@ -16,8 +17,6 @@ class RouteController extends AbstractController
     public function listAction(Request $request)
     {
         $ligneVersionManager = $this->get('tisseo_endiv.line_version_manager');
-
-
 
         $lineManager = $this->get('tisseo_endiv.line_manager');
 
@@ -55,34 +54,18 @@ class RouteController extends AbstractController
            'pageTitle' => 'création de routes',
            'routes' => $routes,
            'stops'=>$stops,
-          'id' => $id
+           'id' => $id
        ));
 
     }
 
-    public function editAction(Request $request) {
+    public function editAction($id, Request $request) {
 
         $id = $request->get('id');
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route= $routeManager->findById($id);
 
-        $stopsManager = $this->get('tisseo_endiv.stop_manager');
-        $stops = $stopsManager->getStopsByRoute($id);
-        $sizeStops = sizeof($stops);
-        $departure = "";
-        $arrival ="";
-        foreach($stops as $stop) {
-            if($stop["rank"] == 1) {
-                $departure = $stopsManager->find($stop["waypoint"]);
-
-            }
-            if($stop["rank"] == $sizeStops) {
-                $arrival = $stopsManager->find($stop["waypoint"]);
-
-            }
-        }
-
-        if(!$route) {
+         if(!$route) {
             throw $this->createNotFoundException('route non trouvée');
         }
 
@@ -99,10 +82,9 @@ class RouteController extends AbstractController
                 array(
                     'form' => $form->createView(),
                     'pageTitle' => 'modification de route',
-                    'route' => $route,
-                    'stops' => $stops,
-                    'departure' => $departure,
-                    'arrival' => $arrival,
+                    'route' => $route
+
+
                 )
             );
 
@@ -122,15 +104,11 @@ class RouteController extends AbstractController
         }
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $form = $this->createForm( new RouteType($routeManager), $route);
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            try {
-                $routeManager->save($form->getData());
-                
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-            }
+
+        if(isset($request)){
+            $this->processForm($request,$form);
         }
+
 
        return $this->render("TisseoBoaBundle:Route:create.html.twig", array(
             "form" =>$form->createView(),
@@ -139,6 +117,22 @@ class RouteController extends AbstractController
         ));
     }
 
+    public function deleteAction($id, Request $request){
+
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $route = $routeManager->findById($id);
+
+        $lineId = $request->get('idLine');
+
+
+        $routeManager->removeRoute($route);
+        $this->get('session')->getFlashBag()->add('suppression', 'la route a été supprimée');
+
+
+
+        return $this->redirect($this->generateUrl('tisseo_boa_route_list', array("lineId"=>$lineId) ));
+
+    }
 
     private function buildForm($RouteId, $RouteManager)
     {
@@ -152,8 +146,7 @@ class RouteController extends AbstractController
             array(
                 'action' => $this->generateUrl('tisseo_boa_route_edit',
                     array('id' => $RouteId)
-                ),
-                'method' => 'POST'
+                )
             )
         );
 
