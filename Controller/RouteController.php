@@ -43,9 +43,18 @@ class RouteController extends AbstractController
         $stopManager = $this->get('tisseo_endiv.stop_manager');
 
         $routes = $routeManager->findAllByLine($id);
+        $isZone = false;
 
-        $stops = $stopManager->findAll();
-       
+        foreach($routes as $route) {
+
+            if($routeManager->checkZoneStop($route) == true){
+                $isZone = true;
+            }
+
+        }
+    
+
+
         if(isset($id) && ($request->getMethod()) == "POST") {
             $routes = $routeManager->findAllByLine($id);
         }
@@ -53,8 +62,8 @@ class RouteController extends AbstractController
       return $this->render("TisseoBoaBundle:Route:route.html.twig", array(
            'pageTitle' => 'création de routes',
            'routes' => $routes,
-           'stops'=>$stops,
-           'id' => $id
+           'id' => $id,
+           'isZone' => $isZone
        ));
 
     }

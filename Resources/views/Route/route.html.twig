@@ -26,14 +26,24 @@
 
                             {%  set indexo = loop.index %}
 
-                            {% for waypoint in route.routeStops %}
+                            {% for stop in route.routeStops %}
 
-                                {%  if (waypoint.rank == 1) %}
-                                    <td>{{ (waypoint.waypoint.Stop.stopArea.shortName) }}</td>
-                                {% endif %}
+                                {% if stop.rank ==1 %}
+                                    {% if isZone == true %}
+                                         <td>{{ stop.waypoint.odtArea.name }}</td>
+                                    {% else %}
+                                        <td>{{ stop.waypoint.stop.stopArea.shortName }}</td>
 
-                                {%  if (waypoint.rank == size) %}
-                                    <td>{{ (waypoint.waypoint.Stop.stopArea.shortName) }}</td>
+                                    {% endif %}
+
+                                {% elseif stop.rank == size %}
+
+                                    {% if isZone == true %}
+                                        <td>{{ stop.waypoint.odtArea.name }}</td>
+                                    {% else %}
+                                        <td>{{ stop.waypoint.stop.stopArea.shortName }}</td>
+                                    {% endif %}
+
                                 {% endif %}
 
 
@@ -44,7 +54,7 @@
 
                             {% endfor %}
 
-                            {% if route.routeStops.waypoint is null %}
+                            {% if route.routeStops[0] is empty %}
                                 <td></td><td></td>
                             {% endif %}
 
