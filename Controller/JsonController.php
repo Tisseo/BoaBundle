@@ -92,4 +92,30 @@ class JsonController extends AbstractController
             return $response;
     	}
     }
+	
+    public function InternalTransferAction()
+    {
+		
+        $request = $this->get('request');
+ 
+		if($request->isXmlHttpRequest())
+        {
+			$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+			$StopManager = $this->get('tisseo_endiv.stop_manager');
+			
+            $stopAreaId = $request->request->get('stopAreaId');
+			$stopArea = $StopAreaManager->find($stopAreaId);
+            $startStopId = $request->request->get('startStopId');
+			$startStop = $StopManager->find($startStopId);
+            $endStopId = $request->request->get('endStopId');
+			$endStop = $StopManager->find($endStopId);
+			
+            $array= $this->get('tisseo_endiv.transfer_manager')
+                ->getInternalTransfer($stopAreaId, $startStop, $endStop);
+				
+            $response = new Response(json_encode($array));
+            $response -> headers -> set('Content-Type', 'application/json');
+            return $response;
+    	}
+    }	
 }
