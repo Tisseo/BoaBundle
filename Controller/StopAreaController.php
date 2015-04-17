@@ -131,9 +131,37 @@ class StopAreaController extends AbstractController
 		$this->isGranted('BUSINESS_MANAGE_STOPS');
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 		$stopArea = $StopAreaManager->find($StopAreaId);
+		$stops = $StopAreaManager->getStopsOrderedByCode($StopAreaId);
+		$transfers = $StopAreaManager->getInternalTransfer($stopArea);
 		$stopAreaLabel = $stopArea->getNameLabel();
 		
-		$form = $this->createForm( new StopAreaTransferType($StopAreaManager), $stopArea);
+		$form = $this->createForm( new StopAreaTransferType($StopAreaManager), $stopArea,
+			array(
+				'action' => $this->generateUrl('tisseo_boa_transfer_edit',
+					array('StopAreaId' => $StopAreaId)
+				)
+			)
+        );
+		$form->handleRequest($request);
+		if ($form->isValid()) {
+			try {
+				$datas = $form->getData();
+				$transfers = $request->request->get('transfer');
+				$TransferManager = $this->get('tisseo_endiv.transfer_manager');
+
+				$StopAreaManager->save($datas);	//save transfer_duration
+				$TransferManager->saveTransfers($transfers);
+				
+				return $this->redirect(
+					$this->generateUrl('tisseo_boa_stop_area_edit', 
+						array('StopAreaId' => $StopAreaId)
+					)
+				);				
+			} catch(\Exception $e) {
+				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+			}
+		}
+		
 		
 		return $this->render(
 			'TisseoBoaBundle:StopArea:internal_transfer.html.twig',
@@ -141,6 +169,8 @@ class StopAreaController extends AbstractController
 				'form' => $form->createView(),
 				'title' => 'stop_area.transfer',
 				'stopArea' => $stopArea,
+				'stops' => $stops,
+				'transfers' => $transfers,
 				'stopAreaLabel' => $stopAreaLabel
 			)
 		);		

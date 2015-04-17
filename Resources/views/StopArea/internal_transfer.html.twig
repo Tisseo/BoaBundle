@@ -14,6 +14,8 @@
     {{ form_errors(form) }}
 	{{ form_widget(form._token) }}
 	
+{#	{{ dump(transfers) }}	#}
+
 	<div class="row">
 		<div class = "col-md-4"> {{ form_label(form.transferDuration) }} </div> 
 		<div class = "col-md-1"> {{ form_widget(form.transferDuration) }} </div> 
@@ -35,17 +37,37 @@
 		</thead>
 		<tbody>
 			{% set index = 0 %}
-			{%  for startStop in stopArea.stops %}
+			{%  for startStop in stops %}
 				{%  if startStop.masterStop is empty %}
-					{%  for endStop in stopArea.stops %}
+					{%  for endStop in stops %}
 						{%  if endStop.masterStop is empty %}
+								{% set transfer_key = startStop.id ~ "." ~ endStop.id %}
+								{% set transfer_id_value = "" %}
+								{% set transfer_duration_value = "" %}
+								{% set transfer_distance_value = "" %}
+								{% set transfer_longName_value = "" %}
+								{% set transfer_theGeom_value = "" %}
+								{% if transfer_key in transfers|keys %}
+									{% set transfer_id_value = "value=" ~ transfers[transfer_key].id %}
+									{% set transfer_duration_value = "value=" ~ transfers[transfer_key].duration %}
+									{% set transfer_distance_value = "value=" ~ transfers[transfer_key].distance %}
+									{% set transfer_longName_value = "value=" ~ transfers[transfer_key].longName %}
+									{% set transfer_theGeom_value = "value=" ~ transfers[transfer_key].theGeom %}
+								{% endif %}
 							<tr>
-							<td>{{ startStop.stopHistories[0].shortName ~ " - " ~ startStop.stopDatasources[0].datasource.agency.name ~ " (" ~ startStop.stopDatasources[0].code  ~ ") " }}</td>	
-							<td>{{ endStop.stopHistories[0].shortName ~ " - " ~ endStop.stopDatasources[0].datasource.agency.name ~ " (" ~ endStop.stopDatasources[0].code  ~ ") " }}</td>	
-							<td><input type='text' id="form_transfer_{{ index }}_duration" name="form[transfer][{{ index }}][duration]" class="form-control" ></td>	
-							<td><input type='text' id="form_transfer_{{ index }}_distance" name="form[transfer][{{ index }}][distance]" class="form-control"></td>	
-							<td><input type='text' id="form_transfer_{{ index }}_longName" name="form[transfer][{{ index }}][longName]" class="form-control"></td>	
-							<td><input type='text' id="form_transfer_{{ index }}_theGeom" name="form[transfer][{{ index }}][theGeom]" class="form-control"></td>	
+								<td>
+									<input type='hidden' id="transfer_{{ index }}_id" name="transfer[{{ index }}][id]" {{ transfer_id_value }}>
+									<input type='hidden' id="transfer_{{ index }}_startStopId" name="transfer[{{ index }}][startStopId]" value="{{ startStop.id }}">
+									{{ startStop.getStopLabel }}
+								</td>	
+								<td>
+									<input type='hidden' id="transfer_{{ index }}_endStopId" name="transfer[{{ index }}][endStopId]" value="{{ endStop.id }}">
+									{{ endStop.getStopLabel }}
+								</td>	
+								<td><input type='text' id="transfer_{{ index }}_duration" name="transfer[{{ index }}][duration]" class="form-control" {{ transfer_duration_value }} ></td>	
+								<td><input type='text' id="transfer_{{ index }}_distance" name="transfer[{{ index }}][distance]" class="form-control" {{ transfer_distance_value }} ></td>	
+								<td><input type='text' id="transfer_{{ index }}_longName" name="transfer[{{ index }}][longName]" class="form-control" {{ transfer_longName_value }} ></td>	
+								<td><input type='text' id="transfer_{{ index }}_theGeom" name="transfer[{{ index }}][theGeom]" class="form-control" {{ transfer_theGeom_value }} ></td>	
 							</tr>
 							{% set index = index + 1 %}
 						{%  endif %}

@@ -88,8 +88,6 @@
 						{{ stop.stopHistories[0].shortName }}
 					</td>
 					{% if stop.masterStop is not empty %}
-{#						<td colspan="3">{{ dump(stop.masterStop.stopHistories[0].startDate) }}</td>	
-						<td colspan="3">FANTOME !!!</td>	#}
 						<td colspan="3"><b>{{ 'Fantôme de ' ~ stop.getMasterStopLabel }}</b></td>
 					{% else %}
 						<td>{{ stop.stopHistories[0].theGeom.x }}</td>
