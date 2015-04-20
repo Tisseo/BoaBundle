@@ -1,34 +1,126 @@
-{% extends "TisseoBoaBundle::base.html.twig" %}
-{% block container %}
-    {% for stop in route.routeStops  %}
-        {{ dump(stop.waypoint.area) }}
-    {% endfor %}
+{% extends "TisseoBoaBundle::datatable_list_stops.html.twig" %}
 
-    <div class="row">
-        <div class="col-md-12" role="main">
-            {% block main_content %}
+
+            {% block main_content -%}
+
+                <style>
+                    #Route_creer{
+                        display: none;
+                    }
+                </style>
+
+                <div class="row">
+                    <div class="col-md-12" role="main">
+            {% for stop in route.routeStops  %}
+
+            {% endfor %}
+
             <hr />
+                        <input type="hidden" id="routeId" value="{{ id }}" />
             {{ form_start(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.way) }}
                 {{ form_row(form.direction) }}
-            {{ form_row(form.modifier) }}
+            <input type="submit" value="editer" name="Route_creer" class="btn btn-primary"/>
             {{ form_rest(form) }}
             {{ form_end(form) }}
            </div>
     </div>
-{% endblock %}
-{% endblock %}
+<table id="datatable" class="table datatable table-hover dataTable no-footer">
 
+    <thead>
+        <tr>
+            <th class="col-sm-1" >Id</th>
+            <th class="col-sm-1" >Ordre</th>
+            <th class="col-sm-1">Ville</th>
+            <th class="col-sm-1">Nom arrêt</th>
+            <th class="col-sm-1">Num arrêt</th>
+            <th class="col-sm-1">Descente inter</th>
+            <th class="col-sm-1">Montee inter</th>
+        </tr>
+    </thead>
+
+                   {% block table_head %}
+                        {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+
+
+                    
+                        {% endif %}
+                    {% endblock %}
+
+           <tbody class="ui-sorting">
+                    {% block table_body -%}
+
+
+                     {%  endblock %}
+                     </tbody>
+                </table>
+                {% block list_pagination -%}
+                {% endblock %}
+
+                <button id="saveList" class="btn btn-default">Sauvegarder</button>
+ {% endblock %}
 {% block javascripts %}
-    {{ parent }}
+    {{ parent() }}
 
 
-  {% javascripts '@TisseoBoaBundle/Resources/public/js/route.js' %}
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+
+
+    {% javascripts '@TisseoBoaBundle/Resources/public/js/liststops.js' %}
     <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script>
+        require(['jquery', 'jquery_ui_droppable', 'jquery_ui_draggable'], function($){
+            function displayError(responseText) {
+                document.open();
+                document.write(responseText);
+                document.close();
+            }
 
-    {%  endjavascripts %}
+            $(document).ready(function(){
 
-{%  endblock %}
+                table = $("#datatable").DataTable();
+                $.fn.liveDroppable = function() {
+                    $(this).droppable({
+                        over: function(event, ui) {
+                            $(this).find("tr:first").addClass("success");
+                        },
+                        out: function(event, ui) {
+                            $(this).find("tr:first").removeClass("success");
+                        },
+                        drop: function(event, ui) {
+                            if ($(ui.draggable).find("tr:first td").length == 2) {
+                                $(ui.draggable).find("tr").append("<td></td>");
+                            }
+                            $(this).find("tr:first").removeClass("success");
+                            $(this).after(ui.draggable);
+                            if ($(".grid-mask-type-table").children().length == 2)
+                            {
+                                $(".grid-mask-type-table").after("<span style='display:none;' class='no-data'>{{ 'calendar.labels.no_data'|trans({}, 'messages') }}</span>");
+                                $(".grid-mask-type-table").next().fadeIn();
+                            }
+                        }
+                    });
+                };
+
+                $(document).find('#datatable').liveDroppable();
+
+
+
+                $("#datatable tbody").on('click', 'tr', function() {
+                    $(this).toggleClass("selected");
+                    $(this).draggable();
+
+                    var Ordre =table.row( this ).data().Ordre;
+
+                })
+
+
+
+            });
+
+        });
+
+    </script>
+
+{% endblock %}

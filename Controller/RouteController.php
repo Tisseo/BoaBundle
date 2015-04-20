@@ -36,6 +36,7 @@ class RouteController extends AbstractController
     }
 
     public function routeAction(Request $request) {
+
         $id = $request->get("lineId");
 
         $idRoute = $request->get('idroute');
@@ -54,7 +55,6 @@ class RouteController extends AbstractController
         }
     
 
-
         if(isset($id) && ($request->getMethod()) == "POST") {
             $routes = $routeManager->findAllByLine($id);
         }
@@ -68,37 +68,145 @@ class RouteController extends AbstractController
 
     }
 
-    public function editAction($id, Request $request) {
+    public function editAction($id=null, Request $request) {
 
         $id = $request->get('id');
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        $route= $routeManager->findById($id);
+        $stopManager = $this->get('tisseo_endiv.stop_manager');
+        $stopsArea = [];
+        if(isset($id)) {
+            $route= $routeManager->findById($id);
+
+        }
 
          if(!$route) {
             throw $this->createNotFoundException('route non trouvée');
         }
 
-        $formBuilder = $this->get('form.factory')->createBuilder('form', $route);
-        $formBuilder->add('name', 'text')
-                    ->add('way', 'text',  array('label' => 'Sens'))
-                    ->add('direction', 'text',  array('label' => 'Arrivée'))
-                    ->add('line_version_id', 'text',  array('label' => 'Commentaire'))
-                    ->add('modifier', 'submit');
-        $form = $formBuilder->getForm();
+
+        $formRoute = $this->createForm(new RouteType(),$route);
+
+               if(isset($request)) {
+                   $this->processForm($request, $formRoute);
+               }
 
             return $this->render(
                 'TisseoBoaBundle:Route:edit.html.twig',
                 array(
-                    'form' => $form->createView(),
+                    'form' => $formRoute->createView(),
                     'pageTitle' => 'modification de route',
-                    'route' => $route
+                    'route' => $route,
+                    'id' => $id
 
 
                 )
             );
 
+    }
+
+    public function datatableSaveAction(Request $request)
+    {
+        $id = $request->get('id');
+
+        $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
+        $stopManager = $this->get('tisseo_endiv.stop_manager');
+
+        $stops = $request->get('list');
+       // $stop = $stopManager->find()//
 
 
+        foreach ($stops as $stopRow){
+
+               foreach($stopRow as $stop){
+
+                   $idRouteStop = $routeStopManager->findByWaypoint($stop["Id"],$id);
+                   //var_dump($idRouteStop[0]["id"]);
+                   $currentStop =  $this->getDoctrine()
+                       ->getRepository('Tisseo\EndivBundle\Entity\RouteStop','endiv')
+                       ->find($idRouteStop[0]["id"]);
+
+
+                   $currentStop->setRank($stop["Ordre"]);
+                   $routeStopManager->save($currentStop);
+               }
+
+
+
+
+        }
+        Return new Response("liste sauvée", 200);
+    }
+
+        public function datatableAction(Request $request) {
+
+        $id = $request->get('id');
+
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $stopManager = $this->get('tisseo_endiv.stop_manager');
+        $stopsArea = [];
+        $data=[];
+
+        $order = 0;
+        $dir = "Desc";
+        $order = $request->query->get("order")[0]["column"];
+        $dir = $request->query->get("order")[0]["column"];
+
+        $index = -1;
+        if(isset($id)) {
+            $route= $routeManager->findById($id);
+
+        }
+
+        if(!$route) {
+            throw $this->createNotFoundException('route non trouvée');
+        }
+
+        $isZone = false;
+
+        if($routeManager->checkZoneStop($route) == true){
+            $isZone = true;
+        }
+
+        if($isZone == true){
+            //$stops = $stopManager->getZonesByRoute($route);
+
+        }
+
+        if($isZone == false){
+            $stops = $stopManager->getStopsByRoute($id);
+
+
+            foreach($stops as $stop) {
+
+                $index++;
+                $waypointId = $stop["waypoint"];
+
+                $rank = $stop["rank"];
+                $stopAreas[] = $stopManager->getStops($waypointId);
+                $city = $stopAreas[$index][0]["city"];
+
+                $name = $stopAreas[$index][0]["shortName"];
+                $desc = $stop["dropOff"];
+                $pickup = $stop["pickup"];
+
+                $object = new \stdClass();
+                $dataArr = [
+                       "Id" => $stop["waypoint"],
+                       "Ordre" => $rank,
+                       "Ville"=>$city,
+                       "Num" => "num",
+                       "Nom"=>$name,
+                       "Desc"=>$desc == true ? "Oui" : "Non",
+                       "Pickup"=>$pickup == true ? "Oui" : "Non"
+
+                ];
+                array_push($data,$dataArr);
+
+            }
+        }
+
+        $data = ["draw"=>1,"recordsTotal" => sizeof($stops), "recordFiltered" => sizeof($stops),"data"=>$data];
+        return new Response(json_encode($data,true),200);
 
     }
 
@@ -112,10 +220,11 @@ class RouteController extends AbstractController
 
         }
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        $form = $this->createForm( new RouteType($routeManager), $route);
+        $form = $this->createForm(new RouteType(), $route);
 
-        if(isset($request)){
-            $this->processForm($request,$form);
+
+        if(isset($request)) {
+            $this->processForm($request, $form);
         }
 
 
@@ -137,30 +246,11 @@ class RouteController extends AbstractController
         $routeManager->removeRoute($route);
         $this->get('session')->getFlashBag()->add('suppression', 'la route a été supprimée');
 
-
-
         return $this->redirect($this->generateUrl('tisseo_boa_route_list', array("lineId"=>$lineId) ));
 
     }
 
-    private function buildForm($RouteId, $RouteManager)
-    {
-        $Route = $RouteManager->findById($RouteId);
-        if (empty($Route)) {
-            $Route = new Route();
-        }
 
-
-        $form = $this->createForm( new RouteType(), $Route,
-            array(
-                'action' => $this->generateUrl('tisseo_boa_route_edit',
-                    array('id' => $RouteId)
-                )
-            )
-        );
-
-        return ($form);
-    }
 
     private function processForm(Request $request, $form)
     {

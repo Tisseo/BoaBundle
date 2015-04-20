@@ -1,7 +1,7 @@
 {% extends "TisseoBoaBundle::base.html.twig" %}
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
-{% block container %}
 
+   {% block body %}
     <div class="row">
                 <div class="col-md-12" role="main">
                     {% for flashMessage in app.session.flashbag.get('suppression') %}
@@ -9,7 +9,7 @@
                             {{ flashMessage }}
                         </div>
                     {% endfor %}
-            {% block main_content %}
+
             <hr />
             <table class="table datatable table-hover dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
                 <tr>
@@ -71,11 +71,12 @@
                     {%  endfor %}
                 <td><a href="{{path('tisseo_boa_route_create',{idLine:id})}}" class="editRoute btn btn-default" >Créer</a></td>
 
-                {% endblock %}
+
             </table>
         </div>
     </div>
-{% endblock %}
+
+    {% endblock %}
 
 {% block javascripts %}
     {{ parent }}

@@ -19,7 +19,6 @@ class RouteType extends AbstractType {
        $builder->add('name', 'text',  array('label' => 'Nom route'))
                ->add('way', 'text',  array('label' => 'Sens'))
                ->add('direction', 'text',  array('label' => 'Direction'))
-
            ->add('creer', 'submit');
 
            $builder->setAction($options['action']);

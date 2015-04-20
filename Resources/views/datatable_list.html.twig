@@ -22,6 +22,7 @@
         </thead>
         <tbody>
         {% block table_body -%}
+
         {% endblock %}
         </tbody>
     </table>
@@ -32,11 +33,14 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+
         require(['jquery', 'textfill', 'datatables'], function($) {
             $(document).ready(function() {
+
                 var table = $("#datatable").DataTable({
                     "aaSorting": [],
                     "iDisplayLength": 25,
+
                     "createdRow": function(row, data) {
                         $(row).find("td:first .line-small").textfill({
                             minFontPixels: 2,
@@ -44,7 +48,7 @@
                         });
                     },
                     columnDefs: [ {
-                        type: 'natural', 
+                        type: 'natural',
                         targets: 0
                     } ],
                     "aoColumnDefs" : [ {
@@ -72,7 +76,7 @@
                             "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
                             "sSortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
                         }
-                    }                    
+                    }
                 });
             });
         });
