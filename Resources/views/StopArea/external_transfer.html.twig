@@ -1,6 +1,17 @@
 {% extends "::modal.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
+                   filter='cssrewrite' output='css/calendar_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+
 {% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block modal_title %}
     {{ title|trans({}, 'default') ~ " " ~ stopAreaLabel }}
@@ -27,6 +38,7 @@
 			<th>{{ 'stop_area.transfer.columns.distance' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.longName' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.theGeom' | trans }}</th>
+			<th>Action</th>
 		</thead>
 		<tbody>
 			{#
@@ -35,6 +47,10 @@
 		</tbody>
 		</table>
 	</div>
+	<div class="row">
+		<a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans({}, 'messages')}}</a>
+	</div>
+	
 {% endblock %}
 
 {% block modal_actions %}
@@ -42,9 +58,94 @@
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
+	
 	<script>   
-		require(['jquery'], function($) {
+		require(['jquery', 'jquery_ui_autocomplete'], function($) {
 			$('.modal-dialog').css('width', '1300px');
+			
+			$.widget("custom.catAutocomplete", $.ui.autocomplete, {
+				_renderMenu: function(ul, items) {
+					var that = this, 
+						currentCategory = "";
+					$.each(items, function(index, item) {
+						if (item.category != currentCategory) {
+							ul.append("<li class='ui-autocomplete-category'>** " + item.category + "</li>");
+							currentCategory = item.category;
+						}
+						that._renderItemData(ul, item);
+					});
+				}
+			});
+
+
+			$('#add_element').click(function(event) {
+				var index = $('#transfer_table >tbody >tr').length;
+				
+				var newLine = "<tr>";
+				newLine +="<td>{{ render.stop_select(stops, 'startStop_select', 'stop_select', 'Tous les points d\'arrêts', '') | e('js') }}</td>";
+				
+				newLine +="<td>";
+				newLine +="<input type='hidden' id='transfer_" + index  + "_endStopId' name='transfer[" + index  + "][endStopId]' class='form-control'>";
+				newLine +="<input type='text' id='transfer_" + index  + "_endStopLabel' name='transfer[" + index  + "][endStopLabel]' class='form-control ui-autocomplete-input'>";
+				newLine +="</td>";
+				
+				$.each(["duration", "distance", "longName",  "theGeom"] , function(i, field) { 
+					newLine += "<td><input type='text' id='transfer_" + index  + "_" + field + "' name='transfer[" + index  + "][" + field + "]' class='form-control'></td>";
+				});
+				newLine +="<td>Action</td>";
+				
+				$('#transfer_table >tbody').append(newLine);
+
+				$("#transfer_" + index  + "_endStopLabel").catAutocomplete({
+					source: function (request, response) {
+						var objData = { term: request.term };
+						var url = "{{ path('tisseo_boa_json_stop_transfer') }}";
+						$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+							success: function (data) {
+								response($.map(JSON.parse(data.content), function (item) {
+									console.log(item);
+									return {				
+										value: item.name, 
+										id: item.id,
+										category: 'Stop'
+									};
+								}));
+							},
+						});
+					},
+					select: function (event, ui) {
+						$("#transfer_" + index  + "_endStopId").val(ui.item.id);
+					},					
+					minLength: 3,
+					delay: 300
+				});
+				
+{#				
+				$("#transfer_" + index  + "_endStopLabel").autocomplete({
+					source: function (request, response) {
+						var objData = { term: request.term };
+						var url = "{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}";
+						$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+							success: function (data) {
+								response($.map(JSON.parse(data.content), function (item) {									
+									return {				
+										label: item.name, 
+										value: item.name, 
+										id: item.id,
+										category: 'Stop'
+									};
+								}));
+							},
+						});
+					},
+					select: function (event, ui) {
+						$("#transfer_" + index  + "_endStopId").val(ui.item.id);
+					},					
+					minLength: 3,
+					delay: 300
+				});
+#}				
+			});
 		});
     </script>		
 {% endblock %}

@@ -209,6 +209,11 @@
 					for (var diffDays=(Beginning.getDay()+6)%7; diffDays >0; diffDays--) {
 						table_html += "<td></td>";
 					}
+				} else {
+					if(Beginning.getDay() == 1){
+						table_html += "<tr>";
+						table_html += "<td>" + Beginning.toDateString().split(' ')[1] + " " + Beginning.toDateString().split(' ')[3] + "</td>";
+					}
 				}
 				
 				var pattern_index = 1;				

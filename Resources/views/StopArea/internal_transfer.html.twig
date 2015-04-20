@@ -9,10 +9,13 @@
 {% endblock %}
 
 {% block open_form %}
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'id': 'form_transfer'}} ) }}
 {% endblock %}
 
 {% block modal_body %}
+	<div id="error_alert">
+	</div>
+
     {{ form_errors(form) }}
 	{{ form_widget(form._token) }}
 	
@@ -45,13 +48,26 @@
 {% endblock %}
 
 {% block modal_actions %}
-    <button type="submit" class="btn btn-success">
+    <button type="submit" id="form-save" class="btn btn-success">	
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
+	
     {{ form_end(form, { 'render_rest': false}) }}
+	
 	<script>   
 		require(['jquery'], function($) {		
 			$('.modal-dialog').css('width', '1300px');
+			
+			function displayAlert(errorMessage) {
+				var div_error = "<div class='alert alert-danger alert-dismissable danger'>";
+				div_error += "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" ;
+				div_error += errorMessage;
+				div_error += "</div>";
+
+				$("#error_alert").append(div_error);
+			};
+			
+			var change = false;
 			var stoparea_id = "{{ stopArea.id }}";
 			var stops = {};
 			$('#startStop_select option').each(function(index,item){
@@ -59,6 +75,59 @@
 					stops[item.value] = item.text; 
 			});
 			
+			//check if value is an integer
+			function isInt(value) {
+				return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value));
+			};
+			
+			function transferTableValidation() {
+				var table_validation = true;
+				$("#transfer_table tbody tr").each(function (i, row) {
+					var transfer_duration = $("#boa_stop_area_transfer_transferDuration").val();
+					var duration = $("#transfer_" + i  + "_duration").val();
+					var distance = $("#transfer_" + i  + "_distance").val();
+					var longName = $("#transfer_" + i  + "_longName").val();
+					var theGeom = $("#transfer_" + i  + "_theGeom").val();
+
+					if( transfer_duration ) {
+						if ( !isInt(transfer_duration) ) {
+							displayAlert("le temps de transfert par défaut doit être un entier ('" + transfer_duration + "')");
+							table_validation = false;
+							return false;
+						}
+					}
+
+					if( distance ) {
+						if ( !isInt(distance) ) {
+							displayAlert("Ligne " + (i+1) + ": la distance doit être un entier ('" + distance + "')");
+							table_validation = false;
+							return false;
+						}
+					}
+					
+					if( duration ) {						
+						if ( !isInt(duration) ) {
+							displayAlert("Ligne " + (i+1) + ": la durée doit être un entier ('" + duration + "')");
+							table_validation = false;
+							return false;
+						}
+						if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
+							displayAlert("Ligne " + (i+1) + ": la durée est forcément un nombre entier inférieur ou égal à 60 ou égal à 99");
+							table_validation = false;
+							return false;
+						}
+					} else {
+						if ( distance || longName || theGeom ) {
+							displayAlert ("Ligne " + (i+1) + ": si la distance, description ou géométrie est renseignée, la durée doit forcément l'être");
+							table_validation = false;
+							return false;
+						}
+					}
+				});
+				
+				return table_validation;
+			};
+
 			function getTransferTR(transfers, index, startStop, endStop)
 			{
 				var htmlTR = "";
@@ -79,7 +148,7 @@
 				htmlTR += "</td>";
 				
 				$.each(["duration", "distance", "longName",  "theGeom"] , function(i, field) { 
-					htmlTR += "<td><input type='text' id='transfer_" + index  + "_" + field + "' name='transfer[" + index  + "][" + field + "]' class='form-control'";
+					htmlTR += "<td><input type='text' id='transfer_" + index  + "_" + field + "' name='transfer[" + index  + "][" + field + "]' class='form-control input-value'";
 					if (transfer[field]) htmlTR += " value='" +  transfer[field]  + "'";
 					htmlTR += "></td>";
 				});
@@ -153,21 +222,64 @@
 						buildTransferTable(JSON.parse(data.content));
 						
 						if($("#transfer_table >tbody >tr").length > 100) {
-							alert("Pour pouvoir saisir des transfert, veuillez au préalable filtrer les données");
+							displayAlert("Volume de données trop important, pour pouvoir saisir des transfert, veuillez renseigner un filtre");
 							$(document).find("#transfer_table >tbody :input").prop('disabled', true);
 						}
-						
-						
 					}
 				});
-				
-				
-				
 			};
 			
 			$( ".stop_select" ).change(function () {
+				if( change ) {
+					if( true == window.confirm("Voulez-vous enregistrer les modifications apportées ?") ) {
+						alert("OK");
+					}
+					change = false;
+				}
+					
 				getTransfer();
 			});
+			
+			$(document).on('change', '.input-value', function(){
+				change = true;
+			});
+
+			function postForm( $form, callback ){
+				var values = {};
+				$.each( $form.serializeArray(), function(i, field) {
+					values[field.name] = field.value;
+				});
+				
+				$.ajax({
+					type        : $form.attr( 'method' ),
+					url         : "{{ path('tisseo_boa_transfer_save', {'StopAreaId': stopArea.id }) }}",
+					data        : values,
+					success     : function(data) {
+						callback( data );
+					}
+				});
+			};
+
+			//ajax form submission
+			var forms = ['[ name="{{ form.vars.full_name }}"]'];
+			$( forms.join(',') ).submit( function( e ){
+				e.preventDefault();
+				
+				if( !transferTableValidation() ) 
+					return false;
+				else {
+					postForm( $(this), function( response ){
+						if (response['success']) {
+							displayAlert('données enregistrées');
+						} else {
+							displayAlert('Erreur: ' + response["cause"]);
+						}
+					});
+				}
+
+				//prevent submit done with ajax
+				return false;
+			});			
 			
 			getTransfer();
 		});

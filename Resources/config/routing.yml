@@ -102,6 +102,10 @@ tisseo_boa_json_city:
 tisseo_boa_json_internal_transfer:
     pattern: /json/internal_transfer
     defaults: { _controller: "TisseoBoaBundle:Json:internalTransfer"}
+tisseo_boa_json_stop_transfer:
+    pattern: /json/stop_transfer
+    defaults: { _controller: "TisseoBoaBundle:Json:stopTransfer"}
+    
 
 #Stop administration
 tisseo_boa_stop_search:
@@ -139,6 +143,10 @@ tisseo_boa_stop_area_alias:
 tisseo_boa_transfer_edit:
     pattern: /transfer/edit/{StopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:transfer }
+tisseo_boa_transfer_save:
+    pattern: /transfer/save/{StopAreaId}
+    defaults: { _controller: TisseoBoaBundle:StopArea:saveTransfer }
+    
 tisseo_boa_external_transfer_edit:
     pattern: /external_transfer/edit/{StopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:externalTransfer }
