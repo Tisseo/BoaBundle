@@ -93,10 +93,10 @@
 		<form id="calendarDisplayForm">
 			<div class="row">
 				<div class="col-md-2">
-					<input type="text" id='start_date_picker' name="start_date" class='input-date calendar_date' readonly>
+					<input type="text" id='start_date_picker' name="start_date" class='input-date calendar_date'>
 				</div>
 				<div class="col-md-2">
-					<input type="text" id='end_date_picker'  name="end_date" class='input-date calendar_date' readonly>
+					<input type="text" id='end_date_picker'  name="end_date" class='input-date calendar_date'>
 				</div>
 				<div class="col-md-2">
 					<button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
@@ -208,6 +208,11 @@
 					table_html += "<td>" + Beginning.toDateString().split(' ')[1] + " " + Beginning.toDateString().split(' ')[3] + "</td>";
 					for (var diffDays=(Beginning.getDay()+6)%7; diffDays >0; diffDays--) {
 						table_html += "<td></td>";
+					}
+				} else {
+					if(Beginning.getDay() == 1){
+						table_html += "<tr>";
+						table_html += "<td>" + Beginning.toDateString().split(' ')[1] + " " + Beginning.toDateString().split(' ')[3] + "</td>";
 					}
 				}
 				

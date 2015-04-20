@@ -2,20 +2,23 @@
 
 {% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
 
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+
 {% block modal_title %}
     {{ title|trans({}, 'default') ~ " " ~ stopAreaLabel }}
 {% endblock %}
 
 {% block open_form %}
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'id': 'form_transfer'}} ) }}
 {% endblock %}
 
 {% block modal_body %}
+	<div id="error_alert">
+	</div>
+
     {{ form_errors(form) }}
 	{{ form_widget(form._token) }}
 	
-{#	{{ dump(transfers) }}	#}
-
 	<div class="row">
 		<div class = "col-md-4"> {{ form_label(form.transferDuration) }} </div> 
 		<div class = "col-md-1"> {{ form_widget(form.transferDuration) }} </div> 
@@ -28,65 +31,257 @@
 			class="table table-hover dataTable no-footer"
 		>
 		<thead>
-			<th>{{ 'stop_area.transfer.columns.startStop' | trans }}</th>
-			<th>{{ 'stop_area.transfer.columns.endStop' | trans }}</th>
+			<th>
+				{{ render.stop_select(stops, "startStop_select", "stop_select", 'stop_area.transfer.columns.startStop' | trans, "") }}
+			</th>
+			<th>
+				{{ render.stop_select(stops, "endStop_select", "stop_select", 'stop_area.transfer.columns.endStop' | trans, "") }}
+			</th>
 			<th>{{ 'stop_area.transfer.columns.duration' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.distance' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.longName' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.theGeom' | trans }}</th>
 		</thead>
-		<tbody>
-			{% set index = 0 %}
-			{%  for startStop in stops %}
-				{%  if startStop.masterStop is empty %}
-					{%  for endStop in stops %}
-						{%  if endStop.masterStop is empty %}
-								{% set transfer_key = startStop.id ~ "." ~ endStop.id %}
-								{% set transfer_id_value = "" %}
-								{% set transfer_duration_value = "" %}
-								{% set transfer_distance_value = "" %}
-								{% set transfer_longName_value = "" %}
-								{% set transfer_theGeom_value = "" %}
-								{% if transfer_key in transfers|keys %}
-									{% set transfer_id_value = "value=" ~ transfers[transfer_key].id %}
-									{% set transfer_duration_value = "value=" ~ transfers[transfer_key].duration %}
-									{% set transfer_distance_value = "value=" ~ transfers[transfer_key].distance %}
-									{% set transfer_longName_value = "value=" ~ transfers[transfer_key].longName %}
-									{% set transfer_theGeom_value = "value=" ~ transfers[transfer_key].theGeom %}
-								{% endif %}
-							<tr>
-								<td>
-									<input type='hidden' id="transfer_{{ index }}_id" name="transfer[{{ index }}][id]" {{ transfer_id_value }}>
-									<input type='hidden' id="transfer_{{ index }}_startStopId" name="transfer[{{ index }}][startStopId]" value="{{ startStop.id }}">
-									{{ startStop.getStopLabel }}
-								</td>	
-								<td>
-									<input type='hidden' id="transfer_{{ index }}_endStopId" name="transfer[{{ index }}][endStopId]" value="{{ endStop.id }}">
-									{{ endStop.getStopLabel }}
-								</td>	
-								<td><input type='text' id="transfer_{{ index }}_duration" name="transfer[{{ index }}][duration]" class="form-control" {{ transfer_duration_value }} ></td>	
-								<td><input type='text' id="transfer_{{ index }}_distance" name="transfer[{{ index }}][distance]" class="form-control" {{ transfer_distance_value }} ></td>	
-								<td><input type='text' id="transfer_{{ index }}_longName" name="transfer[{{ index }}][longName]" class="form-control" {{ transfer_longName_value }} ></td>	
-								<td><input type='text' id="transfer_{{ index }}_theGeom" name="transfer[{{ index }}][theGeom]" class="form-control" {{ transfer_theGeom_value }} ></td>	
-							</tr>
-							{% set index = index + 1 %}
-						{%  endif %}
-					{%  endfor %}
-				{%  endif %}
-			{%  endfor %}
-		</tbody>
+		<tbody></tbody>
 		</table>
 	</div>
 {% endblock %}
 
 {% block modal_actions %}
-    <button type="submit" class="btn btn-success">
+    <button type="submit" id="form-save" class="btn btn-success">	
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
+	
     {{ form_end(form, { 'render_rest': false}) }}
+	
 	<script>   
-		require(['jquery'], function($) {
+		require(['jquery'], function($) {		
 			$('.modal-dialog').css('width', '1300px');
+			
+			function displayAlert(errorMessage) {
+				var div_error = "<div class='alert alert-danger alert-dismissable danger'>";
+				div_error += "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" ;
+				div_error += errorMessage;
+				div_error += "</div>";
+
+				$("#error_alert").append(div_error);
+			};
+			
+			var change = false;
+			var stoparea_id = "{{ stopArea.id }}";
+			var stops = {};
+			$('#startStop_select option').each(function(index,item){
+				if ( index > 0 )
+					stops[item.value] = item.text; 
+			});
+			
+			//check if value is an integer
+			function isInt(value) {
+				return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value));
+			};
+			
+			function transferTableValidation() {
+				var table_validation = true;
+				$("#transfer_table tbody tr").each(function (i, row) {
+					var transfer_duration = $("#boa_stop_area_transfer_transferDuration").val();
+					var duration = $("#transfer_" + i  + "_duration").val();
+					var distance = $("#transfer_" + i  + "_distance").val();
+					var longName = $("#transfer_" + i  + "_longName").val();
+					var theGeom = $("#transfer_" + i  + "_theGeom").val();
+
+					if( transfer_duration ) {
+						if ( !isInt(transfer_duration) ) {
+							displayAlert("le temps de transfert par défaut doit être un entier ('" + transfer_duration + "')");
+							table_validation = false;
+							return false;
+						}
+					}
+
+					if( distance ) {
+						if ( !isInt(distance) ) {
+							displayAlert("Ligne " + (i+1) + ": la distance doit être un entier ('" + distance + "')");
+							table_validation = false;
+							return false;
+						}
+					}
+					
+					if( duration ) {						
+						if ( !isInt(duration) ) {
+							displayAlert("Ligne " + (i+1) + ": la durée doit être un entier ('" + duration + "')");
+							table_validation = false;
+							return false;
+						}
+						if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
+							displayAlert("Ligne " + (i+1) + ": la durée est forcément un nombre entier inférieur ou égal à 60 ou égal à 99");
+							table_validation = false;
+							return false;
+						}
+					} else {
+						if ( distance || longName || theGeom ) {
+							displayAlert ("Ligne " + (i+1) + ": si la distance, description ou géométrie est renseignée, la durée doit forcément l'être");
+							table_validation = false;
+							return false;
+						}
+					}
+				});
+				
+				return table_validation;
+			};
+
+			function getTransferTR(transfers, index, startStop, endStop)
+			{
+				var htmlTR = "";
+				var array_key = startStop["id"] + '.' + endStop["id"];
+				var transfer = {};
+				if( transfers[array_key] ) transfer = transfers[array_key];
+				
+				htmlTR += "<tr>";
+				htmlTR += "<td>";
+				if (transfer["id"]) htmlTR += "<input type='hidden' id='transfer_" + index  + "_id' name='transfer[" + index  + "][id]'  value='" +  transfer["id"]  + "'>";
+				htmlTR += "<input type='hidden' id='transfer_" + index  + "_startStopId' name='transfer[" + index  + "][startStopId]' class='form-control' value='" +  startStop["id"]  + "'>";
+				htmlTR += startStop["label"];				
+				htmlTR += "</td>";
+				
+				htmlTR += "<td>";				
+				htmlTR += "<input type='hidden' id='transfer_" + index  + "_endStopId' name='transfer[" + index  + "][endStopId]' class='form-control' value='" +  endStop["id"]  + "'>";				
+				htmlTR += endStop["label"];				
+				htmlTR += "</td>";
+				
+				$.each(["duration", "distance", "longName",  "theGeom"] , function(i, field) { 
+					htmlTR += "<td><input type='text' id='transfer_" + index  + "_" + field + "' name='transfer[" + index  + "][" + field + "]' class='form-control input-value'";
+					if (transfer[field]) htmlTR += " value='" +  transfer[field]  + "'";
+					htmlTR += "></td>";
+				});
+				
+				return htmlTR;
+			};
+			
+			function buildTransferTable(transfers) {
+				var startStopId = $( "#startStop_select option:selected" ).val();
+				if (startStopId) {
+					var startStop = { "id" : startStopId, "label" : $( "#startStop_select option:selected" ).text() };
+					var startStopLabel = $( "#startStop_select option:selected" ).text();
+				}
+				
+				var endStopId = $("#endStop_select option:selected").val();
+				if (endStopId) {
+					var endStop = { "id" : endStopId, "label" : $( "#endStop_select option:selected" ).text() };
+					var endStopLabel = $("#endStop_select option:selected").text();
+				}
+				
+				var htmlBody = "";
+				var index = 0;
+				if (startStopId) {
+					if (endStopId) {
+						htmlBody += getTransferTR(transfers, index, startStop, endStop);
+					} else {
+						$( "#endStop_select option" ).each(function( endIndex, endStop ) {
+							if ( endIndex > 0 ) {
+								var endStop = { "id" : $(endStop).val(), "label" : $(endStop).text() };
+								htmlBody += getTransferTR(transfers, index, startStop, endStop);
+								index +=1;
+							}
+						});					
+					}
+				} else {
+					$( "#startStop_select option" ).each(function( startIndex, startStop ) {
+						if ( startIndex > 0 ) {
+							var startStop = { "id" : $(startStop).val(), "label" : $(startStop).text() };
+							if (endStopId) {
+								htmlBody += getTransferTR(transfers, index, startStop, endStop);
+								index +=1;
+							} else {
+								$( "#endStop_select option" ).each(function( endIndex, endStop ) {
+									if ( endIndex > 0 ) {
+										var endStop = { "id" : $(endStop).val(), "label" : $(endStop).text() };
+										htmlBody += getTransferTR(transfers, index, startStop, endStop);
+										index +=1;
+									}
+								});
+							}
+						}
+					});
+				}
+
+				$("#transfer_table >tbody").html(htmlBody);
+			};
+			
+			function getTransfer() {
+				var startStopId = $( "#startStop_select" ).val();
+				var endStopId = $( "#endStop_select" ).val();
+			
+				var url = "{{ path('tisseo_boa_json_internal_transfer') }}";
+				var objData = {
+					'stopAreaId': stoparea_id,
+					'startStopId': startStopId,
+					'endStopId': endStopId
+				};
+
+				$.ajax({ url: url, data : objData, type: 'POST',
+					success : function(data){						
+						buildTransferTable(JSON.parse(data.content));
+						
+						if($("#transfer_table >tbody >tr").length > 100) {
+							displayAlert("Volume de données trop important, pour pouvoir saisir des transfert, veuillez renseigner un filtre");
+							$(document).find("#transfer_table >tbody :input").prop('disabled', true);
+						}
+					}
+				});
+			};
+			
+			$( ".stop_select" ).change(function () {
+				if( change ) {
+					if( true == window.confirm("Voulez-vous enregistrer les modifications apportées ?") ) {
+						alert("OK");
+					}
+					change = false;
+				}
+					
+				getTransfer();
+			});
+			
+			$(document).on('change', '.input-value', function(){
+				change = true;
+			});
+
+			function postForm( $form, callback ){
+				var values = {};
+				$.each( $form.serializeArray(), function(i, field) {
+					values[field.name] = field.value;
+				});
+				
+				$.ajax({
+					type        : $form.attr( 'method' ),
+					url         : "{{ path('tisseo_boa_transfer_save', {'StopAreaId': stopArea.id }) }}",
+					data        : values,
+					success     : function(data) {
+						callback( data );
+					}
+				});
+			};
+
+			//ajax form submission
+			var forms = ['[ name="{{ form.vars.full_name }}"]'];
+			$( forms.join(',') ).submit( function( e ){
+				e.preventDefault();
+				
+				if( !transferTableValidation() ) 
+					return false;
+				else {
+					postForm( $(this), function( response ){
+						if (response['success']) {
+							displayAlert('données enregistrées');
+						} else {
+							displayAlert('Erreur: ' + response["cause"]);
+						}
+					});
+				}
+
+				//prevent submit done with ajax
+				return false;
+			});			
+			
+			getTransfer();
 		});
     </script>		
 {% endblock %}

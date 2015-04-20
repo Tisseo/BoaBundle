@@ -31,3 +31,15 @@
 		</div>
 	{% endif %}
 {% endmacro %}
+
+{% macro stop_select(stops, select_id, select_class, all_label, all_value) %}
+	<select id='{{ select_id }}' class='{{ select_class }}'>
+		<option value='{{ all_value }}'>{{ all_label }}</option>
+	{%  for Stop in stops %}
+		{%  if Stop.masterStop is empty %}
+		<option value='{{ Stop.id }}'>{{ Stop.getStopLabel }}</option>
+		{%  endif %}
+	{%  endfor %}
+	</select>
+{% endmacro %}
+

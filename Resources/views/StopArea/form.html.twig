@@ -112,7 +112,9 @@
 					<span class="glyphicon glyphicon-resize-small"></span>
 					{{ 'stop_area.labels.internal_transfert' | trans }}
 					</a>
-				<a class="btn btn-default" id="external-transfert" href="#">
+				<a class="btn btn-default" id="external-transfert" 
+					href="{{ path('tisseo_boa_external_transfer_edit', {'StopAreaId': stopArea.id }) }}"
+					data-toggle="modal" data-target="#base-modal" >
 					<span class="glyphicon glyphicon-resize-full"></span>
 					{{ 'stop_area.labels.external_transfert' | trans }}
 				</a>
