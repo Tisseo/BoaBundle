@@ -74,10 +74,15 @@ class RouteController extends AbstractController
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stopsArea = [];
+
         if(isset($id)) {
             $route= $routeManager->findById($id);
 
+            $trips = $this->getDoctrine()
+                ->getRepository("Tisseo\EndivBundle\Entity\Trip","endiv")
+                ->findBy(array("route"=>$id));
         }
+
 
          if(!$route) {
             throw $this->createNotFoundException('route non trouvée');
@@ -96,7 +101,9 @@ class RouteController extends AbstractController
                     'form' => $formRoute->createView(),
                     'pageTitle' => 'modification de route',
                     'route' => $route,
-                    'id' => $id
+                    'id' => $id,
+                    'trips' => $trips
+
 
 
                 )
@@ -113,6 +120,7 @@ class RouteController extends AbstractController
 
         $stops = $request->get('list');
        // $stop = $stopManager->find()//
+
 
 
         foreach ($stops as $stopRow){
@@ -152,8 +160,15 @@ class RouteController extends AbstractController
         $dir = $request->query->get("order")[0]["column"];
 
         $index = -1;
+
+
         if(isset($id)) {
             $route= $routeManager->findById($id);
+            $trips = $this->getDoctrine()
+                ->getRepository("Tisseo\EndivBundle\Entity\Trip","endiv")
+                ->findBy(array("route"=>$id));
+
+
 
         }
 
@@ -168,12 +183,11 @@ class RouteController extends AbstractController
         }
 
         if($isZone == true){
-            //$stops = $stopManager->getZonesByRoute($route);
+            $stops = $stopManager->getStopsByRoute($id);
+
 
         }
 
-        if($isZone == false){
-            $stops = $stopManager->getStopsByRoute($id);
 
 
             foreach($stops as $stop) {
@@ -183,27 +197,68 @@ class RouteController extends AbstractController
 
                 $rank = $stop["rank"];
                 $stopAreas[] = $stopManager->getStops($waypointId);
-                $city = $stopAreas[$index][0]["city"];
 
-                $name = $stopAreas[$index][0]["shortName"];
+                if($isZone == false){
+                    $stops = $stopManager->getStopsByRoute($id);
+
+                    $city = $stopAreas[$index][0]["city"];
+                    $name = $stopAreas[$index][0]["shortName"];
+
+                }
+                else {
+
+                    $zone = $this->getDoctrine()
+                                 ->getRepository("Tisseo\EndivBundle\Entity\OdtArea","endiv")
+                                 ->find($stop["waypoint"]);
+                    $city = "";
+
+                    $name = $zone->getName();
+                }
+
                 $desc = $stop["dropOff"];
                 $pickup = $stop["pickup"];
 
+                $timeArrival = "";
+                $timeDeparture = "";
+
+
+
+
                 $object = new \stdClass();
                 $dataArr = [
-                       "Id" => $stop["waypoint"],
-                       "Ordre" => $rank,
-                       "Ville"=>$city,
-                       "Num" => "num",
-                       "Nom"=>$name,
-                       "Desc"=>$desc == true ? "Oui" : "Non",
-                       "Pickup"=>$pickup == true ? "Oui" : "Non"
+                    "Id" => $stop["waypoint"],
+                    "Ordre" => $rank,
+                    "Ville"=>$city,
+                    "Num" => "num",
+                    "Nom"=>$name,
+                    "Desc"=>$desc == true ? "Oui" : "Non",
+                    "Pickup"=>$pickup == true ? "Oui" : "Non"
 
                 ];
+
+
+                foreach($trips as $trip) {
+
+                    foreach($trip->getStopTimes() as $stoptimes)
+                    {
+
+                        if($stoptimes->getRouteStop()->getId() == $stop["id"]) {
+
+                            $timeArrival = $stoptimes->getArrivalTime();
+                            $timeDeparture = $stoptimes->getDepartureTime();
+
+
+
+                            $dataArr["Dep"] = $timeDeparture;
+                            $dataArr["Arr"] = $timeArrival;
+                            //array_push(array("Dep"=>$timeDeparture),$dataArr);
+
+                        }
+                    }
+                }
                 array_push($data,$dataArr);
 
             }
-        }
 
         $data = ["draw"=>1,"recordsTotal" => sizeof($stops), "recordFiltered" => sizeof($stops),"data"=>$data];
         return new Response(json_encode($data,true),200);

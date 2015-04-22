@@ -14,6 +14,9 @@ hr {
 .type-select {
     width: 200px;
 }
+th.trips-cols {
+    border: 1px solid #ccc;
+}
 
 /* datepicker + autocomplete fix chrome bug (on modal form) */
 .datepicker {
