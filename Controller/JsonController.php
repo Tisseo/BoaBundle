@@ -101,17 +101,12 @@ class JsonController extends AbstractController
 		if($request->isXmlHttpRequest())
         {
 			$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-			$StopManager = $this->get('tisseo_endiv.stop_manager');
 			
             $stopAreaId = $request->request->get('stopAreaId');
 			$stopArea = $StopAreaManager->find($stopAreaId);
-            $startStopId = $request->request->get('startStopId');
-			$startStop = $StopManager->find($startStopId);
-            $endStopId = $request->request->get('endStopId');
-			$endStop = $StopManager->find($endStopId);
 			
             $array= $this->get('tisseo_endiv.transfer_manager')
-                ->getInternalTransfer($stopAreaId, $startStop, $endStop);
+                ->getInternalTransfer($stopArea);
 				
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
@@ -119,6 +114,26 @@ class JsonController extends AbstractController
     	}
     }
 	
+    public function ExternalTransferAction()
+    {
+		
+        $request = $this->get('request');
+ 
+		if($request->isXmlHttpRequest())
+        {
+			$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+			
+            $stopAreaId = $request->request->get('stopAreaId');
+			$stopArea = $StopAreaManager->find($stopAreaId);
+			
+            $array= $this->get('tisseo_endiv.transfer_manager')
+                ->getExternalTransfer($stopArea);
+				
+            $response = new Response(json_encode($array));
+            $response -> headers -> set('Content-Type', 'application/json');
+            return $response;
+    	}
+    }
 	
     public function StopTransferAction()
     {
@@ -129,12 +144,28 @@ class JsonController extends AbstractController
         {
             $term = $request->request->get('term');
 			$array = array();
-			$array['Stops']= $this->get('tisseo_endiv.stop_manager')
+			$results = array();
+			$array= $this->get('tisseo_endiv.stop_manager')
                 ->findStopsLike($term);
-            $array['StopAreas']= $this->get('tisseo_endiv.stop_area_manager')
+			foreach($array as $item) {
+				$results[] = array(
+					"id" => $item["id"],
+					"name" => $item["name"],
+					"category" => "stop"
+				);
+			}
+            $array= $this->get('tisseo_endiv.stop_area_manager')
                 ->findStopAreasLike($term);
-				
-            $response = new Response(json_encode($array));
+			foreach($array as $item) {
+				$results[] = array(
+					"id" => $item["id"],
+					"name" => $item["name"],
+					"category" => "stop_area"
+				);
+			}
+			
+            //$response = new Response(json_encode($array));
+            $response = new Response(json_encode($results));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
     	}

@@ -4,6 +4,14 @@
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
+{% block javascripts %}
+	 {{ parent() }}
+	 {% javascripts '@TisseoBoaBundle/Resources/public/js/transfer.js' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	 {%  endjavascripts %}
+{% endblock %}
+
+
 {% block modal_title %}
     {{ title|trans({}, 'default') ~ " " ~ stopAreaLabel }}
 {% endblock %}
@@ -40,7 +48,6 @@
 			<th>{{ 'stop_area.transfer.columns.duration' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.distance' | trans }}</th>
 			<th>{{ 'stop_area.transfer.columns.longName' | trans }}</th>
-			<th>{{ 'stop_area.transfer.columns.theGeom' | trans }}</th>
 		</thead>
 		<tbody></tbody>
 		</table>
@@ -57,29 +64,21 @@
 	<script>   
 		require(['jquery'], function($) {		
 			$('.modal-dialog').css('width', '1300px');
-			
-			function displayAlert(errorMessage) {
-				var div_error = "<div class='alert alert-danger alert-dismissable danger'>";
-				div_error += "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" ;
-				div_error += errorMessage;
-				div_error += "</div>";
 
-				$("#error_alert").append(div_error);
-			};
-			
+			//change in table datas
 			var change = false;
+			
 			var stoparea_id = "{{ stopArea.id }}";
 			var stops = {};
+			///load stops variable
 			$('#startStop_select option').each(function(index,item){
 				if ( index > 0 )
 					stops[item.value] = item.text; 
 			});
 			
-			//check if value is an integer
-			function isInt(value) {
-				return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value));
-			};
-			
+			//ajax synchronisation variable when saving on changing filters
+			var load_transferts = false;
+
 			function transferTableValidation() {
 				var table_validation = true;
 				$("#transfer_table tbody tr").each(function (i, row) {
@@ -87,11 +86,10 @@
 					var duration = $("#transfer_" + i  + "_duration").val();
 					var distance = $("#transfer_" + i  + "_distance").val();
 					var longName = $("#transfer_" + i  + "_longName").val();
-					var theGeom = $("#transfer_" + i  + "_theGeom").val();
 
 					if( transfer_duration ) {
 						if ( !isInt(transfer_duration) ) {
-							displayAlert("le temps de transfert par défaut doit être un entier ('" + transfer_duration + "')");
+							displayAlert("{{ 'stop_area.transfer.error.transfer_duration' | trans }}".replace("%d%", transfer_duration));
 							table_validation = false;
 							return false;
 						}
@@ -99,7 +97,7 @@
 
 					if( distance ) {
 						if ( !isInt(distance) ) {
-							displayAlert("Ligne " + (i+1) + ": la distance doit être un entier ('" + distance + "')");
+							displayAlert("{{ 'stop_area.transfer.error.distance' | trans }}".replace("%d%", distance).replace("%i%", (i+1)));
 							table_validation = false;
 							return false;
 						}
@@ -107,18 +105,18 @@
 					
 					if( duration ) {						
 						if ( !isInt(duration) ) {
-							displayAlert("Ligne " + (i+1) + ": la durée doit être un entier ('" + duration + "')");
+							displayAlert("{{ 'stop_area.transfer.error.duration' | trans }}".replace("%d%", duration).replace("%i%", (i+1)));
 							table_validation = false;
 							return false;
 						}
 						if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
-							displayAlert("Ligne " + (i+1) + ": la durée est forcément un nombre entier inférieur ou égal à 60 ou égal à 99");
+							displayAlert("{{ 'stop_area.transfer.error.duration_value' | trans }}".replace("%i%", (i+1)));
 							table_validation = false;
 							return false;
 						}
 					} else {
 						if ( distance || longName || theGeom ) {
-							displayAlert ("Ligne " + (i+1) + ": si la distance, description ou géométrie est renseignée, la durée doit forcément l'être");
+							displayAlert("{{ 'stop_area.transfer.error.empty_duration' | trans }}".replace("%i%", (i+1)));
 							table_validation = false;
 							return false;
 						}
@@ -127,152 +125,61 @@
 				
 				return table_validation;
 			};
-
-			function getTransferTR(transfers, index, startStop, endStop)
-			{
-				var htmlTR = "";
-				var array_key = startStop["id"] + '.' + endStop["id"];
-				var transfer = {};
-				if( transfers[array_key] ) transfer = transfers[array_key];
-				
-				htmlTR += "<tr>";
-				htmlTR += "<td>";
-				if (transfer["id"]) htmlTR += "<input type='hidden' id='transfer_" + index  + "_id' name='transfer[" + index  + "][id]'  value='" +  transfer["id"]  + "'>";
-				htmlTR += "<input type='hidden' id='transfer_" + index  + "_startStopId' name='transfer[" + index  + "][startStopId]' class='form-control' value='" +  startStop["id"]  + "'>";
-				htmlTR += startStop["label"];				
-				htmlTR += "</td>";
-				
-				htmlTR += "<td>";				
-				htmlTR += "<input type='hidden' id='transfer_" + index  + "_endStopId' name='transfer[" + index  + "][endStopId]' class='form-control' value='" +  endStop["id"]  + "'>";				
-				htmlTR += endStop["label"];				
-				htmlTR += "</td>";
-				
-				$.each(["duration", "distance", "longName",  "theGeom"] , function(i, field) { 
-					htmlTR += "<td><input type='text' id='transfer_" + index  + "_" + field + "' name='transfer[" + index  + "][" + field + "]' class='form-control input-value'";
-					if (transfer[field]) htmlTR += " value='" +  transfer[field]  + "'";
-					htmlTR += "></td>";
-				});
-				
-				return htmlTR;
-			};
-			
-			function buildTransferTable(transfers) {
-				var startStopId = $( "#startStop_select option:selected" ).val();
-				if (startStopId) {
-					var startStop = { "id" : startStopId, "label" : $( "#startStop_select option:selected" ).text() };
-					var startStopLabel = $( "#startStop_select option:selected" ).text();
-				}
-				
-				var endStopId = $("#endStop_select option:selected").val();
-				if (endStopId) {
-					var endStop = { "id" : endStopId, "label" : $( "#endStop_select option:selected" ).text() };
-					var endStopLabel = $("#endStop_select option:selected").text();
-				}
-				
-				var htmlBody = "";
-				var index = 0;
-				if (startStopId) {
-					if (endStopId) {
-						htmlBody += getTransferTR(transfers, index, startStop, endStop);
-					} else {
-						$( "#endStop_select option" ).each(function( endIndex, endStop ) {
-							if ( endIndex > 0 ) {
-								var endStop = { "id" : $(endStop).val(), "label" : $(endStop).text() };
-								htmlBody += getTransferTR(transfers, index, startStop, endStop);
-								index +=1;
-							}
-						});					
-					}
-				} else {
-					$( "#startStop_select option" ).each(function( startIndex, startStop ) {
-						if ( startIndex > 0 ) {
-							var startStop = { "id" : $(startStop).val(), "label" : $(startStop).text() };
-							if (endStopId) {
-								htmlBody += getTransferTR(transfers, index, startStop, endStop);
-								index +=1;
-							} else {
-								$( "#endStop_select option" ).each(function( endIndex, endStop ) {
-									if ( endIndex > 0 ) {
-										var endStop = { "id" : $(endStop).val(), "label" : $(endStop).text() };
-										htmlBody += getTransferTR(transfers, index, startStop, endStop);
-										index +=1;
-									}
-								});
-							}
-						}
-					});
-				}
-
-				$("#transfer_table >tbody").html(htmlBody);
-			};
 			
 			function getTransfer() {
 				var startStopId = $( "#startStop_select" ).val();
 				var endStopId = $( "#endStop_select" ).val();
 			
 				var url = "{{ path('tisseo_boa_json_internal_transfer') }}";
-				var objData = {
-					'stopAreaId': stoparea_id,
-					'startStopId': startStopId,
-					'endStopId': endStopId
-				};
+				var objData = { 'stopAreaId': stoparea_id };
 
 				$.ajax({ url: url, data : objData, type: 'POST',
 					success : function(data){						
-						buildTransferTable(JSON.parse(data.content));
+						buildInternalTransferTable(JSON.parse(data.content));
 						
 						if($("#transfer_table >tbody >tr").length > 100) {
-							displayAlert("Volume de données trop important, pour pouvoir saisir des transfert, veuillez renseigner un filtre");
+							displayAlert("{{ 'stop_area.transfer.error.max_input' | trans }}");
 							$(document).find("#transfer_table >tbody :input").prop('disabled', true);
 						}
+						load_transferts = false;
 					}
 				});
 			};
 			
 			$( ".stop_select" ).change(function () {
 				if( change ) {
-					if( true == window.confirm("Voulez-vous enregistrer les modifications apportées ?") ) {
-						alert("OK");
-					}
 					change = false;
+					if( true == window.confirm("{{ 'stop_area.transfer.save_confirmation' | trans }}") ) {
+						load_transfer = true;
+						$('#form-save').trigger('click');
+						//change = false;
+					} else {
+						getTransfer();
+					}
+				} else {
+					getTransfer();
 				}
-					
-				getTransfer();
 			});
 			
 			$(document).on('change', '.input-value', function(){
 				change = true;
 			});
 
-			function postForm( $form, callback ){
-				var values = {};
-				$.each( $form.serializeArray(), function(i, field) {
-					values[field.name] = field.value;
-				});
-				
-				$.ajax({
-					type        : $form.attr( 'method' ),
-					url         : "{{ path('tisseo_boa_transfer_save', {'StopAreaId': stopArea.id }) }}",
-					data        : values,
-					success     : function(data) {
-						callback( data );
-					}
-				});
-			};
-
 			//ajax form submission
 			var forms = ['[ name="{{ form.vars.full_name }}"]'];
 			$( forms.join(',') ).submit( function( e ){
 				e.preventDefault();
 				
-				if( !transferTableValidation() ) 
-					return false;
-				else {
-					postForm( $(this), function( response ){
+				if( transferTableValidation() ) {
+					var post_url = "{{ path('tisseo_boa_internal_transfer_save', {'StopAreaId': stopArea.id }) }}";
+					postForm( $(this), post_url, function( response ){
+						done = true;
 						if (response['success']) {
-							displayAlert('données enregistrées');
+							displayAlert("{{ 'stop_area.transfer.data_saved' | trans }}");
+							getTransfer();
+							change = false;
 						} else {
-							displayAlert('Erreur: ' + response["cause"]);
+							displayAlert("{{ 'stop_area.transfer.saving_error' | trans }}".replace("%s%", response["cause"]));
 						}
 					});
 				}
