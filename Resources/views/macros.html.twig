@@ -32,8 +32,8 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro stop_select(stops, select_id, select_class, all_label, all_value) %}
-	<select id='{{ select_id }}' class='{{ select_class }}'>
+{% macro stop_select(stops, select_id, select_class, all_label, all_value, select_name) %}
+	<select id='{{ select_id }}' name='{{ select_name }}' class='{{ select_class }}'>
 		<option value='{{ all_value }}'>{{ all_label }}</option>
 	{%  for Stop in stops %}
 		{%  if Stop.masterStop is empty %}
