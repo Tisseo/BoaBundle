@@ -3,7 +3,7 @@
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 
-{% block container %}
+
     {% block stylesheets %}
         {{ parent() }}
         {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
@@ -11,9 +11,11 @@
         <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
         {% endstylesheets %}
     {% endblock %}
-<div class="row">
+
+{% block body %}
+    <div class="row">
     <div class="col-md-12" role="main">
-        {% block main_content %}
+
 <hr />
     <table class="table datatable table-hover dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
         <tr>
@@ -37,10 +39,11 @@
             </tr>
         {%  endfor %}
 
-        {% endblock %}
+
          </table>
         </div>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}

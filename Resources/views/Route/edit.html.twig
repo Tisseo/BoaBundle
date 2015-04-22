@@ -1,34 +1,251 @@
-{% extends "TisseoBoaBundle::base.html.twig" %}
-{% block container %}
-    {% for stop in route.routeStops  %}
-        {{ dump(stop.waypoint.area) }}
-    {% endfor %}
+{% extends "TisseoBoaBundle::datatable_list_stops.html.twig" %}
 
-    <div class="row">
-        <div class="col-md-12" role="main">
-            {% block main_content %}
+
+            {% block main_content -%}
+
+                <style>
+                    #Route_creer{
+                        display: none;
+                    }
+                </style>
+
+                <div class="row">
+                    <div class="col-md-12" role="main">
+            {% for stop in route.routeStops  %}
+
+            {% endfor %}
+
+
             <hr />
+                        <input type="hidden" id="routeId" value="{{ id }}" />
             {{ form_start(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.way) }}
                 {{ form_row(form.direction) }}
-            {{ form_row(form.modifier) }}
+            <input type="submit" value="editer" name="Route_creer" class="btn btn-primary"/>
             {{ form_rest(form) }}
             {{ form_end(form) }}
            </div>
     </div>
-{% endblock %}
-{% endblock %}
+<table id="datatable" class="table datatable table-hover dataTable no-footer">
 
+    <thead>
+
+           <tr>
+               <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+               {% set count =0 %}
+                {% for trip in trips %}
+
+                    {% set count=loop.index %}
+                     <th colspan="2" class="trip-cols">{{ trip.name }}</th>
+               {% endfor %}
+           </tr>
+
+
+        <tr>
+            <th class="col-sm-1" >Id</th>
+            <th class="col-sm-1" >Ordre</th>
+            <th class="col-sm-1">Ville</th>
+            <th class="col-sm-1">Nom arrêt</th>
+            <th class="col-sm-1">Num arrêt</th>
+            <th class="col-sm-1">Descente inter</th>
+            <th class="col-sm-1">Montee inter</th>
+            {% for i in range(1,count) %}
+                <th class="col-sm-1">Heure départ</th>
+                <th class="col-sm-1">Heure arrivée</th>
+            {% endfor %}
+
+
+
+        </tr>
+    </thead>
+    <input type="hidden" id="servicesCount" value="{{ count }}">
+
+
+    {% block table_head %}
+                        {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+
+
+                    
+                        {% endif %}
+                    {% endblock %}
+
+           <tbody class="ui-sorting">
+                    {% block table_body -%}
+
+
+                     {%  endblock %}
+                     </tbody>
+                </table>
+                {% block list_pagination -%}
+                {% endblock %}
+
+                <button id="saveList" class="btn btn-default">Sauvegarder</button>
+ {% endblock %}
 {% block javascripts %}
-    {{ parent }}
+    {{ parent() }}
 
 
-  {% javascripts '@TisseoBoaBundle/Resources/public/js/route.js' %}
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+
+
+    {% javascripts '@TisseoBoaBundle/Resources/public/js/liststops.js' %}
     <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 
-    {%  endjavascripts %}
 
-{%  endblock %}
+
+    <script>
+
+
+
+        require(['jquery', 'textfill', 'datatables'], function($) {
+            $(document).ready(function() {
+
+                var countServices = $("#servicesCount").val();
+
+                var cols = [
+                    { "data": "Id" },
+                    { "data": "Ordre" },
+                    { "data": "Ville" },
+                    { "data": "Nom" },
+                    { "data": "Num" },
+                    { "data": "Desc" },
+                    { "data": "Pickup" }
+
+
+                ];
+
+            
+                for(i=0;i<=countServices-1;i++){
+
+                    cols.push({"data" : "Dep"},{"data": "Arr"});
+                }
+
+                idRoute = $("#routeId").val();
+                var table = $("#datatable").DataTable({
+                    "columnDefs": [ {
+                        "searchable": true,
+                        "orderable": true,
+                        "targets": 0
+                    } ],
+                    "order":   [ 1, 'desc' ],
+                    "iDisplayLength": 25,
+                    "processign": true,
+                    "serverSide": false,
+                    "ajax": "../datatable/"+idRoute,
+                    "columns": cols ,
+                    "aoColumnDefs" : [ {
+                        "bSortable" : false,
+                        "aTargets" : [ "no-sort" ]
+                    } ]
+                })
+            });
+        });
+
+        require(['jquery', 'jquery_ui_droppable', 'jquery_ui_draggable', 'jquery_ui_sortable'], function($){
+            function displayError(responseText) {
+                document.open();
+                document.write(responseText);
+                document.close();
+            }
+
+
+            $(document).ready(function(){
+
+
+
+                table = $("#datatable").DataTable();
+                $.fn.liveDroppable = function() {
+                    $(this).droppable({
+                        over: function(event, ui) {
+                           // $(this).find("tr:first").addClass("success");
+                        },
+                        out: function(event, ui) {
+                            //$(this).find("tr:first").removeClass("success");
+                        },
+                        drop: function(event, ui) {
+                           //endPos = ui.item.prevAll().length+1;
+                           // endRow = $("#datatable tbody").find("tr").eq(endPos-1);
+
+                             //console.log(ui.draggable.find('tr').first());
+                            //var orderreplace = table.row( this ).data().Ordre;
+
+
+
+                        }
+                    });
+                };
+
+                $(document).find('#datatable tbody').liveDroppable();
+
+                 var startPos;
+                 var endPos;
+                 var order;
+                 var orderUpdate;
+                 var startRow;
+                 var orders = [];
+                 table = $("#datatable").DataTable();
+
+                $("#datatable tbody").sortable({
+                    cursor: "move",
+                    start: function (event,ui){
+                        startPos = ui.item.prevAll().length+1;
+
+                        startRow = $("#datatable tbody").find("tr").eq(startPos-1);
+                        order = table.row( startRow ).data().Ordre;
+
+                        orders = [];
+                        orders.push(order);
+                    },
+                    update: function(event, ui){
+
+                        endPos = ui.item.prevAll().length+1;
+
+
+
+                        var endRow = $("#datatable tbody").find("tr").eq(endPos-1);
+                        startRow = $("#datatable tbody").find("tr").eq(startPos-1);
+
+
+                        if(endPos < startPos) {
+                            var newPos = $("#datatable tbody").find("tr").eq(endPos);
+
+                            orderUpdate = table.row( newPos  ).data().Ordre;
+
+                            newPos.find("td").eq(1).html(orders[0]);
+                            endRow.find("td").eq(1).html(orderUpdate);
+                        }
+
+                        else if(endPos > startPos) {
+
+
+                        }
+
+                        /**order = table.row( startRow ).data().Ordre;
+
+
+                        endRow.find("td").eq(1).html(orderUpdate);
+
+                        //
+                            **/
+                        console.log("fin"+endPos+ "debut"+startPos  );
+                    }
+                })
+
+                $("#datatable tbody").on('click', 'tr', function() {
+                    $(this).toggleClass("selected");
+                    $(this).draggable();
+
+                    var order = table.row( this ).data().Ordre;
+
+                })
+
+
+
+            });
+
+        });
+
+    </script>
+
+{% endblock %}

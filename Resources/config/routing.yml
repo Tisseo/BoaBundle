@@ -184,3 +184,17 @@ tisseo_boa_route_delete:
 tisseo_boa_route_create:
     pattern: /routes/create
     defaults: { _controller: TisseoBoaBundle:Route:create }
+
+tisseo_boa_route_datatable:
+    pattern: /routes/datatable/{id}
+    defaults: { _controller: TisseoBoaBundle:Route:datatable }
+    requirements:
+        id: \d+
+        _format: json
+
+tisseo_boa_route_stops_save:
+    pattern: /routes/datatable/save
+    defaults: { _controller: TisseoBoaBundle:Route:datatableSave }
+    options:
+        expose: true
+
