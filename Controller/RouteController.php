@@ -182,13 +182,8 @@ class RouteController extends AbstractController
             $isZone = true;
         }
 
-        if($isZone == true){
+
             $stops = $stopManager->getStopsByRoute($id);
-
-
-        }
-
-
 
             foreach($stops as $stop) {
 
@@ -196,10 +191,11 @@ class RouteController extends AbstractController
                 $waypointId = $stop["waypoint"];
 
                 $rank = $stop["rank"];
-                $stopAreas[] = $stopManager->getStops($waypointId);
 
                 if($isZone == false){
                     $stops = $stopManager->getStopsByRoute($id);
+
+                    $stopAreas[] = $stopManager->getStops($waypointId);
 
                     $city = $stopAreas[$index][0]["city"];
                     $name = $stopAreas[$index][0]["shortName"];

@@ -22,8 +22,28 @@
           </div>
           {% endif %}
       {% endif %}
-  {% endmacro %}
+{% endmacro %}
 
+
+ {% macro stop_point(name) %}
+     {% if name == "add" %}
+     <div class="col-md-12">
+
+         <br>
+         <div class = "row">
+             <div class = "col-md-4">
+                 <input type="hidden" id="stop_id">
+                 <input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}">
+             </div>
+             <div class = "col-md-4">
+                 <a href="{{ path('tisseo_boa_stop_edit') }}" class="btn btn-success" id="stop_edit">
+                     <span class="glyphicon glyphicon-check"></span> {{'stop.validate'|trans({}, 'default')}}
+                 </a>
+             </div>
+         </div>
+     </div>
+     {% endif %}
+ {% endmacro %}
 
 {% macro color_display(object) %}
 	{% if object.name is defined %}

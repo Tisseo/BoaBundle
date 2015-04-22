@@ -11,9 +11,15 @@ hr {
 	border-top: 1px solid black;
 }
 
+
 .type-select {
     width: 200px;
 }
+
+
+/* table datatable */
+
+
 th.trips-cols {
     border: 1px solid #ccc;
 }

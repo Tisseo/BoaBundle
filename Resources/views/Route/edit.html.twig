@@ -1,23 +1,23 @@
 {% extends "TisseoBoaBundle::datatable_list_stops.html.twig" %}
 
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
-            {% block main_content -%}
 
-                <style>
-                    #Route_creer{
-                        display: none;
-                    }
-                </style>
+{% block main_content -%}
+            <style>
+                #Route_creer{
+                    display: none;
+                }
+                th.trip-cols {
+                    border: 1px solid #ccc;
+                }
+            </style>
 
-                <div class="row">
-                    <div class="col-md-12" role="main">
-            {% for stop in route.routeStops  %}
-
-            {% endfor %}
-
+   <div class="row">
+       <div class="col-md-12" role="main">
 
             <hr />
-                        <input type="hidden" id="routeId" value="{{ id }}" />
+           <input type="hidden" id="routeId" value="{{ id }}" />
             {{ form_start(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.way) }}
@@ -25,12 +25,12 @@
             <input type="submit" value="editer" name="Route_creer" class="btn btn-primary"/>
             {{ form_rest(form) }}
             {{ form_end(form) }}
-           </div>
+       </div>
     </div>
+
 <table id="datatable" class="table datatable table-hover dataTable no-footer">
 
     <thead>
-
            <tr>
                <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
                {% set count =0 %}
@@ -40,8 +40,6 @@
                      <th colspan="2" class="trip-cols">{{ trip.name }}</th>
                {% endfor %}
            </tr>
-
-
         <tr>
             <th class="col-sm-1" >Id</th>
             <th class="col-sm-1" >Ordre</th>
@@ -54,55 +52,43 @@
                 <th class="col-sm-1">Heure départ</th>
                 <th class="col-sm-1">Heure arrivée</th>
             {% endfor %}
-
-
-
         </tr>
     </thead>
     <input type="hidden" id="servicesCount" value="{{ count }}">
+    {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+        {% block table_head %}
+
+        {% endblock %}
 
 
-    {% block table_head %}
-                        {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+        <tbody class="ui-sorting">
+
+        </tbody>
+        {% block table_body -%}
+
+        {% endblock %}
+        </table>
+        {% block list_pagination -%}{% endblock %}
+
+        {{  render.stop_point('add') }}
 
 
-                    
-                        {% endif %}
-                    {% endblock %}
+        <button id="saveList" class="btn btn-default">Sauvegarder</button>
 
-           <tbody class="ui-sorting">
-                    {% block table_body -%}
+    {%  endif %}
+{%  endblock %}
 
 
-                     {%  endblock %}
-                     </tbody>
-                </table>
-                {% block list_pagination -%}
-                {% endblock %}
-
-                <button id="saveList" class="btn btn-default">Sauvegarder</button>
- {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-
-
-
-
     {% javascripts '@TisseoBoaBundle/Resources/public/js/liststops.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
-
-
     <script>
-
-
-
         require(['jquery', 'textfill', 'datatables'], function($) {
             $(document).ready(function() {
-
                 var countServices = $("#servicesCount").val();
-
                 var cols = [
                     { "data": "Id" },
                     { "data": "Ordre" },
@@ -111,18 +97,15 @@
                     { "data": "Num" },
                     { "data": "Desc" },
                     { "data": "Pickup" }
-
-
                 ];
 
-            
                 for(i=0;i<=countServices-1;i++){
-
                     cols.push({"data" : "Dep"},{"data": "Arr"});
                 }
 
                 idRoute = $("#routeId").val();
                 var table = $("#datatable").DataTable({
+                    "scrollX": true,
                     "columnDefs": [ {
                         "searchable": true,
                         "orderable": true,
@@ -142,7 +125,7 @@
             });
         });
 
-        require(['jquery', 'jquery_ui_droppable', 'jquery_ui_draggable', 'jquery_ui_sortable'], function($){
+        require(['jquery', 'jquery_ui_droppable', 'jquery_ui_draggable', 'jquery_ui_sortable', 'jquery_ui_autocomplete'], function($){
             function displayError(responseText) {
                 document.open();
                 document.write(responseText);
@@ -151,10 +134,30 @@
 
 
             $(document).ready(function(){
-
-
-
                 table = $("#datatable").DataTable();
+                $("#stop_search").autocomplete({
+                    source: function (request, response) {
+                        var objData = { term: request.term };
+                        var url = $(this.element).attr('data-url');
+                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+                            success: function (data) {
+                                response($.map(JSON.parse(data.content), function (item) {
+                                    return {
+                                        label: item.name,
+                                        value: item.name,
+                                        id: item.id
+                                    };
+                                }));
+                            },
+                        });
+                    },
+                    select: function (event, ui) {
+                        $("#stop_id").val(ui.item.id);
+                    },
+                    minLength: 3,
+                    delay: 300
+                });
+
                 $.fn.liveDroppable = function() {
                     $(this).droppable({
                         over: function(event, ui) {
@@ -169,8 +172,6 @@
 
                              //console.log(ui.draggable.find('tr').first());
                             //var orderreplace = table.row( this ).data().Ordre;
-
-
 
                         }
                     });
@@ -192,32 +193,40 @@
                         startPos = ui.item.prevAll().length+1;
 
                         startRow = $("#datatable tbody").find("tr").eq(startPos-1);
-                        order = table.row( startRow ).data().Ordre;
+                        order = startRow.find('td').eq(1).html();
 
                         orders = [];
                         orders.push(order);
+
+
                     },
                     update: function(event, ui){
 
                         endPos = ui.item.prevAll().length+1;
-
-
 
                         var endRow = $("#datatable tbody").find("tr").eq(endPos-1);
                         startRow = $("#datatable tbody").find("tr").eq(startPos-1);
 
 
                         if(endPos < startPos) {
+
                             var newPos = $("#datatable tbody").find("tr").eq(endPos);
 
-                            orderUpdate = table.row( newPos  ).data().Ordre;
+                            orderUpdate = table.row(newPos).data().Ordre;
+
+                            endRow.find("td").eq(1).html(newPos.find('td').eq(1).html());
 
                             newPos.find("td").eq(1).html(orders[0]);
-                            endRow.find("td").eq(1).html(orderUpdate);
+                           // ;
                         }
 
                         else if(endPos > startPos) {
 
+                            var newPos = $("#datatable tbody").find("tr").eq(endPos-2);
+                            orderUpdate = table.row(newPos).data().Ordre;
+
+                            endRow.find("td").eq(1).html(newPos.find('td').eq(1).html());
+                            newPos.find("td").eq(1).html(orders[0]);
 
                         }
 
@@ -228,7 +237,7 @@
 
                         //
                             **/
-                        console.log("fin"+endPos+ "debut"+startPos  );
+
                     }
                 })
 
@@ -239,8 +248,6 @@
                     var order = table.row( this ).data().Ordre;
 
                 })
-
-
 
             });
 

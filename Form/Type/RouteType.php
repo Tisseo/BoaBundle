@@ -20,7 +20,7 @@ class RouteType extends AbstractType {
                ->add('way', 'choice',  array(
                    'choices' => array(
                        'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
-                   )))
+                   ), 'label' => 'Sens'))
                ->add('direction', 'text',  array('label' => 'Direction'))
            ->add('creer', 'submit');
 
