@@ -19,13 +19,10 @@
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
 
-{#	{{ dump(form.id.vars.value) }}	#}
-	
 	{{ form_start(form) }}
 		{{ form_errors(form) }}
 		{{ form_widget(form._token) }}
 		{{ form_widget(form.id, { 'attr': {'class': 'hide'}}) }}
-		
 		
 		<div class="row">
 			<div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
@@ -43,13 +40,6 @@
 				{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
 				<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
 			</div>
-{#			
-			<div class = "col-md-2">
-				<a href="" class="btn btn-success" id="new_stop">
-					<span class="glyphicon glyphicon-zoom-in"></span> {{'stop.see'|trans({}, 'default')}}
-				</a>
-			</div>
-#}			
 		</div>
 
 		{# datasources #}
@@ -155,6 +145,11 @@
 		<div class = "col-md-2">
 				<a href="{{ path('tisseo_boa_stop_history_new') }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
 					<span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyStop' | trans }}
+				</a>
+		</div>
+		<div class = "col-md-2">
+				<a href="{{ path('tisseo_boa_stop_close', {'StopId': form.id.vars.value }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="close_history">
+					<span class="glyphicon glyphicon-remove"></span>  {{ 'stop.closeStop' | trans }}
 				</a>
 		</div>
 		

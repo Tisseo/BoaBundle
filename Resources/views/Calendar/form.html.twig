@@ -44,13 +44,13 @@
 				data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendar_element.vars.prototype } %} {% endfilter %}"
 		>	
 		<thead>
-			<th>Ordre</th>
-			<th>Début</th>
-			<th>Fin</th>
-			<th>Calendrier</th>
-			<th>Signe</th>
-			<th>Récurrence</th>
-			<th>Supprimer</th>
+			<th>{{ 'calendar_element.labels.rank' | trans }}</th>
+			<th>{{ 'calendar_element.labels.startDate' | trans }}</th>
+			<th>{{ 'calendar_element.labels.endDate' | trans }}</th>
+			<th>{{ 'calendar_element.labels.includedCalendar' | trans }}</th>
+			<th>{{ 'calendar_element.labels.positive' | trans }}</th>
+			<th>{{ 'calendar_element.labels.interval' | trans }}</th>
+			<th>{{ 'global.delete' | trans }}</th>
 		</thead>
 		<tbody>
 		{% set line_counter = 0 %}
@@ -121,15 +121,14 @@
 				}
 			}
 		
-			function display_dates_validation(item) {		
+			function display_dates_validation() {		
 				var startDate=$("#start_date_picker").val().split('/');
 				var formattedStart=startDate[2] + startDate[1] + startDate[0];
 				var endDate=$("#end_date_picker").val().split('/');
 				var formattedEnd=endDate[2] + endDate[1] + endDate[0];
 				
 				if(formattedStart > formattedEnd) {
-					alert("la date de début ne peut être supérieure à la date de fin");
-					item.focus();
+					alert("{{ 'calendar.error.displayDates' | trans }}");
 					return false;
 				}	
 				
@@ -154,17 +153,11 @@
 			})
 			.on('changeDate', function(e) {
 				if (!($(this).val() === '' || $(this).val() === null)) {
-					if(!display_dates_validation($(this))) {
-						return false;
-					}
-					
-					display_dates_save();
 					$(e.target.name).datepicker('update');					
 				}
 			});
 		
 			var calendarID="{{ calendarId }}";
-			
 			var data_stored = null;
 			
 			if( calendarID != '' )  { 
@@ -263,9 +256,15 @@
 			$('#refresh_button').click(
 				function(event) {
 					if( calendarID == '' ) {
-						alert("Vous devez d'abord enregistrer le calendrier");
+						alert("{{ 'calendar.alert.save' | trans }}");
 						return false;
 					}
+					
+					if(!display_dates_validation($(this))) {
+						return false;
+					}
+					display_dates_save();
+					
 					var url = $(this).attr('data-url');
 					
 					var start_array = $('#start_date_picker').val().split("/");
@@ -312,7 +311,7 @@
 						var hidden_id = '#' + $(this).attr('id').replace("calendarName", "includedCalendar");
 						$(hidden_id).val(ui.item.id);
 					},					
-					minLength: 3,
+					minLength: 2,
 					delay: 300
 				});
 			};

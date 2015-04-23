@@ -36,6 +36,7 @@ class StopAreaController extends AbstractController
 		
 		$city = $stopArea->getCity();
 		$cityLabel = "";
+		$cityMain = $StopAreaManager->getMainStopCityName($stopArea);
 		if (!empty($city)) {
 			$cityLabel = $city->getName()."(".$city->getInsee().")";
 		}
@@ -46,7 +47,18 @@ class StopAreaController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
 			try {
-				$StopAreaManager->save($form->getData());
+				$datas = $form->getData();
+				$StopAreaManager->save($datas);
+				if( !$StopAreaId ) $StopAreaId = $datas->getId();
+				
+				return $this->redirect(
+								$this->generateUrl(
+									'tisseo_boa_stop_area_edit', 
+									array('StopAreaId' => $StopAreaId)
+								)
+				);
+
+				
 			} catch(\Exception $e) {
 				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 			}
@@ -56,77 +68,14 @@ class StopAreaController extends AbstractController
 			'TisseoBoaBundle:StopArea:form.html.twig',
 			array(
 				'form' => $form->createView(),
-				'title' => 'stop_area.edit',
+				'title' => ($StopAreaId ? 'stop_area.edit' : 'stop_area.create'),
 				'cityLabel' => $cityLabel,
+				'cityMain' => $cityMain,
 				'stopArea' => $stopArea,
 				'stops' => $stops
 			)
 		);
 	}		
-	
-    public function aliasAction(Request $request, $StopAreaId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-		$stopArea = $StopAreaManager->find($StopAreaId);
-		$stopAreaLabel = $stopArea->getNameLabel();
-/*
-		$originalAlias = new ArrayCollection();
-		foreach ($stopArea->getAlias() as $alias) {
-			$originalAlias->add($alias);
-		}
-*/		
-		$formBuilder = $this->createFormBuilder($stopArea)
-			->setAction(
-				$this->generateUrl('tisseo_boa_stop_area_alias',
-					array('StopAreaId' => $StopAreaId)
-				)
-			)			
-			->add('alias', 'collection', 
-			array(
-				'label' => 'stop_area.labels.alias',
-				'allow_add' => true,
-				'allow_delete' => true,
-				'type' => new AliasType(),
-				'by_reference' => false,
-			)
-		);
-		$form = $formBuilder->getForm();
-        $form->handleRequest($request);
-		
-		if ($form->isValid()) {
-			try {
-/*				
-				$datas = $form->getData();
-				foreach ($originalAlias as $alias) {
-					if ($datas->getAlias()->contains($alias) == false) {
-						$datas->getAlias()->removeElement($alias);
-					}
-				}
-				
-				$StopAreaManager->save($datas);
-*/				
-				$StopAreaManager->saveAliases($form->getData());
-			} catch(\Exception $e) {
-				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-			}
-
-			return $this->redirect(
-				$this->generateUrl('tisseo_boa_stop_area_edit', 
-					array('StopAreaId' => $StopAreaId)
-				)
-			);
-		}
-			
-		return $this->render(
-			'TisseoBoaBundle:StopArea:alias.html.twig',
-			array(
-				'form' => $form->createView(),
-				'title' => 'stop_area.alias',
-				'stopAreaLabel' => $stopAreaLabel
-			)
-		);
-	}
 	
     public function internalTransferAction(Request $request, $StopAreaId)
 	{
@@ -227,7 +176,15 @@ class StopAreaController extends AbstractController
 		$stopArea = $StopAreaManager->find($StopAreaId);
 		try {
 			$transfers = $request->request->get('transfer');
-			$TransferManager->saveExternalTransfers($stopArea, $transfers);
+			$ignoredTransfers = $TransferManager->saveExternalTransfers($stopArea, $transfers);
+			
+			if( $ignoredTransfers > 0 ) {
+				$response['cause'] = $this->get('translator')->trans(
+													'stop_area.transfer.error.duplicate_transfer',
+													array('%i%' => $ignoredTransfers),
+													'messages'
+												);
+			}
 			
 			$response['success'] = true;
 		} catch(\Exception $e) {
@@ -236,4 +193,69 @@ class StopAreaController extends AbstractController
 		}
 		return new JsonResponse( $response );
 	}	
+	
+	
+    public function aliasAction(Request $request, $StopAreaId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
+		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+		$stopArea = $StopAreaManager->find($StopAreaId);
+		$stopAreaLabel = $stopArea->getNameLabel();
+/*
+		$originalAlias = new ArrayCollection();
+		foreach ($stopArea->getAlias() as $alias) {
+			$originalAlias->add($alias);
+		}
+*/		
+		$formBuilder = $this->createFormBuilder($stopArea)
+			->setAction(
+				$this->generateUrl('tisseo_boa_stop_area_alias',
+					array('StopAreaId' => $StopAreaId)
+				)
+			)			
+			->add('alias', 'collection', 
+			array(
+				'label' => 'stop_area.labels.alias',
+				'allow_add' => true,
+				'allow_delete' => true,
+				'type' => new AliasType(),
+				'by_reference' => false,
+			)
+		);
+		$form = $formBuilder->getForm();
+        $form->handleRequest($request);
+		
+		if ($form->isValid()) {
+			try {
+/*				
+				$datas = $form->getData();
+				foreach ($originalAlias as $alias) {
+					if ($datas->getAlias()->contains($alias) == false) {
+						$datas->getAlias()->removeElement($alias);
+					}
+				}
+				
+				$StopAreaManager->save($datas);
+*/				
+				$StopAreaManager->saveAliases($form->getData());
+			} catch(\Exception $e) {
+				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+			}
+
+			return $this->redirect(
+				$this->generateUrl('tisseo_boa_stop_area_edit', 
+					array('StopAreaId' => $StopAreaId)
+				)
+			);
+		}
+			
+		return $this->render(
+			'TisseoBoaBundle:StopArea:alias.html.twig',
+			array(
+				'form' => $form->createView(),
+				'title' => 'stop_area.alias',
+				'stopAreaLabel' => $stopAreaLabel
+			)
+		);
+	}
 }

@@ -24,9 +24,6 @@
 			{{ form_row(form.startDate, { 'attr': {'class': 'datepicker'}}) }}		
 		</div>
 		<div class="col-md-12">
-			{{ form_row(form.endDate, { 'attr': {'class': 'datepicker'}}) }}		
-		</div>
-		<div class="col-md-12">
 			{{ form_row(form.shortName, { 'attr': {'value': shortName_value }}) }}
 		</div>
 		<div class="col-md-12">
@@ -54,6 +51,7 @@
 		require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
 			var previousDate;
 			$('.datepicker').datepicker({
+					startDate: "today",
 					language: '{{ app.request.locale }}',
 					todayHighlight: true,
 					autoclose: true

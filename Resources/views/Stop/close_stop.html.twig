@@ -1,0 +1,39 @@
+{% extends "::modal.html.twig" %}
+
+{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+	{{ form_widget(form._token) }}
+	
+	<div class="form form-edit">
+		<div class="col-md-12">
+			<label class="control-label required" for="closingDate">Date de clôture</label>
+			<input type="text" id="datePicker" name="closingDate" required="required" class="datepicker form-control">
+		</div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form, { 'render_rest': false}) }}
+
+	<script>   
+		require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
+			$('#datePicker').datepicker({
+					startDate: "today",
+					language: '{{ app.request.locale }}',
+					todayHighlight: true,
+					autoclose: true
+				});
+			});
+    </script>		
+{% endblock %}

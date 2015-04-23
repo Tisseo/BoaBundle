@@ -58,8 +58,6 @@ class CalendarController extends AbstractController
 								$CalendarElementManager->delete($removeElement["id"]);
 							}
 							
-							
-							
 						} catch(\Exception $e) {
 							$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 						}

@@ -38,6 +38,7 @@ class StopHistoryType extends AbstractType
 					'required' => true
                 )
 		);
+/*		
         $builder->add('endDate', 'date',  
 				array(
                     'label' => 'stop_history.labels.endDate',
@@ -46,6 +47,7 @@ class StopHistoryType extends AbstractType
 					'required' => false
                 )
 		);
+*/		
 		$builder->add('x', 'text',
 			array(
 				'mapped' => false,
@@ -65,19 +67,7 @@ class StopHistoryType extends AbstractType
 				'data' => '3943'
 			)
 		);
-		
-/*
-        $builder->add('theGeom', 'text',  
-				array(
-					'data-class' =>new Point(),
-					'required' => false
-                )
-		);
-		
-	private $id;
-    private $theGeom;
-*/	
-		
+				
         $builder->setAction($options['action']);
     }
 

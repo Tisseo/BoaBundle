@@ -129,6 +129,9 @@ tisseo_boa_stop_accessibility_delete:
 tisseo_boa_stop_history_new:
     pattern: /stop_history/new/{StopId}
     defaults: { _controller: TisseoBoaBundle:Stop:newStopHistory, StopId: null}    
+tisseo_boa_stop_close:
+    pattern: /stop/close/{StopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:closeStop}    
 tisseo_boa_stop_history_delete:
     pattern: /stop_history/delete/{StopId}/{StopHistoryId}
     defaults: { _controller: TisseoBoaBundle:Stop:removeStopHistory}
