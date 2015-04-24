@@ -10,7 +10,7 @@ use Tisseo\BoaBundle\Form\Type\StopAreaType;
 use Tisseo\BoaBundle\Form\Type\AliasType;
 use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
 
-//use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class StopAreaController extends AbstractController
 {
@@ -201,12 +201,12 @@ class StopAreaController extends AbstractController
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 		$stopArea = $StopAreaManager->find($StopAreaId);
 		$stopAreaLabel = $stopArea->getNameLabel();
-/*
-		$originalAlias = new ArrayCollection();
+		
+		$originalAliases = new ArrayCollection();
 		foreach ($stopArea->getAlias() as $alias) {
-			$originalAlias->add($alias);
+			$originalAliases->add($alias);
 		}
-*/		
+
 		$formBuilder = $this->createFormBuilder($stopArea)
 			->setAction(
 				$this->generateUrl('tisseo_boa_stop_area_alias',
@@ -224,20 +224,12 @@ class StopAreaController extends AbstractController
 		);
 		$form = $formBuilder->getForm();
         $form->handleRequest($request);
-		
 		if ($form->isValid()) {
 			try {
-/*				
 				$datas = $form->getData();
-				foreach ($originalAlias as $alias) {
-					if ($datas->getAlias()->contains($alias) == false) {
-						$datas->getAlias()->removeElement($alias);
-					}
-				}
+//				\Doctrine\Common\Util\Debug::dump($datas);
 				
-				$StopAreaManager->save($datas);
-*/				
-				$StopAreaManager->saveAliases($form->getData());
+				$StopAreaManager->saveAliases($datas, $originalAliases);
 			} catch(\Exception $e) {
 				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 			}

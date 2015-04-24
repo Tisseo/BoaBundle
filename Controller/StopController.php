@@ -50,7 +50,20 @@ class StopController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
 			try {
-				$StopManager->save($form->getData());
+				$datas = $form->getData();
+				
+				//id not serial and not in formtype ...
+				if( $StopId ) {
+					$datas->setId($StopId);
+				}
+				
+				$StopManager->save($datas);
+				
+				return $this->redirect(
+					$this->generateUrl('tisseo_boa_stop_edit', 
+						array('StopId' => $StopId)
+					)
+				);
 			} catch(\Exception $e) {
 				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 			}
@@ -60,6 +73,7 @@ class StopController extends AbstractController
 			'TisseoBoaBundle:Stop:form.html.twig',
 			array(
 				'form' => $form->createView(),
+				'stop' => $stop,
 				'title' => 'stop.edit',
 				'masterStopLabel' => $masterStopLabel,
 				'stopHistories' => $stopHistories,

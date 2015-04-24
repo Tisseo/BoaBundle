@@ -1,12 +1,5 @@
 {% extends "TisseoBoaBundle::container2.html.twig" %}
 
-{% macro getStopName(stopHistories) %}
-	{% for sh in stopHistories if ( sh.startDate.date|date('Ymd') <= 'now'|date('Ymd') and ( sh.endDate is empty or sh.endDate.date|date('Ymd') <= 'now'|date('Ymd') ) ) %}
-		{{ sh.shortName }}
-	{% endfor %}
-{% endmacro %}
-
-
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
@@ -22,7 +15,6 @@
 	{{ form_start(form) }}
 		{{ form_errors(form) }}
 		{{ form_widget(form._token) }}
-		{{ form_widget(form.id, { 'attr': {'class': 'hide'}}) }}
 		
 		<div class="row">
 			<div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
@@ -57,10 +49,7 @@
 		{# masterStop #}
 		<div  class="row">
 			<div class = "col-md-2"> {{ form_label(form.masterStop) }} </div>
-			<div class = "col-md-4">
-				{{ form_widget(form.masterStop, { 'attr': {'class': 'hide'}}) }}
-				<input type="text" id="master_stop"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}" value='{{ masterStopLabel }}'>
-			</div>
+			<div class = "col-md-4"> {{ form_widget(form.masterStop) }} </div>
 		</div>
 
 		{# form buttons #}
@@ -92,7 +81,7 @@
 				{% for f in phantoms %}
 					<tr>
 					<td>{{ f.stopDatasources[0].datasource.name }}</td>
-					<td>{{ _self.getStopName(f.stopHistories) }}</td>
+					<td>{{ f.getShortLabel }}</td>
 					<td>{{ f.stopDatasources[0].code }}</td>
 					</tr>
 				{% endfor %}
@@ -130,7 +119,7 @@
 				{% if  sh.startDate|date("Ymd") > now|date("Ymd") %}
 					<td>
 					<a class="btn btn-default" 
-							href="{{ path('tisseo_boa_stop_history_delete', {'StopId': form.id.vars.value, 'StopHistoryId': sh.id }) }}">
+							href="{{ path('tisseo_boa_stop_history_delete', {'StopId': stop.id, 'StopHistoryId': sh.id }) }}">
 							<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}							
 						</a>
 					</td>
@@ -143,12 +132,12 @@
 			</table>
 		</div>
 		<div class = "col-md-2">
-				<a href="{{ path('tisseo_boa_stop_history_new') }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
+				<a href="{{ path('tisseo_boa_stop_history_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
 					<span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyStop' | trans }}
 				</a>
 		</div>
 		<div class = "col-md-2">
-				<a href="{{ path('tisseo_boa_stop_close', {'StopId': form.id.vars.value }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="close_history">
+				<a href="{{ path('tisseo_boa_stop_close', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="close_history">
 					<span class="glyphicon glyphicon-remove"></span>  {{ 'stop.closeStop' | trans }}
 				</a>
 		</div>
@@ -216,7 +205,7 @@
 							{% if   sa.accessibilityType.calendar.calendarDatasources[0].datasource.name != "HASTUS" %}
 								<td>
 								<a class="btn btn-default" 
-									href="{{ path('tisseo_boa_stop_accessibility_delete', {'StopId': form.id.vars.value, 'StopAccessibilityId': sa.id }) }}">	
+									href="{{ path('tisseo_boa_stop_accessibility_delete', {'StopId': stop.id, 'StopAccessibilityId': sa.id }) }}">	
 									<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}							
 								</a>
 								</td>
@@ -233,7 +222,7 @@
 		</div>
 		{% if form.masterStop.vars.value is empty %}
 			<div class = "col-md-2">
-					<a href="{{ path('tisseo_boa_stop_accessibility_new') }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
+					<a href="{{ path('tisseo_boa_stop_accessibility_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
 						<span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyAccessibility' | trans }}
 					</a>
 			</div>
@@ -292,19 +281,6 @@
 				delay: 300
 			});
 
-			$( "#new_history" ).click(function() {
-				var stop_id = $("#boa_stop_id").val();
-				if ($(this).attr("href").indexOf(stop_id) < 0) {
-					$(this).attr("href", $(this).attr("href") + "/" + stop_id);
-				}
-			});
-			$( "#new_accessibility" ).click(function() {
-				var stop_id = $("#boa_stop_id").val();
-				if ($(this).attr("href").indexOf(stop_id) < 0) {
-					$(this).attr("href", $(this).attr("href") + "/" + stop_id);
-				}
-			});
-			
 			$("#stop_area").val($("#boa_stop_stopArea option:selected").text());
 		 });
     </script>
