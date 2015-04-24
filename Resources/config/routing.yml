@@ -108,7 +108,10 @@ tisseo_boa_json_external_transfer:
 tisseo_boa_json_stop_transfer:
     pattern: /json/stop_transfer
     defaults: { _controller: "TisseoBoaBundle:Json:stopTransfer"}
-    
+tisseo_boa_json_route_services:
+    pattern: /json/route_services
+    defaults: { _controller: "TisseoBoaBundle:Json:routeTable"}
+
 
 #Stop administration
 tisseo_boa_stop_search:
@@ -197,4 +200,5 @@ tisseo_boa_route_stops_save:
     defaults: { _controller: TisseoBoaBundle:Route:datatableSave }
     options:
         expose: true
+
 

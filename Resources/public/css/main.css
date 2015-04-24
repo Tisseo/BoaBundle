@@ -39,6 +39,28 @@ th.trips-cols {
     width:100%;
 }
 
+#saveList {
+    margin-top: 30px;
+    margin-left: 50%;
+    margin-right: auto;
+    text-align: center;
+}
+
+#formRoute {
+    margin-left: auto;
+    margin-right: auto;
+    width: 21%;
+}
+
+#headRstops{
+    background: #005A64;
+    color: #fff;
+}
+
+#datatable_filter {
+    margin-right: 40px;
+    margin-bottom: 30px;
+}
 .btn_form_submit {
 	padding-top: 21px;
 }

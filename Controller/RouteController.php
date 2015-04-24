@@ -72,22 +72,20 @@ class RouteController extends AbstractController
 
         $id = $request->get('id');
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        $stopManager = $this->get('tisseo_endiv.stop_manager');
-        $stopsArea = [];
+
 
         if(isset($id)) {
             $route= $routeManager->findById($id);
-
-            $trips = $this->getDoctrine()
-                ->getRepository("Tisseo\EndivBundle\Entity\Trip","endiv")
-                ->findBy(array("route"=>$id));
         }
 
 
-         if(!$route) {
+
+
+
+
+        if(!$route) {
             throw $this->createNotFoundException('route non trouvée');
         }
-
 
         $formRoute = $this->createForm(new RouteType(),$route);
 
@@ -101,10 +99,7 @@ class RouteController extends AbstractController
                     'form' => $formRoute->createView(),
                     'pageTitle' => 'modification de route',
                     'route' => $route,
-                    'id' => $id,
-                    'trips' => $trips
-
-
+                    'id' => $id
 
                 )
             );
@@ -145,121 +140,8 @@ class RouteController extends AbstractController
         Return new Response("liste sauvée", 200);
     }
 
-        public function datatableAction(Request $request) {
-
-        $id = $request->get('id');
-
-        $routeManager = $this->get('tisseo_endiv.route_manager');
-        $stopManager = $this->get('tisseo_endiv.stop_manager');
-        $stopsArea = [];
-        $data=[];
-
-        $order = 0;
-        $dir = "Desc";
-        $order = $request->query->get("order")[0]["column"];
-        $dir = $request->query->get("order")[0]["column"];
-
-        $index = -1;
 
 
-        if(isset($id)) {
-            $route= $routeManager->findById($id);
-            $trips = $this->getDoctrine()
-                ->getRepository("Tisseo\EndivBundle\Entity\Trip","endiv")
-                ->findBy(array("route"=>$id));
-
-
-
-        }
-
-        if(!$route) {
-            throw $this->createNotFoundException('route non trouvée');
-        }
-
-        $isZone = false;
-
-        if($routeManager->checkZoneStop($route) == true){
-            $isZone = true;
-        }
-
-
-            $stops = $stopManager->getStopsByRoute($id);
-
-            foreach($stops as $stop) {
-
-                $index++;
-                $waypointId = $stop["waypoint"];
-
-                $rank = $stop["rank"];
-
-                if($isZone == false){
-                    $stops = $stopManager->getStopsByRoute($id);
-
-                    $stopAreas[] = $stopManager->getStops($waypointId);
-
-                    $city = $stopAreas[$index][0]["city"];
-                    $name = $stopAreas[$index][0]["shortName"];
-
-                }
-                else {
-
-                    $zone = $this->getDoctrine()
-                                 ->getRepository("Tisseo\EndivBundle\Entity\OdtArea","endiv")
-                                 ->find($stop["waypoint"]);
-                    $city = "";
-
-                    $name = $zone->getName();
-                }
-
-                $desc = $stop["dropOff"];
-                $pickup = $stop["pickup"];
-
-                $timeArrival = "";
-                $timeDeparture = "";
-
-
-
-
-                $object = new \stdClass();
-                $dataArr = [
-                    "Id" => $stop["waypoint"],
-                    "Ordre" => $rank,
-                    "Ville"=>$city,
-                    "Num" => "num",
-                    "Nom"=>$name,
-                    "Desc"=>$desc == true ? "Oui" : "Non",
-                    "Pickup"=>$pickup == true ? "Oui" : "Non"
-
-                ];
-
-
-                foreach($trips as $trip) {
-
-                    foreach($trip->getStopTimes() as $stoptimes)
-                    {
-
-                        if($stoptimes->getRouteStop()->getId() == $stop["id"]) {
-
-                            $timeArrival = $stoptimes->getArrivalTime();
-                            $timeDeparture = $stoptimes->getDepartureTime();
-
-
-
-                            $dataArr["Dep"] = $timeDeparture;
-                            $dataArr["Arr"] = $timeArrival;
-                            //array_push(array("Dep"=>$timeDeparture),$dataArr);
-
-                        }
-                    }
-                }
-                array_push($data,$dataArr);
-
-            }
-
-        $data = ["draw"=>1,"recordsTotal" => sizeof($stops), "recordFiltered" => sizeof($stops),"data"=>$data];
-        return new Response(json_encode($data,true),200);
-
-    }
 
     public function createAction(Request $request){
 

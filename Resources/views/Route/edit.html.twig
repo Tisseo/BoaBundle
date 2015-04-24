@@ -4,55 +4,76 @@
 
 
 {% block main_content -%}
-            <style>
-                #Route_creer{
-                    display: none;
-                }
-                th.trip-cols {
-                    border: 1px solid #ccc;
-                }
-            </style>
+    <style>
+        #Route_creer {
+            display: none;
+        }
 
-   <div class="row">
-       <div class="col-md-12" role="main">
+        th.trip-cols {
+            border: 1px solid #ccc;
+        }
+    </style>
 
-            <hr />
-           <input type="hidden" id="routeId" value="{{ id }}" />
-            {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-12" role="main">
+
+            <hr/>
+            <input type="hidden" id="routeId" value="{{ id }}"/>
+
+            <div id="formRoute">
+                {{ form_start(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.way) }}
                 {{ form_row(form.direction) }}
-            <input type="submit" value="editer" name="Route_creer" class="btn btn-primary"/>
-            {{ form_rest(form) }}
-            {{ form_end(form) }}
-       </div>
+                <input type="submit" value="editer" name="Route_creer" class="btn btn-primary"/>
+                {{ form_rest(form) }}
+                {{ form_end(form) }}
+            </div>
+
+        </div>
     </div>
 
-<table id="datatable" class="table datatable table-hover dataTable no-footer">
+    <table id="routeTable" class="table datatable table-hover dataTable no-footer">
 
     <thead>
-           <tr>
-               <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
-               {% set count =0 %}
-                {% for trip in trips %}
+    <tr id="headRstops">
+        <th colspan="7">Détail de la route</th>
+        <th colspan="11">Servcies type</th>
+    </tr>
+    <tr id="trips">
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        {% set count =0 %}
+        {% for trip in trips %}
+            {% set count=loop.index %}
+            <th colspan="2" class="trip-cols">{{ trip.name }}</th>
+        {% endfor %}
+    </tr>
+    <tr id="heading">
+        <th class="col-sm-1">Id</th>
+        <th class="col-sm-1">Ordre</th>
+        <th class="col-sm-1">Ville</th>
+        <th class="col-sm-1">Nom arrêt</th>
+        <th class="col-sm-1">Num arrêt</th>
+        <th class="col-sm-1">Descente inter</th>
+        <th class="col-sm-1">Montee inter</th>
+        {% for i in range(1,count) %}
+            {% if isZone == false %}
 
-                    {% set count=loop.index %}
-                     <th colspan="2" class="trip-cols">{{ trip.name }}</th>
-               {% endfor %}
-           </tr>
-        <tr>
-            <th class="col-sm-1" >Id</th>
-            <th class="col-sm-1" >Ordre</th>
-            <th class="col-sm-1">Ville</th>
-            <th class="col-sm-1">Nom arrêt</th>
-            <th class="col-sm-1">Num arrêt</th>
-            <th class="col-sm-1">Descente inter</th>
-            <th class="col-sm-1">Montee inter</th>
-            {% for i in range(1,count) %}
+
+
+            {% else %}
                 <th class="col-sm-1">Heure départ</th>
                 <th class="col-sm-1">Heure arrivée</th>
-            {% endfor %}
-        </tr>
+            {% endif %}
+
+        {% endfor %}
+    </tr>
     </thead>
     <input type="hidden" id="servicesCount" value="{{ count }}">
     {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
@@ -70,13 +91,16 @@
         </table>
         {% block list_pagination -%}{% endblock %}
 
-        {{  render.stop_point('add') }}
-
+        <div class="row">
+            <div>
+                {{ render.stop_point('add') }}
+            </div>
+        </div>
 
         <button id="saveList" class="btn btn-default">Sauvegarder</button>
 
-    {%  endif %}
-{%  endblock %}
+    {% endif %}
+{% endblock %}
 
 
 {% block javascripts %}
@@ -86,46 +110,37 @@
     {% endjavascripts %}
 
     <script>
-        require(['jquery', 'textfill', 'datatables'], function($) {
-            $(document).ready(function() {
+        require(['jquery', 'textfill'], function ($) {
+            $(document).ready(function () {
                 var countServices = $("#servicesCount").val();
                 var cols = [
-                    { "data": "Id" },
-                    { "data": "Ordre" },
-                    { "data": "Ville" },
-                    { "data": "Nom" },
-                    { "data": "Num" },
-                    { "data": "Desc" },
-                    { "data": "Pickup" }
+                    {"data": "Id"},
+                    {"data": "Ordre"},
+                    {"data": "Ville"},
+                    {"data": "Nom"},
+                    {"data": "Num"},
+                    {"data": "Desc"},
+                    {"data": "Pickup"}
                 ];
 
-                for(i=0;i<=countServices-1;i++){
-                    cols.push({"data" : "Dep"},{"data": "Arr"});
+                for (i = 0; i <= countServices - 1; i++) {
+                    {% if isZone == false %}
+
+                    cols.push({"data": "Duration"});
+
+                    {% else %}
+                    cols.push({"data": "Dep"}, {"data": "Arr"});
+
+                    {% endif %}
                 }
 
+
                 idRoute = $("#routeId").val();
-                var table = $("#datatable").DataTable({
-                    "scrollX": true,
-                    "columnDefs": [ {
-                        "searchable": true,
-                        "orderable": true,
-                        "targets": 0
-                    } ],
-                    "order":   [ 1, 'desc' ],
-                    "iDisplayLength": 25,
-                    "processign": true,
-                    "serverSide": false,
-                    "ajax": "../datatable/"+idRoute,
-                    "columns": cols ,
-                    "aoColumnDefs" : [ {
-                        "bSortable" : false,
-                        "aTargets" : [ "no-sort" ]
-                    } ]
-                })
+
             });
         });
 
-        require(['jquery', 'jquery_ui_droppable', 'jquery_ui_draggable', 'jquery_ui_sortable', 'jquery_ui_autocomplete'], function($){
+        require(['jquery', 'jquery_ui_droppable', 'jquery_ui_draggable', 'jquery_ui_sortable', 'jquery_ui_autocomplete'], function ($) {
             function displayError(responseText) {
                 document.open();
                 document.write(responseText);
@@ -133,13 +148,45 @@
             }
 
 
-            $(document).ready(function(){
-                table = $("#datatable").DataTable();
+            $(document).ready(function () {
+                table = $("#routeTable");
+                $("thead").append("<tr></tr>");
+                $.ajax({
+                    url: "{{ path('tisseo_boa_json_route_services') }}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {routeId: $("#routeId").val()}
+                }).success(function (data) {
+                    $.map(JSON.parse(data.content), function (item) {
+
+
+                        if (typeof (item.services) != "undefined") {
+                            $("#heading").append(
+                                    "<th>" + item.services + "</th>");
+
+                        }
+
+                        if (typeof (item.rank) != "undefined") {
+                            console.log(item.pickup);
+                            $("tbody").append(
+                                    "<tr>" + "<td>" + item.id + "</td>" + "<td>" + item.rank + "</td>" + "<td>" + item.city + "</td>" + "<td>" + item.name + "</td>" +
+                                    "<td>" + item.code + "</td>" + "<td>" + item.dropOff + "</td><td>" + item.pickup + "</td>" +
+                                    "</tr>");
+
+                        }
+
+                    });
+                })
+                        .error(function (err) {
+                            console.log(err);
+                        });
+
                 $("#stop_search").autocomplete({
                     source: function (request, response) {
-                        var objData = { term: request.term };
+                        var objData = {term: request.term};
                         var url = $(this.element).attr('data-url');
-                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+                        $.ajax({
+                            url: url, dataType: "json", data: objData, type: 'POST',
                             success: function (data) {
                                 response($.map(JSON.parse(data.content), function (item) {
                                     return {
@@ -148,7 +195,7 @@
                                         id: item.id
                                     };
                                 }));
-                            },
+                            }
                         });
                     },
                     select: function (event, ui) {
@@ -158,41 +205,36 @@
                     delay: 300
                 });
 
-                $.fn.liveDroppable = function() {
+                $.fn.liveDroppable = function () {
                     $(this).droppable({
-                        over: function(event, ui) {
-                           // $(this).find("tr:first").addClass("success");
-                        },
-                        out: function(event, ui) {
-                            //$(this).find("tr:first").removeClass("success");
-                        },
-                        drop: function(event, ui) {
-                           //endPos = ui.item.prevAll().length+1;
-                           // endRow = $("#datatable tbody").find("tr").eq(endPos-1);
+                        over: function (event, ui) {
 
-                             //console.log(ui.draggable.find('tr').first());
-                            //var orderreplace = table.row( this ).data().Ordre;
+                        },
+                        out: function (event, ui) {
+
+                        },
+                        drop: function (event, ui) {
 
                         }
                     });
                 };
 
-                $(document).find('#datatable tbody').liveDroppable();
+                $(document).find('#routeTable tbody').liveDroppable();
 
-                 var startPos;
-                 var endPos;
-                 var order;
-                 var orderUpdate;
-                 var startRow;
-                 var orders = [];
-                 table = $("#datatable").DataTable();
+                var startPos;
+                var endPos;
+                var order;
+                var orderUpdate;
+                var startRow;
+                var orders = [];
 
-                $("#datatable tbody").sortable({
+
+                $("#routeTable tbody").sortable({
                     cursor: "move",
-                    start: function (event,ui){
-                        startPos = ui.item.prevAll().length+1;
+                    start: function (event, ui) {
+                        startPos = ui.item.prevAll().length + 1;
 
-                        startRow = $("#datatable tbody").find("tr").eq(startPos-1);
+                        startRow = $("#routeTable tbody").find("tr").eq(startPos - 1);
                         order = startRow.find('td').eq(1).html();
 
                         orders = [];
@@ -200,59 +242,48 @@
 
 
                     },
-                    update: function(event, ui){
+                    update: function (event, ui) {
 
-                        endPos = ui.item.prevAll().length+1;
+                        endPos = ui.item.prevAll().length + 1;
 
-                        var endRow = $("#datatable tbody").find("tr").eq(endPos-1);
-                        startRow = $("#datatable tbody").find("tr").eq(startPos-1);
+                        var endRow = $("#routeTable tbody").find("tr").eq(endPos - 1);
+                        startRow = $("#routeTable tbody").find("tr").eq(startPos - 1);
 
 
-                        if(endPos < startPos) {
+                        if (endPos < startPos) {
 
-                            var newPos = $("#datatable tbody").find("tr").eq(endPos);
+                            var newPos = $("#routeTable tbody").find("tr").eq(endPos);
 
-                            orderUpdate = table.row(newPos).data().Ordre;
+                            orderUpdate = newPos.find('td').eq(1).html();
 
                             endRow.find("td").eq(1).html(newPos.find('td').eq(1).html());
 
                             newPos.find("td").eq(1).html(orders[0]);
-                           // ;
+
                         }
 
-                        else if(endPos > startPos) {
+                        else if (endPos > startPos) {
 
-                            var newPos = $("#datatable tbody").find("tr").eq(endPos-2);
-                            orderUpdate = table.row(newPos).data().Ordre;
+                            var newPos = $("#routeTable tbody").find("tr").eq(endPos - 2);
+                            orderUpdate = newPos.find('td').eq(1).html();
 
                             endRow.find("td").eq(1).html(newPos.find('td').eq(1).html());
                             newPos.find("td").eq(1).html(orders[0]);
 
                         }
 
-                        /**order = table.row( startRow ).data().Ordre;
-
-
-                        endRow.find("td").eq(1).html(orderUpdate);
-
-                        //
-                            **/
 
                     }
                 })
 
-                $("#datatable tbody").on('click', 'tr', function() {
+                $("#routeTable tbody").on('click', 'tr', function () {
                     $(this).toggleClass("selected");
                     $(this).draggable();
 
-                    var order = table.row( this ).data().Ordre;
+                    var order = table.row(this).data().Ordre;
 
                 })
-
             });
-
         });
-
     </script>
-
 {% endblock %}
