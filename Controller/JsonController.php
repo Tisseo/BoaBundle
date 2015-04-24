@@ -264,7 +264,6 @@ class JsonController extends AbstractController
 				);
 			}
 			
-            //$response = new Response(json_encode($array));
             $response = new Response(json_encode($results));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;

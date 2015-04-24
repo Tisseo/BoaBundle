@@ -85,6 +85,10 @@ calendar:
         computedStartDate: Début
         computedEndDate: Fin
         calendarElements: Elements
+    error:
+        displayDates: la date de début ne peut être supérieure à la date de fin
+    alert:
+        save: Vous devez d'abord enregistrer le calendrier
         
 calendar_element:
     labels:
@@ -168,6 +172,7 @@ stop:
         datasource: Datasource
         phantoms: Fantômes de l'arrêt
     modifyStop: Modifier point d'arrêt
+    closeStop: Clôturer point d'arrêt
     modifyAccessibility: Modifier accessibilité
         
 stop_area:
@@ -184,6 +189,8 @@ stop_area:
         stops: Points d'arrêt
         stop_areas: Zones d'arrêt
         all_stops: Tous les points d'arrêt
+        no_stops: aucun élément à afficher
+        main_city: cette zone d'arrêt est considérée comme zone d'arrêt principale de la commune de %s%
     stop:
         header: Liste des points d'arrêt
         columns:
@@ -200,6 +207,7 @@ stop_area:
         data_saved: Données enregistrées
         saving_error: Erreur: %s%
         error:
+            duplicate_transfer: %i% transfert(s) ignoré(s) lors de l'enregistrement (doublon)
             transfer_duration: le temps de transfert par défaut doit être un entier ( %d% )
             distance: Ligne %i%: la distance doit être un entier ( %d%)
             duration: Ligne %i%: la durée doit être un entier ( %d%)

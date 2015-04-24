@@ -151,10 +151,12 @@ stop:
     validate: Valider
     see: Voir
     add_inaccessibility: Ajout d'inaccessibilité
-    add_history: Modifier point d'arrêt 
+    add_history: Modifier un point d'arrêt 
+    close_stop: Clôturer un point d'arrêt
         
 stop_area:
     title: Zone d'arrêt
+    create: Créer une zone d'arrêt
     edit: Editer une zone d'arrêt
     alias: Alias
     transfer: Transferts de la zone d'arrêt

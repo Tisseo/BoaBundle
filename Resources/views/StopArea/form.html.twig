@@ -13,6 +13,10 @@
                    filter='cssrewrite' output='css/stop_boa.css' %}
         <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
     {% endstylesheets %}
+    {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
+                   filter='cssrewrite' output='css/datatables_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}	
 {% endblock %}
 
 {% block main_content %}
@@ -37,22 +41,41 @@
 			<div class = "col-md-2"> {{ form_label(form.city) }} </div>
 			<div class = "col-md-4">
 				{{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-				<input type="text" id="city"  class="form-control" data-url="{{ path('tisseo_boa_json_city') }}" value='{{ cityLabel }}'>
+				
+				{% set readonly = "" %}
+				{% if cityMain is not empty %}
+					{% set readonly = "readonly='readonly'" %}
+				{% endif %}
+				<input type="text" id="city"  class="form-control" data-url="{{ path('tisseo_boa_json_city') }}" value='{{ cityLabel }}' {{readonly}}>
 			</div>
 		</div>
 		
 		{# datasource #}
 		<div class="row">
-			{% set datasource = form.stopAreaDatasources[0] %}
+			{% if stopArea.id is not null %}
+				{% set datasource_list = form_widget(form.stopAreaDatasources[0].datasource) %}
+				{% set datasource_code = form_widget(form.stopAreaDatasources[0].code) %}
+			{% else %}
+				{#new record#}
+				{% set datasource_list = form_widget(form.stopAreaDatasources.vars.prototype.datasource) %}
+				{% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
+				{% set datasource_code = form_widget(form.stopAreaDatasources.vars.prototype.code) %}
+				{% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
+			{% endif %}
 			<div class = "col-md-2"> {{ form_label(form.stopAreaDatasources) }} </div>			
 			<div class = "col-md-3">
-				{{ form_widget(datasource.datasource) }} 
+				{{ datasource_list | raw }} 
 			</div>
+			
 			<div class = "col-md-3">
-				{{ form_widget(datasource.code) }} 
+				{{ datasource_code | raw }} 
 			</div>
 		</div>
 		
+		{% if cityMain is not empty %}
+			<b>{{ 'stop_area.labels.main_city' | trans({ '%s%': cityMain }) }}<b>
+		{% endif %}
+
 		{# form button #}
 		<div class="row" style="padding: 10px 0 0">
 			<div class = "col-md-2 col-md-offset-3">
@@ -68,7 +91,7 @@
 		{# stops #}
 		<div>
 			<div class="stop_table_header">{{ 'stop_area.stop.header' | trans }}</div>
-			<table class="table table-hover dataTable no-footer">
+			<table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
 			<thead>			
 				<th>{{ 'stop_area.stop.columns.agency' | trans }}</th>
 				<th>{{ 'stop_area.stop.columns.code' | trans }}</th>
@@ -85,10 +108,12 @@
 					<td>{{ stop.stopDatasources[0].code }}</td>
 					<td>
 						<a href="{{ path('tisseo_boa_stop_edit', {'StopId': stop.id }) }}">
-						{{ stop.stopHistories[0].shortName }}
+						{{ stop.getShortLabel }}
 					</td>
 					{% if stop.masterStop is not empty %}
 						<td colspan="3"><b>{{ 'Fantôme de ' ~ stop.getMasterStopLabel }}</b></td>
+						<td class="hide"></td>
+						<td class="hide"></td>
 					{% else %}
 						<td>{{ stop.stopHistories[0].theGeom.x }}</td>
 						<td>{{ stop.stopHistories[0].theGeom.y }}</td>
@@ -104,58 +129,71 @@
 		</div>
 
 		{# buttons #}
-		<div class="row" style="padding: 10px 0 0">
-			<div class = "col-md-12">
-				<a class="btn btn-default" id="internal-transfert" 
-					href="{{ path('tisseo_boa_internal_transfer_edit', {'StopAreaId': stopArea.id }) }}"
-					data-toggle="modal" data-target="#base-modal" >
-					<span class="glyphicon glyphicon-resize-small"></span>
-					{{ 'stop_area.labels.internal_transfert' | trans }}
+		{% if stopArea.id is not null %}
+			<div class="row" style="padding: 10px 0 0">
+				<div class = "col-md-12">
+					<a class="btn btn-default" id="internal-transfert" 
+						href="{{ path('tisseo_boa_internal_transfer_edit', {'StopAreaId': stopArea.id }) }}"
+						data-toggle="modal" data-target="#base-modal" >
+						<span class="glyphicon glyphicon-resize-small"></span>
+						{{ 'stop_area.labels.internal_transfert' | trans }}
+						</a>
+					<a class="btn btn-default" id="external-transfert" 
+						href="{{ path('tisseo_boa_external_transfer_edit', {'StopAreaId': stopArea.id }) }}"
+						data-toggle="modal" data-target="#base-modal" >
+						<span class="glyphicon glyphicon-resize-full"></span>
+						{{ 'stop_area.labels.external_transfert' | trans }}
 					</a>
-				<a class="btn btn-default" id="external-transfert" 
-					href="{{ path('tisseo_boa_external_transfer_edit', {'StopAreaId': stopArea.id }) }}"
-					data-toggle="modal" data-target="#base-modal" >
-					<span class="glyphicon glyphicon-resize-full"></span>
-					{{ 'stop_area.labels.external_transfert' | trans }}
-				</a>
-				<a class="btn btn-default" id="geometries" href="#">
-					<span class="glyphicon glyphicon-globe"></span>
-					{{ 'stop_area.labels.geometries' | trans }}
-				</a>
-				<a class="btn btn-default" id="alias" 
-					href="{{ path('tisseo_boa_stop_area_alias', {'StopAreaId': stopArea.id }) }}"
-					data-toggle="modal" data-target="#base-modal" >
-					<span class="glyphicon glyphicon-tag"></span>
-					{{ 'stop_area.labels.alias' | trans }}
-				</a>
+					<a class="btn btn-default" id="geometries" href="#">
+						<span class="glyphicon glyphicon-globe"></span>
+						{{ 'stop_area.labels.geometries' | trans }}
+					</a>
+					<a class="btn btn-default" id="alias" 
+						href="{{ path('tisseo_boa_stop_area_alias', {'StopAreaId': stopArea.id }) }}"
+						data-toggle="modal" data-target="#base-modal" >
+						<span class="glyphicon glyphicon-tag"></span>
+						{{ 'stop_area.labels.alias' | trans }}
+					</a>
+				</div>
 			</div>
-		</div>
+		{% endif %}
 {% endblock %}
 
 {% block javascripts %}
    <script>
-		require(['jquery', 'jquery_ui_autocomplete'], function($) {
-			$("#city").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$("#boa_stop_area_city").val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
+		require(['jquery', 'jquery_ui_autocomplete', 'datatables'], function($) {
+			$(document).ready(function() {
+				$("#datatable").DataTable({
+					"paging":   false,
+					"info":     false,
+					'searching': false,
+					"language": {
+						"sZeroRecords":    "{{ 'stop_area.labels.no_stops' | trans }}"
+					}
+				});
+			
+				$("#city").autocomplete({
+					source: function (request, response) {
+						var objData = { term: request.term };
+						var url = $(this.element).attr('data-url');
+						$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+							success: function (data) {
+								response($.map(JSON.parse(data.content), function (item) {									
+									return {				
+										label: item.name, 
+										value: item.name, 
+										id: item.id
+									};
+								}));
+							},
+						});
+					},
+					select: function (event, ui) {
+						$("#boa_stop_area_city").val(ui.item.id);
+					},					
+					minLength: 3,
+					delay: 300
+				});
 			});
 		});
     </script>

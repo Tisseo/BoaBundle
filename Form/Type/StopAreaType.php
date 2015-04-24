@@ -41,14 +41,11 @@ class StopAreaType extends AbstractType
 				'label' => 'stop_area.labels.datasource',
 				'type' => new StopAreaDatasourceType(),
 				'by_reference' => false,
+				'allow_add' => true
 			)
 		);
-		
+
         $builder->setAction($options['action']);
-  /*
-    private $transferDuration;
-    private $theGeom;
-*/		
   }
 
     /**

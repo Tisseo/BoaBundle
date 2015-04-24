@@ -37,7 +37,7 @@ class StopController extends AbstractController
 		
 		$masterStopLabel = "";
 		$masterStop = $stop->getMasterStop();
-		$stopHistories = $stop->getStopHistories();
+		$stopHistories = $StopManager->getStopHistoriesOrderByDate($stop);
 		$phantoms = $stop->getPhantoms();
 		$accessibilities = $stop->getStopAccessibilities();
 		$phantomAccessibilities = null;
@@ -230,7 +230,7 @@ class StopController extends AbstractController
 		
 		$StopManager = $this->get('tisseo_endiv.stop_manager');
 		$stop = $StopManager->find($StopId);
-		$StopManager->removeStopHistory($stop, $StopHistoryId	);		
+		$StopManager->removeStopHistory($stop, $StopHistoryId);		
 
 		return $this->redirect(
 			$this->generateUrl('tisseo_boa_stop_edit', 
@@ -238,4 +238,45 @@ class StopController extends AbstractController
 			)
 		);			
 	}
+
+    public function closeStopAction(Request $request, $StopId)
+    {
+		$this->isGranted('BUSINESS_MANAGE_STOPS');
+		$StopManager = $this->get('tisseo_endiv.stop_manager');
+		$stop = $StopManager->find($StopId);
+		
+		$formBuilder = $this->createFormBuilder($stop)
+		->setAction($this->generateUrl('tisseo_boa_stop_close',
+				array('StopId' => $StopId)
+			)
+		);
+		$form = $formBuilder->getForm();
+		$form->handleRequest($request);
+		if ($form->isValid()) {
+			try {
+				$closingDate = $request->request->get('closingDate');
+				//\Doctrine\Common\Util\Debug::dump($closingDate);
+				$StopManager->closeStop($stop, $closingDate);
+			} catch(\Exception $e) {
+				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+			}
+			return $this->redirect(
+				$this->generateUrl('tisseo_boa_stop_edit', 
+					array('StopId' => $StopId)
+				)
+			);
+		}
+				
+		
+
+		return $this->render('TisseoBoaBundle:Stop:close_stop.html.twig',
+			array(
+				'form' => $form->createView(),
+				'title' => 'stop.close_stop'
+			)
+		);
+
+		
+	}
+	
 }
