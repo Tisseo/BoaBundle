@@ -12,6 +12,8 @@
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
 
+{#	 {{ app.user.username }}	#}
+	
 	{{ form_start(form) }}
 		{{ form_errors(form) }}
 		{{ form_widget(form._token) }}
@@ -28,9 +30,16 @@
 		{# stop area #}
 		<div  class="row">
 			<div class = "col-md-2"> {{ form_label(form.stopArea) }} </div>
-			<div class = "col-md-4">
+			<div class = "col-md-5">
 				{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
 				<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
+			</div>
+			<div class = "col-md-2">
+				<a class="btn btn-default" 
+						href="{{ path('tisseo_boa_stop_area_edit', {'StopAreaId': form.stopArea.vars.data.id}) }}">
+					<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}							
+				</a>
+			
 			</div>
 		</div>
 
@@ -46,10 +55,10 @@
 			</div>
 		</div>
 		
-		{# masterStop #}
+		{# masterStop(phantom) #}
 		<div  class="row">
 			<div class = "col-md-2"> {{ form_label(form.masterStop) }} </div>
-			<div class = "col-md-4"> {{ form_widget(form.masterStop) }} </div>
+			<div class = "col-md-6"> {{ form_widget(form.masterStop) }} </div>
 		</div>
 
 		{# form buttons #}
@@ -144,7 +153,6 @@
 		
 		{# stop accessibility #}
 		<div>
-			
 			{% if form.masterStop.vars.value is empty %}
 				<div class="stop_table_header">
 					{{ 'stop.accessibility.header' | trans }}

@@ -32,6 +32,7 @@ class StopAreaController extends AbstractController
 		
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $StopAreaManager->find($StopAreaId);
+		$lines = $StopAreaManager->getLines($stopArea);
 		if (empty($stopArea)) $stopArea = new StopArea($StopAreaManager);
 		
 		$city = $stopArea->getCity();
@@ -41,7 +42,7 @@ class StopAreaController extends AbstractController
 			$cityLabel = $city->getName()."(".$city->getInsee().")";
 		}
 		
-		$stops = $stopArea->getStops();
+		$stops = $StopAreaManager->getCurrentStops($stopArea);
 		
 		$form = $this->createForm( new StopAreaType($StopAreaManager), $stopArea);
         $form->handleRequest($request);
@@ -72,7 +73,8 @@ class StopAreaController extends AbstractController
 				'cityLabel' => $cityLabel,
 				'cityMain' => $cityMain,
 				'stopArea' => $stopArea,
-				'stops' => $stops
+				'stops' => $stops,
+				'lines' => $lines
 			)
 		);
 	}		
@@ -227,8 +229,6 @@ class StopAreaController extends AbstractController
 		if ($form->isValid()) {
 			try {
 				$datas = $form->getData();
-//				\Doctrine\Common\Util\Debug::dump($datas);
-				
 				$StopAreaManager->saveAliases($datas, $originalAliases);
 			} catch(\Exception $e) {
 				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());

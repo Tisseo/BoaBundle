@@ -214,6 +214,7 @@
 
 						if( !endStopId ) {
 								displayAlert("{{ 'stop_area.transfer.error.end_stop' | trans }}".replace("%i%", (i+1)));
+								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
 								table_validation = false;
 								return false;
 						}
@@ -221,6 +222,7 @@
 						if( distance ) {
 							if ( !isInt(distance) ) {
 								displayAlert("{{ 'stop_area.transfer.error.distance' | trans }}".replace("%d%", distance).replace("%i%", (i+1)));
+								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
 								table_validation = false;
 								return false;
 							}
@@ -228,11 +230,13 @@
 						
 						if ( !isInt(duration) ) {
 							displayAlert("{{ 'stop_area.transfer.error.duration' | trans }}".replace("%d%", duration).replace("%i%", (i+1)));
+								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
 							table_validation = false;
 							return false;
 						}
 						if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
 							displayAlert("{{ 'stop_area.transfer.error.duration_value' | trans }}".replace("%i%", (i+1)));
+								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
 							table_validation = false;
 							return false;
 						}

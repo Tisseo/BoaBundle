@@ -11,14 +11,9 @@ hr {
 	border-top: 1px solid black;
 }
 
-
 .type-select {
     width: 200px;
 }
-
-
-/* table datatable */
-
 
 th.trips-cols {
     border: 1px solid #ccc;
@@ -32,8 +27,13 @@ th.trips-cols {
 	z-index:9999 !important;
 }
 
+.form {
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
 .form-edit {
-    padding:10px 10px 10px 0;
+    padding:10px 10px 10px 10px;
     margin:10px 10px;
     display:inline-block;
     width:100%;
@@ -128,4 +128,21 @@ th.trips-cols {
   margin: 10px 0 0;
   cursor: pointer;
   text-decoration: none;
+}
+
+.line-number {
+  border-radius: 3px;
+  text-align: center;
+  padding: 0 5px;
+  display: table-cell;
+}
+
+.line-small {
+  height: 30px;
+  width: 30px;
+  line-height: 32px;
+}
+
+.invalid {
+    color: red !important;
 }
