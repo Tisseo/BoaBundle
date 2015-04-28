@@ -1,12 +1,5 @@
 {% extends "TisseoBoaBundle::container2.html.twig" %}
 
-{% macro getStopName(stopHistories) %}
-	{% for sh in stopHistories if ( sh.startDate.date|date('Ymd') <= 'now'|date('Ymd') and ( sh.endDate is empty or sh.endDate.date|date('Ymd') <= 'now'|date('Ymd') ) ) %}
-		{{ sh.shortName }}
-	{% endfor %}
-{% endmacro %}
-
-
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
@@ -27,48 +20,52 @@
 		{{ form_errors(form) }}
 		{{ form_widget(form._token) }}
 		
-		<div class="row">
-			<div class = "col-md-2"> {{ form_label(form.shortName) }} </div>
-			<div class = "col-md-4"> {{ form_widget(form.shortName) }} </div> 
-		</div>
-		<div class="row">
-			<div class = "col-md-2"> {{ form_label(form.longName) }} </div>
-			<div class = "col-md-4"> {{ form_widget(form.longName) }} </div>
-		</div>
+		<div class="form form-edit">
+			<div class="row">
+				<div class = "col-md-2"> {{ form_label(form.shortName) }} </div>
+				<div class = "col-md-4"> {{ form_widget(form.shortName) }} </div> 
+			</div>
+			<div class="row">
+				<div class = "col-md-2"> {{ form_label(form.longName) }} </div>
+				<div class = "col-md-4"> {{ form_widget(form.longName) }} </div>
+			</div>
 
-		{# city #}
-		<div class="row">
-			<div class = "col-md-2"> {{ form_label(form.city) }} </div>
-			<div class = "col-md-4">
-				{{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-				
-				{% set readonly = "" %}
-				{% if cityMain is not empty %}
-					{% set readonly = "readonly='readonly'" %}
-				{% endif %}
-				<input type="text" id="city"  class="form-control" data-url="{{ path('tisseo_boa_json_city') }}" value='{{ cityLabel }}' {{readonly}}>
+			{# city #}
+			<div class="row">
+				<div class = "col-md-2"> {{ form_label(form.city) }} </div>
+				<div class = "col-md-4">
+					{{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
+					
+					{% set readonly = "" %}
+					{% if cityMain is not empty %}
+						{% set readonly = "readonly='readonly'" %}
+					{% endif %}
+					<input type="text" id="city"  class="form-control" data-url="{{ path('tisseo_boa_json_city') }}" value='{{ cityLabel }}' {{readonly}}>
+				</div>
 			</div>
 		</div>
 		
 		{# datasource #}
-		<div class="row">
-			{% if stopArea.id is not null %}
-				{% set datasource_list = form_widget(form.stopAreaDatasources[0].datasource) %}
-				{% set datasource_code = form_widget(form.stopAreaDatasources[0].code) %}
-			{% else %}
-				{#new record#}
-				{% set datasource_list = form_widget(form.stopAreaDatasources.vars.prototype.datasource) %}
-				{% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
-				{% set datasource_code = form_widget(form.stopAreaDatasources.vars.prototype.code) %}
-				{% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
-			{% endif %}
-			<div class = "col-md-2"> {{ form_label(form.stopAreaDatasources) }} </div>			
-			<div class = "col-md-3">
-				{{ datasource_list | raw }} 
-			</div>
-			
-			<div class = "col-md-3">
-				{{ datasource_code | raw }} 
+		<div class="form form-edit">
+			<div class="row">
+				{% if stopArea.id is not null %}
+					{% set datasource_list = form_widget(form.stopAreaDatasources[0].datasource) %}
+					{% set datasource_code = form_widget(form.stopAreaDatasources[0].code) %}
+				{% else %}
+					{#new record#}
+					{% set datasource_list = form_widget(form.stopAreaDatasources.vars.prototype.datasource) %}
+					{% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
+					{% set datasource_code = form_widget(form.stopAreaDatasources.vars.prototype.code) %}
+					{% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
+				{% endif %}
+				<div class = "col-md-2"> {{ form_label(form.stopAreaDatasources) }} </div>			
+				<div class = "col-md-3">
+					{{ datasource_list | raw }} 
+				</div>
+				
+				<div class = "col-md-3">
+					{{ datasource_code | raw }} 
+				</div>
 			</div>
 		</div>
 		
@@ -78,7 +75,7 @@
 
 		{# form button #}
 		<div class="row" style="padding: 10px 0 0">
-			<div class = "col-md-2 col-md-offset-3">
+			<div class = "col-md-2 col-md-offset-4">
 				<button type="submit" id="save-form" class="btn btn-success">
 					<span class="glyphicon glyphicon-pencil"></span>
 					 {{'global.save'|trans}}
@@ -90,7 +87,15 @@
 		
 		{# stops #}
 		<div>
-			<div class="stop_table_header">{{ 'stop_area.stop.header' | trans }}</div>
+			<div class="stop_table_header">
+				{{ 'stop_area.stop.header' | trans }}
+				<a style="float:right" class="btn btn-default" id="external-transfert" 
+					href="{{ path('tisseo_boa_stop_new', {'stopAreaId': stopArea.id}) }}"
+					data-toggle="modal" data-target="#base-modal">
+					<span class="glyphicon glyphicon-plus"></span>
+						{{ 'stop_area.stop.new' | trans }}
+				</a>
+			</div>
 			<table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
 			<thead>			
 				<th>{{ 'stop_area.stop.columns.agency' | trans }}</th>
@@ -117,10 +122,23 @@
 					{% else %}
 						<td>{{ stop.stopHistories[0].theGeom.x }}</td>
 						<td>{{ stop.stopHistories[0].theGeom.y }}</td>
-						<td>Lignes</td>
+						<td>
+						{% if stop.id in lines|keys %}
+							{% for line in lines[stop.id] %}
+								<div class="line-number line-small" style="color:{{ line['fgColor'] }}; background-color:{{ line['bgColor'] }}; font-family:sans-serif; font-weight: bold;">
+									<span style="font-size: 15px;">{{ line['number'] }}</span>
+								</div>
+							{% endfor %}
+						{% endif %}
+						</td>
 					{% endif %}
 					<td>
-						Action
+						{% if stop.id not in lines|keys %}
+							<a class="btn btn-default" id="external-transfert" 
+								href="{{ path('tisseo_boa_stop_close', {'StopId': stop.id, 'closingDate': 'now'|date('d/m/Y'), 'stopAreaId': stopArea.id }) }}">
+								{{ 'global.delete' | trans }}
+							</a>
+						{% endif %}
 					</td>
 				</tr>
 			{% endfor %}
@@ -161,7 +179,7 @@
 
 {% block javascripts %}
    <script>
-		require(['jquery', 'jquery_ui_autocomplete', 'datatables'], function($) {
+		require(['jquery', 'jquery_ui_autocomplete', 'textfill', 'datatables'], function($) {
 			$(document).ready(function() {
 				$("#datatable").DataTable({
 					"paging":   false,
@@ -169,6 +187,12 @@
 					'searching': false,
 					"language": {
 						"sZeroRecords":    "{{ 'stop_area.labels.no_stops' | trans }}"
+					},
+					"createdRow": function(row, data) {
+						$(row).find("td .line-small").textfill({
+							minFontPixels: 2,
+							maxFontPixels: 15
+						});
 					}
 				});
 			

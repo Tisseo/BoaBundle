@@ -14,7 +14,7 @@
     {{ form_errors(form) }}
 	{{ form_widget(form._token) }}
 	
-{#	{{ dump(form) }}		#}
+{#	{{ dump(stopArea) }}		#}
 	
 	<div class="form form-edit">
 		<div class="col-md-12">
@@ -56,21 +56,15 @@
 		</div>
 
 		<div class="col-md-12">
-			<div class="row">
-				{{ form_row(form.x) }}
-			</div>
+			<div class="row">{{ form_row(form.x) }}</div>
 		</div>
 		
 		<div class="col-md-12">
-			<div class="row">
-				{{ form_row(form.y) }}
-			</div>
+			<div class="row">{{ form_row(form.y) }}</div>
 		</div>
 		
 		<div class="col-md-12">
-			<div class="row">
-				{{ form_row(form.srid) }}
-			</div>
+			<div class="row">{{ form_row(form.srid) }}</div>
 		</div>
 		
 	</div>
@@ -84,51 +78,55 @@
 	
    <script>
 		require(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
-			$("#stop_area").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$("#boa_new_stop_stopArea").val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
-			});
+			 $(document).ready(function() {
+				$("#stop_area").autocomplete({
+					source: function (request, response) {
+						var objData = { term: request.term };
+						var url = $(this.element).attr('data-url');
+						$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+							success: function (data) {
+								response($.map(JSON.parse(data.content), function (item) {									
+									return {				
+										label: item.name, 
+										value: item.name, 
+										id: item.id
+									};
+								}));
+							},
+						});
+					},
+					select: function (event, ui) {
+						$("#boa_new_stop_stopArea").val(ui.item.id);
+					},					
+					minLength: 3,
+					delay: 300
+				});
 
-			var $NameInput = $('#name-div').attr('data-prototype').replace(/__name__/g, '0');
-			$('#name-div').append($NameInput);
-			
-			var $longNameInput = $('#longName-div').attr('data-prototype').replace(/__name__/g, '0');
-			$('#longName-div').append($longNameInput);
+				var $NameInput = $('#name-div').attr('data-prototype').replace(/__name__/g, '0');
+				$('#name-div').append($NameInput);
+				var $longNameInput = $('#longName-div').attr('data-prototype').replace(/__name__/g, '0');
+				$('#longName-div').append($longNameInput);
+				var $DateInput = $('#date-div').attr('data-prototype').replace(/__name__/g, '0');
+				$('#date-div').append($DateInput);
+				$( "#boa_new_stop_stopHistories_0_startDate" ).addClass( "input-date readonly" );
+				var $DatasourceInput = $('#datasource-div').attr('data-prototype').replace(/__name__/g, '0');
+				$('#datasource-div').append($DatasourceInput);
+				var $DatasourceInput = $('#code-div').attr('data-prototype').replace(/__name__/g, '0');
+				$('#code-div').append($DatasourceInput);
+				
+				{% if stopArea is not empty %}
+					$("#boa_new_stop_stopHistories_0_shortName").val('{{ stopArea.shortName  }}');
+					$("#boa_new_stop_stopHistories_0_longName").val('{{ stopArea.longName  }}');
+					$('#boa_new_stop_stopArea option[value={{ stopArea.id }}]').attr('selected', 'selected');
+					$("#stop_area").val($('#boa_new_stop_stopArea option[value={{ stopArea.id }}]').text());
+				{% endif %}
 
-			var $DateInput = $('#date-div').attr('data-prototype').replace(/__name__/g, '0');
-			$('#date-div').append($DateInput);
-			$( "#boa_new_stop_stopHistories_0_startDate" ).addClass( "input-date readonly" );
+				$(".readonly").keydown(function(e){
+					e.preventDefault();
+				});
 
-			
-			var $DatasourceInput = $('#datasource-div').attr('data-prototype').replace(/__name__/g, '0');
-			$('#datasource-div').append($DatasourceInput);
-			var $DatasourceInput = $('#code-div').attr('data-prototype').replace(/__name__/g, '0');
-			$('#code-div').append($DatasourceInput);
-
-			$(".readonly").keydown(function(e){
-				e.preventDefault();
-			});
-
-			var previousDate;
-			$('#boa_new_stop_stopHistories_0_startDate').datepicker({
+				var previousDate;
+				$('#boa_new_stop_stopHistories_0_startDate').datepicker({
 					language: '{{ app.request.locale }}',
 					todayHighlight: true,
 					autoclose: true
@@ -143,9 +141,7 @@
 						$(this).val(previousDate).datepicker('update');
 					}
 				});
-			
-
-			$("#stop_area").val($("#boa_stop_stopArea option:selected").text());
+			});
 		 });
     </script>		
 {% endblock %}

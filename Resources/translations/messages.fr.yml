@@ -192,6 +192,7 @@ stop_area:
         no_stops: aucun élément à afficher
         main_city: cette zone d'arrêt est considérée comme zone d'arrêt principale de la commune de %s%
     stop:
+        new: Nouveau point d'arrêt
         header: Liste des points d'arrêt
         columns:
             agency: Réseau
