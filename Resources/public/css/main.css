@@ -16,6 +16,17 @@ hr {
     width: 200px;
 }
 
+#newStop > input {
+    margin-right: 53px;
+    width: 81px;
+}
+
+.idRS, .idRS.col-sm-1 {
+    display:none;
+}
+#submitStop {
+    margin-right:53px;
+}
 
 /* table datatable */
 

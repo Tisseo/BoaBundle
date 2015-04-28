@@ -49,30 +49,19 @@
         <th></th>
         <th></th>
         {% set count =0 %}
-        {% for trip in trips %}
-            {% set count=loop.index %}
-            <th colspan="2" class="trip-cols">{{ trip.name }}</th>
-        {% endfor %}
+        {% set tripsId = [] %}
+        <th colspan="2" class="trip-cols">{{ trip.name }}</th>
+
     </tr>
     <tr id="heading">
-        <th class="col-sm-1">Id</th>
+        <th class="idRS col-sm-1">Id</th>
         <th class="col-sm-1">Ordre</th>
         <th class="col-sm-1">Ville</th>
         <th class="col-sm-1">Nom arrêt</th>
         <th class="col-sm-1">Num arrêt</th>
         <th class="col-sm-1">Descente inter</th>
         <th class="col-sm-1">Montee inter</th>
-        {% for i in range(1,count) %}
-            {% if isZone == false %}
 
-
-
-            {% else %}
-                <th class="col-sm-1">Heure départ</th>
-                <th class="col-sm-1">Heure arrivée</th>
-            {% endif %}
-
-        {% endfor %}
     </tr>
     </thead>
     <input type="hidden" id="servicesCount" value="{{ count }}">
@@ -89,6 +78,7 @@
 
         {% endblock %}
         </table>
+
         {% block list_pagination -%}{% endblock %}
 
         <div class="row">
@@ -113,27 +103,6 @@
         require(['jquery', 'textfill'], function ($) {
             $(document).ready(function () {
                 var countServices = $("#servicesCount").val();
-                var cols = [
-                    {"data": "Id"},
-                    {"data": "Ordre"},
-                    {"data": "Ville"},
-                    {"data": "Nom"},
-                    {"data": "Num"},
-                    {"data": "Desc"},
-                    {"data": "Pickup"}
-                ];
-
-                for (i = 0; i <= countServices - 1; i++) {
-                    {% if isZone == false %}
-
-                    cols.push({"data": "Duration"});
-
-                    {% else %}
-                    cols.push({"data": "Dep"}, {"data": "Arr"});
-
-                    {% endif %}
-                }
-
 
                 idRoute = $("#routeId").val();
 
@@ -149,37 +118,143 @@
 
 
             $(document).ready(function () {
+
+                var size = 0;
+                var stopTimes = [];
+                var sizeO = [];
                 table = $("#routeTable");
+
                 $("thead").append("<tr></tr>");
+
+
+                $("#add_rs").click(function () {
+
+                    var stptimes = {};
+                    $('.stptimes').each(function (key, stoptimes) {
+                        stptimes[$('.stptimes').eq(key).attr('name')] = $('.stptimes').eq(key).val();
+
+                    });
+
+                    var routeStop = {
+                        name: $('#stop_search').val(),
+                        id:{{id}},
+                        descStop: $('#descStop').is(':checked'),
+                        upStop: $('#upStop').is(':checked'),
+                        stopId: $("#stop_id").val(),
+                        rank: $("#routeTable tbody").find("tr").last().find("td").eq(1).html(),
+                        routeId: $("#routeId").val(),
+                        stoptimes: stptimes,
+                        departures: sizeO
+                    };
+
+                    $.ajax({
+                        url: "{{ path('tisseo_boa_json_add_routestop') }}",
+                        type: 'POST',
+                        data: routeStop
+                    }).success(function (data) {
+                        console.log(data);
+                    })
+                });
+
                 $.ajax({
                     url: "{{ path('tisseo_boa_json_route_services') }}",
                     type: 'POST',
                     dataType: 'json',
                     data: {routeId: $("#routeId").val()}
                 }).success(function (data) {
+
+                    var departures = [];
+                    var indexo = 0;
+
                     $.map(JSON.parse(data.content), function (item) {
 
-
-                        if (typeof (item.services) != "undefined") {
-                            $("#heading").append(
-                                    "<th>" + item.services + "</th>");
-
+                        var stoptimes = item;
+                        if (typeof (stoptimes.stoptimes) != "undefined") {
+                            stopTimes.push(stoptimes.stoptimes);
                         }
 
                         if (typeof (item.rank) != "undefined") {
-                            console.log(item.pickup);
-                            $("tbody").append(
-                                    "<tr>" + "<td>" + item.id + "</td>" + "<td>" + item.rank + "</td>" + "<td>" + item.city + "</td>" + "<td>" + item.name + "</td>" +
-                                    "<td>" + item.code + "</td>" + "<td>" + item.dropOff + "</td><td>" + item.pickup + "</td>" +
+                            var departure = [];
+                            var times = [];
+                            var current_value = "";
+
+
+                            for (i = 0; i < stopTimes.length; i++) {
+                                indexo += 1;
+                                var prevStep = (stopTimes.length * 2) + 1;
+
+                                $.each(stopTimes[i], function (stop, key) {
+
+                                    if (key.routestop == item.id) {
+
+                                        if (item.rank == 1) {
+                                            departure.push("<td>00:00</td>");
+                                        }
+
+                                        else {
+                                            departures.push(key.arrivalTime);
+                                            current_value = key.arrivalTime;
+                                            if (item.rank == 2) {
+                                                departure.push("<td>" + key.arrivalTime + "</td>");
+                                            }
+                                            if (item.rank > 2) {
+
+                                                departure.push("<td>" + (parseInt(key.arrivalTime) - parseInt(departures[indexo - prevStep])) + "</td>");
+                                            }
+
+                                            if (item.rank == Object.keys(item).length - 1) {
+                                                sizeO.push({"depart": key.departureTime});
+                                            }
+
+                                        }
+                                    }
+                                });
+
+
+                            }
+
+                            var dropoff = item.dropOff == true ? "Oui" : "Non";
+                            var pickup = item.pickup == true ? "Oui" : "Non";
+
+                            $("#routeTable tbody").append(
+                                    "<tr>" + "<td class='idRS'>" + item.id + "</td>" + "<td>" + item.rank + "</td>" + "<td>" + item.city + "</td>" + "<td>" + item.name + "</td>" +
+                                    "<td>" + item.code + "</td>" + "<td>" + dropoff + "</td><td>" + pickup + "</td>" +
+                                    departure + "<td><button class='del-rs btn btn-danger'>-</button></td>" +
                                     "</tr>");
 
                         }
 
+                        if (typeof (item.stoptimes) != "undefined") {
+                            $.each(item.stoptimes, function (item, key) {
+                                if (key.routestop == item.id) {
+                                }
+                            });
+
+
+                        }
+
+
+                        if (typeof (item.services) != "undefined") {
+
+                            $("#newStop").append('<input type="time" name="' + item.services + '" class="stptimes" />');
+                            $("#newStop").append('<input type="hidden" name="lastRank" value="' + size + 1 + '" />');
+                            $("#heading").append("<th>" + item.services + "</th>");
+
+                        }
+
+
                     });
-                })
+
+                    $("#heading").append("<th><button class='btn btn-danger'>+</button></th>");
+                    $(".del-rs").click(function () {
+                        var idRouteStop = $(this).parent().parent().find('td').eq(0).html();
+
+                    });
+                }, 'json')
                         .error(function (err) {
                             console.log(err);
                         });
+
 
                 $("#stop_search").autocomplete({
                     source: function (request, response) {
@@ -279,11 +354,10 @@
                 $("#routeTable tbody").on('click', 'tr', function () {
                     $(this).toggleClass("selected");
                     $(this).draggable();
-
-                    var order = table.row(this).data().Ordre;
-
                 })
             });
+
+
         });
     </script>
 {% endblock %}

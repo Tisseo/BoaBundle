@@ -4,6 +4,11 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tisseo\EndivBundle\Entity\RouteStop;
+use Tisseo\EndivBundle\Entity\Stop;
+use Tisseo\EndivBundle\Entity\StopTime;
+use Tisseo\EndivBundle\Entity\Waypoint;
+use Doctrine\Common\Persistence\ObjectManager;
 
 class JsonController extends AbstractController
 {
@@ -135,12 +140,91 @@ class JsonController extends AbstractController
     	}
     }
 
-    public function routeTableAction(){
-
+    public function addRouteStopAction(){
 
         $request = $this->get('request');
+        $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
+        $results = [];
+
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $StopId =null;
+
+        $om = $this->getDoctrine()->getManager();
+        $om->getRepository('TisseoEndivBundle:StopTime');
+
+        if($request->isMethod('POST')) {
+
+            $routeStop = new RouteStop();
+            $routeId = $request->request->get('routeId');
+            $route = $this->getDoctrine()
+                ->getRepository('Tisseo\EndivBundle\Entity\Route','endiv')
+                ->find($routeId);
+
+            $stopId = $request->request->get('stopId');
+            $routeStop = $this->getDoctrine()
+                ->getRepository('Tisseo\EndivBundle\Entity\RouteStop','endiv')
+                ->find($stopId);
+
+            $stoptimeManager = $this->get('tisseo_endiv.stoptime_manager');
+
+            $name = $request->request->get('name');
+
+            $descStop=$request->request->get('descStop');
+            $upStop=$request->request->get('upStop');
+            $rank=$request->request->get('rank')+1;
+
+            $stoptimes = $request->request->get('stoptimes');
+            $departures = $request->request->get('departures');
+
+            $index = -1;
+            foreach($stoptimes as $stoptime=>$val){
+
+                $trip = $this->getDoctrine()
+                    ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
+                    ->findOneBy(array("name"=>$stoptime));
+
+                $tripId = $trip->getId();
+
+                $index++;
+                $time = new StopTime();
+
+                $arrivalTime = $departures[$index]["depart"] + $val;
 
 
+                $time->setArrivalTime($arrivalTime);
+                $time->setTrip($trip);
+
+                $time->setRouteStop($routeStop);
+                $stoptimeManager->save($time);
+
+            }
+
+            $waypoint = $this->getDoctrine()
+                ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
+                ->find($stopId);
+
+            $idWaypoint = $waypoint->getId();
+
+
+            $routeStop->setDropOff($descStop);
+            $routeStop->setPickup($upStop);
+            $routeStop->setRank($rank);
+            $routeStop->setRoute($route);
+
+            $routeStop->setWaypoint($waypoint);
+
+            $routeStopManager->save($routeStop);
+        }
+        $response = new Response(json_encode($results));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
+
+
+    public function routeTableAction(){
+
+        $request = $this->get('request');
         if($request->isXmlHttpRequest()){
             $results= 1;
             $stopManager = $this->get('tisseo_endiv.stop_manager');
@@ -149,6 +233,7 @@ class JsonController extends AbstractController
             $id = $request->request->get('routeId');
             $stops = $stopManager->getStopsByRoute($id);
             $index = -1;
+            $indexStop = 0;
             $isZone = false;
 
             if(isset($id)) {
@@ -157,8 +242,6 @@ class JsonController extends AbstractController
                 $trips = $this->getDoctrine()
                     ->getRepository("Tisseo\EndivBundle\Entity\Trip", "endiv")
                     ->findBy(array("route" => $id));
-
-
 
             if($routeManager->checkZoneStop($route) == true){
                 $isZone = true;
@@ -170,8 +253,16 @@ class JsonController extends AbstractController
                     if($trip->getIsPattern() == true){
                         $services = [];
                         $services['services'] = $trip->getName();
-                        array_push($results,$services);
 
+
+                        $stoptimes =  $routeStopManager->getStoptimes($trip->getId());
+
+                        if(isset($stoptimes)){
+                            $services["stoptimes"]=[];
+                            $services["stoptimes"] = $stoptimes;
+                        }
+
+                        array_push($results,$services);
                     }
 
                 }
@@ -208,6 +299,9 @@ class JsonController extends AbstractController
                         $code = "zone";
                     }
 
+
+
+
                     $stopPoints["rank"] = $rank;
                     $stopPoints["city"] = $city;
                     $stopPoints["name"] = $name;
@@ -216,11 +310,13 @@ class JsonController extends AbstractController
                     $stopPoints["dropOff"] = $dropOff;
                     $stopPoints["pickup"] = $pickup;
 
+
                     array_push($results,$stopPoints);
                 }
+                $size= [];
+                $size["size"] = $index;
 
-
-
+                array_push($results,$size);
             }
                 /**
             }**/
