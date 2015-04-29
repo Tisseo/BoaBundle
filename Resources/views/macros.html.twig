@@ -30,21 +30,21 @@
      <div class="col-md-12">
 
          <br>
-         <div class = "row">
+         <div class = "row" id="newStop">
              <div class = "col-md-4">
                  <input type="hidden" id="stop_id">
                  <input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}">
              </div>
 
-             <div class = "col-md-2">
-                <label>Desc Inter</label><input type="checkbox" name="desc" id="descStop">
-                 <label>Montée Inter</label><input type="checkbox" name="desc" id="upStop">
+             <div class = "col-md-1">
+                 <input type="checkbox" name="desc" id="descStop">
+                 <input type="checkbox" name="asc" id="upStop">
              </div>
 
-             <div class = "col-md-2">
-                 <a href="{{ path('tisseo_boa_stop_edit') }}" class="btn btn-success" id="stop_edit">
+             <div class = "col-md-1" id="submitStop">
+                 <div class="btn btn-success" id="add_rs">
                      <span class="glyphicon glyphicon-plus">Ajouter</span>
-                 </a>
+                 </div>
              </div>
 
          </div>

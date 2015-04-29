@@ -111,7 +111,9 @@ tisseo_boa_json_stop_transfer:
 tisseo_boa_json_route_services:
     pattern: /json/route_services
     defaults: { _controller: "TisseoBoaBundle:Json:routeTable"}
-
+tisseo_boa_json_add_routestop:
+    pattern: /json/add_routestop
+    defaults: { _controller: "TisseoBoaBundle:Json:addRouteStop"}
 
 #Stop administration
 tisseo_boa_stop_search:

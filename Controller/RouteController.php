@@ -53,7 +53,6 @@ class RouteController extends AbstractController
             }
 
         }
-    
 
         if(isset($id) && ($request->getMethod()) == "POST") {
             $routes = $routeManager->findAllByLine($id);
@@ -77,11 +76,6 @@ class RouteController extends AbstractController
         if(isset($id)) {
             $route= $routeManager->findById($id);
         }
-
-
-
-
-
 
         if(!$route) {
             throw $this->createNotFoundException('route non trouvée');

@@ -13,19 +13,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tisseo\BoaBundle\Form\Type\LineVersionType;
 
-class RouteType extends AbstractType {
+class RouteType extends AbstractType
+{
 
-   public function buildForm( FormBuilderInterface $builder, array $options) {
-       $builder->add('name', 'text',  array('label' => 'Nom route'))
-               ->add('way', 'choice',  array(
-                   'choices' => array(
-                       'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
-                   ), 'label' => 'Sens'))
-               ->add('direction', 'text',  array('label' => 'Direction'))
-           ->add('creer', 'submit');
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('name', 'text', array('label' => 'Nom route'))
+            ->add('way', 'choice', array(
+                'choices' => array(
+                    'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
+                , 'boucle' => 'boucle'), 'label' => 'Sens'))
+            ->add('direction', 'text', array('label' => 'Direction'))
+            ->add('creer', 'submit');
 
-           $builder->setAction($options['action']);
-   }
+        $builder->setAction($options['action']);
+    }
 
 
     /**
