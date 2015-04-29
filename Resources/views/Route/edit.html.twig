@@ -37,8 +37,8 @@
 
     <thead>
     <tr id="headRstops">
-        <th colspan="7">Détail de la route</th>
-        <th colspan="11">Servcies type</th>
+        <th colspan="6">Détail de la route</th>
+        <th colspan="11" id="colServices">Servcies type</th>
     </tr>
     <tr id="trips">
         <th></th>
@@ -50,7 +50,6 @@
         <th></th>
         {% set count =0 %}
         {% set tripsId = [] %}
-        <th colspan="2" class="trip-cols">{{ trip.name }}</th>
 
     </tr>
     <tr id="heading">
@@ -124,6 +123,17 @@
                 var sizeO = [];
                 table = $("#routeTable");
 
+                (function($){
+
+                    $.fn.getRouteStops = function() {
+                        alert('routestop or service updated');
+                        return this;
+                    }
+
+                })(jQuery);
+
+
+
                 $("thead").append("<tr></tr>");
 
 
@@ -147,14 +157,35 @@
                         departures: sizeO
                     };
 
-                    $.ajax({
-                        url: "{{ path('tisseo_boa_json_add_routestop') }}",
+                    var code = $('#stop_search').val().split("(");
+                    code = code[1].split(")");
+                    code = code[0];
+
+                    var time = [];
+
+                    $.each(stptimes,function(key,val){
+                        time.push("<td>"+val+"</td>");
+                    });
+
+                    $descStop = $('#descStop').is(':checked') == true ? "Oui" : "Non";
+                    $upStop = $('#upStop').is(':checked') == true ? "Oui" : "Non";
+
+                    $("#routeTable tbody").append(
+                            "<tr><td class='idRS'>"+$("#stop_id").val()+"</td>"+"<td colspan='3'>"+$('#stop_search').val()+
+                            "</td>"+"<td>"+code+"</td>"+"<td>"+$descStop +"</td>"+"<td>"+$upStop+"</td>"+
+                            time+"</tr>"
+
+                    );
+                   /** $.ajax({
+                        url: "{## path('tisseo_boa_json_add_routestop') ##}",
                         type: 'POST',
                         data: routeStop
                     }).success(function (data) {
                         console.log(data);
-                    })
+                    })**/
                 });
+
+
 
                 $.ajax({
                     url: "{{ path('tisseo_boa_json_route_services') }}",
@@ -219,37 +250,46 @@
                             $("#routeTable tbody").append(
                                     "<tr>" + "<td class='idRS'>" + item.id + "</td>" + "<td>" + item.rank + "</td>" + "<td>" + item.city + "</td>" + "<td>" + item.name + "</td>" +
                                     "<td>" + item.code + "</td>" + "<td>" + dropoff + "</td><td>" + pickup + "</td>" +
-                                    departure + "<td><button class='del-rs btn btn-danger'>-</button></td>" +
+                                    departure +"<td><button class='del-rs btn btn-danger'>-</button></td>"+
                                     "</tr>");
 
                         }
+                        $(".del-rs.btn.btn-danger").click(function () {
+                            var idRouteStop = $(this).parent().parent().find('td').eq(0).html();
+                            alert("idRoutestop"+idRouteStop);
+
+                        });
 
                         if (typeof (item.stoptimes) != "undefined") {
                             $.each(item.stoptimes, function (item, key) {
                                 if (key.routestop == item.id) {
                                 }
                             });
-
-
                         }
 
 
                         if (typeof (item.services) != "undefined") {
 
-                            $("#newStop").append('<input type="time" name="' + item.services + '" class="stptimes" />');
+                            $("#newStop").append('<input type="time" name="' + item.services + '" class="stptimes" pattern="[ />');
                             $("#newStop").append('<input type="hidden" name="lastRank" value="' + size + 1 + '" />');
-                            $("#heading").append("<th>" + item.services + "</th>");
+                            $("#heading").append("<th>" + item.services + "<button class='cc btn btn-primary'>" +
+                            "<div class='copy' id='first'></div><div class='copy'></div></button></th>");
 
                         }
 
 
                     });
+                    $(".cc").click(function () {
+                        var nameTrip = $(this).parent().html().split("<");
 
-                    $("#heading").append("<th><button class='btn btn-danger'>+</button></th>");
-                    $(".del-rs").click(function () {
-                        var idRouteStop = $(this).parent().parent().find('td').eq(0).html();
+
+                        $.post("{{ path('tisseo_boa_trip_action') }}", {trip: nameTrip[0]}).success( function(data){
+                                        $("thead").getRouteStops();
+                                });
 
                     });
+                    $("#heading").append("<th></th><th><button class='add-SV btn btn-danger'>+</button></th>");
+
                 }, 'json')
                         .error(function (err) {
                             console.log(err);

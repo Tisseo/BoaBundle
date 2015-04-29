@@ -15,6 +15,9 @@ hr {
     width: 200px;
 }
 
+/**
+* style for routes edition
+*/
 #newStop > input {
     margin-right: 53px;
     width: 81px;
@@ -26,6 +29,37 @@ hr {
 #submitStop {
     margin-right:53px;
 }
+
+#routeTable {
+    margin-top: 30px;
+}
+
+#colServices {
+    border-left: 1px solid #fff;
+}
+.cc.btn.btn-primary{
+    margin-left:10px;
+}
+.copy {
+    width: 10px;
+    height: 3px;
+    background: #fff;
+    margin-left: 10px;
+   }
+#first.copy {
+    width: 10px;
+    height: 3px;
+    background: #fff;
+    margin: 3px;
+}
+
+.del-rs.btn.btn-danger{
+    margin-left: 10px;
+}
+
+/**
+* end routes style
+**/
 
 /* table datatable */
 
