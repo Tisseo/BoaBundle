@@ -39,7 +39,7 @@ class StopAreaController extends AbstractController
 		$cityLabel = "";
 		$cityMain = $StopAreaManager->getMainStopCityName($stopArea);
 		if (!empty($city)) {
-			$cityLabel = $city->getName()."(".$city->getInsee().")";
+			$cityLabel = $city->getName()." (".$city->getInsee().")";
 		}
 		
 		$stops = $StopAreaManager->getCurrentStops($stopArea);

@@ -165,7 +165,7 @@ class StopController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-//			try {				
+			try {				
 				$datas = $form->getData();
 				$x = $form->get('x')->getData();
 				$y= $form->get('y')->getData();
@@ -179,9 +179,9 @@ class StopController extends AbstractController
 						array('StopId' => $StopId)
 					)
 				);	
-/*			} catch(\Exception $e) {
+			} catch(\Exception $e) {
 				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-			}*/
+			}
         }
 		
 		return $this->render(

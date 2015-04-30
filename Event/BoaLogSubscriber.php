@@ -144,11 +144,18 @@ class BoaLogSubscriber implements EventSubscriber
      */
 	 private function stopHistoryToString($entity)
 	 {
-		$strEntity = $entity->getId()." - ".$entity->getShortName()." (From ".$entity->getStartDate()->format('d/m/Y');
+		$strEntity = $entity->getId().";";
+		$strEntity .= $entity->getStop()->getId().";";
+		if( $entity->getStartDate() )
+			$strEntity .= $entity->getStartDate()->format('d/m/Y');
+		$strEntity .= ";";
 		if( $entity->getEndDate() )
-			$strEntity .= " To ".$entity->getEndDate()->format('d/m/Y').")";
-		else
-			$strEntity .= ")";
+			$strEntity .= $entity->getEndDate()->format('d/m/Y');
+		$strEntity .= ";";
+		$strEntity .= $entity->getShortName().";";
+		$strEntity .= $entity->getLongName().";";
+		$strEntity .= $entity->getTheGeom().";";
+		
 		return $strEntity;
 	 }
 }
