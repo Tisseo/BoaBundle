@@ -150,8 +150,7 @@ class JsonController extends AbstractController
 
         $StopId =null;
 
-        $om = $this->getDoctrine()->getManager();
-        $om->getRepository('TisseoEndivBundle:StopTime');
+
 
         if($request->isMethod('POST')) {
 
@@ -189,6 +188,24 @@ class JsonController extends AbstractController
                 $index++;
                 $time = new StopTime();
 
+                $val = explode(":",$val);
+
+                if(empty($val)){
+                    $val = 0;
+                }
+                else{
+                    $hours = intval($val[0])*3600;
+                    if(sizeof($val)>1){
+                        $minutes = intval($val[1])*60;
+                    }
+                    else {
+                        $minutes = 0;
+                    }
+
+                }
+
+                $val = $hours+$minutes;
+
                 $arrivalTime = $departures[$index]["depart"] + $val;
 
 
@@ -196,7 +213,7 @@ class JsonController extends AbstractController
                 $time->setTrip($trip);
 
                 $time->setRouteStop($routeStop);
-                $stoptimeManager->save($time);
+               // $stoptimeManager->save($time);
 
             }
 
@@ -214,7 +231,7 @@ class JsonController extends AbstractController
 
             $routeStop->setWaypoint($waypoint);
 
-            $routeStopManager->save($routeStop);
+           //$routeStopManager->save($routeStop);
         }
         $response = new Response(json_encode($results));
         $response -> headers -> set('Content-Type', 'application/json');
@@ -250,20 +267,19 @@ class JsonController extends AbstractController
                 $results=array();
                 foreach ($trips as $trip) {
 
-                    if($trip->getIsPattern() == true){
                         $services = [];
                         $services['services'] = $trip->getName();
-
 
                         $stoptimes =  $routeStopManager->getStoptimes($trip->getId());
 
                         if(isset($stoptimes)){
+
                             $services["stoptimes"]=[];
                             $services["stoptimes"] = $stoptimes;
                         }
 
                         array_push($results,$services);
-                    }
+
 
                 }
 

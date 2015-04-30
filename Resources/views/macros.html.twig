@@ -27,28 +27,13 @@
 
  {% macro stop_point(name) %}
      {% if name == "add" %}
-     <div class="col-md-12">
 
-         <br>
-         <div class = "row" id="newStop">
-             <div class = "col-md-4">
-                 <input type="hidden" id="stop_id">
-                 <input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}">
-             </div>
 
-             <div class = "col-md-1">
-                 <input type="checkbox" name="desc" id="descStop">
-                 <input type="checkbox" name="asc" id="upStop">
-             </div>
 
-             <div class = "col-md-1" id="submitStop">
-                 <div class="btn btn-primary" id="add_rs">
-                     <span class="glyphicon glyphicon-plus">Ajouter</span>
-                 </div>
-             </div>
 
-         </div>
-     </div>
+
+
+
      {% endif %}
  {% endmacro %}
 

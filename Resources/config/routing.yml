@@ -215,4 +215,4 @@ tisseo_boa_trip_action:
      pattern: /routes/trips/action
      defaults: { _controller: TisseoBoaBundle:Trip:deleteTrip }
      options:
-        expose: true
+         expose: true

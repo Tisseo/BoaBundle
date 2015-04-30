@@ -22,7 +22,11 @@ hr {
     margin-right: 53px;
     width: 81px;
 }
-
+.container-routestop{
+    min-height: 300px;
+    width: 100%;
+    overflow-x: scroll;
+}
 .idRS, .idRS.col-sm-1 {
     display:none;
 }
