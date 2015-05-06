@@ -71,8 +71,8 @@ class RouteController extends AbstractController
 
         $id = $request->get('id');
         $routeManager = $this->get('tisseo_endiv.route_manager');
-
-
+        $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
+        $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
         if(isset($id)) {
             $route= $routeManager->findById($id);
         }
@@ -81,11 +81,23 @@ class RouteController extends AbstractController
             throw $this->createNotFoundException('route non trouvée');
         }
 
-        $formRoute = $this->createForm(new RouteType(),$route);
+        $formRoute = $this->createForm(new RouteType(),$route,
+            array("action"=>$this->generateUrl('tisseo_boa_route_edit',
+                array("id"=>$id))));
 
-               if(isset($request)) {
-                   $this->processForm($request, $formRoute);
-               }
+        if(isset($request)) {
+            $this->processForm($request, $formRoute);
+        }
+
+
+        $idLineVersion=$route->getLineVersionId();
+        $lineVersion = $lineVersionManager->find($idLineVersion);
+        $line = $lineVersion->getLine();
+        $physicalMode = $this->getDoctrine()
+                             ->getRepository('Tisseo\EndivBundle\Entity\PhysicalMode','endiv')
+                             ->find($line->getPhysicalMode());
+
+        $mode = $physicalMode->getName();
 
             return $this->render(
                 'TisseoBoaBundle:Route:edit.html.twig',
@@ -93,7 +105,8 @@ class RouteController extends AbstractController
                     'form' => $formRoute->createView(),
                     'pageTitle' => 'modification de route',
                     'route' => $route,
-                    'id' => $id
+                    'id' => $id,
+                    'mode' =>$mode
 
                 )
             );

@@ -67,6 +67,12 @@ hr {
 
 /* table datatable */
 
+.timeStop{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
 th.trips-cols {
     border: 1px solid #ccc;
 }
