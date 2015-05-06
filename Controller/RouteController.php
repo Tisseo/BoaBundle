@@ -73,6 +73,8 @@ class RouteController extends AbstractController
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
         $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
+
+
         if(isset($id)) {
             $route= $routeManager->findById($id);
         }
@@ -85,10 +87,23 @@ class RouteController extends AbstractController
             array("action"=>$this->generateUrl('tisseo_boa_route_edit',
                 array("id"=>$id))));
 
+
         if(isset($request)) {
             $this->processForm($request, $formRoute);
         }
 
+        $routeStop = $request->request->get('routestop');
+        $resp = [];
+        if(isset($routeStop)) {
+
+            foreach ($routeStop as $stop) {
+
+                array_push($resp,$stop);
+            }
+
+            return new Response(var_dump($resp),200);
+
+        }
 
         $idLineVersion=$route->getLineVersionId();
         $lineVersion = $lineVersionManager->find($idLineVersion);
@@ -205,9 +220,10 @@ class RouteController extends AbstractController
                     'default'
                 )
             );
-            return $this->redirect(
+            /**return $this->redirect(
                 $this->generateUrl('tisseo_boa_route_list')
-            );
+            );**/
+            $this->get('session')->getFlashBag()->add('modification', 'la route a été modifiée');
         }
         return (null);
     }

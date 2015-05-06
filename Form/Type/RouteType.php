@@ -24,6 +24,7 @@ class RouteType extends AbstractType
                     'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
                 , 'boucle' => 'boucle'), 'label' => 'Sens'))
             ->add('direction', 'text', array('label' => 'Direction'))
+
             ->add('creer', 'submit');
 
         $builder->setAction($options['action']);
