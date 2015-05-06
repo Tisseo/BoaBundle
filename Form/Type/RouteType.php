@@ -24,7 +24,16 @@ class RouteType extends AbstractType
                     'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
                 , 'boucle' => 'boucle'), 'label' => 'Sens'))
             ->add('direction', 'text', array('label' => 'Direction'))
-
+            ->add('routestops', 'collection', array(
+                'type' => new RouteStopType(),
+                'allow_add' => true,
+                'by_reference' => false,
+            ))
+            ->add('trips', 'collection', array(
+                'type' => new TripType(),
+                'allow_add' => true,
+                'by_reference' => false,
+            ))
             ->add('creer', 'submit');
 
         $builder->setAction($options['action']);

@@ -83,6 +83,11 @@ class RouteController extends AbstractController
             throw $this->createNotFoundException('route non trouvée');
         }
 
+        $isZone = false;
+        if($routeManager->checkZoneStop($route) == true){
+            $isZone = true;
+        }
+
         $formRoute = $this->createForm(new RouteType(),$route,
             array("action"=>$this->generateUrl('tisseo_boa_route_edit',
                 array("id"=>$id))));
@@ -96,9 +101,15 @@ class RouteController extends AbstractController
         $resp = [];
         if(isset($routeStop)) {
 
-            foreach ($routeStop as $stop) {
+            foreach ($routeStop as $stop=>$key) {
 
-                array_push($resp,$stop);
+
+                foreach($key as $val){
+
+                    array_push($resp,$val);
+
+                }
+
             }
 
             return new Response(var_dump($resp),200);
@@ -121,7 +132,8 @@ class RouteController extends AbstractController
                     'pageTitle' => 'modification de route',
                     'route' => $route,
                     'id' => $id,
-                    'mode' =>$mode
+                    'mode' =>$mode,
+                    'isZone' => $isZone
 
                 )
             );

@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 
-class RouteStopType extends AbstractType {
+class TripType extends AbstractType {
 
 
     /**
@@ -22,11 +22,10 @@ class RouteStopType extends AbstractType {
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('id','text',array('attr'=>array('class'=>"idRS")))
-                ->add('rank', 'text')
+        $builder->add('id','text',array('attr'=>array('class'=>"id")))
+                ->add('name', 'text')
+                ->add('isPattern', 'text');
 
-                ->add('dropOff', 'text')
-                ->add('pickup', 'text');
 
         $builder->setAction($options['action']);
     }
@@ -38,14 +37,14 @@ class RouteStopType extends AbstractType {
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\RouteStop'
+                'data_class' => 'Tisseo\EndivBundle\Entity\Trip'
             )
         );
     }
 
     public function getName(){
 
-        return 'boa_routestop';
+        return 'boa_trip';
     }
 
 }

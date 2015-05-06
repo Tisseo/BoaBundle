@@ -68,9 +68,30 @@
                         {% endblock %}
 
 
-                        <tbody class="ui-sorting">
+                        <tbody class="ui-sorting" data-prototype="{{ form_widget(form.routestops.vars.prototype)|e }}">
 
+                            {%  for routestop in form.routestops %}
+                                <tr>
+                                    <td style="display:none">  {{  form_row(routestop.id) }}</td>
+                                    <td>  {{  form_widget(routestop.rank) }}</td>
+                                    <td></td>
+                                    <td>  {{ routestop.vars.value.waypoint.odtArea.name}}</td>
+                                    <td>  {% if isZone == true %}
+                                            zone
+                                        {% endif %}
+                                    </td>
+                                    <td>  {{  form_widget(routestop.dropOff) }}</td>
+                                    <td>  {{  form_widget(routestop.pickup) }}</td>
+
+
+                                </tr>
+
+                            {%  endfor %}
+
+                            {{ dump(form.trips.vars.value) }}
                         </tbody>
+
+
                         {% block table_body -%}
 
 
@@ -120,6 +141,9 @@
                 document.close();
             }
 
+            var $addTagLink = $('<div class="add_routestop_link">Ajouter un arret</div>');
+            var $routeStopsHolder = $('tbody');
+            $('tbody').append($addTagLink);
 
             $(document).ready(function () {
 
@@ -132,6 +156,23 @@
                 var prevstptimes = {};
                 table = $("#routeTable");
 
+
+
+
+                $addTagLink.on('click', function(e){
+
+                    e.preventDefault();
+
+                    var $routeStopsHolder = $('tbody');
+                    var prototype = $routeStopsHolder.attr('data-prototype');
+
+                    console.log(prototype);
+                    var newForm = prototype.replace(/__name__/g, $routeStopsHolder.children().length);
+
+
+                    var $newFormLi = $('tbody').append('<tr>'+newForm+'</tr>');
+                });
+
                 (function($){
 
                     $.fn.getRouteStops = function() {
@@ -141,174 +182,17 @@
 
                     $.fn.ajaxRouteStops = function(){
 
-                        $.ajax({
-                            url: "{{ path('tisseo_boa_json_route_services') }}",
-                            type: 'POST',
-                            dataType: 'json',
-                            data: {routeId: $("#routeId").val()}
-                        }).success(function (data) {
+
 
 
                             var departures = [];
                             var indexo = 0;
                             var index=0;
                             var cpt = -1;
-                            $.each(JSON.parse(data.content),function(key,obj){
+                            servicesA= [];
 
-                                if( typeof (obj.iszone) !="undefined"){
-                                    isZone = obj.iszone;
-
-                                }
-                            });
+                            servicesA.push('<td>'+'<input type="time" name="324324234" class="stptimes">'+'</td>');
                            
-                            $.map(JSON.parse(data.content), function (item) {
-
-                                var stoptimes = item;
-                                if (typeof (stoptimes.stoptimes) != "undefined") {
-
-                                    valStptimes = [];
-                                    valStptimes["trip"] = stoptimes.services;
-                                    valStptimes["stoptimes"] = stoptimes.stoptimes;
-                                    stopTimes.push(valStptimes);
-
-                                }
-
-                                if (typeof (item.services) != "undefined") {
-
-                                    if ("{{ mode }}" == "TAD")
-                                    {
-
-                                        $("#heading").append("<th colspan='2'>" + item.services + "<button class='cc btn btn-primary'>" +
-                                        "<div class='copy' id='first'></div><div class='copy'></div></button></th>");
-
-
-                                        servicesA.push('<td>'+'<input type="time" name="'+item.services+'" class="stptimes">'+'</td>');
-                                        servicesA.push('<td>'+'<input type="time" name="'+item.services+'" class="stptimes">'+'</td>');
-                                    }
-
-                                    else {
-
-                                        $("#heading").append("<th>" + item.services + "<button class='cc btn btn-primary'>" +
-                                        "<div class='copy' id='first'></div><div class='copy'></div></button></th>");
-                                        servicesA.push('<td>'+'<input type="time" name="'+item.services+'" class="stptimes">'+'</td>');
-
-                                    }
-
-                                    $("#newStop").append('<td><input type="time" name="' + item.services + '" class="stptimes" pattern="" /></td>');
-                                    $("#newStop").append('<input type="hidden" name="lastRank" value="' + size + 1 + '" />');
-
-
-
-                                }
-
-                                if (typeof (item.rank) != "undefined") {
-                                    var departure = [];
-                                    var times = [];
-                                    var current_value = "";
-                                    index++;
-
-                                    for (i = 0; i < stopTimes.length; i++) {
-                                        indexo += 1;
-
-                                        var prevStep = (stopTimes.length * 2) + 1;
-                                        tripName = stopTimes[i]['trip'].toString();
-                                        var tripPos = $("thead").find('th:contains("'+tripName+'")').index();
-
-                                        $.each(stopTimes[i]["stoptimes"], function (stop, key) {
-
-
-                                            if (key.routestop == item.id) {
-
-
-                                                if (item.rank == 1) {
-                                                    departure.push("<td class='timeStop'>00:00</td>");
-                                                }
-
-
-                                                else {
-
-                                                    if(isZone == false) {
-
-                                                        current_value = key.arrivalTime;
-                                                        var timeStop = (parseInt(current_value) - parseInt(prevstptimes[tripName]));
-                                                        hoursTime = parseInt(timeStop/3600);
-                                                        hoursTime = hoursTime < 10 ? "0" + hoursTime : hoursTime;
-                                                        minutesTime = timeStop/60;
-                                                        minutesTime = minutesTime < 10 ? "0" + minutesTime : hoursTime;
-                                                    }
-
-                                                    departures.push(key.arrivalTime);
-
-                                                    if (item.rank == 2) {
-                                                        hoursTime = parseInt(key.arrivalTime/3600);
-                                                        hoursTime = hoursTime < 10 ? "0" + hoursTime : hoursTime;
-                                                        minutesTime = parseInt(key.arrivalTime/60);
-                                                        minutesTime = minutesTime < 10 ? "0" + minutesTime : hoursTime;
-                                                        departure[tripPos]="<td class='timeStop'>" + hoursTime + ":"+ minutesTime + "</td>";
-                                                    }
-
-                                                    if (item.rank > 2) {
-
-                                                        if(isZone == false) {
-
-                                                            departure[tripPos] = "<td class='timeStop' id='"+stopTimes[i]["trip"]+"' name='routestop["+index+"][time]'>" + hoursTime + ":"+ minutesTime +"</td>";
-
-                                                        }
-
-                                                        else {
-
-                                                            departure.push("<td id= '"+stopTimes[i]["trip"]+"' name='routestop["+index+"][timeDeparture]'>" + key.departureTime +"</td>"+
-                                                            "<td name='routestop["+index+"][timeArrival]>" + key.arrivalTime +"</td>" );
-                                                        }
-                                                    }
-
-                                                    if (item.rank == Object.keys(item).length - 1) {
-                                                        sizeO.push({"depart": key.departureTime});
-                                                    }
-                                                    prevstptimes[tripName] = parseInt(key.departureTime);
-
-                                                }
-
-                                            }
-                                        });
-                                    }
-
-
-
-
-                                    var dropoff = item.dropOff == true ? "Oui" : "Non";
-                                    var pickup = item.pickup == true ? "Oui" : "Non";
-
-
-
-                                    $("#routeTable tbody").append(
-                                            "<tr>" + "<td><input type='hidden' class='idRS' name='routestop["+index+"][id]' value='"+item.id+"'>" + item.id + "</td>" +
-                                            "<td><input type='hidden' name='routestop["+index+"][rank]' value='"+item.rank+"'>" + item.rank + "</td>" +
-                                            "<td><input type='hidden' name='routestop["+index+"][city]' value='"+item.city+"'>" + item.city + "</td>" +
-                                            "<td><input type='hidden' name='routestop["+index+"][name]' value='"+item.name+"'>" + item.name + "</td>" +
-                                            "<td><input type='hidden' name='routestop["+index+"][code]' value='"+item.code+"'>" + item.code + "</td>" +
-                                            "<td><input type='hidden' name='routestop["+index+"][dropoff]' value='"+item.dropoff+"'>" + dropoff + "</td>"+
-                                            "<td><input type='hidden' name='routestop["+index+"][pickup]' value='"+item.pickup+"'>" +
-                                            pickup + "</td>"+departure+"<td><button class='del-rs btn btn-danger'>-</button></td>"+
-                                            "</tr>");
-                                }
-
-
-                                $(".del-rs.btn.btn-danger").click(function () {
-                                    var idRouteStop = $(this).parent().parent().find('td').eq(0).html();
-                                    alert("idRoutestop"+idRouteStop);
-
-                                });
-
-                                if (typeof (item.stoptimes) != "undefined") {
-                                    $.each(item.stoptimes, function (item, key) {
-                                        if (key.routestop == item.id) {
-                                        }
-                                    });
-                                }
-
-                            });
-
                             $("#routeTable tbody").append(
                                     '<tr class="row" id="newStop"><td colspan="3"><input type="hidden" id="stop_id">' +
                                     '<input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}"></td><td><input type="checkbox" name="desc" id="descStop"></td>'+
@@ -387,19 +271,6 @@
                                 positionStop = $("#routeTable tbody").find("tr").last().attr('id') != 'newStop' ? $("#routeTable tbody").find("tr").last().find("td").eq(1).html() : 0;
 
 
-                                var routeStop = {
-                                    name: $('#stop_search').val(),
-                                    id:{{id}},
-                                    descStop: $('#descStop').is(':checked'),
-                                    upStop: $('#upStop').is(':checked'),
-                                    stopId: $("#stop_id").val(),
-                                    rank: positionStop,
-                                    routeId: $("#routeId").val(),
-                                    stoptimes: stptimes,
-                                    departures: sizeO,
-                                    isZone: "{{ mode }}"
-                                };
-
 
                                 /*
                                  ** si on crée le premier stop ou la première zone
@@ -437,7 +308,7 @@
                                 $descStop = $('#descStop').is(':checked') == true ? "Oui" : "Non";
                                 $upStop = $('#upStop').is(':checked') == true ? "Oui" : "Non";
 
-                                console.log(time);
+
 
                                 $("#routeTable tbody").append(
                                         "<tr><td><input type='hidden' class='idRS' name='routestop["+Lastindex+"][rank]' value='"+Lastindex+"'>"+Lastindex+"</td>"+
@@ -445,6 +316,7 @@
                                         "<td colspan='2'><input type='hidden' name='routestop["+Lastindex+"][name]' value='"+$('#stop_search').val()+"'>"+$('#stop_search').val()+"</td>"+
                                         "<td><input type='hidden' name='routestop["+Lastindex+"][code]' value='"+code+"'>"+code+"</td>"+
                                         "<td><input type='hidden' name='routestop["+Lastindex+"][dropoff]' value='"+$descStop+"'>"+$descStop +"</td>"+
+                                        "<input type='hidden' value='"+"{{ mode }}"+"'>"+
                                         "<td><input type='hidden' name='routestop["+Lastindex+"][pickup]' value='"+$upStop+"'>"+$upStop+"</td>"+
                                          time+"</tr>" );
                            });
@@ -460,17 +332,14 @@
 
                             $("#heading").append("<th></th><th><button class='add-SV btn btn-danger'>+</button></th>");
 
-                        }, 'json')
-                                .error(function (err) {
-                                    console.log(err);
-                                });
-
                         return this;
                     };
                     $.fn.loadTab = function() {
 
-                         $('thead').ajaxRouteStops();
-                         return this;
+                         //$('thead').ajaxRouteStops();
+
+
+                        return this;
                     }
 
                 })(jQuery);
