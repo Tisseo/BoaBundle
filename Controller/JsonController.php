@@ -161,9 +161,6 @@ class JsonController extends AbstractController
             $routeManager = $this->get('tisseo_endiv.route_manager');
             $stoptimeManager = $this->get('tisseo_endiv.stoptime_manager');
             $stopId = $request->request->get('stopId');
-            $routeStop = $this->getDoctrine()
-                ->getRepository('Tisseo\EndivBundle\Entity\RouteStop','endiv')
-                ->findOneBy(array("waypoint"=>$stopId));
 
 
             $name = $request->request->get('name');
@@ -181,6 +178,23 @@ class JsonController extends AbstractController
             if($routeManager->checkZoneStop($route) == true){
                 $isZone = true;
             }
+
+            $waypoint = $this->getDoctrine()
+                ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
+                ->find($stopId);
+
+            $idWaypoint = $waypoint->getId();
+
+
+            $routeStop->setDropOff($descStop);
+            $routeStop->setPickup($upStop);
+            $routeStop->setRank($rank);
+            $routeStop->setRoute($route);
+
+            $routeStop->setWaypoint($waypoint);
+
+            $routeStopManager->save($routeStop);
+
 
             if($mode == "TAD"){
                 foreach($stoptimes as $val) {
@@ -225,7 +239,6 @@ class JsonController extends AbstractController
             else{
                 foreach($stoptimes as $stoptime=>$val){
 
-
                     $trip = $this->getDoctrine()
                         ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
                         ->findOneBy(array("name"=>$stoptime));
@@ -258,11 +271,6 @@ class JsonController extends AbstractController
                         $time->setArrivalTime($arrivalTime);
                     }
 
-                    else {
-                        $time->setArrivalTime($val);
-                        $time->setDepartureTime($val);
-                    }
-
 
                     $time->setArrivalTime($arrivalTime);
                     $time->setTrip($trip);
@@ -274,21 +282,8 @@ class JsonController extends AbstractController
             }
 
 
-            $waypoint = $this->getDoctrine()
-                ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
-                ->find($stopId);
-
-            $idWaypoint = $waypoint->getId();
 
 
-            $routeStop->setDropOff($descStop);
-            $routeStop->setPickup($upStop);
-            $routeStop->setRank($rank);
-            $routeStop->setRoute($route);
-
-            $routeStop->setWaypoint($waypoint);
-
-           $routeStopManager->save($routeStop);
         }
         $response = new Response(json_encode($results));
         $response -> headers -> set('Content-Type', 'application/json');
@@ -348,11 +343,9 @@ class JsonController extends AbstractController
                 foreach($stops as $stop) {
 
                     $index++;
-                    $rank = $stop["rank"];
-                    $dropOff = $stop["dropOff"];
-                    $pickup = $stop["pickup"];
-                    $idStop = $stop["id"];
 
+                    $idStop = $stop["id"];
+                    $rank = $stop["rank"];
                     $stopPoints = [];
 
                     if($isZone == false){
@@ -361,7 +354,6 @@ class JsonController extends AbstractController
                         $stopAreas[] = $stopManager->getStops($waypointId);
 
                         $city = $stopAreas[$index][0]["city"];
-                        $name = $stopAreas[$index][0]["shortName"];
                         $code = $stopAreas[$index][0]["code"];
 
                     }
@@ -378,17 +370,10 @@ class JsonController extends AbstractController
                         $code = "zone";
                     }
 
-
-
-
-                    $stopPoints["rank"] = $rank;
                     $stopPoints["city"] = $city;
-                    $stopPoints["name"] = $name;
                     $stopPoints["id"] = $idStop;
                     $stopPoints["code"] = $code;
-                    $stopPoints["dropOff"] = $dropOff;
-                    $stopPoints["pickup"] = $pickup;
-
+                    $stopPoints["rank"] = $rank;
 
                     array_push($results,$stopPoints);
                 }

@@ -73,7 +73,7 @@ class RouteController extends AbstractController
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
         $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
-
+        $tripManager =  $this->get('tisseo_endiv.trip_manager');
 
         if(isset($id)) {
             $route= $routeManager->findById($id);
@@ -91,6 +91,8 @@ class RouteController extends AbstractController
         $formRoute = $this->createForm(new RouteType(),$route,
             array("action"=>$this->generateUrl('tisseo_boa_route_edit',
                 array("id"=>$id))));
+
+        $trips = $tripManager->findByRoute($id);
 
 
         if(isset($request)) {
@@ -133,7 +135,8 @@ class RouteController extends AbstractController
                     'route' => $route,
                     'id' => $id,
                     'mode' =>$mode,
-                    'isZone' => $isZone
+                    'isZone' => $isZone,
+                    'trips' => $trips
 
                 )
             );

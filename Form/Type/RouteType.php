@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tisseo\BoaBundle\Form\Type\LineVersionType;
 
 class RouteType extends AbstractType
 {
@@ -24,21 +23,28 @@ class RouteType extends AbstractType
                     'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
                 , 'boucle' => 'boucle'), 'label' => 'Sens'))
             ->add('direction', 'text', array('label' => 'Direction'))
-            ->add('routestops', 'collection', array(
+            ->add('routeStops', 'collection', array(
                 'type' => new RouteStopType(),
                 'allow_add' => true,
-                'by_reference' => false,
-            ))
-            ->add('trips', 'collection', array(
-                'type' => new TripType(),
-                'allow_add' => true,
-                'by_reference' => false,
-            ))
-            ->add('creer', 'submit');
+                'by_reference' => false
+            ));
+
+
 
         $builder->setAction($options['action']);
     }
 
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Tisseo\EndivBundle\Entity\Route'
+            )
+        );
+    }
 
     /**
      * Returns the name of this type.

@@ -37,27 +37,28 @@
                         <thead>
                         <tr id="headRstops">
                             <th colspan="6">Détail de la route</th>
-                            <th colspan="11" id="colServices">Servcies type</th>
-                        </tr>
-                        <tr id="trips">
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-
-
+                            <th>Services</th>
                         </tr>
                         <tr id="heading">
-                            <th class="idRS col-sm-1">Id</th>
+                            <th class="idRS col-sm-1">id</th>
                             <th class="col-sm-1">Ordre</th>
                             <th class="col-sm-1">Ville</th>
                             <th class="col-sm-1">Nom arrêt</th>
                             <th class="col-sm-1">Num arrêt</th>
                             <th class="col-sm-1">Descente inter</th>
                             <th class="col-sm-1">Montee inter</th>
+                            {%  set trips_name = [] %}
+                            {% for trip in trips %}
+
+                                {% set trips_name = trips_name|merge([trip.name]) %}
+
+                                {% if isZone == true %}
+
+                                <th colspan="2">{{ trip.name }}</th>
+                                    {% else %}
+                                        <th>{{ trip.name }}</th>
+                                {% endif %}
+                            {%  endfor %}
 
                         </tr>
                         </thead>
@@ -67,28 +68,39 @@
 
                         {% endblock %}
 
+                        {%  set cpt = 0 %}
 
-                        <tbody class="ui-sorting" data-prototype="{{ form_widget(form.routestops.vars.prototype)|e }}">
 
-                            {%  for routestop in form.routestops %}
+                        <tbody class="ui-sorting" data-prototype="{{ form_widget(form.routeStops.vars.prototype)|e }}">
+                            {%  for routestop in form.routeStops %}
                                 <tr>
                                     <td style="display:none">  {{  form_row(routestop.id) }}</td>
                                     <td>  {{  form_widget(routestop.rank) }}</td>
                                     <td></td>
-                                    <td>  {{ routestop.vars.value.waypoint.odtArea.name}}</td>
-                                    <td>  {% if isZone == true %}
+                                    <td>
+                                      {% if isZone == true %}{##}
+                                            {{ routestop.vars.value.waypoint.odtArea.name }}
+                                             {% else %}
+                                                 {{ routestop.vars.value.waypoint.stop.stopArea.longName }}
+                                        {%  endif %}
+
+                                    </td>
+                                    <td>
+                                      {% if isZone == true %}
                                             zone
+                                            {%  else %}
+
                                         {% endif %}
                                     </td>
-                                    <td>  {{  form_widget(routestop.dropOff) }}</td>
-                                    <td>  {{  form_widget(routestop.pickup) }}</td>
+                                    <td> {{ form_widget(routestop.dropOff)}}</td>
+                                    <td> {{ form_widget(routestop.pickup )}} </td>
 
 
                                 </tr>
 
                             {%  endfor %}
 
-                            {{ dump(form.trips.vars.value) }}
+
                         </tbody>
 
 
@@ -100,9 +112,9 @@
                     </table>
 
                     {% block list_pagination -%}{% endblock %}
-                <input type="submit" value="editer" name="Route_creer" class="btn btn-primary"/>
-                    {{ form_rest(form) }}
-                    {{ form_end(form) }}
+                    {{  form_widget(form._token) }}
+                <input type="submit" value="Valider" name="Route_creer" id="validRoute" class="btn btn-primary"/>
+
 
 
 
@@ -156,23 +168,6 @@
                 var prevstptimes = {};
                 table = $("#routeTable");
 
-
-
-
-                $addTagLink.on('click', function(e){
-
-                    e.preventDefault();
-
-                    var $routeStopsHolder = $('tbody');
-                    var prototype = $routeStopsHolder.attr('data-prototype');
-
-                    console.log(prototype);
-                    var newForm = prototype.replace(/__name__/g, $routeStopsHolder.children().length);
-
-
-                    var $newFormLi = $('tbody').append('<tr>'+newForm+'</tr>');
-                });
-
                 (function($){
 
                     $.fn.getRouteStops = function() {
@@ -180,18 +175,138 @@
                         return this;
                     };
 
-                    $.fn.ajaxRouteStops = function(){
+                    $.fn.ajaxRouteStops = function() {
+
+                        var departures = [];
+                        var indexo = 0;
+                        var index = 0;
+                        var cpt = -1;
+                        var departure = [];
+                        var indexRoutestop;
+                        $.ajax({
+                            url: "{{ path('tisseo_boa_json_route_services') }}",
+                            dataType: "json",
+                            type: 'POST',
+                            data: {routeId: $("#routeId").val()}
+                        }).success(function (data) {
+
+                            $.each(JSON.parse(data.content),function(key,obj){
+
+                                if( typeof (obj.iszone) !="undefined"){
+                                    isZone = obj.iszone;
+
+
+
+                                }
+                            });
+                            $.map( $.parseJSON(data.content), function(item,value){
+
+                                if (typeof (item.stoptimes) != "undefined") {
+
+                                    valStptimes = [];
+                                    valStptimes["trip"] = item.services;
+                                    valStptimes["stoptimes"] = item.stoptimes;
+                                    stopTimes.push(valStptimes);
+
+                                }
+
+                                if(typeof(item.code) != "undefined") {
+
+                                    for(i=0;i<stopTimes.length;i++){
+
+                                        indexo += 1;
+
+                                        var prevStep = (stopTimes.length * 2) + 1;
+                                        tripName = stopTimes[i]['trip'].toString();
+                                        var tripPos = $("thead").find('th:contains("'+tripName+'")').index();
+
+                                        $.each(stopTimes[i]["stoptimes"], function(stop, key){
+
+                                            if (key.routestop == item.id) {
+
+                                                 indexRoutestop = $(':input[value="'+key.routestop+'"]').parent().parent().parent().index();
+                                                console.log(indexRoutestop);
+                                                if (item.rank == 1) {
+                                                    departure.push("<td class='timeStop'>00:00</td>");
+                                                }
+
+
+                                                else {
+
+                                                    if (isZone == false) {
+
+                                                        current_value = key.arrivalTime;
+
+                                                        var timeStop = (parseInt(current_value) - parseInt(prevstptimes[tripName]));
+
+                                                        hoursTime = parseInt(timeStop / 3600);
+                                                        hoursTime = hoursTime < 10 ? "0" + hoursTime : hoursTime;
+                                                        minutesTime = timeStop / 60;
+                                                        minutesTime = minutesTime < 10 ? "0" + minutesTime : hoursTime;
+                                                    }
+
+                                                    departures.push(key.arrivalTime);
+
+                                                    if (item.rank == 2) {
+                                                        hoursTime = parseInt(key.arrivalTime / 3600);
+                                                        hoursTime = hoursTime < 10 ? "0" + hoursTime : hoursTime;
+                                                        minutesTime = parseInt(key.arrivalTime / 60);
+                                                        minutesTime = minutesTime < 10 ? "0" + minutesTime : hoursTime;
+                                                        departure = "<td class='timeStop' id='" + stopTimes[i]["trip"] +"'>" + hoursTime + ":" + minutesTime + "</td>";
+                                                    }
+
+                                                    if (item.rank > 2) {
+
+                                                        if (isZone == false) {
+
+                                                            departure = "<td class='timeStop' id='" + stopTimes[i]["trip"] + "' name='routestop[" + index + "][time]'>" + hoursTime + ":" + minutesTime + "</td>";
+
+                                                        }
+
+
+                                                        else {
+
+                                                            departure.push("<td id= '" + stopTimes[i]["trip"] + "' name='routestop[" + index + "][timeDeparture]'>" + key.departureTime + "</td>" +
+                                                            "<td name='routestop[" + index + "][timeArrival]>" + key.arrivalTime + "</td>");
+                                                        }
+
+                                                    }
+                                                    $("tbody tr").eq(indexRoutestop).append(departure);
 
 
 
 
-                            var departures = [];
-                            var indexo = 0;
-                            var index=0;
-                            var cpt = -1;
-                            servicesA= [];
+                                                    if (item.rank == Object.keys(item).length - 1) {
+                                                        sizeO.push({"depart": key.departureTime});
+                                                    }
+                                                    prevstptimes[tripName] = parseInt(key.departureTime);
 
-                            servicesA.push('<td>'+'<input type="time" name="324324234" class="stptimes">'+'</td>');
+                                                }
+                                            }
+                                        });
+
+                                    }
+
+
+                                }
+
+                            });
+                        }) ;
+
+                            {% for trip in trips %}
+                            if ("{{ mode }}" == "TAD") {
+
+                                servicesA.push('<td>'+'<input type="time" name="{{ trip.name }}" class="stptimes">'+'</td>');
+                                servicesA.push('<td>'+'<input type="time" name="{{ trip.name }}" class="stptimes">'+'</td>');
+
+                            }
+                        else {
+                                servicesA.push('<td>'+'<input type="time" name="{{ trip.name }}" class="stptimes">'+'</td>');
+
+                            }
+
+                            {% endfor %}
+
                            
                             $("#routeTable tbody").append(
                                     '<tr class="row" id="newStop"><td colspan="3"><input type="hidden" id="stop_id">' +
@@ -201,8 +316,10 @@
                             $('.container-routestop').append(
                                     '<div class="group">' +
                                     '<div class="btn btn-primary" id="add_rs"><span class="glyphicon glyphicon-plus">Ajouter</span></div>'+
-                                    '<div class="btn btn-primary" id="cancel_rs"><span class="glyphicon glyphicon-plus">Annuler</span></div>'+
-                                    '</div>'
+                                    '<div class="btn btn-primary" id="cancel_rs"><span class="glyphicon glyphicon-minus">Annuler</span></div>'+
+                                    '</div>'+
+                                    '<div class="btn btn-primary" id="valid_rs"><span>Valider</span></div>'
+
                             );
 
                             $(".cc").click(function () {
@@ -256,7 +373,6 @@
                                        else {
                                              Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
                                              stptimes.push(Trip);
-
                                         }
                                     }
                                     else {
@@ -309,6 +425,18 @@
                                 $upStop = $('#upStop').is(':checked') == true ? "Oui" : "Non";
 
 
+                                    var routeStop = {
+                                        name: $('#stop_search').val(),
+                                        id:{{id}},
+                                        descStop: $('#descStop').is(':checked'),
+                                        upStop: $('#upStop').is(':checked'),
+                                        stopId : $("#stop_id").val(),
+                                        rank: positionStop,
+                                        stoptimes: stptimes,
+
+                                        isZone: "{{ mode }}"
+
+                                    }
 
                                 $("#routeTable tbody").append(
                                         "<tr><td><input type='hidden' class='idRS' name='routestop["+Lastindex+"][rank]' value='"+Lastindex+"'>"+Lastindex+"</td>"+
@@ -321,7 +449,12 @@
                                          time+"</tr>" );
                            });
 
+                            $("form").click(function(e){
+                                return false;
 
+                                var form = $("form");
+                                
+                            });
                             $("#cancel_rs").click(function (){
 
                                 $(".group").html("");

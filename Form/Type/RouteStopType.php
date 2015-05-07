@@ -12,7 +12,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-
 class RouteStopType extends AbstractType {
 
 
@@ -23,10 +22,16 @@ class RouteStopType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('id','text',array('attr'=>array('class'=>"idRS")))
-                ->add('rank', 'text')
-
-                ->add('dropOff', 'text')
-                ->add('pickup', 'text');
+                ->add('rank', 'number')
+                ->add('dropOff', 'checkbox')
+                ->add('pickup', 'checkbox')
+                ->add('stopTimes', 'collection', array(
+                        'type' => new StopTimeType(),
+                        'allow_add' => true,
+                        'by_reference' => false
+                        ))
+           
+        ;
 
         $builder->setAction($options['action']);
     }
