@@ -23,13 +23,9 @@ class RouteStopType extends AbstractType {
     {
         $builder->add('id','text',array('attr'=>array('class'=>"idRS")))
                 ->add('rank', 'number')
-                ->add('dropOff', 'checkbox')
-                ->add('pickup', 'checkbox')
-                ->add('stopTimes', 'collection', array(
-                        'type' => new StopTimeType(),
-                        'allow_add' => true,
-                        'by_reference' => false
-                        ))
+                ->add('dropOff', 'checkbox', array('required'=>false))
+                ->add('pickup', 'checkbox',array('required'=>false))
+
            
         ;
 

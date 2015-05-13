@@ -152,19 +152,19 @@ class JsonController extends AbstractController
 
         if($request->isMethod('POST')) {
 
-            $routeStop = new RouteStop();
+            
             $routeId = $request->request->get('routeId');
             $route = $this->getDoctrine()
                 ->getRepository('Tisseo\EndivBundle\Entity\Route','endiv')
                 ->find($routeId);
 
             $routeManager = $this->get('tisseo_endiv.route_manager');
+            $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
             $stoptimeManager = $this->get('tisseo_endiv.stoptime_manager');
             $stopId = $request->request->get('stopId');
-
+            $toRemove = $request->request->get('toRemove');
 
             $name = $request->request->get('name');
-
             $descStop=$request->request->get('descStop');
             $upStop=$request->request->get('upStop');
             $rank=$request->request->get('rank')+1;
@@ -179,107 +179,131 @@ class JsonController extends AbstractController
                 $isZone = true;
             }
 
-            $waypoint = $this->getDoctrine()
-                ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
-                ->find($stopId);
+            if( !empty($stopId)) {
+                $waypoint = $this->getDoctrine()
+                             ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
+                             ->find($stopId);
 
-            $idWaypoint = $waypoint->getId();
+                $idWaypoint = $waypoint->getId();
 
+                $routeStop = new RouteStop();
+                $routeStop->setDropOff($descStop);
+                $routeStop->setPickup($upStop);
+                $routeStop->setRank($rank);
+                $routeStop->setRoute($route);
 
-            $routeStop->setDropOff($descStop);
-            $routeStop->setPickup($upStop);
-            $routeStop->setRank($rank);
-            $routeStop->setRoute($route);
+                $routeStop->setWaypoint($waypoint);
 
-            $routeStop->setWaypoint($waypoint);
+                $routeStopManager->save($routeStop);
 
-            $routeStopManager->save($routeStop);
+                 if($mode == "TAD") {
+                        foreach($stoptimes as $val) {
 
+                            foreach($val as $key=>$val){
+                                $index++;
+                                $trip = $this->getDoctrine()
+                                    ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
+                                    ->findOneBy(array("name"=>(string)$key));
 
-            if($mode == "TAD"){
-                foreach($stoptimes as $val) {
+                                $tripId = $trip->getId();
+                                if($index%2 == 0){
+                                    $time = new StopTime();
+                                }
+                                $val = explode(":",$val);
 
-                    foreach($val as $key=>$val){
-                        $index++;
-                        $trip = $this->getDoctrine()
-                            ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
-                            ->findOneBy(array("name"=>(string)$key));
+                                if(empty($val)){
+                                    $val = 0;
+                                }
+                                else {
+                                    $hours = intval($val[0]) * 3600;
+                                    $minutes = intval($val[1]) * 60;
 
-                        $tripId = $trip->getId();
-                        if($index%2 == 0){
-                            $time = new StopTime();
-                        }
-                        $val = explode(":",$val);
+                                    $timeValue = $hours + $minutes;
 
-                        if(empty($val)){
-                            $val = 0;
-                        }
-                        else {
-                            $hours = intval($val[0]) * 3600;
-                            $minutes = intval($val[1]) * 60;
+                                }
 
-                            $timeValue = $hours + $minutes;
-
-                        }
-
-                        $time->setDepartureTime($timeValue);
-                            if($index%2 != 0){
-                                $time->setArrivalTime($timeValue);
-                                $time->setTrip($trip);
-                                $time->setRouteStop($routeStop);
-                                $stoptimeManager->save($time);
+                                $time->setDepartureTime($timeValue);
+                                    if($index%2 != 0){
+                                        $time->setArrivalTime($timeValue);
+                                        $time->setTrip($trip);
+                                        $time->setRouteStop($routeStop);
+                                        $stoptimeManager->save($time);
+                                    }
+                                }
                             }
-
-
                         }
-                    }
 
+                else {
+                  
+                    
+                    foreach($stoptimes as $stoptime=>$val) {
+                                               
+                             $index++;
+                            foreach($val as $tripName=>$stoptime){
+
+                                if($stoptime != ""){
+                                        $trip = $this->getDoctrine()
+                                                     ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
+                                                     ->findOneBy(array("name"=>$tripName));
+
+
+                                        $tripId = $trip->getId();
+                                                   
+                                        $time = new StopTime();
+
+                                        $val = explode(":",$stoptime);
+
+                                        if(empty($val)){
+                                            $val = 0;
+                                        }
+
+                                        else{
+                                                $hours = intval($val[0])*3600;
+
+                                                if(sizeof($val)>1){
+                                                    $minutes = intval($val[1])*60;
+                                                }
+
+                                                else {
+                                                    $minutes = 0;
+                                                }
+
+                                        }
+
+                                        $val = $hours+$minutes;
+
+                                        if($isZone == false) {
+
+                                            $arrivalTime = $departures[$index]["depart"] + $val;
+                                            $time->setArrivalTime($arrivalTime);
+                                        }
+
+
+                                        $time->setArrivalTime($arrivalTime);
+                                        $time->setTrip($trip);
+
+                                        $time->setRouteStop($routeStop);
+                                        $stoptimeManager->save($time);
+
+                                   }
+                                }           
+                            }
+                    }
                 }
+            
+            if(isset($toRemove)){
 
-            else{
-                foreach($stoptimes as $stoptime=>$val){
+                foreach ($toRemove as $routestop) {
+                    # code...
+                    $routeStopOld = $this->getDoctrine()
+                                         ->getRepository('Tisseo\EndivBundle\Entity\RouteStop', 'endiv')
+                                         ->find($routestop);
 
-                    $trip = $this->getDoctrine()
-                        ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
-                        ->findOneBy(array("name"=>$stoptime));
-
-                    $tripId = $trip->getId();
-
-                    $index++;
-                    $time = new StopTime();
-
-                    $val = explode(":",$val);
-
-                    if(empty($val)){
-                        $val = 0;
-                    }
-                    else{
-                        $hours = intval($val[0])*3600;
-                        if(sizeof($val)>1){
-                            $minutes = intval($val[1])*60;
-                        }
-                        else {
-                            $minutes = 0;
-                        }
-
-                    }
-
-                    $val = $hours+$minutes;
-
-                    if($isZone == false) {
-                        $arrivalTime = $departures[$index]["depart"] + $val;
-                        $time->setArrivalTime($arrivalTime);
-                    }
-
-
-                    $time->setArrivalTime($arrivalTime);
-                    $time->setTrip($trip);
-
-                    $time->setRouteStop($routeStop);
-                    $stoptimeManager->save($time);
-
+                    $routeStopManager->remove($routeStopOld);
                 }
             }
+
+           
 
 
 

@@ -45,11 +45,18 @@ class RouteController extends AbstractController
 
         $routes = $routeManager->findAllByLine($id);
         $isZone = false;
+        $edit=[];
 
         foreach($routes as $route) {
 
             if($routeManager->checkZoneStop($route) == true){
                 $isZone = true;
+            }
+             $hasServices = $routeManager->hasTrips($route->getId());
+        
+            if($hasServices == false){
+
+                array_push($edit,$route->getId());
             }
 
         }
@@ -62,7 +69,8 @@ class RouteController extends AbstractController
            'pageTitle' => 'création de routes',
            'routes' => $routes,
            'id' => $id,
-           'isZone' => $isZone
+           'isZone' => $isZone,
+           'isEdit' =>$edit
        ));
 
     }
@@ -114,7 +122,7 @@ class RouteController extends AbstractController
 
             }
 
-            return new Response(var_dump($resp),200);
+            //return new Response(var_dump($resp),200);
 
         }
 
@@ -212,9 +220,18 @@ class RouteController extends AbstractController
 
         $lineId = $request->get('idLine');
 
-
-        $routeManager->removeRoute($route);
-        $this->get('session')->getFlashBag()->add('suppression', 'la route a été supprimée');
+        $hasServices = $routeManager->hasTrips($id);
+        
+        if($hasServices == true){
+             $this->get('session')->getFlashBag()->add('failed',
+               'route existante'
+            );
+        }
+        else {
+             $routeManager->removeRoute($route);
+             $this->get('session')->getFlashBag()->add('suppression', 'la route a été supprimée');
+        }
+       
 
         return $this->redirect($this->generateUrl('tisseo_boa_route_list', array("lineId"=>$lineId) ));
 

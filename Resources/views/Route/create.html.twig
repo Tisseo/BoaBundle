@@ -10,8 +10,10 @@
     {{ form_row(form.direction) }}
     <input type="hidden" value="{{ lineVersion }}" name="idLine" />
  {{ form_rest(form) }}
+ <input type="submit" value=" {{ 'route.create'|trans({}, 'default') }}" />
 {{ form_end(form) }}
 </div>
+
 {% endblock %}
 
 

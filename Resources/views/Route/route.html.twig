@@ -60,11 +60,14 @@
 
                             <td> {{ route.comment }}</td>
                             <td> {{ route.way }}</td>
-
+                      
                             <td><a href="{{path('tisseo_boa_route_edit',{id:route.id})}}" class="editRoute btn btn-default"><span class="glyphicon glyphicon-edit"></span>Editer</a></td>
+
+                              {% for delete in isEdit %}
+                               {% if route.id == delete  %}
                             <td><a href="{{path('tisseo_boa_route_delete',{id: route.id, idLine: route.lineVersion.id})}}" class="editRoute btn btn-default" >Supprimer</a></td>
-
-
+                               {% endif %}
+                            {% endfor %}
                         </tr>
 
 
