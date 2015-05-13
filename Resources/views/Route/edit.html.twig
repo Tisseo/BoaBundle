@@ -130,10 +130,8 @@
 
     </div>
     <div class="input-group">
-        <div class="btn btn-primary" id="cancel_rs">
-            <span class="glyphicon glyphicon-minus">Annuler</span>
-        </div>
-        <input type="submit" value="Valider" name="Route_creer" id="validRoute" class="btn btn-primary"/>
+        <span class="btn btn-primary" id="cancelActions">Annuler</span>
+         <input type="submit" value="Valider" name="Route_creer" id="validRoute" class="btn btn-primary"/>
     </div>
 
 
@@ -188,7 +186,8 @@
                         var indexo = 0;
                         var index = 0;
                         var cpt = -1;
-
+                        stptimes = [];
+                        var time = [];
                         var toRemove = {routestops: []};
 
                         var indexRoutestop;
@@ -329,24 +328,98 @@
 
                            
                             $("#routeTable tbody").append(
-                                    '<tr id="newStop"><td></td><td colspan="3"><input type="hidden" id="stop_id">' +
+                                    '<tr id="newStop"><td><span class="add btn btn-danger">+</span>'+
+                                    '</td><td colspan="3"><input type="hidden" id="stop_id">' +
                                     '<input type="text" id="stop_search"  class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}"></td>'+
                                     '<td></td><td><input type="checkbox" name="desc" id="descStop"></td>'+
                                     '<td><input type="checkbox" name="asc" id="upStop"></td>'+servicesA+'</tr>'
                             );
                            
 
-                            $(".cc").click(function () {
-                                var nameTrip = $(this).parent().html().split("<");
-                                $.post("{{ path('tisseo_boa_trip_action') }}", {trip: nameTrip[0]}).success( function(data){
-                                    $("thead").getRouteStops();
+                            $("#cancelActions").click(function () {
+                                $('.newStop').html("");
+                                $('.row').css('display','');
+
+                            });
+
+                            $('.add').click(function () {
+
+                                     /** si on crée le premier stop ou la première zone**/
+
+                                    var code = $('#stop_search').val().indexOf("(") == -1 ? "" : $('#stop_search').val().split("(") ;
+
+                                    if(code != ""){
+                                        code = code[1].split(")");
+                                        code = code[0];
+                                    }
+
+                                    Lastindex =  $("#routeTable tbody tr").length;
+                                    Lastindex = Lastindex == 1 ? 1 : parseInt(Lastindex);
+
+                                    $descStop = $('#descStop').is(':checked') == true ? "Oui" : "Non";
+                                    $upStop = $('#upStop').is(':checked') == true ? "Oui" : "Non";
+
+                                    $('.stptimes').each(function (key, stoptimes) {
+
+                                    if("{{ mode }}" == "TAD") {
+
+                                        var Trip = {};
+
+                                        if(key%2 == 0) {
+                                            Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
+                                            stptimes.push(Trip);
+                                        }
+
+                                        else {
+                                            Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
+                                            stptimes.push(Trip);
+                                        }
+                                    }
+                                    else {
+                                        var Trip = {};
+                                        Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
+                                        stptimes.push(Trip);
+                                    }
+                                 
+
                                 });
 
+                                 $.each(stptimes, function(key,val){
+
+
+                                    if("{{ mode }}" == "TAD") {
+                                        $.each(val, function (key, val) {
+
+                                            cpt++;
+                                            time.push("<td><input type='hidden' name='routestop["+Lastindex+"][stoptimes]["+key+"]["+cpt+"]' value='"+
+                                            val+"'>" + val + "</td>");
+
+                                        });
+                                    }
+                                    else {
+                                            $.each(val, function (key, val) {
+
+                                            time.push("<td><input type='hidden' name='"+key+"' value='"+
+                                            val+"'>" + val + "</td>");
+                                        });
+                                    }
+                                });
+                                
+
+                                    $("<tr class='newStop'><td></td><td><input type='hidden' name='routestop["+Lastindex+"][rank]' value='"+Lastindex+"'>"+Lastindex+"</td>"+
+                                        "<input type='hidden' class='idRS' name='routestop["+Lastindex+"][stopid]' value='"+$("#stop_id").val()+"'>"+
+                                        "<td colspan='2'>"+$('#stop_search').val()+$('#stop_search').val()+"</td>"+
+                                        "<td><input type='hidden' name='routestop["+Lastindex+"][code]' value='"+code+"'>"+code+"</td>"+
+                                        "<td><input type='hidden' name='routestop["+Lastindex+"][dropoff]' value='"+$descStop+"'>"+$descStop +"</td>"+
+                                        "<input type='hidden' value='"+"{{ mode }}"+"'>"+
+                                        "<td><input type='hidden' name='routestop["+Lastindex+"][pickup]' value='"+$upStop+"'>"+$upStop+"</td>"+
+                                        time+"</tr>" ).insertAfter($("#routeTable tbody").find("tr").eq(Lastindex-2));
                             });
 
                              $(".rm").click(function () {
                                 
                                 var routeStop = $(this).attr("name");
+                                 $(this).parent().parent().css('display','none');
                                 toRemove.routestops.push(routeStop);
 
                                 console.log(toRemove.routestops);
@@ -382,72 +455,15 @@
                             $("form").submit(function(e){
 
                                 e.preventDefault();
-                                stptimes = [];
-                                $('.stptimes').each(function (key, stoptimes) {
-
-                                    if("{{ mode }}" == "TAD") {
-
-                                        var Trip = {};
-
-                                        if(key%2 == 0) {
-                                            Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
-                                            stptimes.push(Trip);
-                                        }
-
-                                        else {
-                                            Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
-                                            stptimes.push(Trip);
-                                        }
-                                    }
-                                    else {
-                                        var Trip = {};
-                                        Trip[$('.stptimes').eq(key).attr("name").toString()] = $('.stptimes').eq(key).val();
-                                        stptimes.push(Trip);
-                                    }
-                                 
-
-                                });
-
+                            
+                                
 
                                 positionStop = $("#routeTable tbody").find("tr").last().attr('id') != 'newStop' ? $("#routeTable tbody").find("tr").length : 0;
-
-
-
-                                /** si on crée le premier stop ou la première zone**/
-
-                                var code = $('#stop_search').val().indexOf("(") == -1 ? "" : $('#stop_search').val().split("(") ;
-
-                                if(code != ""){
-                                    code = code[1].split(")");
-                                    code = code[0];
-                                }
-
-
-                                var time = [];
 
                                 Lastindex =  $("#routeTable tbody tr").length;
                                 Lastindex = Lastindex == 1 ? 1 : parseInt(Lastindex);
 
-                                $.each(stptimes, function(key,val){
-
-
-                                    if("{{ mode }}" == "TAD") {
-                                        $.each(val, function (key, val) {
-
-                                            cpt++;
-                                            time.push("<td><input type='hidden' name='routestop["+Lastindex+"][stoptimes]["+key+"]["+cpt+"]' value='"+
-                                            val+"'>" + val + "</td>");
-
-                                        });
-                                    }
-                                    else {
-                                            $.each(val, function (key, val) {
-
-                                            time.push("<td><input type='hidden' name='"+key+"' value='"+
-                                            val+"'>" + val + "</td>");
-                                        });
-                                    }
-                                });
+                               
 
                                 $descStop = $('#descStop').is(':checked') == true ? "Oui" : "Non";
                                 $upStop = $('#upStop').is(':checked') == true ? "Oui" : "Non";
@@ -467,15 +483,7 @@
 
                                 };
 
-                                $("#routeTable tbody").append(
-                                        "<tr><td><input type='hidden' class='idRS' name='routestop["+Lastindex+"][rank]' value='"+Lastindex+"'>"+Lastindex+"</td>"+
-                                        "<input type='hidden' class='idRS' name='routestop["+Lastindex+"][stopid]' value='"+$("#stop_id").val()+"'>"+
-                                        "<td colspan='2'><input type='hidden' name='routestop["+Lastindex+"][name]' value='"+$('#stop_search').val()+"'>"+$('#stop_search').val()+"</td>"+
-                                        "<td><input type='hidden' name='routestop["+Lastindex+"][code]' value='"+code+"'>"+code+"</td>"+
-                                        "<td><input type='hidden' name='routestop["+Lastindex+"][dropoff]' value='"+$descStop+"'>"+$descStop +"</td>"+
-                                        "<input type='hidden' value='"+"{{ mode }}"+"'>"+
-                                        "<td><input type='hidden' name='routestop["+Lastindex+"][pickup]' value='"+$upStop+"'>"+$upStop+"</td>"+
-                                        time+"</tr>" );
+                            
                                 $.ajax({
                                     url: "{{ path('tisseo_boa_json_add_routestop') }}", dataType: "json", data: routeStop, type: 'POST'
                                 }).success(function(data){
@@ -485,13 +493,7 @@
                                  $(this).unbind('submit').submit()
                                 
                             });
-                            $("#cancel_rs").click(function (){
-
-                                $(".group").html("");
-                                $('#routeTable').html("");
-                               // voir pour recharger tableau //
-                                $('thead').ajaxRouteStops();
-                            });
+                            
 
                             $("#heading").append("<th></th><th><button class='add-SV btn btn-danger'>+</button></th>");
 
