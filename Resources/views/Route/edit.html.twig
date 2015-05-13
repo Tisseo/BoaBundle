@@ -12,9 +12,14 @@
         th.trip-cols {
             border: 1px solid #ccc;
         }
-        #editRoute{
+        #editRoute {
             margin-left:auto;
             margin-right:auto;
+        }
+        #actionRS {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 40px;
         }
     </style>
 
@@ -85,7 +90,7 @@
                                     
                                     <td></td>
                                     <td>
-                                      {% if isZone == true %}{
+                                        {% if isZone == true %}
                                             {{ routestop.vars.value.waypoint.odtArea.name }}
                                              {% else %}
                                             {{ routestop.vars.value.waypoint.stop.stopArea.longName }}
@@ -93,7 +98,7 @@
 
                                     </td>
                                     <td>
-                                      {% if isZone == true %}
+                                        {% if isZone == false %}
                                             zone
                                             {%  else %}
 
@@ -129,9 +134,9 @@
         </div>
 
     </div>
-    <div class="input-group">
+    <div class="input-group" id="actionsRS">
         <span class="btn btn-primary" id="cancelActions">Annuler</span>
-         <input type="submit" value="Valider" name="Route_creer" id="validRoute" class="btn btn-primary"/>
+        <input type="submit" value="Valider" name="Route_creer" id="validRoute" class="btn btn-primary"/>
     </div>
 
 
@@ -180,6 +185,7 @@
                         return this;
                     };
 
+                 
                     $.fn.ajaxRouteStops = function() {
 
                         var departures = [];
@@ -212,6 +218,8 @@
                                     valStptimes["trip"] = obj.services;
                                     valStptimes["stoptimes"] = obj.stoptimes;
                                     stopTimes.push(valStptimes);
+
+                                    //console.log(stopTimes);
                                 }
                             });
                             var departure = [];
@@ -344,7 +352,7 @@
 
                             $('.add').click(function () {
 
-                                     /** si on crée le premier stop ou la première zone**/
+                                     /** si on crée le premier stop ou la première zone **/
 
                                     var code = $('#stop_search').val().indexOf("(") == -1 ? "" : $('#stop_search').val().split("(") ;
 
@@ -419,7 +427,7 @@
                              $(".rm").click(function () {
                                 
                                 var routeStop = $(this).attr("name");
-                                 $(this).parent().parent().css('display','none');
+                                $(this).parent().parent().css('display','none');
                                 toRemove.routestops.push(routeStop);
 
                                 console.log(toRemove.routestops);
@@ -455,13 +463,10 @@
                             $("form").submit(function(e){
 
                                 e.preventDefault();
-                            
-                                
-
-                                positionStop = $("#routeTable tbody").find("tr").last().attr('id') != 'newStop' ? $("#routeTable tbody").find("tr").length : 0;
-
                                 Lastindex =  $("#routeTable tbody tr").length;
                                 Lastindex = Lastindex == 1 ? 1 : parseInt(Lastindex);
+                                positionStop = $("#routeTable tbody").find("tr").last().attr('id') != 'newStop' ? Lastindex : 0;
+                               
 
                                
 
@@ -487,10 +492,27 @@
                                 $.ajax({
                                     url: "{{ path('tisseo_boa_json_add_routestop') }}", dataType: "json", data: routeStop, type: 'POST'
                                 }).success(function(data){
-                                    console.log(data);
+                                       $.map($.parseJSON(data.content), function(item,value){
+
+                                            var newRank = parseInt($("#routeTable tbody tr").length)-1;
+                                            var dropoff = item.dropoff == true ? "1" : "0";
+                                            var pickup =  item.pickup == true ? "1" : "0";
+                                            var newRouteStop = '<tr class="row"><td style="display:none"><div class="form-group">'+
+                                            '<label for="Route_routeStops_'+newRank+'_id" class="control-label required">Id</label>'+
+                                            '<input type="text" value="'+item.id+'" class="idRS form-control" required="required" name="Route[routeStops]['+newRank+'][id]" id="Route_routeStops_'+newRank+'_id">'+
+                                            '</div></td>'+'<td><input type="text" value="'+newRank+'" class="form-control" required="required" name="Route[routeStops]['+newRank+'][rank]" id="Route_routeStops_'+newRank+'_rank"></td>'+
+                                            '<td></td><td>'+item.name+'</td><td>'+item.code+'</td><td><input type="checkbox" checked="checked" value="'+dropoff+'" name="Route[routeStops]['+newRank+'][dropOff]" id="Route_routeStops_'+newRank+'_dropOff">'+
+                                            '</td><td><input type="checkbox" checked="checked" value="'+pickup+'" name="Route[routeStops]['+newRank+'][dropOff]" id="Route_routeStops_'+newRank+'_dropOff"></tr>';
+                                            $("#routeTable tbody").find("tr").eq(Lastindex-2).html("");
+                                            $(newRouteStop).insertAfter($("#routeTable tbody").find("tr").eq(Lastindex-2));
+                                        });
+
+                                
+
+                                     $("form").unbind('submit').submit();
                                 });
 
-                                 $(this).unbind('submit').submit()
+                               
                                 
                             });
                             

@@ -155,8 +155,8 @@ class JsonController extends AbstractController
             
             $routeId = $request->request->get('routeId');
             $route = $this->getDoctrine()
-                ->getRepository('Tisseo\EndivBundle\Entity\Route','endiv')
-                ->find($routeId);
+                          ->getRepository('Tisseo\EndivBundle\Entity\Route','endiv')
+                          ->find($routeId);
 
             $routeManager = $this->get('tisseo_endiv.route_manager');
             $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
@@ -175,14 +175,15 @@ class JsonController extends AbstractController
             $isZone = false;
             $index = -1;
 
-            if($routeManager->checkZoneStop($route) == true){
+            if($routeManager->checkZoneStop($route) == true) {
                 $isZone = true;
             }
 
-            if( !empty($stopId)) {
+            if(!empty($stopId)) {
+
                 $waypoint = $this->getDoctrine()
-                             ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
-                             ->find($stopId);
+                                 ->getRepository('Tisseo\EndivBundle\Entity\Waypoint', 'endiv')
+                                 ->find($stopId);
 
                 $idWaypoint = $waypoint->getId();
 
@@ -195,15 +196,37 @@ class JsonController extends AbstractController
                 $routeStop->setWaypoint($waypoint);
 
                 $routeStopManager->save($routeStop);
+                $routeStopId = $routeStop->getId();
+
+                $newRouteStop = [];
+                $newRouteStop["id"] = $routeStopId;
+                $newRouteStop["dropoff"]= $routeStop->getDropOff();
+                $newRouteStop["pickup"]= $routeStop->getPickup();
+               
+
+               
 
                  if($mode == "TAD") {
+
+                    $odtArea =  $this->getDoctrine()
+                                     ->getRepository('Tisseo\EndivBundle\Entity\OdtArea', 'endiv')
+                                     ->find($idWaypoint);
+
+                    $stopName =  $odtArea->getName();
+                    $newRouteStop["name"]= $stopName;
+                    $newRouteStop["code"]= "zone";
+
+                    array_push($results,$newRouteStop);
+
+                    if(!empty($stoptimes)){
+
                         foreach($stoptimes as $val) {
 
                             foreach($val as $key=>$val){
                                 $index++;
                                 $trip = $this->getDoctrine()
-                                    ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
-                                    ->findOneBy(array("name"=>(string)$key));
+                                             ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
+                                             ->findOneBy(array("name"=>(string)$key));
 
                                 $tripId = $trip->getId();
                                 if($index%2 == 0){
@@ -214,6 +237,7 @@ class JsonController extends AbstractController
                                 if(empty($val)){
                                     $val = 0;
                                 }
+
                                 else {
                                     $hours = intval($val[0]) * 3600;
                                     $minutes = intval($val[1]) * 60;
@@ -232,12 +256,29 @@ class JsonController extends AbstractController
                                 }
                             }
                         }
+                    }
+                        
 
                 else {
-                  
-                    
-                    foreach($stoptimes as $stoptime=>$val) {
-                                               
+
+                    $stop =  $this->getDoctrine()
+                                  ->getRepository('Tisseo\EndivBundle\Entity\Stop', 'endiv')
+                                  ->find($idWaypoint);
+
+                    $stopArea = $stop->getStopArea();
+                
+                    $stopName =  $stopArea->getLongName();
+                    $code = $stop->getStopDatasources();
+                   
+                    $newRouteStop["name"]= $stopName;
+                    $newRouteStop["code"]= $code[0]->getCode();
+
+                    array_push($results,$newRouteStop);
+
+                    if(!empty($stoptimes)){
+
+                          foreach($stoptimes as $stoptime=>$val) {
+                                                                       
                              $index++;
                             foreach($val as $tripName=>$stoptime){
 
@@ -245,53 +286,52 @@ class JsonController extends AbstractController
                                         $trip = $this->getDoctrine()
                                                      ->getRepository('Tisseo\EndivBundle\Entity\Trip', 'endiv')
                                                      ->findOneBy(array("name"=>$tripName));
+                                $tripId = $trip->getId();
+                                           
+                                $time = new StopTime();
 
+                                $val = explode(":",$stoptime);
 
-                                        $tripId = $trip->getId();
-                                                   
-                                        $time = new StopTime();
+                                if(empty($val)){
+                                    $val = 0;
+                                }
 
-                                        $val = explode(":",$stoptime);
+                                else {
+                                        $hours = intval($val[0])*3600;
 
-                                        if(empty($val)){
-                                            $val = 0;
+                                        if(sizeof($val)>1){
+                                            $minutes = intval($val[1])*60;
                                         }
 
-                                        else{
-                                                $hours = intval($val[0])*3600;
-
-                                                if(sizeof($val)>1){
-                                                    $minutes = intval($val[1])*60;
-                                                }
-
-                                                else {
-                                                    $minutes = 0;
-                                                }
-
+                                        else {
+                                            $minutes = 0;
                                         }
 
-                                        $val = $hours+$minutes;
+                                    }
 
-                                        if($isZone == false) {
+                                $val = $hours+$minutes;
 
-                                            $arrivalTime = $departures[$index]["depart"] + $val;
-                                            $time->setArrivalTime($arrivalTime);
-                                        }
+                                if($isZone == false) {
+
+                                    $arrivalTime = $departures[$index]["depart"] + $val;
+                                    $time->setArrivalTime($arrivalTime);
+                                }
 
 
-                                        $time->setArrivalTime($arrivalTime);
-                                        $time->setTrip($trip);
+                                $time->setArrivalTime($arrivalTime);
+                                $time->setTrip($trip);
 
-                                        $time->setRouteStop($routeStop);
-                                        $stoptimeManager->save($time);
+                                $time->setRouteStop($routeStop);
+                                $stoptimeManager->save($time);
 
                                    }
                                 }           
                             }
+                        }
                     }
                 }
             
-            if(isset($toRemove)){
+            if(!empty($toRemove)) {
 
                 foreach ($toRemove as $routestop) {
                     # code...
