@@ -10,31 +10,6 @@
 
 
 {% block main_content -%}
-    <style>
-        #route-stop-table tr {
-            height: 52px;
-        }
-        #trip-table tr {
-            height: 52px;
-        }
-        .t-row {
-            display: table;
-        }
-        .t-header {
-            display: table;
-            font-weight: bold;
-        }
-        .t-body {
-            display: table;
-        }
-        .t-cell {
-            display: table-cell;
-        }
-        .route_btn_field {
-            margin-top: 22px;
-        }
-    </style>
-
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
 
@@ -139,11 +114,9 @@
                             {% for rs in routeStops %}
                                 <tr id="{{ rs.id }}">
                                     <td>
-                                        <div style="min-height: 35px">
-                                            <a style="color: red; float:right" class="btn btn-default" id="remove-route_stop">
-                                                <span class="glyphicon glyphicon-remove"></span>
-                                            </a>
-                                        </div>
+                                        <a style="color: red; float:right" class="btn btn-default" id="remove-route_stop">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -227,17 +200,24 @@
                         });
                     },
                     select: function (event, ui) {
-                        console.log($(this));
-                        //$("#stop_id").val(ui.item.id);
+                        var $id = $(this).attr('id');
+                        var $hidden_input = $("input[name='" + $id + "']");
+                        $hidden_input.val(ui.item.id);
                     },                  
                     minLength: 3,
                     delay: 300
                 });
 
-
-
-
-                $('#trip-table tbody').append("<tr><td>COUCOU</td></tr>");
+                var $service_count = $("#trip-table thead").find("th").length;
+                $line = "<tr>";
+                for (i = 0; i < $service_count-2; i++) { 
+                    $line += "<td><input type='time' name='services[" + i + "][" + $index + "][time]' required class='form-control'></td>";
+                }
+                $line += "<td><input type='time' name='services[" + i + "][" + $index + "][time]' required class='form-control'></td>";
+                $line += "<td><a style='color: red; float:right' class='btn btn-default' id='remove-route_stop'>";
+                $line += "<span class='glyphicon glyphicon-remove'></span></a></td>";
+                $line += "</tr>";
+                $('#trip-table tbody').append($line);
             };
 
             function addService() {

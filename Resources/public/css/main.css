@@ -15,55 +15,28 @@ hr {
     width: 200px;
 }
 
-/**
-* style for routes edition
-*/
-#newStop > input {
-    margin-right: 53px;
-    width: 81px;
+#route-stop-table tr {
+    height: 52px;
 }
-.container-routestop{
-    min-height: 300px;
-    width: 100%;
-    overflow-x: scroll;
+#trip-table tr {
+    height: 52px;
 }
-.idRS, .idRS.col-sm-1 {
-    display:none;
+.t-row {
+    display: table;
 }
-#submitStop {
-    margin-right:53px;
+.t-header {
+    display: table;
+    font-weight: bold;
 }
-
-#routeTable {
-    margin-top: 30px;
+.t-body {
+    display: table;
 }
-
-#colServices {
-    border-left: 1px solid #fff;
+.t-cell {
+    display: table-cell;
 }
-.cc.btn.btn-primary{
-    margin-left:10px;
+.route_btn_field {
+    margin-top: 22px;
 }
-.copy {
-    width: 10px;
-    height: 3px;
-    background: #fff;
-    margin-left: 10px;
-   }
-#first.copy {
-    width: 10px;
-    height: 3px;
-    background: #fff;
-    margin: 3px;
-}
-
-.del-rs.btn.btn-danger{
-    margin-left: 10px;
-}
-
-/**
-* end routes style
-**/
 
 /* table datatable */
 
