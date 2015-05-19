@@ -76,7 +76,7 @@ color:
     edit: Editer une couleur
     create: Créer une couleur
     created: Couleur sauvegardée
-    
+
 datasource:
     list:
         columns:
@@ -143,7 +143,7 @@ customer:
     no_item: Pas de périmètre
     actions:
         assign_twig: Assigner
-        
+
 stop:
     title: Point d'arrêt
     create: Créer un point d'arrêt
@@ -153,14 +153,31 @@ stop:
     add_inaccessibility: Ajout d'inaccessibilité
     add_history: Modifier un point d'arrêt 
     close_stop: Clôturer un point d'arrêt
-        
+
 stop_area:
     title: Zone d'arrêt
     create: Créer une zone d'arrêt
     edit: Editer une zone d'arrêt
     alias: Alias
     transfer: Transferts de la zone d'arrêt
-    
+
+line:
+     list:
+        title: Liste des lignes
+        columns:
+            number: Numéro
+            mode: Mode
+            version: Version
+            startDate: Date de début
+            endDate: Date de fin
 
 route:
-     create: Création d'une route
+     create: Créer une route
+     list:
+        columns:
+            name: Nom
+            firstStop: Départ
+            lastStop: Arrivée
+            comment: Commentaire
+            way: Sens
+            actions: Actions

@@ -1,95 +1,70 @@
-{% extends "TisseoBoaBundle::base.html.twig" %}
+{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
-   {% block body %}
-    <div class="row">
-                <div class="col-md-12" role="main">
-                    {% for flashMessage in app.session.flashbag.get('suppression') %}
-                        <div class="flash-notice">
-                            {{ flashMessage }}
-                        </div>
-                    {% endfor %}
+{% block list_title -%}
+    {#{{ 'line.list.title'|trans({}, 'default') }} #}
+    Liste des Routes de la ligne {{ line_version_name }} - 
+    <a href="{{path('tisseo_boa_route_create',{idLine:id})}}" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus"></span>
+        {{'route.create'|trans({}, 'default')}}
+    </a>
+{% endblock %}
 
-            <hr />
-            <table class="table datatable table-hover dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
-                <tr>
-                    <thead>
-                    <th>Nom route</th><th>Départ</th><th>Arrivée</th><th>Commentaire</th><th>Sens</th><th>Editer</th>
-                    </thead>
-                </tr>
-                {% for route in routes %}
-                        <tr role="row" class="{{ (loop.index%2==0) ? "odd" : "even" }}">
-                            <td id="{{ route.id }}">
-                               {{ route.name }}
-                            </td>
-                            {% set size = (route.routeStops | length)  %}
+{% block table_head -%}
+    <th>{{'route.list.columns.name'|trans({}, 'default')}}</th>
+    <th>{{'route.list.columns.firstStop'|trans({}, 'default')}}</th>
+    <th>{{'route.list.columns.lastStop'|trans({}, 'default')}}</th>
+    <th>{{'route.list.columns.comment'|trans({}, 'default')}}</th>
+    <th>{{'route.list.columns.way'|trans({}, 'default')}}</th>
+    <th class="no-sort">{{'route.list.columns.actions'|trans({}, 'default')}}</th>
+{% endblock %}
 
-                            {%  set indexo = loop.index %}
-
-                            {% for stop in route.routeStops %}
-
-                                {% if stop.rank ==1 %}
-                                    {% if isZone == true %}
-                                         <td>{{ stop.waypoint.odtArea.name }}</td>
-                                    {% else %}
-                                        <td>{{ stop.waypoint.stop.stopArea.shortName }}</td>
-
-                                    {% endif %}
-
-                                {% elseif stop.rank == size %}
-
-                                    {% if isZone == true %}
-                                        <td>{{ stop.waypoint.odtArea.name }}</td>
-                                    {% else %}
-                                        <td>{{ stop.waypoint.stop.stopArea.shortName }}</td>
-                                    {% endif %}
-
-                                {% endif %}
-
-
-                            {%  endfor %}
-
-
-                            {%  for stop in stops %}
-
-                            {% endfor %}
-
-                            {% if route.routeStops[0] is empty %}
-                                <td></td><td></td>
-                            {% endif %}
-
-                            <td> {{ route.comment }}</td>
-                            <td> {{ route.way }}</td>
-                      
-                            <td><a href="{{path('tisseo_boa_route_edit',{id:route.id})}}" class="editRoute btn btn-default"><span class="glyphicon glyphicon-edit"></span>Editer</a></td>
-
-                              {% for delete in isEdit %}
-                               {% if route.id == delete  %}
-                            <td><a href="{{path('tisseo_boa_route_delete',{id: route.id, idLine: route.lineVersion.id})}}" class="editRoute btn btn-default" >Supprimer</a></td>
-                               {% endif %}
-                            {% endfor %}
-                        </tr>
-
-
-                    {%  endfor %}
-                <td><a href="{{path('tisseo_boa_route_create',{idLine:id})}}" class="editRoute btn btn-default" >Créer</a></td>
-
-
-            </table>
-        </div>
-    </div>
-
-    {% endblock %}
-
-{% block javascripts %}
-    {{ parent }}
-
-
-  {% javascripts '@TisseoBoaBundle/Resources/public/js/route.js' %}
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
-    <script src="{{ asset_url }}"></script>
-
-    {%  endjavascripts %}
-
-{%  endblock %}
+{% block table_body -%}
+    {% if routes|length == 0 %}
+        <tr>
+            <td colspan="2"> {{'global.no_items'|trans}} </td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+    {% else %}
+        {% for route in routes %}
+            <tr role="row">
+                <td> {{ route.name }}</td>
+                <td>
+                    {% if route.routeStops.first.waypoint.stop is not empty %}
+                        {{ route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
+                    {% else %}
+                        {{ route.routeStops.first.waypoint.area.name }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if route.routeStops.last.waypoint.stop is not empty %}
+                        {{ route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
+                    {% else %}
+                        {{ route.routeStops.last.waypoint.area.name }}
+                    {% endif %}
+                </td>
+                <td> {{ route.comment }}</td>
+                <td> {{ route.way }}</td>
+                <td>
+                    <a href=""
+                            class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit"></span>Services
+                    </a>
+                    <a href=""
+                            class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit"></span>Dupliquer
+                    </a>
+{#                    {% if route.trips is empty %}#}
+                        <a href="{{path('tisseo_boa_route_edit',{RouteId: route.id})}}"
+                                class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit"></span>Editer
+                        </a>
+                        <a href=""
+                                class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit"></span>Supprimer
+                        </a>
+{#                    {% endif %}#}
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

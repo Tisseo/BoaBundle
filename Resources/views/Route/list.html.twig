@@ -1,56 +1,116 @@
+{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{ 'line.list.title'|trans({}, 'default') }}
+{% endblock %}
+
+{% block table_head -%}
+
+    <th>{{'line.list.columns.number'|trans({}, 'default')}}</th>
+    <th>{{'line.list.columns.mode'|trans({}, 'default')}}</th>
+    <th>{{'line.list.columns.version'|trans({}, 'default')}}</th>
+    <th>{{'line.list.columns.startDate'|trans({}, 'default')}}</th>
+    <th>{{'line.list.columns.endDate'|trans({}, 'default')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if linesV|length == 0 %}
+        <tr>
+            <td colspan="5"> {{'global.no_items'|trans}} </td>
+        </tr>
+    {% else %}
+        {% for line in linesV %}
+            <tr role="row">
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">
+                            {{ render.line_number(line, 'lineVersion', 'small') }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.line.physicalMode.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.version }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.startDate.date | date('d/m/Y') }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.plannedEndDate.date | date('d/m/Y') }}</a>
+                    </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+
+{#
 {% extends "TisseoBoaBundle::base.html.twig" %}
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
-
-
-    {% block stylesheets %}
-        {{ parent() }}
-        {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
-        filter='cssrewrite' output='css/datatables_tid.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-        {% endstylesheets %}
-    {% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
+    filter='cssrewrite' output='css/datatables_tid.css' %}
+    <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
 
 {% block body %}
-    <div class="row">
-    <div class="col-md-12" role="main">
-
-<hr />
+    <div class="row"><div class="col-md-12" role="main">
     <table class="table datatable table-hover dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
         <tr>
             <thead>
-                <th>Num ligne</th><th>Mode</th><th>Version_ligne</th><th>Date début</th><th>Date fin</th>
+                <th>
+                    Num ligne
+                </th>
+                <th>
+                    Mode
+                </th>
+                <th>
+                    Version_ligne
+                </th>
+                <th>
+                    Date début
+                </th>
+                <th>
+                    Date fin
+                </th>
             </thead>
-            </tr>
+        </tr>
         {% for line in linesV %}
-
             <tr role="row" class="{{ (loop.index%2==0) ? "odd" : "even" }}">
-                <td id="{{ line.id }}">
-                    {% if linesV[(loop.index-2)].line.number   != line.line.number  %}
-                    {{ render.line_number(line, 'lineVersion', 'small') }}
-                    {%  endif %}
-                </td>
-                <td> {{ line.line.physicalMode.name }}</td>
-                <td> {{ line.version }}</td>
-                <td> {{ line.startDate.date | date('d/m/Y') }}</td>
-                <td> {{ line.plannedEndDate.date | date('d/m/Y') }}</td>
-
+                    <td id="{{ line.id }}">
+                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">
+                            {% if linesV[(loop.index-2)].line.number != line.line.number  %}
+                                {{ render.line_number(line, 'lineVersion', 'small') }}
+                            {%  endif %}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.line.physicalMode.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.version }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.startDate.date | date('d/m/Y') }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.plannedEndDate.date | date('d/m/Y') }}</a>
+                    </td>
             </tr>
         {%  endfor %}
-
-
-         </table>
-        </div>
-    </div>
-
+    </table>
+    </div></div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent }}
-
     {% javascripts '@TisseoBoaBundle/Resources/public/js/listlines.js' %}
                  <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
-
 {%  endblock %}
+#}

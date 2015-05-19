@@ -7,29 +7,32 @@
  */
 namespace Tisseo\BoaBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
+//use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+use Tisseo\EndivBundle\Entity\Route;
 
 class RouteType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('label' => 'Nom route'))
-            ->add('way', 'choice', array(
-                'choices' => array(
-                    'zonal' => 'zonal', 'aller' => 'aller', 'retour' => 'retour'
-                , 'boucle' => 'boucle'), 'label' => 'Sens'))
-            ->add('direction', 'text', array('label' => 'Direction'))
-            ->add('routeStops', 'collection', array(
-                'type' => new RouteStopType(),
-                'allow_add' => true,
-                'by_reference' => false
-            ));
-
-
+        $builder->add('name', 'text',
+            array(
+                'label' => 'route.labels.name',
+            )
+        )
+        ->add('way', 'choice',
+            array(
+                'label' => 'route.labels.way',
+                'required'    => false,
+                'empty_value'  => '',
+                'empty_data'  => '',
+                'choices'    => Route::getWayValues()
+            )
+        );
 
         $builder->setAction($options['action']);
     }
@@ -53,7 +56,6 @@ class RouteType extends AbstractType
      */
     public function getName()
     {
-        // TODO: Implement getName() method.
-        return 'Route';
+        return 'boa_route';
     }
 }

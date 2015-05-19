@@ -54,6 +54,8 @@ menu:
     poi_type: Types de poi
     color: Couleurs
     log: Logs
+    route_manage: Routes
+    line: Liste des lignes
     calendar_manage: Gestion des calendriers
     calendar_jour: Jour
     calendar_periode: Période
@@ -89,7 +91,7 @@ calendar:
         displayDates: la date de début ne peut être supérieure à la date de fin
     alert:
         save: Vous devez d'abord enregistrer le calendrier
-        
+
 calendar_element:
     labels:
         rank: Ordre
@@ -125,7 +127,7 @@ exception_type:
         exceptionText: Description
         gridCalendarPattern: Pattern pour gridCalendar
         tripCalendarPattern: Pattern pour tripCalendar
-        
+
 physical_mode:
     labels:
         name: Nom
@@ -174,7 +176,7 @@ stop:
     modifyStop: Modifier point d'arrêt
     closeStop: Clôturer point d'arrêt
     modifyAccessibility: Modifier accessibilité
-        
+
 stop_area:
     labels:
         shortName: Nom de la zone d'arrêt 
@@ -229,7 +231,7 @@ stop_area_datasource:
     labels:
         datasource: Réseau
         code: Code
-        
+
 stop_datasource:
     labels:
         datasource: Réseau
@@ -250,8 +252,24 @@ accessibility_type:
         endTime: A
         isRecursive: Récursif
         accessibilityMode: Mode
-        
+
 #should be in error namespace above
 network:
     error:
         wrong_token: Le token n'est pas correct
+
+route:
+    labels:
+        name: Nom
+        way: Sens
+    route_details: Détails de la route
+    templates_services: Services type
+    route_stops:
+        labels:
+            rank: Ordre
+            city: Ville
+            name: Nom Arrêt
+            code: Num. Arrêt
+            no_drop_off: Descente interdite
+            no_pick_up: Montée interdite
+            internal_service: Desserte interne
