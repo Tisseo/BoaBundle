@@ -6,17 +6,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Tisseo\BoaBundle\Form\Type\RouteType;
 use Tisseo\EndivBundle\Entity\Route;
 
-/*
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Tisseo\BoaBundle\Form\Type\RouteType;
-use Tisseo\EndivBundle\Entity\Route;
-use Tisseo\EndivBundle;
-*/
-
 class RouteController extends AbstractController
 {
     public function listAction(Request $request)
@@ -70,11 +59,21 @@ class RouteController extends AbstractController
             )
         );
 
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            try {
+                $datas = $form->getData();
+                $routeManager->save($datas);
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            }
+        }
+
         return $this->render(
             'TisseoBoaBundle:Route:edit.html.twig',
             array(
                 'form' => $form->createView(),
-                'pageTitle' => 'modification de route',
+                'title' => 'route.edit',
                 'route' => $route,
                 'routeStops' => $routeStops,
                 'serviceTemplates' => $serviceTemplates

@@ -101,7 +101,7 @@ calendar_element:
         interval: Récurrence
         includedCalendar: Calendrier
 
-        color:
+color:
     labels:
         name: Nom
         html: html
@@ -270,6 +270,7 @@ route:
             city: Ville
             name: Nom Arrêt
             code: Num. Arrêt
-            no_drop_off: Descente interdite
-            no_pick_up: Montée interdite
+            drop_off: Descente autorisée
+            pick_up: Montée autorisée
+            scheduled: Régulé
             internal_service: Desserte interne

@@ -26,4 +26,17 @@ class TisseoBoaExtension extends Extension
         $loader->load('services.yml');
         $loader->load('permissions.yml');
     }
+
+    public function prepend(ContainerBuilder $container) 
+    {
+        $container->prependExtensionConfig('doctrine', array(
+            'orm' => array(
+                'dql' => array(
+                    'string_functions' => array(
+                        'unaccent' => 'Tisseo\EndivBundle\Doctrine\DQL\Unaccent'
+                    )
+                )
+            )
+        ));
+    }
 }

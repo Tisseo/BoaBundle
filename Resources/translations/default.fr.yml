@@ -173,6 +173,7 @@ line:
 
 route:
      create: Créer une route
+     edit: Editer une route
      list:
         columns:
             name: Nom
