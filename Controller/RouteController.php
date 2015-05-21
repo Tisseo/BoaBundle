@@ -54,7 +54,7 @@ class RouteController extends AbstractController
         $form = $this->createForm(new RouteType(),$route,
             array(
                 "action"=>$this->generateUrl('tisseo_boa_route_edit',
-                                            array("RouteId"=>$RouteId)
+                                             array("RouteId" => $RouteId)
                 )
             )
         );
@@ -62,11 +62,17 @@ class RouteController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
             try {
-                $datas = $form->getData();
-                $routeManager->save($datas);
+                $route = $form->getData();
+                $routeManager->save($route);
+
+                $route_stops = $request->request->get('route_stops');
+                $services = $request->request->get('services');
+                $routeManager->saveRouteStopsAndServices($route, $route_stops, $services);
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
+            
+            return $this->redirect($this->generateUrl('tisseo_boa_route_edit', array("RouteId" => $RouteId) ));
         }
 
         return $this->render(
@@ -79,69 +85,6 @@ class RouteController extends AbstractController
                 'serviceTemplates' => $serviceTemplates
             )
         );
-
-
-/*        
-
-        $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
-        $routeStopManager = $this->get('tisseo_endiv.routestop_manager');
-        $tripManager =  $this->get('tisseo_endiv.trip_manager');
-
-        if(isset($id)) {
-            $route= $routeManager->findById($id);
-        }
-
-        if(!$route) {
-            throw $this->createNotFoundException('route non trouvée');
-        }
-
-        $isZone = false;
-        if($routeManager->checkZoneStop($route) == true){
-            $isZone = true;
-        }
-
-        $formRoute = $this->createForm(new RouteType(),$route,
-            array("action"=>$this->generateUrl('tisseo_boa_route_edit',
-                array("id"=>$id))));
-
-        $trips = $tripManager->findByRoute($id);
-
-        if(isset($request)) {
-            $this->processForm($request, $formRoute);
-        }
-
-        $routeStop = $request->request->get('routestop');
-        $resp = [];
-        if(isset($routeStop)) {
-            foreach ($routeStop as $stop=>$key) {
-                foreach($key as $val){
-                    array_push($resp,$val);
-                }
-            }
-            //return new Response(var_dump($resp),200);
-        }
-
-        $idLineVersion=$route->getLineVersionId();
-        $lineVersion = $lineVersionManager->find($idLineVersion);
-        $line = $lineVersion->getLine();
-        $physicalMode = $this->getDoctrine()
-                             ->getRepository('Tisseo\EndivBundle\Entity\PhysicalMode','endiv')
-                             ->find($line->getPhysicalMode());
-        $mode = $physicalMode->getName();
-
-            return $this->render(
-                'TisseoBoaBundle:Route:edit.html.twig',
-                array(
-                    'form' => $formRoute->createView(),
-                    'pageTitle' => 'modification de route',
-                    'route' => $route,
-                    'id' => $id,
-                    'mode' =>$mode,
-                    'isZone' => $isZone,
-                    'trips' => $trips
-                )
-            );
-*/
     }
 
     public function datatableSaveAction(Request $request)

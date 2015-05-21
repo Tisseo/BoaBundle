@@ -15,11 +15,11 @@ hr {
     width: 200px;
 }
 
-#route-stop-table tr {
-    height: 52px;
+#route-stop-table th,tr {
+    height: 53px;
 }
-#trip-table tr {
-    height: 52px;
+#trip-table th,tr {
+    height: 53px;
 }
 .t-row {
     display: table;
@@ -154,6 +154,18 @@ th.trips-cols {
   padding: 5px;
   line-height: 27px;
   width: 100%;
+  display: inline-block;
+  color: white;
+  margin: 10px 0 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.route_table_header {
+  background-color: #4F81BD;
+  padding: 5px;
+  width: 100%;
+  height: 45px;
   display: inline-block;
   color: white;
   margin: 10px 0 0;
