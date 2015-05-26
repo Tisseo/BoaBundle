@@ -75,14 +75,20 @@ class TripController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
             try {
-
+                $new_trip = $form->getData();
+                $stop_times = $request->request->get('stop_times');
+                $tripManager = $this->get('tisseo_endiv.trip_manager');
+                $tripManager->createTripAndStopTimes($new_trip, $stop_times, $route, false);
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
             
-            return $this->redirect($this->generateUrl('tisseo_boa_trip_list', array("RouteId" => $RouteId) ));
+            return $this->redirect(
+                $this->generateUrl('tisseo_boa_trip_list', 
+                    array("RouteId" => $RouteId)
+                )
+            );
         }
-
 
         return $this->render(
             'TisseoBoaBundle:Trip:new.html.twig',

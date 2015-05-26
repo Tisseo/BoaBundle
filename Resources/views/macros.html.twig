@@ -24,18 +24,18 @@
       {% endif %}
 {% endmacro %}
 
+{% macro time_format(time) %}
+  {% set hour = time//3600 %}
+  {% set min = (time-hour*3600)/60 %}
+  {% if hour|length < 2 %}
+      {% set hour = "0" ~ hour %}
+  {% endif %}
+  {% if min|length < 2 %}
+      {% set min = "0" ~ min %}
+  {% endif %}
+  {{ hour ~ ":" ~ min }}
+{% endmacro %}
 
- {% macro stop_point(name) %}
-     {% if name == "add" %}
-
-
-
-
-
-
-
-     {% endif %}
- {% endmacro %}
 
 {% macro color_display(object) %}
 	{% if object.name is defined %}

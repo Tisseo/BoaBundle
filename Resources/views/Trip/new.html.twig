@@ -1,0 +1,176 @@
+{% extends "::modal.html.twig" %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    {{
+                        'trip.list.route.network'|trans({}, 'default') ~ ': ' ~ trip.route.lineVersion.line.lineDatasources[0].datasource.agency.name ~
+                        ' - ' ~
+                        'trip.list.route.line'|trans({}, 'default') ~ ': ' ~ trip.route.lineVersion.line.number ~
+                        ' - ' ~
+                        'trip.list.route.version'|trans({}, 'default') ~ ': ' ~ trip.route.lineVersion.version ~
+                        ' - ' ~
+                        'trip.list.route.name'|trans({}, 'default') ~ ': ' ~ trip.route.name ~ ' (' ~ trip.route.way ~ ')'
+                    }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form form-edit">
+        <div class = "col-md-12">	
+            <div class="row">
+                <div class = "col-md-6">	
+                    {{ form_row(form.name) }}
+                </div>
+                <div class = "col-md-6">
+                    {{ form_label(form.pattern) }}
+                    {{ form_widget(form.pattern, { 'attr': {'class': 'hide'}}) }}
+                    <input
+                        type="text"
+                        id="trip-pattern"
+                        class="form-control"
+                        data-url="{{ path('tisseo_boa_json_trip_template') }}"
+                        required
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div class = "col-md-12">
+            <div class="row">
+                <div class = "col-md-6">                    
+                    {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_label(form.dayCalendar) }}
+                    <input 
+                        type="text" 
+                        id="day-calendar"
+                        class="form-control"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
+                        required
+                    >
+                </div>
+                <div class = "col-md-6">                    
+                    {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_label(form.periodCalendar) }}
+                    <input
+                        type="text"
+                        id="period-calendar"
+                        class="form-control"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode' }) }}"
+                        required
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stop_times"></div>
+    <div>
+        <button id="add-stop-time-block" class="btn btn-default" >
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
+    </div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+
+    <script>
+        require(['jquery', 'jquery_ui_autocomplete'], function($) {
+
+            function initAutoComplete(fieldId, IdFieldId)
+            {
+                $(fieldId).autocomplete({
+                    source: function (request, response) {
+                        var objData = { term: request.term };
+                        var url = $(this.element).attr('data-url');
+                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+                            success: function (data) {
+                                response($.map(JSON.parse(data.content), function (item) {                                  
+                                    return {                
+                                        label: item.name, 
+                                        id: item.id
+                                    };
+                                }));
+                            },
+                        });
+                    },
+                    select: function (event, ui) {
+                        $(IdFieldId).val(ui.item.id);
+                    },                  
+                    minLength: 3,
+                    delay: 300
+                });
+            }
+
+            function addStopTimeBlock() {
+                var container = $("#stop_times");
+                var index = container.children().length;
+                var html = "<div class='form form-edit'><div class = 'col-md-12'><div class='row'>";
+                html += "<div class = 'col-md-4'>";
+                html += "<label class='control-label required' >{{ 'trip.stop_time_template.start' | trans }}</label>";
+                html += "<input name='stop_times[" + index + "][start]' type='time' class='form-control' required>";
+                html += "</div><div class = 'col-md-4'>";
+                html += "<label class='control-label required' >{{ 'trip.stop_time_template.frequency' | trans }}</label>";
+                html += "<input name='stop_times[" + index + "][frequency]' type='number' class='form-control' min='0' required>";
+                html += "</div><div class = 'col-md-4'>";
+                html += "<label class='control-label required' >{{ 'trip.stop_time_template.stop' | trans }}</label>";
+                html += "<input name='stop_times[" + index + "][stop]' type='time' class='form-control' required>";
+                html += "</div>";
+                html += "</div></div></div>";
+                container.append(html);
+            }
+
+            $(document).ready(function () {
+                $('.modal-dialog').css('width', '1200px');
+
+                initAutoComplete('#day-calendar', '#boa_trip_dayCalendar');
+                initAutoComplete('#period-calendar', '#boa_trip_periodCalendar');
+
+                $('#trip-pattern').autocomplete({
+                    source: function (request, response) {
+                        var objData = { term: request.term, 'routeId': {{ trip.route.id }} };
+                        var url = $(this.element).attr('data-url');
+                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+                            success: function (data) {
+                                response($.map(JSON.parse(data.content), function (item) {                                  
+                                    return {                
+                                        label: item.name, 
+                                        id: item.id
+                                    };
+                                }));
+                            },
+                        });
+                    },
+                    select: function (event, ui) {
+                        $('#boa_trip_pattern').val(ui.item.id);
+                    },                  
+                    minLength: 2,
+                    delay: 300
+                });
+
+                addStopTimeBlock();
+                $('#add-stop-time-block').click(function(event) {
+                    event.preventDefault();
+                    addStopTimeBlock();
+                });
+            });
+        });
+    </script>
+{% endblock %}

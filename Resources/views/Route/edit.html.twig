@@ -154,12 +154,12 @@
         require(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete'], function ($) {
             var $stopTimes = JSON.parse("{{ serviceTemplates | json_encode | e('js') }}");
 
-            function FormatDate(d) {
-                var h = d.getHours();
-                if( h < 10 ) h = "0" + h;
-                var m = d.getMinutes();
-                if( m < 10 ) m = "0" + m;
-                return h + ":" + m;
+            function FormatTime(t) {
+                var h = Math.floor(t/3600);
+                var m = (t - h*3600)/60;
+                if( h < 10 ) h = "0"+h;
+                if( m < 10 ) m = "0"+m;
+                return h+":"+m;
             }
 
             function loadStoptimes() {
@@ -167,7 +167,7 @@
                 $.each($stopTimes, function( $trip_id, $datas ) {
                     var $line_index = 0;
                     $.each($datas, function( $key, $value ) {
-                        var $FormattedDate = FormatDate(new Date($value['arrivalTime']*1000));
+                        var $FormattedDate = FormatTime($value['arrivalTime']);
                         if( $line_index == 0 ) {
                             var $service_header = "<th>";
                             $service_header += "<input type='hidden' name='services[" + $service_index + "][id]' value=" + $trip_id + ">";
@@ -186,6 +186,7 @@
                         $time_cell += "<input type='hidden' name='services[" + $service_index + "][" + $line_index + "][route_stop_id]' value=" + $value['route_stop_id'] + ">";
                         $time_cell += "<input type='hidden' name='services[" + $service_index + "][" + $line_index + "][stop_time_id]' value=" + $value['stop_time_id'] + ">";
                         $time_cell += "<input type='time' name='services[" + $service_index + "][" + $line_index + "][time]' class='form-control' required value='" + $FormattedDate + "'>";
+
                         $time_cell += "</td>";
                         $("#trip-table tbody tr#" + $value['route_stop_id'] + " td:last").before($time_cell);
                         $line_index += 1;

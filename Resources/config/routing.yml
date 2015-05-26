@@ -83,6 +83,7 @@ tisseo_boa_poi_type_edit:
     pattern: /poi_type/edit/{PoiTypeId}
     defaults: { _controller: TisseoBoaBundle:PoiType:edit, PoiTypeId: null }
 
+#ajax calls
 tisseo_boa_json_calendars:
     pattern: /json/calendars/{CalendarType}
     defaults: { _controller: "TisseoBoaBundle:Json:calendars", CalendarType: null}
@@ -107,12 +108,9 @@ tisseo_boa_json_external_transfer:
 tisseo_boa_json_stop_transfer:
     pattern: /json/stop_transfer
     defaults: { _controller: "TisseoBoaBundle:Json:stopTransfer"}
-tisseo_boa_json_route_services:
-    pattern: /json/route_services
-    defaults: { _controller: "TisseoBoaBundle:Json:routeTable"}
-tisseo_boa_json_add_routestop:
-    pattern: /json/add_routestop
-    defaults: { _controller: "TisseoBoaBundle:Json:addRouteStop"}
+tisseo_boa_json_trip_template:
+    pattern: /json/trip_template
+    defaults: { _controller: "TisseoBoaBundle:Json:TripTemplate"}
 
 #Stop administration
 tisseo_boa_stop_search:

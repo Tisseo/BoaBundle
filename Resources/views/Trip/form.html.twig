@@ -1,0 +1,136 @@
+{% extends "::modal.html.twig" %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
+                   filter='cssrewrite' output='css/trip_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+    <div class="form form-edit">
+        <div class = "col-md-12">	
+            <div class="row">
+                <div class = "col-md-6">	
+                    {{ form_row(form.name) }}
+                </div>
+                <div class = "col-md-6">    
+                    <label class="control-label required" >{{ 'trip.labels.pattern' | trans }}</label>
+                    {% set pattern_name = "" %}
+                    {% if trip.pattern %}
+                        {% set pattern_name = trip.pattern.name %}
+                    {% endif  %}
+                    <input type="text" class="form-control" disabled value="{{ pattern_name }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table datatable table-hover dataTable no-footer">
+        <thead>
+            <th>{{ trip.stop_time.labels.rank }}</th>
+            <th>{{ trip.stop_time.labels.city }}</th>
+            <th>{{ trip.stop_time.labels.name }}</th>
+            <th>{{ trip.stop_time.labels.code }}</th>
+            <th>{{ trip.stop_time.labels.no_drop_off }}</th>
+            <th>{{ trip.stop_time.labels.no_pick_up }}</th>
+            <th>{{ trip.stop_time.labels.scheduled }}</th>
+            <th>{{ trip.stop_time.labels.schedule }}</th>
+        </thead>
+        <tbody>
+            {% for stop_time in stopTimes %}
+                <tr>
+                    <td>{{ stop_time.routeStop.rank }}</td>
+                    <td>{{ stop_time.routeStop.waypoint.stop.stopArea.city.name }}</td>
+                    <td>{{ stop_time.routeStop.waypoint.stop.stopArea.shortName }}</td>
+                    <td>{{ stop_time.routeStop.waypoint.stop.stopDatasources[0].code }}</td>
+                    <td>{{ stop_time.routeStop.dropOff ? 'NON' : 'OUI' }}</td>
+                    <td>{{ stop_time.routeStop.pickup ? 'NON' : 'OUI' }}</td>
+                    <td>{{ stop_time.routeStop.scheduledStop ? 'OUI' : 'NON' }}</td>
+                    <td>
+                        {{ render.time_format(stop_time.arrivalTime) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="form form-edit">
+        <div class = "col-md-12">   
+            <div class="row">
+                <div class = "col-md-6">                    
+                    {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_label(form.dayCalendar) }}
+                    <input 
+                        type="text" 
+                        id="day_calendar"
+                        class="form-control"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
+                        value="{{trip.dayCalendar.name}}"
+                    >
+                </div>
+                <div class = "col-md-6">                    
+                    {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_label(form.periodCalendar) }}
+                    <input
+                        type="text"
+                        id="period_calendar"
+                        class="form-control"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode' }) }}"
+                        value="{{trip.periodCalendar.name}}"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+
+    <div class="calendar_div">
+        <div class="row">
+            <div class="col-md-2">
+                <input type="text" id='start_date_picker' name="start_date" class='input-date calendar_date'>
+            </div>
+            <div class="col-md-2">
+                <input type="text" id='end_date_picker'  name="end_date" class='input-date calendar_date'>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
+                <span class="glyphicon glyphicon-refresh"></span>
+                    Rafraîchir
+                </button>
+            </div>
+        </div>
+        <div id='calendar_view' class="calendar_view">
+        </div>
+    </div>    
+
+    <script type="text/javascript">
+        require(['boa/calendar/utils'], function(utils) {
+            $(document).ready(function () {
+                $('.modal-dialog').css('width', '1200px');
+
+                utils.initStandardDateInputs('#start_date_picker', '#end_date_picker', '.input-date');
+                $('#refresh_button').click(function(event) {
+                    utils.initRefreshCalendarClick('#calendar_view', '#refresh_button', '#start_date_picker', '#end_date_picker', "#boa_trip_periodCalendar");
+                });
+            });
+        });
+    </script>
+{% endblock %}

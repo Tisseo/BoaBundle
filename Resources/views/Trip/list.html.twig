@@ -1,0 +1,103 @@
+{% extends "TisseoBoaBundle::container2.html.twig" %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
+                   filter='cssrewrite' output='css/datatables_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}    
+    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
+                   filter='cssrewrite' output='css/trip_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block main_content %}
+    <h1>
+        {{'trip.list.title'|trans({}, 'default')}}
+    	-
+    	<a href="{{ path('tisseo_boa_trip_new', {'RouteId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+    		<span class="glyphicon glyphicon-plus"></span> {{'trip.create'|trans({}, 'default')}}
+    	</a>
+    </h1>
+    <hr/>
+
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    {{
+                        'trip.list.route.network'|trans({}, 'default') ~ ': ' ~ route.lineVersion.line.lineDatasources[0].datasource.agency.name ~
+                        ' - ' ~
+                        'trip.list.route.line'|trans({}, 'default') ~ ': ' ~ route.lineVersion.line.number ~
+                        ' - ' ~
+                        'trip.list.route.version'|trans({}, 'default') ~ ': ' ~ route.lineVersion.version ~
+                        ' - ' ~
+                        'trip.list.route.name'|trans({}, 'default') ~ ': ' ~ route.name ~ ' (' ~ route.way ~ ')'
+                    }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
+        <thead>
+            <th>Nom</th>
+            <th>Départ</th>
+            <th>Type</th>
+            <th>Jour</th>
+            <th>Période</th>
+            <th>Dernier jour</th>
+        </thead>
+        <tbody>
+            {% for trip in trips %}
+                <tr>
+                    <td>
+                        <a href="{{ path('tisseo_boa_trip_edit', {'TripId': trip.id}) }}"
+                            data-toggle="modal" data-target="#base-modal" >
+                            {{ trip.name }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if trip.stopTimes.first.arrivalTime %}
+                            {{ render.time_format(trip.stopTimes.first.arrivalTime) }}
+                        {% endif %}
+                    </td>
+                    <td>{{ trip.pattern.name }}</td>
+                    <td>
+                        {% if trip.dayCalendar %}
+                            <a href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': trip.dayCalendar.id}) }}">
+                                {{ trip.dayCalendar.name }}
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if trip.periodCalendar %}
+                            <a href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': trip.periodCalendar.id}) }}">
+                                {{ trip.periodCalendar.name }}
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        require(['jquery', 'datatables'], function($) {
+            $(document).ready(function() {
+                $("#datatable").DataTable({
+                    "order": [[ 1, "asc" ]],
+                    "pageLength" : 25,
+                    "language": {
+                        "sZeroRecords":    "{{'trip.list.no_data'|trans({}, 'default')}}"
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
