@@ -1,55 +1,96 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: clesauln
- * Date: 29/04/2015
- * Time: 09:15
- */
 
 namespace Tisseo\BoaBundle\Controller;
 
-
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Trip;
+use Tisseo\BoaBundle\Form\Type\TripType;
+use Tisseo\BoaBundle\Form\Type\NewTripType;
 
-class TripController extends AbstractController {
+class TripController extends AbstractController
+{
+    public function listAction($RouteId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+		
+		$tripManager = $this->get('tisseo_endiv.trip_manager');
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $route = $routeManager->findById($RouteId);
+        $trips = $route->getTrips()->filter( function($t) {
+                    return $t->getIsPattern() == false;
+                });
 
-    public function deleteTripAction(){
-
-        $request = $this->get('request');
-
-        $TripManager = $this->get('tisseo_endiv.trip_manager');
-
-
-
-        if($request->isMethod('POST')){
-
-            $tripName = $request->request->get('trip');
-
-            $trip = $TripManager->findByName($tripName);
-
-
-            $idTrip = $trip->getId();
-
-            $trips = $TripManager->hasTrips($idTrip);
-
-            //if trip has trips..//
-
-            if($trips  == true){
-
-                $response = "Services found, copy result";
-
-
-            }
-            else {
-                $response = "no Services";
-                $TripManager->deleteTrip($trip);
-            }
-            return new Response($response,200);
-
-        }
+        return $this->render(
+            'TisseoBoaBundle:Trip:list.html.twig',
+            array(
+                'route' => $routeManager->findById($RouteId),
+                'trips' => $trips
+            )
+        );
     }
 
+    public function editAction($TripId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        
+        $tripManager = $this->get('tisseo_endiv.trip_manager');
+        $trip = $tripManager->find($TripId);
+        $stopTimes = $tripManager->getStopTimes($TripId);
 
+        $form = $this->createForm(new TripType(), $trip,
+            array(
+                "action"=>$this->generateUrl('tisseo_boa_trip_edit',
+                                             array("TripId" => $TripId)
+                )
+            )
+        );
+
+        return $this->render(
+            'TisseoBoaBundle:Trip:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'trip' => $trip,
+                'stopTimes' => $stopTimes
+            )
+        );
+    }    
+
+    public function newAction(Request $request, $RouteId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $route = $routeManager->findById($RouteId);
+        $trip = new Trip();
+        $trip->setRoute($route);
+
+        $form = $this->createForm(new NewTripType(), $trip,
+            array(
+                "action"=>$this->generateUrl('tisseo_boa_trip_new',
+                                             array("RouteId" => $RouteId)
+                )
+            )
+        );
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            try {
+
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            }
+            
+            return $this->redirect($this->generateUrl('tisseo_boa_trip_list', array("RouteId" => $RouteId) ));
+        }
+
+
+        return $this->render(
+            'TisseoBoaBundle:Trip:new.html.twig',
+            array(
+                'title' => 'trip.create',
+                'form' => $form->createView(),
+                'trip' => $trip
+            )
+        );
+    }    
 }

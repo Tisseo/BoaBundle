@@ -175,6 +175,7 @@ route:
      create: Créer une route
      edit: Editer une route
      list:
+        line: Liste des routes de la ligne
         columns:
             name: Nom
             firstStop: Départ
@@ -182,3 +183,18 @@ route:
             comment: Commentaire
             way: Sens
             actions: Actions
+            services: Services
+            copy: Dupliquer
+            edit: Editer
+            delete: Supprimer
+
+trip:
+    create: Créer un service
+    list:
+        no_data: aucun élément à afficher
+        title: Liste des Services
+        route:
+            network: Réseau
+            line: Ligne
+            version: Version
+            name: Route

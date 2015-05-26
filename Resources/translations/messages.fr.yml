@@ -262,6 +262,7 @@ route:
     labels:
         name: Nom
         way: Sens
+        direction: Direction
     route_details: Détails de la route
     templates_services: Services type
     route_stops:
@@ -274,3 +275,24 @@ route:
             pick_up: Montée autorisée
             scheduled: Régulé
             internal_service: Desserte interne
+
+trip:
+    labels:
+        name: Nom du service
+        pattern: Patron de service
+        day_calendar: Calendrier jour
+        period_calendar: Calendrier période
+    stop_time:
+        labels:
+            rank: Ordre
+            city: Ville
+            name: Nom Arrêt
+            code: Num Arrêt
+            no_drop_off: Descente interdite
+            no_pick_up: Montée interdite
+            scheduled: Régulé
+            schedule: Horaire
+    stop_time_template:
+        start: Heure de départ
+        frequency: Fréquence
+        stop: Jusqu'à

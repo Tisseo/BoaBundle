@@ -33,9 +33,14 @@ services:
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: city_selector }
+    tisseo_boa.type.trip_selector:
+        class: Tisseo\BoaBundle\Form\Type\TripSelectorType
+        arguments: ["@doctrine.orm.endiv_entity_manager"]
+        tags:
+            - { name: form.type, alias: trip_selector }
 
     boa_log_subscriber:
         class:  Tisseo\BoaBundle\Event\BoaLogSubscriber
         arguments: ["@service_container"]
         tags:
-            - { name: doctrine.event_subscriber }            
+            - { name: doctrine.event_subscriber }

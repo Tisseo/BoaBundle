@@ -10,6 +10,7 @@ requirejs.config({
         boa_left_menu:                      'bundles/tisseoboa/js/left_menu',
 		'boa/edit/calendar':                'bundles/tisseoboa/js/Calendar/calendars',
 		'boa/form':                         'bundles/tisseoboa/js/form',
+        'tid/trip/utils':                   'bundles/tisseoboa/js/Trip/utils',
         'jquery_ui_draggable':              'components/jquery-ui/ui/minified/jquery.ui.draggable.min',
         'jquery_ui_droppable':              'components/jquery-ui/ui/minified/jquery.ui.droppable.min',
         'jquery_ui_sortable':               'components/jquery-ui/ui/minified/jquery.ui.sortable.min'
@@ -40,7 +41,6 @@ requirejs.config({
             deps: ['jquery', 'jquery_ui_core', 'jquery_ui_mouse', 'jquery_ui_widget'],
             exports: "jQuery"
         }
-
     },
     deps: ['utils', 'jquery', 'boa/form']
 });

@@ -112,7 +112,7 @@
 {% endblock %}
 
 {% block javascripts %}
-   <script>
+	<script>
 		require(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
 
 			function display_dates_save() {
@@ -135,8 +135,8 @@
 				return true;
 			}		
 			
-		var previousDate;
-		$('.input-date').datepicker({
+			var previousDate;
+			$('.input-date').datepicker({
 				language: '{{ app.request.locale }}',
 				todayHighlight: true,
 				autoclose: true
@@ -153,10 +153,10 @@
 			})
 			.on('changeDate', function(e) {
 				if (!($(this).val() === '' || $(this).val() === null)) {
-					$(e.target.name).datepicker('update');					
+					$(e.target.name).datepicker('update');
 				}
 			});
-		
+			
 			var calendarID="{{ calendarId }}";
 			var data_stored = null;
 			
@@ -185,7 +185,7 @@
 				$('#end_date_picker').val(sLastDate);
 				$('#end_date_picker').datepicker('update');
 			}
-			
+				
 			function displayCalendar($FirstDate, $LastDate, $calendarPattern){
 				var Beginning = new Date($FirstDate);
 				Beginning.setHours(0,0,0,0);
@@ -253,43 +253,41 @@
 				$('#calendar_view').html(table_html);
 			}
 			
-			$('#refresh_button').click(
-				function(event) {
-					if( calendarID == '' ) {
-						alert("{{ 'calendar.alert.save' | trans }}");
-						return false;
-					}
-					
-					if(!display_dates_validation($(this))) {
-						return false;
-					}
-					display_dates_save();
-					
-					var url = $(this).attr('data-url');
-					
-					var start_array = $('#start_date_picker').val().split("/");
-					var start_date  =  start_array[2] + '-' + start_array[1] + '-' + start_array[0];
-					
-					var end_array = $('#end_date_picker').val().split("/");
-					var end_date  =  end_array[2] + '-' + end_array[1] + '-' + end_array[0];
-					
-					var objData = {
-						id: parseInt(calendarID),
-						startDate: start_date,
-						endDate: end_date
-					};
-
-					$.ajax({ url: url, data : objData, type: 'POST',
-						success : function(data){
-							displayCalendar(start_date, end_date, data.content);
-						}
-					});
+			$('#refresh_button').click(function(event) {
+				if( calendarID == '' ) {
+					alert("{{ 'calendar.alert.save' | trans }}");
+					return false;
 				}
-			);
-			
+				
+				if(!display_dates_validation($(this))) {
+					return false;
+				}
+				display_dates_save();
+				
+				var url = $(this).attr('data-url');
+				
+				var start_array = $('#start_date_picker').val().split("/");
+				var start_date  =  start_array[2] + '-' + start_array[1] + '-' + start_array[0];
+				
+				var end_array = $('#end_date_picker').val().split("/");
+				var end_date  =  end_array[2] + '-' + end_array[1] + '-' + end_array[0];
+				
+				var objData = {
+					id: parseInt(calendarID),
+					startDate: start_date,
+					endDate: end_date
+				};
+
+				$.ajax({ url: url, data : objData, type: 'POST',
+					success : function(data){
+						displayCalendar(start_date, end_date, data.content);
+					}
+				});
+			});
+				
 			var $collectionHolder = $('#calendar_elements');
 			var $removeCollectionHolder = $('#divRemoveElement');
-	
+
 			function init_autocomplete(){
 				$("input[data-id=calendar]").autocomplete({
 					source: function (request, response) {
@@ -315,7 +313,7 @@
 					delay: 300
 				});
 			};
-						
+							
 			function add(){
 				var $index = $('#calendar_elements >tbody >tr').length + 1;
 				
@@ -390,6 +388,6 @@
 			});
 
 			if( calendarID != '' )  { $("#refresh_button").click(); }
-		 });
-    </script>
+	 	});
+	</script>
 {% endblock %}

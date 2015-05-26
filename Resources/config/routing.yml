@@ -164,50 +164,44 @@ tisseo_boa_external_transfer_edit:
     pattern: /external_transfer/edit/{StopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:externalTransfer }
 
-#gestion des routes
-#list lignes version
+#Route Administration
 tisseo_boa_linesv_list:
     pattern: /routes/lines/list
     defaults: { _controller: TisseoBoaBundle:Route:list }
-
-#routes list
 tisseo_boa_route_list:
     pattern: /routes/list/{LineVersionId}
     defaults: { _controller: TisseoBoaBundle:Route:route }
     requirements:
         LineVersionId: \d+
-
 tisseo_boa_route_edit:
     pattern: /routes/edit/{RouteId}
     defaults: { _controller: TisseoBoaBundle:Route:edit, RouteId: null }
     requirements:
-        id: \d+
-
+        RouteId: \d+
+tisseo_boa_route_create:
+    pattern: /routes/create/{lineVersionId}
+    defaults: { _controller: TisseoBoaBundle:Route:create }
+    requirements:
+        lineVersionId: \d+
 tisseo_boa_route_delete:
-    pattern: /routes/delete/{id}
+    pattern: /routes/delete/{RouteId}
     defaults: { _controller: TisseoBoaBundle:Route:delete }
     requirements:
-        id: \d+
+        RouteId: \d+
 
-tisseo_boa_route_create:
-    pattern: /routes/create
-    defaults: { _controller: TisseoBoaBundle:Route:create }
-
-tisseo_boa_route_datatable:
-    pattern: /routes/datatable/{id}
-    defaults: { _controller: TisseoBoaBundle:Route:datatable }
+#Trip Administration
+tisseo_boa_trip_list:
+    pattern: /trip/list/{RouteId}
+    defaults: { _controller: TisseoBoaBundle:Trip:list }
     requirements:
-        id: \d+
-        _format: json
-
-tisseo_boa_route_stops_save:
-    pattern: /routes/datatable/save
-    defaults: { _controller: TisseoBoaBundle:Route:datatableSave }
-    options:
-        expose: true
-
-tisseo_boa_trip_action:
-     pattern: /routes/trips/action
-     defaults: { _controller: TisseoBoaBundle:Trip:deleteTrip }
-     options:
-         expose: true
+        RouteId: \d+
+tisseo_boa_trip_edit:
+    pattern: /trip/edit/{TripId}
+    defaults: { _controller: TisseoBoaBundle:Trip:edit }
+    requirements:
+        TripId: \d+
+tisseo_boa_trip_new:
+    pattern: /trip/new/{RouteId}
+    defaults: { _controller: TisseoBoaBundle:Trip:new }
+    requirements:
+        RouteId: \d+

@@ -1,10 +1,10 @@
 {% extends "TisseoBoaBundle::datatable_list.html.twig" %}
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block list_title -%}
-    {#{{ 'line.list.title'|trans({}, 'default') }} #}
-    Liste des Routes de la ligne {{ line_version_name }} - 
-    <a href="{{path('tisseo_boa_route_create',{idLine:id})}}" class="btn btn-default">
+    {{'route.list.line'|trans({}, 'default') ~ ' ' ~ line_version_name }} - 
+    <a class="btn btn-default" id="internal-transfert" 
+        href="{{ path('tisseo_boa_route_create', { 'lineVersionId':lineVersionId }) }}"
+        data-toggle="modal" data-target="#base-modal" >
         <span class="glyphicon glyphicon-plus"></span>
         {{'route.create'|trans({}, 'default')}}
     </a>
@@ -45,22 +45,22 @@
                 <td> {{ route.comment }}</td>
                 <td> {{ route.way }}</td>
                 <td>
-                    <a href=""
+                    <a href="{{path('tisseo_boa_trip_list',{RouteId: route.id})}}"
                             class="btn btn-default">
-                        <span class="glyphicon glyphicon-edit"></span>Services
+                        <span class="glyphicon glyphicon-list"></span>{{'route.list.columns.services'|trans({}, 'default')}}
                     </a>
                     <a href=""
                             class="btn btn-default">
-                        <span class="glyphicon glyphicon-edit"></span>Dupliquer
+                        <span class="glyphicon glyphicon-repeat"></span>{{'route.list.columns.copy'|trans({}, 'default')}}
                     </a>
 {#                    {% if route.trips is empty %}#}
                         <a href="{{path('tisseo_boa_route_edit',{RouteId: route.id})}}"
                                 class="btn btn-default">
-                            <span class="glyphicon glyphicon-edit"></span>Editer
+                            <span class="glyphicon glyphicon-edit"></span>{{'route.list.columns.edit'|trans({}, 'default')}}
                         </a>
-                        <a href=""
+                        <a href="{{path('tisseo_boa_route_delete',{RouteId: route.id})}}"
                                 class="btn btn-default">
-                            <span class="glyphicon glyphicon-edit"></span>Supprimer
+                            <span class="glyphicon glyphicon-remove"></span>{{'route.list.columns.delete'|trans({}, 'default')}}
                         </a>
 {#                    {% endif %}#}
                 </td>

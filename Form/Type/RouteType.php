@@ -24,13 +24,14 @@ class RouteType extends AbstractType
                 'label' => 'route.labels.name',
             )
         )
-        ->add('way', 'choice',
+        ->add('direction', 'text',
             array(
-                'label' => 'route.labels.way',
-                'required'    => false,
-                'empty_value'  => '',
-                'empty_data'  => '',
-                'choices'    => Route::getWayValues()
+                'label' => 'route.labels.direction',
+            )
+        )
+        ->add('way', 'text',
+            array(
+                'label' => 'route.labels.way'
             )
         );
 
