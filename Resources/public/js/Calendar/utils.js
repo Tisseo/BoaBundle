@@ -104,7 +104,7 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr'], function($
                 }
             });
         },
-        initRefreshCalendarClick: function(calendarDivId, buttonId, startDateId, endDateId, CalendarId) {
+        initRefreshCalendarClick: function(calendarDivId, buttonId, startDateId, endDateId, Calendar1Id, Calendar2Id) {
             var url = $(buttonId).attr('data-url');
             var start_array = $(startDateId).val().split("/");
             var start_date  =  start_array[2] + '-' + start_array[1] + '-' + start_array[0];
@@ -112,14 +112,14 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr'], function($
             var end_date  =  end_array[2] + '-' + end_array[1] + '-' + end_array[0];
             
             var objData = {
-                id: $(CalendarId).val(),
+                id1: $(Calendar1Id).val(),
+                id2: $(Calendar2Id).val(),
                 startDate: start_date,
                 endDate: end_date
             };
 
             $.ajax({ url: url, data : objData, type: 'POST',
                 success : function(data){
-                    alert(data.content);
                     displayCalendar(calendarDivId, start_date, end_date, data.content);
                 }
             });

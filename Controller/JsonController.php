@@ -30,23 +30,43 @@ class JsonController extends AbstractController
 
     public function BitmaskAction()
     {
-		
         $request = $this->get('request');
  
-		if($request->isXmlHttpRequest())
+        if($request->isXmlHttpRequest())
         {
-			$id = $request->request->get('id');
+            $id = $request->request->get('id');
             $startDate = $request->request->get('startDate');
             $endDate = $request->request->get('endDate');
-			
+
             $array= $this->get('tisseo_endiv.calendar_manager')
                 ->getCalendarsBitmask($id, $startDate, $endDate);
-				
+
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
+
+    public function ServiceCalendarBitmaskAction()
+    {
+        $request = $this->get('request');
+ 
+        if($request->isXmlHttpRequest())
+        {
+            $id1 = $request->request->get('id1');
+            $id2 = $request->request->get('id2');
+            $startDate = $request->request->get('startDate');
+            $endDate = $request->request->get('endDate');
+
+            $array= $this->get('tisseo_endiv.calendar_manager')
+                ->getServiceCalendarsBitmask($id1, $id2, $startDate, $endDate);
+
+            $response = new Response(json_encode($array));
+            $response -> headers -> set('Content-Type', 'application/json');
+            return $response;
+        }
+    }
+
 	
     public function StopAction()
     {

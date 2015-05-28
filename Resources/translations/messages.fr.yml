@@ -56,6 +56,7 @@ menu:
     log: Logs
     route_manage: Routes
     line: Liste des lignes
+    property: Propriétés
     calendar_manage: Gestion des calendriers
     calendar_jour: Jour
     calendar_periode: Période
@@ -78,6 +79,11 @@ agency:
         timezone: Fuseau horaire
         lang: Langue
         phone: Téléphone
+
+property:
+    labels:
+        name: Nom
+        default: Défaut
 
 calendar:
     labels:

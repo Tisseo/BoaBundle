@@ -23,6 +23,16 @@ agency:
     create: Créer un réseau
     created: Réseau sauvegardé
 
+property:
+    list:
+        columns:
+            name: Nom
+            default: Défaut
+        title: Propriétés
+    edit: Editer une propriété
+    create: Créer une propriété
+    created: Propriété sauvegardé
+
 calendar:
     elements:
             order: Ordre

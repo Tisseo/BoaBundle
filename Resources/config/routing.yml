@@ -60,6 +60,13 @@ tisseo_boa_exception_type_list:
 tisseo_boa_exception_type_edit:
     pattern: /exception_type/edit/{ExceptionTypeId}
     defaults: { _controller: TisseoBoaBundle:ExceptionType:edit, ExceptionTypeId: null }
+#Property administration
+tisseo_boa_property_list:
+    pattern: /property/list
+    defaults: { _controller: TisseoBoaBundle:Property:list }
+tisseo_boa_property_edit:
+    pattern: /property/edit/{PropertyId}
+    defaults: { _controller: TisseoBoaBundle:Property:edit, PropertyId: null }
 
 #Log administration
 tisseo_boa_log_list:
@@ -90,9 +97,14 @@ tisseo_boa_json_calendars:
 tisseo_boa_json_bitmask:
     pattern: /json/bitmask
     defaults: { _controller: "TisseoBoaBundle:Json:bitmask"}
+tisseo_boa_json_service_calendar_bitmask:
+    pattern: /json/service/calendar/bitmask
+    defaults: { _controller: "TisseoBoaBundle:Json:ServiceCalendarBitmask"}
 tisseo_boa_json_stop:
     pattern: /json/stop
     defaults: { _controller: "TisseoBoaBundle:Json:stop"}
+    options:
+        expose: true
 tisseo_boa_json_stop_area:
     pattern: /json/stop_area
     defaults: { _controller: "TisseoBoaBundle:Json:stopArea"}

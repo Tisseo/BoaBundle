@@ -1,0 +1,37 @@
+{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
+
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{'property.list.title'|trans({}, 'default')}}
+    -
+    <a href="{{ path('tisseo_boa_property_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> {{'property.create'|trans({}, 'default')}}
+    </a>
+{% endblock %}
+
+{% block table_head -%}
+    <th>{{'property.list.columns.name'|trans({}, 'default')}}</th>
+    <th>{{'property.list.columns.default'|trans({}, 'default')}}</th>
+    <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% if properties|length == 0 %}
+        <tr>
+            <td colspan="3"> {{'global.no_items'|trans}} </td>
+        </tr>
+    {% else %}
+        {% for property in properties %}
+            <tr>
+                <td> {{ property.name }} </td>
+                <td> {{ property.default ? 'TRUE': 'FALSE' }} </td>
+                <td>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_property_edit', {'PropertyId': property.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

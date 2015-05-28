@@ -29,7 +29,7 @@ class TripController extends AbstractController
         );
     }
 
-    public function editAction($TripId)
+    public function editAction(Request $request, $TripId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
         
@@ -39,11 +39,30 @@ class TripController extends AbstractController
 
         $form = $this->createForm(new TripType(), $trip,
             array(
-                "action"=>$this->generateUrl('tisseo_boa_trip_edit',
-                                             array("TripId" => $TripId)
+                "action"=>$this->generateUrl(
+                    'tisseo_boa_trip_edit',
+                    array("TripId" => $TripId)
                 )
             )
         );
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            try {
+                $trip = $form->getData();
+                $tripManager->save($trip);
+                $RouteId = $trip->getRoute()->getId();
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            }
+            
+            return $this->redirect(
+                $this->generateUrl('tisseo_boa_trip_list', 
+                    array("RouteId" => $RouteId)
+                )
+            );
+        }
+
 
         return $this->render(
             'TisseoBoaBundle:Trip:form.html.twig',

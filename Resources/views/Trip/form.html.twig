@@ -78,6 +78,7 @@
                         class="form-control"
                         data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
                         value="{{trip.dayCalendar.name}}"
+                        disabled
                     >
                 </div>
                 <div class = "col-md-6">                    
@@ -89,6 +90,7 @@
                         class="form-control"
                         data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode' }) }}"
                         value="{{trip.periodCalendar.name}}"
+                        disabled
                     >
                 </div>
             </div>
@@ -111,7 +113,7 @@
                 <input type="text" id='end_date_picker'  name="end_date" class='input-date calendar_date'>
             </div>
             <div class="col-md-2">
-                <button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
+                <button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_service_calendar_bitmask') }}">
                 <span class="glyphicon glyphicon-refresh"></span>
                     Rafraîchir
                 </button>
@@ -128,8 +130,9 @@
 
                 utils.initStandardDateInputs('#start_date_picker', '#end_date_picker', '.input-date');
                 $('#refresh_button').click(function(event) {
-                    utils.initRefreshCalendarClick('#calendar_view', '#refresh_button', '#start_date_picker', '#end_date_picker', "#boa_trip_periodCalendar");
+                    utils.initRefreshCalendarClick('#calendar_view', '#refresh_button', '#start_date_picker', '#end_date_picker', "#boa_trip_dayCalendar", "#boa_trip_periodCalendar");
                 });
+                $( "#refresh_button" ).trigger( "click" );
             });
         });
     </script>
