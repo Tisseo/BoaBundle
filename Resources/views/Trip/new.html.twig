@@ -128,10 +128,10 @@
                 html += "<input name='stop_times[" + index + "][start]' type='time' class='form-control' required>";
                 html += "</div><div class = 'col-md-4'>";
                 html += "<label class='control-label required' >{{ 'trip.stop_time_template.frequency' | trans }}</label>";
-                html += "<input name='stop_times[" + index + "][frequency]' type='number' class='form-control' min='0' required>";
+                html += "<input name='stop_times[" + index + "][frequency]' type='number' class='form-control' min='0'>";
                 html += "</div><div class = 'col-md-4'>";
                 html += "<label class='control-label required' >{{ 'trip.stop_time_template.stop' | trans }}</label>";
-                html += "<input name='stop_times[" + index + "][stop]' type='time' class='form-control' required>";
+                html += "<input name='stop_times[" + index + "][stop]' type='time' class='form-control'>";
                 html += "</div>";
                 html += "</div></div></div>";
                 container.append(html);

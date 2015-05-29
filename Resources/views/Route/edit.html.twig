@@ -157,7 +157,7 @@
 
             $(document).ready(function () {
                 $( "#add-service" ).click(function() {
-                    utils.addService("#trip-table");
+                    utils.addService("#trip-table", '#route-stop-table');
                 }); 
 
                 $('#trip-table').on('click',  ".delete-trip", function(event) {
@@ -182,9 +182,19 @@
                 });
 
                 $('#route-stop-table').on('change',  ".scheduled", function(event) {
-                    console.log(this.checked);
-                });
+                    var index = $(this).closest('tr').index();
+                    var scheduled = this.checked;
+                    $('#trip-table tr').eq(index+1).find('input[type=time]').each(function() {
+                        if( scheduled ) {
+                            $(this).prop('readonly', false);
+                            $(this).val('');
 
+                        } else {
+                            $(this).prop('readonly', true);
+                            $(this).val('00:00');
+                        }
+                    });
+                });
 
                 $( "#route-stop-table tbody" ).sortable(
                     {
@@ -197,7 +207,7 @@
                     }
                 );
 
-                utils.loadStoptimes($stopTimes, "#trip-table");
+                utils.loadStoptimes($stopTimes, "#trip-table", "#route-stop-table");
             });
         });
     </script>

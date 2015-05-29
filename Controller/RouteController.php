@@ -69,18 +69,17 @@ class RouteController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            //try {
+            try {
                 $route = $form->getData();
                 $routeManager->save($route);
 
                 $route_stops = $request->request->get('route_stops');
                 $services = $request->request->get('services');
                     $routeManager->saveRouteStopsAndServices($route, $route_stops, $services);
-/*            
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
-*/
+
             return $this->redirect($this->generateUrl('tisseo_boa_route_edit', array("RouteId" => $RouteId) ));
         }
 
