@@ -215,3 +215,8 @@ tisseo_boa_trip_new:
     defaults: { _controller: TisseoBoaBundle:Trip:new }
     requirements:
         RouteId: \d+
+tisseo_boa_trip_delete:
+    pattern: /trip/delete/{TripId}
+    defaults: { _controller: TisseoBoaBundle:Trip:delete }
+    requirements:
+        TripId: \d+

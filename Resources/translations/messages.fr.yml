@@ -281,6 +281,16 @@ route:
             pick_up: Montée autorisée
             scheduled: Régulé
             internal_service: Desserte interne
+        warning: L'arrêt %s n'a pas de route section attaché
+    error_submit:
+        first_stop:
+            dropoff: Le premier arrêt de la route ne doit pas permettre la descente.
+            not_scheduled: Le premier arrêt de la route doit être régulé.
+        last_stop:
+            pickup: Le dernier arrêt de la route ne doit pas permettre la montée
+            not_scheduled: Le dernier arrêt de la route doit être régulé.
+        service_type:
+            first_stop_time: Le premier horaire des services types doit être 00:00
 
 trip:
     labels:
@@ -302,3 +312,8 @@ trip:
         start: Heure de départ
         frequency: Fréquence
         stop: Jusqu'à
+    error:
+        stop_time: Les champs "Fréquence" et "Jusqu'à" doivent être saisis ensemble
+        pattern: Le patron de service est obligatoire (ou sa valeur est incorrecte)
+        day_calendar: Le calendrier "jour" est obligatoire (ou sa valeur est incorrecte)
+        period_calendar: Le calendrier "période" est obligatoire (ou sa valeur est incorrecte)

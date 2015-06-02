@@ -20,13 +20,19 @@ class NewTripType extends AbstractType
             array('label' => 'trip.labels.name')
         )
         ->add('pattern', 'trip_selector',
-            array('label' => 'trip.labels.pattern')
+            array(
+                'label' => 'trip.labels.pattern',
+                'required' => false)
         )
         ->add('dayCalendar', 'calendar_selector',
-            array('label' => 'trip.labels.day_calendar')
+            array(
+                'label' => 'trip.labels.day_calendar',
+                'required' => false)
         )
         ->add('periodCalendar', 'calendar_selector',
-            array('label' => 'trip.labels.period_calendar')
+            array(
+                'label' => 'trip.labels.period_calendar',
+                'required' => false)
         );
 
         $builder->setAction($options['action']);

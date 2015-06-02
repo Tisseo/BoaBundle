@@ -36,7 +36,6 @@
   {{ hour ~ ":" ~ min }}
 {% endmacro %}
 
-
 {% macro color_display(object) %}
 	{% if object.name is defined %}
 		<div  class="line-number line-small" style="width:60px; height:20px;border: 1px solid black;color:{{ object.html }}; background-color:{{ object.html }}">
@@ -55,3 +54,23 @@
 	</select>
 {% endmacro %}
 
+{% macro route_header(route) %}
+  <div class="form form-edit">
+      <div class="col-md-12">
+          <div class="row">
+              <div class="col-md-12">
+                  <label>{{'trip.list.route.network'|trans({}, 'default')}}:</label>{{ route.lineVersion.line.lineDatasources[0].datasource.agency.name }}
+                  -
+                  <label>{{'trip.list.route.line'|trans({}, 'default')}}:</label>{{ route.lineVersion.line.number }}
+                  -
+                  <label>{{'trip.list.route.version'|trans({}, 'default')}}:</label>{{ route.lineVersion.version }}
+                  -
+                  <label>{{'trip.list.route.name'|trans({}, 'default')}}:</label>
+                  <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': route.lineVersion.id }) }}">
+                      {{ route.name ~ ' (' ~ route.way ~ ')' }}
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endmacro %}

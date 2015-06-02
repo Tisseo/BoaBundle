@@ -23,32 +23,17 @@
     </h1>
     <hr/>
 
-    <div class="form form-edit">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    {{
-                        'trip.list.route.network'|trans({}, 'default') ~ ': ' ~ route.lineVersion.line.lineDatasources[0].datasource.agency.name ~
-                        ' - ' ~
-                        'trip.list.route.line'|trans({}, 'default') ~ ': ' ~ route.lineVersion.line.number ~
-                        ' - ' ~
-                        'trip.list.route.version'|trans({}, 'default') ~ ': ' ~ route.lineVersion.version ~
-                        ' - ' ~
-                        'trip.list.route.name'|trans({}, 'default') ~ ': ' ~ route.name ~ ' (' ~ route.way ~ ')'
-                    }}
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ render.route_header(route) }}
 
     <table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
         <thead>
-            <th>Nom</th>
-            <th>Départ</th>
-            <th>Type</th>
-            <th>Jour</th>
-            <th>Période</th>
-            <th>Dernier jour</th>
+            <th>{{ 'trip.list.columns.name'|trans({}, 'default') }}</th>
+            <th>{{ 'trip.list.columns.start'|trans({}, 'default') }}</th>
+            <th>{{ 'trip.list.columns.type'|trans({}, 'default') }}</th>
+            <th>{{ 'trip.list.columns.day'|trans({}, 'default') }}</th>
+            <th>{{ 'trip.list.columns.period'|trans({}, 'default') }}</th>
+            <th>{{ 'trip.list.columns.lastDay'|trans({}, 'default') }}</th>
+            <th class="no-sort"> - </th>
         </thead>
         <tbody>
             {% for trip in trips %}
@@ -79,7 +64,12 @@
                             </a>
                         {% endif %}
                     </td>
-                    <td></td>
+                    <td></td>   {#Last Day#}
+                    <td>
+                        <a class="btn btn-default delete-action" href="{{ path('tisseo_boa_trip_delete', {'TripId': trip.id}) }}">
+                            <span class="glyphicon glyphicon-remove"></span>{{ 'global.delete'|trans }}
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -97,6 +87,12 @@
                         "sZeroRecords":    "{{'trip.list.no_data'|trans({}, 'default')}}"
                     }
                 });
+
+                $('#datatable').on('click',  ".delete-action", function(event) {
+                    if( !confirm("Confirmez-vous la suppression de ce service ?") ) {
+                        event.preventDefault();
+                    }
+                })
             });
         });
     </script>

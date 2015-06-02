@@ -15,6 +15,8 @@ class JsonController extends AbstractController
     public function CalendarsAction($CalendarType = null)
     {
 		$request = $this->get('request');
+        if( strpos($CalendarType, ',') ) 
+            $CalendarType = explode( ',', $CalendarType );
 		
         if($request->isXmlHttpRequest())
         {

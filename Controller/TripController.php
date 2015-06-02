@@ -74,6 +74,26 @@ class TripController extends AbstractController
         );
     }    
 
+    public function deleteAction(Request $request, $TripId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $tripManager = $this->get('tisseo_endiv.trip_manager');
+        $trip = $tripManager->find($TripId);
+        $RouteId = $trip->getRoute()->getId();
+        try {
+            $tripManager->remove($trip);
+        } catch(\Exception $e) {
+            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+        }
+
+        return $this->redirect(
+            $this->generateUrl('tisseo_boa_trip_list', 
+                array("RouteId" => $RouteId)
+            )
+        );
+    }
+
+
     public function newAction(Request $request, $RouteId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');

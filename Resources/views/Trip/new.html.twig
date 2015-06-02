@@ -1,4 +1,5 @@
 {% extends "::modal.html.twig" %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block modal_title %}
     {{ title|trans({}, 'default') }}
@@ -9,25 +10,10 @@
 {% endblock %}
 
 {% block modal_body %}
+    <div id="error_alert"></div>
     {{ form_errors(form) }}
 
-    <div class="form form-edit">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    {{
-                        'trip.list.route.network'|trans({}, 'default') ~ ': ' ~ trip.route.lineVersion.line.lineDatasources[0].datasource.agency.name ~
-                        ' - ' ~
-                        'trip.list.route.line'|trans({}, 'default') ~ ': ' ~ trip.route.lineVersion.line.number ~
-                        ' - ' ~
-                        'trip.list.route.version'|trans({}, 'default') ~ ': ' ~ trip.route.lineVersion.version ~
-                        ' - ' ~
-                        'trip.list.route.name'|trans({}, 'default') ~ ': ' ~ trip.route.name ~ ' (' ~ trip.route.way ~ ')'
-                    }}
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ render.route_header(trip.route) }}
 
     <div class="form form-edit">
         <div class = "col-md-12">	
@@ -37,7 +23,7 @@
                 </div>
                 <div class = "col-md-6">
                     {{ form_label(form.pattern) }}
-                    {{ form_widget(form.pattern, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_widget(form.pattern, { 'attr': {'class': 'hide pattern'}}) }}
                     <input
                         type="text"
                         id="trip-pattern"
@@ -52,7 +38,7 @@
         <div class = "col-md-12">
             <div class="row">
                 <div class = "col-md-6">                    
-                    {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide day-calendar'}}) }}
                     {{ form_label(form.dayCalendar) }}
                     <input 
                         type="text" 
@@ -63,13 +49,13 @@
                     >
                 </div>
                 <div class = "col-md-6">                    
-                    {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide'}}) }}
+                    {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide period-calendar'}}) }}
                     {{ form_label(form.periodCalendar) }}
                     <input
                         type="text"
                         id="period-calendar"
                         class="form-control"
-                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode' }) }}"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode,mixte' }) }}"
                         required
                     >
                 </div>
@@ -92,85 +78,56 @@
     {{ form_end(form) }}
 
     <script>
-        require(['jquery', 'jquery_ui_autocomplete'], function($) {
-
-            function initAutoComplete(fieldId, IdFieldId)
-            {
-                $(fieldId).autocomplete({
-                    source: function (request, response) {
-                        var objData = { term: request.term };
-                        var url = $(this.element).attr('data-url');
-                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-                            success: function (data) {
-                                response($.map(JSON.parse(data.content), function (item) {                                  
-                                    return {                
-                                        label: item.name, 
-                                        id: item.id
-                                    };
-                                }));
-                            },
-                        });
-                    },
-                    select: function (event, ui) {
-                        $(IdFieldId).val(ui.item.id);
-                    },                  
-                    minLength: 3,
-                    delay: 300
-                });
-            }
-
-            function addStopTimeBlock() {
-                var container = $("#stop_times");
-                var index = container.children().length;
-                var html = "<div class='form form-edit'><div class = 'col-md-12'><div class='row'>";
-                html += "<div class = 'col-md-4'>";
-                html += "<label class='control-label required' >{{ 'trip.stop_time_template.start' | trans }}</label>";
-                html += "<input name='stop_times[" + index + "][start]' type='time' class='form-control' required>";
-                html += "</div><div class = 'col-md-4'>";
-                html += "<label class='control-label required' >{{ 'trip.stop_time_template.frequency' | trans }}</label>";
-                html += "<input name='stop_times[" + index + "][frequency]' type='number' class='form-control' min='0'>";
-                html += "</div><div class = 'col-md-4'>";
-                html += "<label class='control-label required' >{{ 'trip.stop_time_template.stop' | trans }}</label>";
-                html += "<input name='stop_times[" + index + "][stop]' type='time' class='form-control'>";
-                html += "</div>";
-                html += "</div></div></div>";
-                container.append(html);
-            }
-
+        require(['boa/trip/utils'], function(utils) {
             $(document).ready(function () {
                 $('.modal-dialog').css('width', '1200px');
 
-                initAutoComplete('#day-calendar', '#boa_trip_dayCalendar');
-                initAutoComplete('#period-calendar', '#boa_trip_periodCalendar');
+                utils.initAutoComplete('#day-calendar', '#boa_trip_dayCalendar');
+                utils.initAutoComplete('#period-calendar', '#boa_trip_periodCalendar');
+                utils.initTripPatternAutoComplete('#trip-pattern', '#boa_trip_pattern', {{ trip.route.id }});
+                utils.addStopTimeBlock("#stop_times",
+                    "{{ 'trip.stop_time_template.start' | trans }}",
+                    "{{ 'trip.stop_time_template.frequency' | trans }}",
+                    "{{ 'trip.stop_time_template.stop' | trans }}");
 
-                $('#trip-pattern').autocomplete({
-                    source: function (request, response) {
-                        var objData = { term: request.term, 'routeId': {{ trip.route.id }} };
-                        var url = $(this.element).attr('data-url');
-                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-                            success: function (data) {
-                                response($.map(JSON.parse(data.content), function (item) {                                  
-                                    return {                
-                                        label: item.name, 
-                                        id: item.id
-                                    };
-                                }));
-                            },
-                        });
-                    },
-                    select: function (event, ui) {
-                        $('#boa_trip_pattern').val(ui.item.id);
-                    },                  
-                    minLength: 2,
-                    delay: 300
-                });
-
-                addStopTimeBlock();
                 $('#add-stop-time-block').click(function(event) {
                     event.preventDefault();
-                    addStopTimeBlock();
+                    utils.addStopTimeBlock("#stop_times",
+                        "{{ 'trip.stop_time_template.start' | trans }}",
+                        "{{ 'trip.stop_time_template.frequency' | trans }}",
+                        "{{ 'trip.stop_time_template.stop' | trans }}");
                 });
             });
+
+            {# form validation #}
+            $('form[name="{{ form.vars.full_name }}"]').submit( function( e ) {
+                if( !$('.pattern').val() ) {
+                        utils.displayAlert("{{ 'trip.error.pattern' | trans }}");
+                        return false;                    
+                }
+                if( !$('.day-calendar').val() ) {
+                        utils.displayAlert("{{ 'trip.error.day_calendar' | trans }}");
+                        return false;                    
+                }
+                if( !$('.period-calendar').val() ) {
+                        utils.displayAlert("{{ 'trip.error.period_calendar' | trans }}");
+                        return false;                    
+                }
+
+                {# check frequencies and stops #}
+                $('#stop_times').find('div.stop-time-block').each(function () {
+                    var frequency = $(this).find('input.frequency').val();
+                    var stop = $(this).find('input.stop').val();
+
+                    if( (frequency && !stop) || (!frequency && stop) ) {
+                        utils.displayAlert("{{ 'trip.error.stop_time' | trans }}");
+                        return false;
+                    }
+                });
+
+                return true;
+            });
+
         });
     </script>
 {% endblock %}

@@ -15,13 +15,29 @@ class RouteController extends AbstractController
 
         $linesVManager = $this->get('tisseo_endiv.line_version_manager');
         $time = new \DateTime('now');
-        $allLines = $linesVManager->findActiveLineVersions($time, "grouplines");
+        $lineVersions = $linesVManager->findActiveLineVersions($time);
+
+        $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
+        $datasources = $datasourceManager->findAll();
+
+        // sort by priority, number and start date
+        usort($lineVersions, function($val1, $val2) {
+            $line1 = $val1->getLine();
+            $line2 = $val2->getLine();
+            if( $line1->getPriority() > $line2->getPriority() ) return 1;
+            if( $line1->getPriority() < $line2->getPriority() ) return -1;
+            if( $line1->getNumber() > $line2->getNumber() ) return 1;
+            if( $line1->getNumber() < $line2->getNumber() ) return -1;
+            if( $val1->getStartDate()->format("Ymd") >= $val2->getStartDate()->format("Ymd") ) return 1;
+            return -1;
+        });
 
         return $this->render(
             'TisseoBoaBundle:Route:list.html.twig',
             array(
                 'pageTitle' => 'menu.line',
-                'linesV' => $allLines
+                'linesV' => $lineVersions,
+                'datasources' => $datasources
             )
         );
     }
@@ -51,12 +67,16 @@ class RouteController extends AbstractController
 
         $routeStops = array();
         $serviceTemplates = array();
+        $instantiatedServiceTemplates = array();
         if( $RouteId == null) {
             $route = new Route();
+            $warnings = array();
         } else {
             $route = $routeManager->findById($RouteId);
             $routeStops = $routeManager->getRouteStops($RouteId);
             $serviceTemplates = $routeManager->getServiceTemplates($RouteId);
+            $instantiatedServiceTemplates = $routeManager->getInstantiatedServiceTemplates($route);
+            $warnings = $routeManager->getRouteStopsWithoutRouteSection($routeStops);
         }
 
         $form = $this->createForm(new RouteType(),$route,
@@ -83,6 +103,18 @@ class RouteController extends AbstractController
             return $this->redirect($this->generateUrl('tisseo_boa_route_edit', array("RouteId" => $RouteId) ));
         }
 
+        //route sections warnings
+        if( $warnings ) {
+            foreach ($warnings as $w) {
+                $warning = $this->get('translator')->trans(
+                    'route.route_stops.warning',
+                    array('%s' => $w), 
+                    'messages'
+                );
+                $this->get('session')->getFlashBag()->add('danger', $warning);
+            }
+        }
+
         return $this->render(
             'TisseoBoaBundle:Route:edit.html.twig',
             array(
@@ -90,7 +122,9 @@ class RouteController extends AbstractController
                 'title' => 'route.edit',
                 'route' => $route,
                 'routeStops' => $routeStops,
-                'serviceTemplates' => $serviceTemplates
+                'serviceTemplates' => $serviceTemplates,
+                'instantiatedServiceTemplates' => $instantiatedServiceTemplates
+
             )
         );
     }

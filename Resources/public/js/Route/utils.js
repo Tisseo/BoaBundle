@@ -7,46 +7,106 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
         return h+":"+m;
     }
 
+    function TimeToInt(t) {
+        if( !t ) t = '00:00';
+        var tmp = t.split(':');
+        return res = tmp[0]*3600 + tmp[1]*60;
+    }
+
+    function serviceHeaderHTML(service_index, trip_id, trip_name, trip_is_instantiated) {
+        var name_pattern = "services[" + service_index + "]";
+        var service_header = "<th>";
+        service_header += "<input type='hidden' name='" + name_pattern + "[id]' value=" + trip_id + ">";
+        service_header += "<div><div style='display: table-cell'>";
+        if( trip_is_instantiated ) {
+            service_header += "<input type='hidden' name='" + name_pattern + "[name]' value='" + trip_name + "'>" + trip_name + "</div>";
+        } else {
+            service_header += "<input type='text' name='" + name_pattern + "[name]' class='form-control' style='float:left' required value='" + trip_name + "'></div>";
+            service_header += "<div style='position:relative;display: table-cell'>";
+            service_header += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
+            service_header += "<span class='caret'></span></button>";
+            service_header += "<ul class='dropdown-menu  dropdown-menu-right'>";
+            service_header += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
+            service_header += "</ul></div>";
+        }
+        service_header += "</div>";
+        service_header += "</th>";
+        return service_header;
+    }
+
+    function timeCellHTML(service_index, line_index, value, formatted_date, readonly, trip_is_instantiated) {
+        var name_pattern = "services[" + service_index + "][" + line_index + "]";
+        var time_cell = "<td><div><div style='display: table-cell'>";
+        time_cell += "<input type='hidden' name='" + name_pattern + "[route_stop_id]' value=" + value['route_stop_id'] + ">";
+        time_cell += "<input type='hidden' name='" + name_pattern + "[stop_time_id]' value=" + value['stop_time_id'] + ">";
+        if( trip_is_instantiated )
+            time_cell += "<input type='hidden' name='" + name_pattern + "[time]' class='time' value='" + formatted_date + "'>" + formatted_date;
+        else
+            time_cell += "<input type='time' name='" + name_pattern + "[time]' class='form-control time' required value='" + formatted_date + "' " + readonly + " >";
+        time_cell += "</div><div class='summary'></div></div></td>";
+        return time_cell;
+    }
+
+    function updateSummaries(column_index, tripTableId, routeStopTableId) {
+        var current_duration = 0;
+        var current_scheduled_duration = 0;
+        var $line_index = 1;
+
+        $(tripTableId + " tbody tr").each(function () {
+            var time_cell = $(this).find('td:eq(' + column_index + ') input.time').val();
+            var time = TimeToInt(time_cell);
+            var scheduled = $(routeStopTableId + " tr").eq($line_index).find('input.scheduled').attr("checked");
+            if( scheduled ) {
+                current_scheduled_duration += time;
+                current_duration = current_scheduled_duration;
+            } else {
+                current_duration += time;
+            }
+            $(this).find('td:eq(' + column_index + ') div.summary').html(FormatTime(current_duration));
+
+            $line_index += 1;
+        });
+    }
+
     return {
-        loadStoptimes: function(stopTimes, tableId, routeStopTableId) {
-            var $service_index = 0;
-            $.each(stopTimes, function( $trip_id, $datas ) {
+        displayAlert: function(errorMessage) {
+            var div_error = "<div class='alert alert-danger alert-dismissable danger'>";
+            div_error += "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" ;
+            div_error += errorMessage;
+            div_error += "</div>";
+
+            $("#error_alert").html(div_error);
+        },
+        loadStoptimes: function(stopTimes, tripTableId, routeStopTableId, instanciatedTripPatterns) {
+            var service_index = 0;
+            $.each(stopTimes, function( trip_id, $datas ) {
                 var $line_index = 0;
+                var trip_is_instantiated = ($.inArray(trip_id, instanciatedTripPatterns) > -1);
+
                 $.each($datas, function( $key, $value ) {
                     var $FormattedDate = FormatTime($value['arrivalTime']);
                     if( $line_index == 0 ) {
-                        var $service_header = "<th>";
-                        $service_header += "<input type='hidden' name='services[" + $service_index + "][id]' value=" + $trip_id + ">";
-                        $service_header += "<div><div style='display: table-cell'>";
-                        $service_header += "<input type='text' name='services[" + $service_index + "][name]' class='form-control' style='float:left' required value='" + $value['name'] + "'></div>";
-                        $service_header += "<div style='position:relative;display: table-cell'>";
-                        $service_header += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
-                        $service_header += "<span class='caret'></span></button>";
-                        $service_header += "<ul class='dropdown-menu  dropdown-menu-right'>";
-                        $service_header += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
-                        $service_header += "</ul></div></div>";
-                        $service_header += "</th>";
+                        var $service_header = serviceHeaderHTML(service_index, trip_id, $value['name'], trip_is_instantiated);
                         $("#trip-table thead th:last").before($service_header);
                     }
                     var scheduled = $(routeStopTableId + " tr").eq($line_index+1).find('input.scheduled').attr("checked");
                     var readonly = scheduled ? "": "readonly";
-
-                    var $time_cell = "<td>";
-                    $time_cell += "<input type='hidden' name='services[" + $service_index + "][" + $line_index + "][route_stop_id]' value=" + $value['route_stop_id'] + ">";
-                    $time_cell += "<input type='hidden' name='services[" + $service_index + "][" + $line_index + "][stop_time_id]' value=" + $value['stop_time_id'] + ">";
-                    $time_cell += "<input type='time' name='services[" + $service_index + "][" + $line_index + "][time]' class='form-control' required value='" + $FormattedDate + "' " + readonly + " >";
-
-                    $time_cell += "</td>";
-                    $(tableId + " tbody tr#" + $value['route_stop_id'] + " td:last").before($time_cell);
+                    var $time_cell = timeCellHTML(service_index, $line_index, $value, $FormattedDate, readonly, trip_is_instantiated);
+                    $(tripTableId + " tbody tr#" + $value['route_stop_id'] + " td:last").before($time_cell);
                     $line_index += 1;
                 });
-                $service_index += 1;
+
+                updateSummaries(service_index, tripTableId, routeStopTableId);
+                service_index += 1;
             });
         },
-        addService: function(tableId, routeStopTableId) {
-            var col_index = $(tableId + " thead th:last").index();
+        updateColumnDuration: function(column_index, tripTableId, routeStopTableId) {
+            updateSummaries(column_index, tripTableId, routeStopTableId);
+        },
+        addService: function(tripTableId, routeStopTableId) {
+            var col_index = $(tripTableId + " thead th:last").index();
             var $service_name_input = "<div><div style='display: table-cell'>";
-            $service_name_input += "<input type='text' name='services[" + col_index + "][name]' required class='form-control'></div>";
+            $service_name_input += "<input type='text' name='services[" + col_index + "][name]' required class='form-control' maxlength='20'></div>";
             $service_name_input += "<div style='position:relative;display: table-cell'>";
             $service_name_input += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
             $service_name_input += "<span class='caret'></span></button>";
@@ -54,22 +114,23 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
             $service_name_input += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
             $service_name_input += "</ul></div></div>";
 
-            $(tableId + " thead th:last").before('<th>' + $service_name_input + '</th>');
-            $(tableId + ' tbody').find('tr').each(function(i, el) {
+            $(tripTableId + " thead th:last").before('<th>' + $service_name_input + '</th>');
+            $(tripTableId + ' tbody').find('tr').each(function(i, el) {
                 var row_index = $(el).index();
                 var scheduled = $(routeStopTableId + " tr").eq(row_index+1).find('input.scheduled').attr("checked");
                 var addedAttributes = "";
                 if(!scheduled) {
                     addedAttributes = "readonly value='00:00'";
                 }
-                var stop_time_input = "<input type='time' name='services[" + col_index + "][" + row_index + 
-                    "][time]' required class='form-control ' " + addedAttributes +  " >";
+                var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index + 
+                    "][time]' required class='form-control time' " + addedAttributes +  " ></div>";
+                stop_time_input += "<div class='summary'  style='color: #000088;font-weight: bold;padding-left: 5px;display: table-cell'></div></div>";
                 $(el).find("td:last").before('<td>' + stop_time_input + '</td>');
             });
         },
-        deleteService: function(item, tableId) {
+        deleteService: function(item, tripTableId) {
             var $column_index = item.parents('th').index();
-            $(tableId + ' tr').find('th:eq(' + $column_index + '),td:eq(' + $column_index + ')').remove();
+            $(tripTableId + ' tr').find('th:eq(' + $column_index + '),td:eq(' + $column_index + ')').remove();
         },
         addRouteStop: function (routeStopTableId, TripTableId, zonal) {
             var $index = $(routeStopTableId + ' tbody tr').length;
@@ -121,6 +182,28 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
             $line += "<span class='glyphicon glyphicon-remove'></span></a></td>";
             $line += "</tr>";
             $(TripTableId + ' tbody').append($line);
+        },
+        deleteRouteStop: function(item, TripTableId, routeStopTableId) {
+            var $current_row_index = $(item).closest("tr").index();
+            $(TripTableId + " tbody tr").eq($current_row_index).remove();
+            $(routeStopTableId + " tbody tr").eq($current_row_index).remove();
+            $(routeStopTableId + " tbody").find('tr').each(function(i){
+                $(this).find('td:first').text( i+1 );
+            });
+        },
+        scheduledRouteStopChange: function(item, TripTableId) {
+            var index = $(item).closest('tr').index();
+            var scheduled = item.checked;
+            $(TripTableId + ' tr').eq(index+1).find('input[type=time]').each(function() {
+                if( scheduled ) {
+                    $(this).prop('readonly', false);
+                    $(this).val('');
+
+                } else {
+                    $(this).prop('readonly', true);
+                    $(this).val('00:00');
+                }
+            });
         }
     }
 });

@@ -1,116 +1,137 @@
-{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
-
-{% block list_title -%}
-    {{ 'line.list.title'|trans({}, 'default') }}
-{% endblock %}
-
-{% block table_head -%}
-
-    <th>{{'line.list.columns.number'|trans({}, 'default')}}</th>
-    <th>{{'line.list.columns.mode'|trans({}, 'default')}}</th>
-    <th>{{'line.list.columns.version'|trans({}, 'default')}}</th>
-    <th>{{'line.list.columns.startDate'|trans({}, 'default')}}</th>
-    <th>{{'line.list.columns.endDate'|trans({}, 'default')}}</th>
-{% endblock %}
-
-{% block table_body -%}
-    {% if linesV|length == 0 %}
-        <tr>
-            <td colspan="5"> {{'global.no_items'|trans}} </td>
-        </tr>
-    {% else %}
-        {% for line in linesV %}
-            <tr role="row">
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">
-                            {{ render.line_number(line, 'lineVersion', 'small') }}
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.line.physicalMode.name }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.version }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.startDate.date | date('d/m/Y') }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': line.id}) }}">{{ line.plannedEndDate.date | date('d/m/Y') }}</a>
-                    </td>
-            </tr>
-        {% endfor %}
-    {% endif %}
-{% endblock %}
-
-
-{#
-{% extends "TisseoBoaBundle::base.html.twig" %}
-
+{% extends "TisseoBoaBundle::container2.html.twig" %}
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
-    filter='cssrewrite' output='css/datatables_tid.css' %}
-    <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
+                   filter='cssrewrite' output='css/datatables_boa.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
+    {% endstylesheets %}    
 {% endblock %}
 
-{% block body %}
-    <div class="row"><div class="col-md-12" role="main">
-    <table class="table datatable table-hover dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
-        <tr>
-            <thead>
-                <th>
-                    Num ligne
-                </th>
-                <th>
-                    Mode
-                </th>
-                <th>
-                    Version_ligne
-                </th>
-                <th>
-                    Date début
-                </th>
-                <th>
-                    Date fin
-                </th>
-            </thead>
+{% block main_content %}
+    <h1>
+        {{ 'line.list.title'|trans({}, 'default') }}
+    </h1>
+    <hr/>
+
+    <table id="filter" border="0">
+        <tbody>
+        <tr style="height: 0px;">
+            <td><label>{{ 'line.list.filter.datasource'|trans({}, 'default') }}:</label></td>
+            <td>
+                <select id="datasource" name="datasource">
+                    <option value></option>
+                    {% for d in datasources %}
+                        <option value="{{ d.name }}">{{ d.name }}</option>
+                    {% endfor %}
+                </select>
+            </td>
         </tr>
-        {% for line in linesV %}
-            <tr role="row" class="{{ (loop.index%2==0) ? "odd" : "even" }}">
-                    <td id="{{ line.id }}">
-                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">
-                            {% if linesV[(loop.index-2)].line.number != line.line.number  %}
-                                {{ render.line_number(line, 'lineVersion', 'small') }}
-                            {%  endif %}
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.line.physicalMode.name }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.version }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.startDate.date | date('d/m/Y') }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('tisseo_boa_route_list', {'lineId': line.id}) }}">{{ line.plannedEndDate.date | date('d/m/Y') }}</a>
-                    </td>
-            </tr>
-        {%  endfor %}
+        <tr style="height: 0px;">
+            <td><label>{{ 'line.list.filter.date'|trans({}, 'default') }}:</label></td>
+            <td><input type="text" id="date" name="date"></td>
+        </tr>
+        </tbody>
     </table>
-    </div></div>
+
+    <table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
+        <thead>
+            <th class="no-sort">{{'line.list.columns.number'|trans({}, 'default')}}</th>
+            <th class="no-sort">{{'line.list.columns.mode'|trans({}, 'default')}}</th>
+            <th class="no-sort">{{'line.list.columns.version'|trans({}, 'default')}}</th>
+            <th class="no-sort">{{'line.list.columns.datasource'|trans({}, 'default')}}</th>
+            <th class="no-sort">{{'line.list.columns.startDate'|trans({}, 'default')}}</th>
+            <th class="no-sort">{{'line.list.columns.endDate'|trans({}, 'default')}}</th>
+        </thead>
+        <tbody>
+            {% if linesV|length == 0 %}
+                <tr>
+                    <td colspan="5"> {{'global.no_items'|trans}} </td>
+                </tr>
+            {% else %}
+                {% for lv in linesV %}
+                    <tr role="row">
+                        <td>{{ render.line_number(lv, 'lineVersion', 'small') }}</td>
+                        <td>{{ lv.line.physicalMode.name }}</td>
+                        <td><a href="{{ path('tisseo_boa_route_list', {'LineVersionId': lv.id}) }}"><label>V{{ lv.version }}</label></a></td>
+                        <td>{{ lv.lineVersionDatasources[0].datasource.name }}</td>
+                        <td>{{ lv.startDate.date | date('d/m/Y') }}</td>
+                        <td>{{ lv.plannedEndDate.date | date('d/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent }}
-    {% javascripts '@TisseoBoaBundle/Resources/public/js/listlines.js' %}
-                 <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{%  endblock %}
-#}
+    <script>
+        require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr', 'datatables'], function($) {
+            //var previousDate;
+            $('#filter td').find('input[id=date]').datepicker({
+                language: 'fr',
+                todayHighlight: true,
+                autoclose: true
+            })
+            .on('changeDate', function(e) {
+                $('#datatable').DataTable().draw();
+            });
+
+            $( "#datasource" ).change(function() {
+                $('#datatable').DataTable().draw();
+            });
+
+            function convertStringToDate(dateString) {
+                var d = dateString.split("/");
+                return new Date(d[2], d[1] - 1, d[0]);
+            }
+
+
+            $.fn.dataTable.ext.search.push(
+                function( settings, data, dataIndex ) {
+                    if( !$('#date').val() && !$('#datasource').val() ) return true;
+
+                    var lineDatesValid = true;
+                    if( $('#date').val() ) {
+                        var date = convertStringToDate($('#date').val());
+                        var startDate = convertStringToDate(data[4]);
+                        var endDate = convertStringToDate(data[5]);
+
+                        lineDatesValid = ( date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime() );                    
+                    }
+
+                    if( !$('#datasource').val() ) return lineDatesValid;
+
+
+                    var selectedDatasource = $('#datasource').val();
+                    var currentDatasource = data[3];
+
+                    return lineDatesValid && ( selectedDatasource == currentDatasource );
+                }
+            );
+            $(document).ready(function() {
+
+                $("#datatable").DataTable({
+                    "aaSorting": [],
+                    "aoColumns": [
+                        { "bSortable": false },
+                        { "bSortable": false },
+                        { "bSortable": false },
+                        { "bSortable": false },
+                        { "bSortable": false },
+                        { "bSortable": false }
+                    ],
+                    "pageLength" : 50,
+                    "language": {
+                        "sZeroRecords":    "{{'trip.list.no_data'|trans({}, 'default')}}"
+                    }
+                });
+
+                $('#date').keyup( function() {
+                    $('#datatable').DataTable().draw();
+                });
+            });
+        });
+    </script>
+{% endblock %}

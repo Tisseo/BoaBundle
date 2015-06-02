@@ -174,10 +174,14 @@ stop_area:
 line:
      list:
         title: Liste des lignes
+        filter:
+            datasource: Datasource
+            date: Date
         columns:
             number: Numéro
             mode: Mode
             version: Version
+            datasource: Datasource
             startDate: Date de début
             endDate: Date de fin
 
@@ -208,3 +212,10 @@ trip:
             line: Ligne
             version: Version
             name: Route
+        columns:
+            name: Nom
+            start: Départ
+            type: Type
+            day: Jour
+            period: Période
+            lastDay: Dernier Jour

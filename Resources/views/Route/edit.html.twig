@@ -1,4 +1,5 @@
 {% extends "TisseoBoaBundle::container2.html.twig" %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -9,8 +10,18 @@
 {% endblock %}
 
 {% block main_content -%}
+    <div id="error_alert"></div>
+
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
+
+    {{ render.route_header(route) }}
+
+    {% set inputState = "" %}
+    {% if instantiatedServiceTemplates | length %}
+        {# prevent checkbox to change state#}
+        {% set inputState = "onclick=\"return false\"" %}
+    {% endif %}
 
     {{ form_start(form) }}
         <div id="route-fields" class="form form-edit">
@@ -62,6 +73,7 @@
                         </thead>
                         <tbody>
                             {% set index = 0 %}
+                            {% set warnings = {} %}
                             {% for rs in routeStops %}
                                 <tr class="sortable">
                                     <input type='hidden' name='route_stops[{{ index }}][id]' value="{{ rs.id }}">
@@ -74,21 +86,21 @@
                                         {% if rs.dropOff %}
                                             {% set checked = "checked" %}
                                         {% endif %}
-                                        <input type='checkbox' name='route_stops[{{ index }}][dropOff]' {{ checked }}>
+                                        <input type='checkbox' class='dropoff' name='route_stops[{{ index }}][dropOff]' {{ checked }} {{ inputState|raw }}>
                                     </td>
                                     <td>
                                         {% set checked = "" %}
                                         {% if rs.pickup %}
                                             {% set checked = "checked" %}
                                         {% endif %}
-                                         <input type='checkbox' name='route_stops[{{ index }}][pickUp]' {{ checked }}>
+                                         <input type='checkbox' class='pickup' name='route_stops[{{ index }}][pickUp]' {{ checked }} {{ inputState|raw }}>
                                     </td>
                                     <td>
                                         {% set checked = "" %}
                                         {% if rs.scheduledStop %}
                                             {% set checked = "checked" %}
                                         {% endif %}
-                                        <input type='checkbox' class='scheduled' name='route_stops[{{ index }}][scheduled]' {{ checked }}>
+                                        <input type='checkbox' class='scheduled' name='route_stops[{{ index }}][scheduled]' {{ checked }} {{ inputState|raw }}>
                                     </td>
                                     {% if route.way == 'Zonal' %}
                                         <td>
@@ -96,7 +108,7 @@
                                             {% if rs.internalService %}
                                                 {% set checked = "checked" %}
                                             {% endif %}
-                                            <input type='checkbox' name='route_stops[{{ index }}][internal]' {{ checked }}>
+                                            <input type='checkbox' name='route_stops[{{ index }}][internal]' {{ checked }} {{ inputState|raw }}>
                                         </td>
                                     {% endif %}
                                 </tr>
@@ -124,9 +136,11 @@
                             {% for rs in routeStops %}
                                 <tr id="{{ rs.id }}">
                                     <td>
+                                        {% if instantiatedServiceTemplates | length == 0 %}
                                         <a style="color: red; float:right" class="btn btn-default remove-route-stop">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </a>
+                                    {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -140,9 +154,11 @@
                         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
                     </button>
 
-                    <a style="float:right" class="btn btn-default" id="add-route-stop">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </a>
+                    {% if instantiatedServiceTemplates | length == 0 %}
+                        <a style="float:right" class="btn btn-default" id="add-route-stop">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                    {% endif %}
                 </td>
             </tr>         
         </table>
@@ -153,7 +169,9 @@
     <script>
         require(['boa/route/utils', 'jquery_ui_sortable'], function(utils) {
 
+            {# twig variables to javascript #}
             var $stopTimes = JSON.parse("{{ serviceTemplates | json_encode | e('js') }}");
+            var $instanciatedTripPatterns = JSON.parse("{{ instantiatedServiceTemplates | json_encode | e('js') }}");
 
             $(document).ready(function () {
                 $( "#add-service" ).click(function() {
@@ -170,44 +188,77 @@
                     utils.addRouteStop('#route-stop-table', '#trip-table', zonal);
                 });
 
-                $('#trip-table').on('click',  ".remove-route-stop", function(event) {
+                $('#trip-table').on('click', ".remove-route-stop", function(event) {
                     event.preventDefault();
-
-                    var $current_row_index = $(this).closest("tr").index();
-                    $("#trip-table tbody tr").eq($current_row_index).remove();
-                    $("#route-stop-table tbody tr").eq($current_row_index).remove();
-                    $("#route-stop-table tbody").find('tr').each(function(i){
-                        $(this).find('td:first').text( i+1 );
-                    });
+                    utils.deleteRouteStop(this, "#trip-table", "#route-stop-table");
                 });
 
-                $('#route-stop-table').on('change',  ".scheduled", function(event) {
-                    var index = $(this).closest('tr').index();
-                    var scheduled = this.checked;
-                    $('#trip-table tr').eq(index+1).find('input[type=time]').each(function() {
-                        if( scheduled ) {
-                            $(this).prop('readonly', false);
-                            $(this).val('');
-
-                        } else {
-                            $(this).prop('readonly', true);
-                            $(this).val('00:00');
-                        }
-                    });
+                $('#trip-table').on('focus', ".time", function(event) {
+                    $(this).data('originalValue', this.value);
                 });
 
-                $( "#route-stop-table tbody" ).sortable(
-                    {
-                        items: '.sortable',
-                        stop: function(event, ui) {
-                            $(this).find('tr').each(function(i){
-                                $(this).find('td:first').text( i+1 );
-                            });
-                        }
+                $('#trip-table').on('blur', ".time", function(event) {
+                    var original = $(this).data('originalValue');
+                    if (original !== this.value) {
+                        var column_index = $(this).parents('td').index();
+                        utils.updateColumnDuration(column_index, "#trip-table", "#route-stop-table");
                     }
-                );
+                });
 
-                utils.loadStoptimes($stopTimes, "#trip-table", "#route-stop-table");
+                {% if instantiatedServiceTemplates | length == 0 %}
+                    $('#route-stop-table').on('change',  ".scheduled", function(event) {
+                        utils.scheduledRouteStopChange(this, '#trip-table');
+                    });
+
+                    {# route stops drag & drop + rank sorting #}
+                    $( "#route-stop-table tbody" ).sortable(
+                        {
+                            items: '.sortable',
+                            stop: function(event, ui) {
+                                $(this).find('tr').each(function(i){
+                                    $(this).find('td:first').text( i+1 );
+                                });
+                            }
+                        }
+                    );
+                {% endif %}
+
+                {# form validation #}
+                $('form[name="{{ form.vars.full_name }}"]').submit( function( e ){
+                    {# premier route stop => descente interdite + régulé #}
+                    if( ($("#route-stop-table tbody tr:first").find(".dropoff").is(':checked')) ) {
+                        utils.displayAlert("{{ 'route.error_submit.first_stop.dropoff' | trans }}");
+                        return false;
+                    }
+                    if( !($("#route-stop-table tbody tr:first").find(".scheduled").is(':checked')) ) {
+                        utils.displayAlert("{{ 'route.error_submit.first_stop.not_scheduled' | trans }}");
+                        return false;
+                    }
+                    
+                    {# dernier route stop => montée interdite + régulé #}
+                    if( $("#route-stop-table tbody tr:last").find(".pickup").is(':checked') ) {
+                        utils.displayAlert("{{ 'route.error_submit.last_stop.pickup' | trans }}");
+                        return false;
+                    }
+                    if( !($("#route-stop-table tbody tr:last").find(".scheduled").is(':checked')) ) {
+                        utils.displayAlert("{{ 'route.error_submit.last_stop.not_scheduled' | trans }}");
+                        return false;
+                    }
+
+                    {# premiers services types => horaire 00:00 #}
+                    $('#trip-table tbody tr:first').each(function() {
+                        $(this).find('td input.time').each(function() {
+                            if( $(this).val() !== '00:00' ) {
+                                utils.displayAlert("{{ 'route.error_submit.service_type.first_stop_time' | trans }}");
+                                return false;
+                            }
+                        });
+                    });
+
+                    return true;
+                 });
+
+                utils.loadStoptimes($stopTimes, "#trip-table", "#route-stop-table", $instanciatedTripPatterns);
             });
         });
     </script>
