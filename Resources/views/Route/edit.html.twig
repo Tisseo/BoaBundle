@@ -18,7 +18,7 @@
     {{ render.route_header(route) }}
 
     {% set inputState = "" %}
-    {% if instantiatedServiceTemplates | length %}
+    {% if serviceTemplates | length %}
         {# prevent checkbox to change state#}
         {% set inputState = "onclick=\"return false\"" %}
     {% endif %}
@@ -136,7 +136,7 @@
                             {% for rs in routeStops %}
                                 <tr id="{{ rs.id }}">
                                     <td>
-                                        {% if instantiatedServiceTemplates | length == 0 %}
+                                        {% if serviceTemplates | length == 0 %}
                                         <a style="color: red; float:right" class="btn btn-default remove-route-stop">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </a>
@@ -153,8 +153,9 @@
                     <button style="float:left" type="submit" id="form-save" class="btn btn-success">   
                         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
                     </button>
+                    <label style='padding-top: 8px;padding-left: 5px;'>{{ 'route.warning' | trans }}</label>
 
-                    {% if instantiatedServiceTemplates | length == 0 %}
+                    {% if serviceTemplates | length == 0 %}
                         <a style="float:right" class="btn btn-default" id="add-route-stop">
                             <span class="glyphicon glyphicon-plus"></span>
                         </a>
@@ -178,20 +179,26 @@
                     utils.addService("#trip-table", '#route-stop-table');
                 }); 
 
+                $('#trip-table').on('click', ".duplicate-trip", function(event) {
+                    event.preventDefault();
+                });
+
                 $('#trip-table').on('click',  ".delete-trip", function(event) {
                     event.preventDefault();
                     utils.deleteService($(this), '#trip-table');
                 }); 
 
-                $( "#add-route-stop" ).click(function() {
-                    var zonal = {{ route.way == 'Zonal' ? 'true' : 'false' }};
-                    utils.addRouteStop('#route-stop-table', '#trip-table', zonal);
-                });
+                {% if serviceTemplates | length == 0 %}
+                    $( "#add-route-stop" ).click(function() {
+                        var zonal = {{ route.way == 'Zonal' ? 'true' : 'false' }};
+                        utils.addRouteStop('#route-stop-table', '#trip-table', zonal);
+                    });
 
-                $('#trip-table').on('click', ".remove-route-stop", function(event) {
-                    event.preventDefault();
-                    utils.deleteRouteStop(this, "#trip-table", "#route-stop-table");
-                });
+                    $('#trip-table').on('click', ".remove-route-stop", function(event) {
+                        event.preventDefault();
+                        utils.deleteRouteStop(this, "#trip-table", "#route-stop-table");
+                    });
+                {% endif %}
 
                 $('#trip-table').on('focus', ".time", function(event) {
                     $(this).data('originalValue', this.value);
@@ -205,7 +212,7 @@
                     }
                 });
 
-                {% if instantiatedServiceTemplates | length == 0 %}
+                {% if serviceTemplates | length == 0 %}
                     $('#route-stop-table').on('change',  ".scheduled", function(event) {
                         utils.scheduledRouteStopChange(this, '#trip-table');
                     });

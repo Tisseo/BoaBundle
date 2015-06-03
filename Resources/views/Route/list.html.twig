@@ -43,6 +43,7 @@
             <th class="no-sort">{{'line.list.columns.datasource'|trans({}, 'default')}}</th>
             <th class="no-sort">{{'line.list.columns.startDate'|trans({}, 'default')}}</th>
             <th class="no-sort">{{'line.list.columns.endDate'|trans({}, 'default')}}</th>
+            <th class="no-sort">{{'line.list.columns.calendar'|trans({}, 'default')}}</th>
         </thead>
         <tbody>
             {% if linesV|length == 0 %}
@@ -58,6 +59,12 @@
                         <td>{{ lv.lineVersionDatasources[0].datasource.name }}</td>
                         <td>{{ lv.startDate.date | date('d/m/Y') }}</td>
                         <td>{{ lv.plannedEndDate.date | date('d/m/Y') }}</td>
+                        <td>
+                            
+                            <a class="btn btn-default" href="{{ path('tisseo_boa_route_calendar_fh', {'LineVersionId': lv.id}) }}">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             {% endif %}

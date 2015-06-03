@@ -265,6 +265,7 @@ network:
         wrong_token: Le token n'est pas correct
 
 route:
+    warning: Il n'est pas possible de modifier la route une fois un service type créé
     labels:
         name: Nom
         way: Sens

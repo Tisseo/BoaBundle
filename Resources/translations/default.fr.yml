@@ -184,6 +184,7 @@ line:
             datasource: Datasource
             startDate: Date de début
             endDate: Date de fin
+            calendar: Calendrier FH
 
 route:
      create: Créer une route

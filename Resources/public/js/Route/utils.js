@@ -17,20 +17,20 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
         var name_pattern = "services[" + service_index + "]";
         var service_header = "<th>";
         service_header += "<input type='hidden' name='" + name_pattern + "[id]' value=" + trip_id + ">";
-        service_header += "<div><div style='display: table-cell'>";
-        if( trip_is_instantiated ) {
-            service_header += "<input type='hidden' name='" + name_pattern + "[name]' value='" + trip_name + "'>" + trip_name + "</div>";
-        } else {
-            service_header += "<input type='text' name='" + name_pattern + "[name]' class='form-control' style='float:left' required value='" + trip_name + "'></div>";
-            service_header += "<div style='position:relative;display: table-cell'>";
-            service_header += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
-            service_header += "<span class='caret'></span></button>";
-            service_header += "<ul class='dropdown-menu  dropdown-menu-right'>";
+        service_header += "<div><div style='display: table-cell;vertical-align: middle;'>";
+        if( trip_is_instantiated ) 
+            service_header += "<input type='hidden' name='" + name_pattern + "[name]' value='" + trip_name + "'>" + trip_name;
+        else
+            service_header += "<input type='text' name='" + name_pattern + "[name]' class='form-control' style='float:left' required value='" + trip_name + "'>";
+
+        service_header += "</div><div style='position:relative;display: table-cell'>";
+        service_header += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
+        service_header += "<span class='caret'></span></button>";
+        service_header += "<ul class='dropdown-menu  dropdown-menu-right'>";
+        service_header += "<li><a class='btn duplicate-trip' role='button' href=''>Dupliquer</a></li>";
+        if( !trip_is_instantiated ) 
             service_header += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
-            service_header += "</ul></div>";
-        }
-        service_header += "</div>";
-        service_header += "</th>";
+        service_header += "</ul></div></div></th>";
         return service_header;
     }
 
@@ -111,6 +111,7 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
             $service_name_input += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
             $service_name_input += "<span class='caret'></span></button>";
             $service_name_input += "<ul class='dropdown-menu  dropdown-menu-right'>";
+            $service_name_input += "<li><a class='btn duplicate-trip' role='button' href=''>Dupliquer</a></li>";
             $service_name_input += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
             $service_name_input += "</ul></div></div>";
 

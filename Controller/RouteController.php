@@ -42,6 +42,18 @@ class RouteController extends AbstractController
         );
     }
 
+    public function calFHAction(Request $request, $LineVersionId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $calFH = $routeManager->getCalendarFH($LineVersionId);
+
+        \Doctrine\Common\Util\Debug::dump($calFH);
+
+        return $this->render("TisseoBoaBundle:Route:cal_fh.html.twig");
+    }
+
     public function routeAction(Request $request, $LineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
@@ -68,6 +80,7 @@ class RouteController extends AbstractController
         $routeStops = array();
         $serviceTemplates = array();
         $instantiatedServiceTemplates = array();
+        $routeIsUpdatable = true;
         if( $RouteId == null) {
             $route = new Route();
             $warnings = array();
@@ -77,6 +90,7 @@ class RouteController extends AbstractController
             $serviceTemplates = $routeManager->getServiceTemplates($RouteId);
             $instantiatedServiceTemplates = $routeManager->getInstantiatedServiceTemplates($route);
             $warnings = $routeManager->getRouteStopsWithoutRouteSection($routeStops);
+            $routeIsUpdatable = (count($serviceTemplates) < 1);
         }
 
         $form = $this->createForm(new RouteType(),$route,
@@ -95,7 +109,7 @@ class RouteController extends AbstractController
 
                 $route_stops = $request->request->get('route_stops');
                 $services = $request->request->get('services');
-                    $routeManager->saveRouteStopsAndServices($route, $route_stops, $services);
+                    $routeManager->saveRouteStopsAndServices($route, $route_stops, $services, $routeIsUpdatable);
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
@@ -124,7 +138,6 @@ class RouteController extends AbstractController
                 'routeStops' => $routeStops,
                 'serviceTemplates' => $serviceTemplates,
                 'instantiatedServiceTemplates' => $instantiatedServiceTemplates
-
             )
         );
     }
