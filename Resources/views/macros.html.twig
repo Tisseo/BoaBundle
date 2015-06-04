@@ -74,3 +74,78 @@
       </div>
   </div>
 {% endmacro %}
+
+{% macro select(values, name, class_name) %}
+  {% set class_attribute = "" %}
+  {% if class_name is not empty %}
+    {% set class_attribute = "class=" ~ class_name %}
+  {% endif %}
+  <select name="{{ name }}" {{ class_attribute }}>
+    <option></option>
+  {%  for value in values %}
+    <option value='{{ value }}'>{{ value }}</option>
+  {%  endfor %}
+  </select>
+{% endmacro %}
+
+{% macro tableTrip(trips) %}
+  <table class="table datatable table-hover dataTable no-footer" style="border: 1px solid black;">
+    <thead>
+      <th>{{ 'calendar_fh.trip.columns.name'|trans }}</th>
+      <th>{{ 'calendar_fh.trip.columns.start'|trans }}</th>
+      <th>{{ 'calendar_fh.trip.columns.service_type'|trans }}</th>
+      <th>{{ 'calendar_fh.trip.columns.route'|trans }}</th>
+      <th>{{ 'calendar_fh.trip.columns.start_end'|trans }}</th>
+    </thead>
+      <tbody>
+        {% for trip in trips %}
+          <tr>
+            <td>
+              <a href="{{ path('tisseo_boa_trip_edit', {'TripId': trip.id}) }}"
+                data-toggle="modal" data-target="#base-modal" >
+                {{ trip.name }}
+              </a>                        
+            </td>
+            <td>
+              {% if trip.stopTimes %}
+                {{ _self.time_format(trip.stopTimes.first.arrivalTime) }}
+              {% endif %}
+            </td>
+            <td>
+              {% if trip.pattern %}
+                {{ trip.pattern.name }}
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{path('tisseo_boa_route_edit',{RouteId: trip.route.id})}}">
+                {{ trip.route.name }}
+              </a>
+            </td>
+            <td>
+              {{ trip.route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
+              /
+              {{ trip.route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+{% endmacro %}
+
+{% macro TripCalendarInputs(grid_index, trip_calendar) %}
+  {% if trip_calendar is not empty %}
+    {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+      {% if attribute(trip_calendar, day) %}
+        {% set checked = "checked" %}
+      {% else %}
+        {% set checked = "" %}
+      {% endif %}
+
+      <input type='checkbox' class="circulation-day" name="grid[{{ grid_index }}][{{ day }}]" {{ checked }}  >
+    {% endfor %}
+  {% else %}
+    {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+      <input type='checkbox' class="circulation-day" name="grid[{{ grid_index }}][{{ day }}]">
+    {% endfor %}
+  {% endif %}
+{% endmacro %}

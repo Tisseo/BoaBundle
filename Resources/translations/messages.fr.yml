@@ -318,3 +318,25 @@ trip:
         pattern: Le patron de service est obligatoire (ou sa valeur est incorrecte)
         day_calendar: Le calendrier "jour" est obligatoire (ou sa valeur est incorrecte)
         period_calendar: Le calendrier "période" est obligatoire (ou sa valeur est incorrecte)
+
+calendar_fh:
+    error: Les champs "Type", "Période" et "Jours de circulation ne sont pas correctement remplis."
+    way: Sens
+    details: Voir
+    hide: Cacher
+    grid:
+        columns:
+            day: Jour
+            period: Période
+            nb_trips: Nb Services
+            calendar_type: Type
+            calendar_period: Période
+            circulation_days: Jours de circulation (LMMJVSD)
+    trip:
+        columns:
+            name: Nom Service
+            start: Départ
+            service_type: Service Type
+            route: Route
+            start_end: Départ / Terminus
+

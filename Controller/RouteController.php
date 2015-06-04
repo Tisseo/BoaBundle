@@ -47,11 +47,26 @@ class RouteController extends AbstractController
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
+        if ($request->getMethod() == 'POST') {
+            try {
+                $grids = $request->request->get('grid');
+                $routeManager->saveFHCalendars($grids);
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            }
+        }
         $calFH = $routeManager->getCalendarFH($LineVersionId);
+        $calendarTypes = $routeManager->getFHCalendarTypeValues();
+        $calendarPeriods = $routeManager->getFHCalendarPeriodValues();
 
-        \Doctrine\Common\Util\Debug::dump($calFH);
-
-        return $this->render("TisseoBoaBundle:Route:cal_fh.html.twig");
+        return $this->render("TisseoBoaBundle:Route:cal_fh.html.twig",
+            array(
+                'title' => 'route.cal_fh',
+                'calendars' => $calFH,
+                'calendarTypes' => $calendarTypes,
+                'calendarPeriods' => $calendarPeriods
+            )
+        );
     }
 
     public function routeAction(Request $request, $LineVersionId)

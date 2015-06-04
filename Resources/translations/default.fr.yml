@@ -189,6 +189,7 @@ line:
 route:
      create: Créer une route
      edit: Editer une route
+     cal_fh: Attribution de calendrier fiche horaire aux services
      list:
         line: Liste des routes de la ligne
         columns:

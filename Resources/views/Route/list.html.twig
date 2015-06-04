@@ -35,7 +35,7 @@
         </tbody>
     </table>
 
-    <table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
+    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="datatable_info">
         <thead>
             <th class="no-sort">{{'line.list.columns.number'|trans({}, 'default')}}</th>
             <th class="no-sort">{{'line.list.columns.mode'|trans({}, 'default')}}</th>
@@ -55,7 +55,7 @@
                     <tr role="row">
                         <td>{{ render.line_number(lv, 'lineVersion', 'small') }}</td>
                         <td>{{ lv.line.physicalMode.name }}</td>
-                        <td><a href="{{ path('tisseo_boa_route_list', {'LineVersionId': lv.id}) }}"><label>V{{ lv.version }}</label></a></td>
+                        <td><a href="{{ path('tisseo_boa_route_list', {'LineVersionId': lv.id}) }}"><b>V{{ lv.version }}</b></a></td>
                         <td>{{ lv.lineVersionDatasources[0].datasource.name }}</td>
                         <td>{{ lv.startDate.date | date('d/m/Y') }}</td>
                         <td>{{ lv.plannedEndDate.date | date('d/m/Y') }}</td>
@@ -122,6 +122,7 @@
                 $("#datatable").DataTable({
                     "aaSorting": [],
                     "aoColumns": [
+                        { "bSortable": false },
                         { "bSortable": false },
                         { "bSortable": false },
                         { "bSortable": false },

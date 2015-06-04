@@ -68,6 +68,23 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
         });
     }
 
+    function circulationDayIsSet(tr) {
+        var isSet = false;
+        $(tr).find("input.circulation-day").each(function(e) {
+            if($(this).is(':checked')) isSet = true;
+        });
+        return isSet;
+    };
+
+    function displayAlert(errorMessage) {
+        var div_error = "<div class='alert alert-danger alert-dismissable danger'>";
+        div_error += "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" ;
+        div_error += errorMessage;
+        div_error += "</div>";
+
+        $("#error_alert").html(div_error);
+    };
+
     return {
         displayAlert: function(errorMessage) {
             var div_error = "<div class='alert alert-danger alert-dismissable danger'>";
@@ -205,6 +222,40 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
                     $(this).val('00:00');
                 }
             });
+        },
+        calFHTripButtonClic: function(item, detailsLabel, hideLabel) {
+            var tr_name = $(item).closest('tr').attr('name');
+            var tr_trips_name = 'trips_' + tr_name.split('_')[1] + '_' + tr_name.split('_')[2];
+            var tr_trips = $('tr[name=' + tr_trips_name + ']');
+            
+            if( $(item).html() == detailsLabel ) {
+                tr_trips.removeClass( "hide" );
+                $(item).html(hideLabel);
+            } else {
+                tr_trips.addClass( "hide" );
+                $(item).html(detailsLabel);
+            }
+        },
+        calFHFormSubmit: function(errorMessage) {
+            var formIsValid = true;
+            $('table.grid-calendar').each(function(e) {
+                $(this).find('tbody').children('tr.grid-item').each(function(e) {
+
+                    var calendar_type = $(this).find("select.grid_calendar_type");
+                    var calendar_type_valid = calendar_type.length == 0 ? true: $(calendar_type).val();
+
+                    var calendar_period = $(this).find("select.grid_calendar_period");
+                    var calendar_period_valid = calendar_period.length == 0 ? true: $(calendar_period).val();
+
+                    var circulationIsSet = circulationDayIsSet(this);
+                    if( !((calendar_type_valid && calendar_period_valid && circulationIsSet) || 
+                            (!calendar_type_valid && !calendar_period_valid && !circulationIsSet)) ) {
+                        displayAlert(errorMessage);
+                        formIsValid = false;
+                    }
+                });
+            });
+            return formIsValid;
         }
     }
 });
