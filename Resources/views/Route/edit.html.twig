@@ -181,6 +181,9 @@
 
                 $('#trip-table').on('click', ".duplicate-trip", function(event) {
                     event.preventDefault();
+
+                    console.log($(this).closest('th').index());
+                    utils.duplicateService($(this).closest('th').index(), "#trip-table", '#route-stop-table');
                 });
 
                 $('#trip-table').on('click',  ".delete-trip", function(event) {

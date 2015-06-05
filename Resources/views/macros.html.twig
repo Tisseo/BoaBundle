@@ -101,8 +101,7 @@
         {% for trip in trips %}
           <tr>
             <td>
-              <a href="{{ path('tisseo_boa_trip_edit', {'TripId': trip.id}) }}"
-                data-toggle="modal" data-target="#base-modal" >
+              <a href="{{ path('tisseo_boa_trip_edit', {'TripId': trip.id}) }}">
                 {{ trip.name }}
               </a>                        
             </td>

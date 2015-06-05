@@ -13,6 +13,19 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
         return res = tmp[0]*3600 + tmp[1]*60;
     }
 
+    function getHTMLHeaderMenu(showDeleteMenu) {
+        var htmlMenu = "<div style='position:relative;display: table-cell'>";
+        htmlMenu += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
+        htmlMenu += "<span class='caret'></span></button>";
+        htmlMenu += "<ul class='dropdown-menu  dropdown-menu-right'>";
+        htmlMenu += "<li><a class='btn duplicate-trip' role='button' href=''>Dupliquer</a></li>";
+        if( showDeleteMenu )
+            htmlMenu += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
+        htmlMenu += "</ul></div>";
+
+        return htmlMenu;
+    }
+
     function serviceHeaderHTML(service_index, trip_id, trip_name, trip_is_instantiated) {
         var name_pattern = "services[" + service_index + "]";
         var service_header = "<th>";
@@ -22,15 +35,10 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
             service_header += "<input type='hidden' name='" + name_pattern + "[name]' value='" + trip_name + "'>" + trip_name;
         else
             service_header += "<input type='text' name='" + name_pattern + "[name]' class='form-control' style='float:left' required value='" + trip_name + "'>";
+        service_header += "</div>";
+        service_header += getHTMLHeaderMenu(!trip_is_instantiated);
+        service_header += "</div></th>";
 
-        service_header += "</div><div style='position:relative;display: table-cell'>";
-        service_header += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
-        service_header += "<span class='caret'></span></button>";
-        service_header += "<ul class='dropdown-menu  dropdown-menu-right'>";
-        service_header += "<li><a class='btn duplicate-trip' role='button' href=''>Dupliquer</a></li>";
-        if( !trip_is_instantiated ) 
-            service_header += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
-        service_header += "</ul></div></div></th>";
         return service_header;
     }
 
@@ -122,17 +130,14 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
         },
         addService: function(tripTableId, routeStopTableId) {
             var col_index = $(tripTableId + " thead th:last").index();
+            
+            //header
             var $service_name_input = "<div><div style='display: table-cell'>";
             $service_name_input += "<input type='text' name='services[" + col_index + "][name]' required class='form-control' maxlength='20'></div>";
-            $service_name_input += "<div style='position:relative;display: table-cell'>";
-            $service_name_input += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
-            $service_name_input += "<span class='caret'></span></button>";
-            $service_name_input += "<ul class='dropdown-menu  dropdown-menu-right'>";
-            $service_name_input += "<li><a class='btn duplicate-trip' role='button' href=''>Dupliquer</a></li>";
-            $service_name_input += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
-            $service_name_input += "</ul></div></div>";
-
+            $service_name_input += getHTMLHeaderMenu(true) +  "</div>";;
             $(tripTableId + " thead th:last").before('<th>' + $service_name_input + '</th>');
+            
+            //inputs
             $(tripTableId + ' tbody').find('tr').each(function(i, el) {
                 var row_index = $(el).index();
                 var scheduled = $(routeStopTableId + " tr").eq(row_index+1).find('input.scheduled').attr("checked");
@@ -142,6 +147,31 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
                 }
                 var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index + 
                     "][time]' required class='form-control time' " + addedAttributes +  " ></div>";
+                stop_time_input += "<div class='summary'  style='color: #000088;font-weight: bold;padding-left: 5px;display: table-cell'></div></div>";
+                $(el).find("td:last").before('<td>' + stop_time_input + '</td>');
+            });
+        },
+        duplicateService: function(index, tripTableId, routeStopTableId) {
+            var col_index = $(tripTableId + " thead th:last").index();
+            
+            //header
+            var $service_name_input = "<div><div style='display: table-cell'>";
+            $service_name_input += "<input type='text' name='services[" + col_index + "][name]' required class='form-control' maxlength='20'></div>";
+            $service_name_input += getHTMLHeaderMenu(true) +  "</div>";;
+            $(tripTableId + " thead th:last").before('<th>' + $service_name_input + '</th>');
+            
+            //inputs
+            $(tripTableId + ' tbody').find('tr').each(function(i, el) {
+                var row_index = $(el).index();
+                var scheduled = $(routeStopTableId + " tr").eq(row_index+1).find('input.scheduled').attr("checked");
+                
+                var addedAttributes = "";
+                if(!scheduled)  addedAttributes += " readonly";
+                var value = $(tripTableId + " tr:eq(" + (row_index+1) + ") td:eq(" + index + ")").find('input.time').val();
+                addedAttributes += " value='" + value + "'";
+
+                var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index + 
+                    "][time]' required class='form-control time'" + addedAttributes +  " ></div>";
                 stop_time_input += "<div class='summary'  style='color: #000088;font-weight: bold;padding-left: 5px;display: table-cell'></div></div>";
                 $(el).find("td:last").before('<td>' + stop_time_input + '</td>');
             });

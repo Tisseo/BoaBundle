@@ -1,4 +1,4 @@
-{% extends "::modal.html.twig" %}
+{% extends "TisseoBoaBundle::container2.html.twig" %}
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block stylesheets %}
@@ -9,20 +9,18 @@
     {% endstylesheets %}
 {% endblock %}
 
-{% block modal_title %}
-    {{ title|trans({}, 'default') }}
-{% endblock %}
 
-{% block open_form %}
+{% block main_content -%}
+    <h1>{{ title|trans({}, 'default') }}</h1>
+    <hr/>
+    
     {{ form_start(form) }}
-{% endblock %}
 
-{% block modal_body %}
     {{ form_errors(form) }}
     <div class="form form-edit">
-        <div class = "col-md-12">	
+        <div class = "col-md-12">   
             <div class="row">
-                <div class = "col-md-6">	
+                <div class = "col-md-6">    
                     {{ form_row(form.name) }}
                 </div>
                 <div class = "col-md-6">    
@@ -96,12 +94,11 @@
             </div>
         </div>
     </div>
-{% endblock %}
 
-{% block modal_actions %}
     <button type="submit" class="btn btn-success">
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
+
     {{ form_end(form) }}
 
     <div class="calendar_div">
@@ -122,7 +119,9 @@
         <div id='calendar_view' class="calendar_view">
         </div>
     </div>    
+{% endblock %}
 
+{% block javascripts %}
     <script type="text/javascript">
         require(['boa/calendar/utils'], function(utils) {
             $(document).ready(function () {
