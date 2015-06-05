@@ -64,9 +64,20 @@
                             </a>
                         {% endif %}
                     </td>
-                    <td></td>   {#Last Day#}
                     <td>
-                        <a class="btn btn-default delete-action" href="{{ path('tisseo_boa_trip_delete', {'TripId': trip.id}) }}">
+                        {% if tripBounds[trip.id] is defined %}
+                            {{ tripBounds[trip.id]['end'] | date("d/m/Y") }}
+                        {% endif %}
+                    </td>   {#Last Day#}
+                    <td>
+                        {% set style = "" %}
+                        {% if tripBounds[trip.id] is defined %}
+                            {% if tripBounds[trip.id]['start'] | date("Ymd") < "now"|date_modify("-1 day")|date('Ymd') %}
+                                {% set style = "style='color: red'" %}
+                            {% endif %}
+                        {% endif %}
+
+                        <a class="btn btn-default delete-action" href="{{ path('tisseo_boa_trip_delete', {'TripId': trip.id}) }}" {{ style|raw }}>
                             <span class="glyphicon glyphicon-remove"></span>{{ 'global.delete'|trans }}
                         </a>
                     </td>

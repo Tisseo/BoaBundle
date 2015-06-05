@@ -19,12 +19,14 @@ class TripController extends AbstractController
         $trips = $route->getTrips()->filter( function($t) {
                     return $t->getIsPattern() == false;
                 });
+        $tripBounds = $tripManager->getDateBounds($route);
 
         return $this->render(
             'TisseoBoaBundle:Trip:list.html.twig',
             array(
                 'route' => $routeManager->findById($RouteId),
-                'trips' => $trips
+                'trips' => $trips,
+                'tripBounds' => $tripBounds
             )
         );
     }
