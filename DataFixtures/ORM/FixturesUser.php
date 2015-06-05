@@ -19,8 +19,18 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
             'firstname' => 'utilisateur',
             'lastname'  => 'Boa',
             'email'     => 'user-boa@tisseo.fr',
-            'password'  => 'tid',
+            'password'  => 'boa',
             'roles'     => array('role-user-boa'),
+            'customer'  => 'customer-tisseo'
+        ),
+        array(
+            'id'        => null,
+            'username'  => 'consult Boa',
+            'firstname' => 'consult',
+            'lastname'  => 'Boa',
+            'email'     => 'consult-boa@tisseo.fr',
+            'password'  => 'boa',
+            'roles'     => array('role-consult-boa'),
             'customer'  => 'customer-tisseo'
         ),
         array(
