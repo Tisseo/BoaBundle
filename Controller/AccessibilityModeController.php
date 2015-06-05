@@ -10,8 +10,14 @@ class AccessibilityModeController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
-		
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
+
+
 		$AccessibilityModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
         return $this->render(
             'TisseoBoaBundle:AccessibilityMode:list.html.twig',
@@ -24,8 +30,8 @@ class AccessibilityModeController extends AbstractController
 	
     public function editAction(Request $request, $AccessibilityModeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
-		
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+
 		$AccessibilityModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
 		$form = $this->buildForm($AccessibilityModeId, $AccessibilityModeManager);
         $render = $this->processForm($request, $form);

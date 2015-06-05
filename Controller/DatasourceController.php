@@ -10,7 +10,7 @@ class DatasourceController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 		
 		$DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
         return $this->render(
@@ -24,7 +24,7 @@ class DatasourceController extends AbstractController
 	
     public function editAction(Request $request, $DatasourceId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 		
 		$DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
 		$form = $this->buildForm($DatasourceId, $DatasourceManager);

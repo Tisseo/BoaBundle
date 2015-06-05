@@ -10,7 +10,7 @@ class PropertyController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
         
         $PropertyManager = $this->get('tisseo_endiv.property_manager');
         return $this->render(
@@ -24,7 +24,7 @@ class PropertyController extends AbstractController
     
     public function editAction(Request $request, $PropertyId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
         
         $PropertyManager = $this->get('tisseo_endiv.property_manager');
         $property = $PropertyManager->find($PropertyId);

@@ -15,7 +15,11 @@ class StopController extends AbstractController
 {
     public function searchAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->isGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+            )
+        );
 		
         return $this->render(
             'TisseoBoaBundle:Stop:search.html.twig',
@@ -27,8 +31,15 @@ class StopController extends AbstractController
 
     public function editAction(Request $request, $StopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-		
+        if ($request->isMethod('POST')) {
+            $this->isGranted('BUSINESS_MANAGE_STOPS');
+        } else {
+            $this->isGranted(array(
+                    'BUSINESS_MANAGE_STOPS',
+                    'BUSINESS_VIEW_STOPS',
+                )
+            );
+        }
 		
 		//current stop
 		$StopManager = $this->get('tisseo_endiv.stop_manager');
@@ -51,7 +62,7 @@ class StopController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
 			try {
-				$datas = $form->getData();
+                $datas = $form->getData();
 				
 				//id not serial and not in formtype ...
 				if( $StopId ) {

@@ -16,7 +16,11 @@ class StopAreaController extends AbstractController
 {
     public function searchAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->isGranted(array(
+                'BUSINESS_MANAGE_STOPS',
+                'BUSINESS_VIEW_STOPS',
+            )
+        );
 		
         return $this->render(
             'TisseoBoaBundle:StopArea:search.html.twig',
@@ -28,7 +32,15 @@ class StopAreaController extends AbstractController
 	
     public function editAction(Request $request, $StopAreaId = null)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        if ($request->isMethod('POST')) {
+            $this->isGranted('BUSINESS_MANAGE_STOPS');
+        } else {
+            $this->isGranted(array(
+                    'BUSINESS_MANAGE_STOPS',
+                    'BUSINESS_VIEW_STOPS',
+                )
+            );
+        }
 		
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $StopAreaManager->find($StopAreaId);
@@ -82,6 +94,7 @@ class StopAreaController extends AbstractController
     public function internalTransferAction(Request $request, $StopAreaId)
 	{
 		$this->isGranted('BUSINESS_MANAGE_STOPS');
+
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 		$TransferManager = $this->get('tisseo_endiv.transfer_manager');
 		$stopArea = $StopAreaManager->find($StopAreaId);
@@ -141,6 +154,7 @@ class StopAreaController extends AbstractController
     public function externalTransferAction(Request $request, $StopAreaId)
 	{
 		$this->isGranted('BUSINESS_MANAGE_STOPS');
+
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 		$TransferManager = $this->get('tisseo_endiv.transfer_manager');
 		$stopArea = $StopAreaManager->find($StopAreaId);
@@ -200,6 +214,7 @@ class StopAreaController extends AbstractController
     public function aliasAction(Request $request, $StopAreaId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
+
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 		$stopArea = $StopAreaManager->find($StopAreaId);
 		$stopAreaLabel = $stopArea->getNameLabel();
