@@ -1,4 +1,4 @@
-define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
+define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/messages'], function($) {
     function FormatTime(t) {
         var h = Math.floor(t/3600);
         var m = (t - h*3600)/60;
@@ -15,12 +15,15 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting'], function($) {
 
     function getHTMLHeaderMenu(showDeleteMenu) {
         var htmlMenu = "<div style='position:relative;display: table-cell'>";
+        var DuplicateLabel = Translator.trans('global.duplicate', {}, 'messages');
+        var DeleteLabel = Translator.trans('global.delete', {}, 'messages');
+
         htmlMenu += "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' style='float:right'>";
         htmlMenu += "<span class='caret'></span></button>";
         htmlMenu += "<ul class='dropdown-menu  dropdown-menu-right'>";
-        htmlMenu += "<li><a class='btn duplicate-trip' role='button' href=''>Dupliquer</a></li>";
+        htmlMenu += "<li><a class='btn duplicate-trip' role='button' href=''>" + DuplicateLabel + "</a></li>";
         if( showDeleteMenu )
-            htmlMenu += "<li><a class='btn delete-trip' role='button' href=''>Supprimer</a></li>";
+            htmlMenu += "<li><a class='btn delete-trip' role='button' href=''>" + DeleteLabel + "</a></li>";
         htmlMenu += "</ul></div>";
 
         return htmlMenu;

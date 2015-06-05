@@ -6,6 +6,7 @@ global:
     save: Enregistrer
     close: Fermer
     delete: Supprimer
+    duplicate: Dupliquer
     cancel: Annuler
     status: Statut
     warning: Avertissement
