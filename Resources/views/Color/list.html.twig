@@ -23,13 +23,16 @@
     <th>{{'color.list.columns.rgbRed'|trans({}, 'default')}}</th>
     <th>{{'color.list.columns.rgbGreen'|trans({}, 'default')}}</th>
     <th>{{'color.list.columns.rgbBlue'|trans({}, 'default')}}</th>
-	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+    {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+	    <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+    {% endif %}
 {% endblock %}
 
 {% block table_body -%}
     {% if colors|length == 0 %}
+        {% set nbCol = is_granted('BUSINESS_MANAGE_CONFIGURATION') ? 13 : 12 %}
         <tr>
-            <td colspan="3"> {{'global.no_items'|trans}} </td>
+            <td colspan="{{ nbCol }}"> {{'global.no_items'|trans}} </td>
         </tr>
     {% else %}
         {% for color in colors %}
@@ -46,11 +49,13 @@
                 <td> {{ color.rgbRed }} </td>
                 <td> {{ color.rgbGreen }} </td>
                 <td> {{ color.rgbBlue }} </td>
-                <td>
-					<a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'ColorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
-						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-					</a>
-                </td>
+                {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+                    <td>
+                        <a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'ColorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
+                            <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                        </a>
+                    </td>
+                {% endif %}
             </tr>
         {% endfor %}
     {% endif %}

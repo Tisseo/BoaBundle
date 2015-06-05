@@ -10,7 +10,12 @@ class AgencyController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 		
 		$AgencyManager = $this->get('tisseo_endiv.agency_manager');
         return $this->render(
@@ -24,8 +29,8 @@ class AgencyController extends AbstractController
 	
     public function editAction(Request $request, $AgencyId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
-		
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+
 		$AgencyManager = $this->get('tisseo_endiv.agency_manager');
 		$form = $this->buildForm($AgencyId, $AgencyManager);
         $render = $this->processForm($request, $form);

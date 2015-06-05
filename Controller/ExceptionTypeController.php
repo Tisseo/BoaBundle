@@ -10,7 +10,7 @@ class ExceptionTypeController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 		
 		$ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
         return $this->render(
@@ -24,7 +24,7 @@ class ExceptionTypeController extends AbstractController
 	
     public function editAction(Request $request, $ExceptionTypeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 		
 		$ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
 		$form = $this->buildForm($ExceptionTypeId, $ExceptionTypeManager);

@@ -62,6 +62,7 @@
 		</div>
 
 		{# form buttons #}
+        {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
 		<div class="row" style="padding: 10px 0 0">
 			<div class = "col-md-2 col-md-offset-3">
 				<button type="submit" id="save-form" class="btn btn-success">
@@ -75,6 +76,7 @@
 				</a>
 			</div>
 		</div>
+        {% endif %}
 				
 		{# phantoms #}
 		{% if phantoms is not empty and form.masterStop is empty %}
@@ -110,7 +112,9 @@
 				<th>{{ 'stop.history.columns.longName' | trans }}</th>
 				<th>{{ 'stop.history.columns.x' | trans }}</th>
 				<th>{{ 'stop.history.columns.y' | trans }}</th>
-				<th>Action</th>
+                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+				    <th>Action</th>
+                {% endif %}
 			</thead>
 			<tbody>
 			{% for sh in stopHistories %}
@@ -125,23 +129,26 @@
 				<td>{{ sh.longName }}</td>
 				<td>{{ sh.theGeom.x }}</td>
 				<td>{{ sh.theGeom.y }}</td>
-				{% if  sh.startDate|date("Ymd") > now|date("Ymd") %}
-					<td>
-					<a class="btn btn-default" 
-							href="{{ path('tisseo_boa_stop_history_delete', {'StopId': stop.id, 'StopHistoryId': sh.id }) }}">
-							<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}							
-						</a>
-					</td>
-				{% else %}
-					<td></td>
-				{% endif %}
+                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                    {% if  sh.startDate|date("Ymd") > now|date("Ymd") %}
+                        <td>
+                        <a class="btn btn-default"
+                                href="{{ path('tisseo_boa_stop_history_delete', {'StopId': stop.id, 'StopHistoryId': sh.id }) }}">
+                                <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
+                            </a>
+                        </td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                {% endif %}
 				</tr>
 			{% endfor %}
 			</tbody>
 			</table>
 		</div>
+        {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
 		<div class = "col-md-2">
-				<a href="{{ path('tisseo_boa_stop_history_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
+                    <a href="{{ path('tisseo_boa_stop_history_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
 					<span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyStop' | trans }}
 				</a>
 		</div>
@@ -150,7 +157,7 @@
 					<span class="glyphicon glyphicon-remove"></span>  {{ 'stop.closeStop' | trans }}
 				</a>
 		</div>
-		
+		{% endif %}
 		{# stop accessibility #}
 		<div>
 			{% if form.masterStop.vars.value is empty %}
@@ -173,7 +180,9 @@
 				<th>{{ 'stop.accessibility.columns.startDate' | trans }}</th>
 				<th>{{ 'stop.accessibility.columns.endDate' | trans }}</th>
 				<th>{{ 'stop.accessibility.columns.datasource' | trans }}</th>
-				<th>Action</th>
+                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+				    <th>Action</th>
+                {% endif %}
 			</thead>
 			<tbody>
 			
@@ -208,33 +217,37 @@
 					<td>{{ sa.accessibilityType.calendar.computedStartDate.date|date("d/m/Y") }}</td>
 					<td>{{ sa.accessibilityType.calendar.computedEndDate.date|date("d/m/Y") }}</td>
 					<td>{{ sa.accessibilityType.calendar.calendarDatasources[0].datasource.name }}</td>
-					{% if  phantomAccessibilities is empty %}
-						{% if  sa.accessibilityType.calendar.computedStartDate.date|date("Ymd") > now|date("Ymd") %}
-							{% if   sa.accessibilityType.calendar.calendarDatasources[0].datasource.name != "HASTUS" %}
-								<td>
-								<a class="btn btn-default" 
-									href="{{ path('tisseo_boa_stop_accessibility_delete', {'StopId': stop.id, 'StopAccessibilityId': sa.id }) }}">	
-									<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}							
-								</a>
-								</td>
-							{% endif %}
-						{% endif %}
-					{% else %}
-						<td></td>
-					{% endif %}
+                    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                        {% if  phantomAccessibilities is empty %}
+                            {% if  sa.accessibilityType.calendar.computedStartDate.date|date("Ymd") > now|date("Ymd") %}
+                                {% if   sa.accessibilityType.calendar.calendarDatasources[0].datasource.name != "HASTUS" %}
+                                    <td>
+                                    <a class="btn btn-default"
+                                        href="{{ path('tisseo_boa_stop_accessibility_delete', {'StopId': stop.id, 'StopAccessibilityId': sa.id }) }}">
+                                        <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
+                                    </a>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
 				</tr>
 			{% endfor %}				
 		{% endif %}
 			</tbody>
 			</table>
 		</div>
-		{% if form.masterStop.vars.value is empty %}
-			<div class = "col-md-2">
-					<a href="{{ path('tisseo_boa_stop_accessibility_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
-						<span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyAccessibility' | trans }}
-					</a>
-			</div>
-		{% endif %}
+        {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+            {% if form.masterStop.vars.value is empty %}
+                <div class = "col-md-2">
+                        <a href="{{ path('tisseo_boa_stop_accessibility_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
+                            <span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyAccessibility' | trans }}
+                        </a>
+                </div>
+            {% endif %}
+        {% endif %}
 		
 		{{ form_end(form, { 'render_rest': false} ) }}
 {% endblock %}

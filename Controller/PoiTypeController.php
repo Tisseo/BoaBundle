@@ -10,7 +10,12 @@ class PoiTypeController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 		
 		$PoiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
         return $this->render(

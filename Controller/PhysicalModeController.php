@@ -10,7 +10,12 @@ class PhysicalModeController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 		
 		$physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
         return $this->render(
@@ -24,7 +29,7 @@ class PhysicalModeController extends AbstractController
 	
     public function editAction(Request $request, $PhysicalModeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 		
 		$physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
 		$form = $this->buildForm($PhysicalModeId, $physicalModeManager);

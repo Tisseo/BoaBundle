@@ -10,7 +10,12 @@ class ColorController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 		
 		$ColorManager = $this->get('tisseo_endiv.color_manager');
         return $this->render(
@@ -24,7 +29,7 @@ class ColorController extends AbstractController
 	
     public function editAction(Request $request, $ColorId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 		
 		$ColorManager = $this->get('tisseo_endiv.color_manager');
 		$form = $this->buildForm($ColorId, $ColorManager);
