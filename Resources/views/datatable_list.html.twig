@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block main_content -%}
+<div class="col-md-12" role="main">
     <h1>{% block list_title -%}{% endblock %}</h1>
     {% block line_comment -%}{% endblock %}
     {% block list_menu -%}{% endblock %}
@@ -28,6 +29,7 @@
     </table>
     {% block list_pagination -%}
     {% endblock %}
+</div>
 {% endblock %}
 
 {% block javascripts %}

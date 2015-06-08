@@ -22,13 +22,13 @@
 			<div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
 			<div class = "col-md-4"> {{ form_widget(form.short_name, {'attr': {"readonly":true, "disabled":true}}) }} </div> 
 		</div>
-		<div class="row">
+		<div class="row  m-t-row">
 			<div class = "col-md-2"> {{ form_label(form.long_name) }} </div>
 			<div class = "col-md-4"> {{ form_widget(form.long_name, {'attr': {"readonly":true, "disabled":true}}) }} </div>
 		</div>
 		
 		{# stop area #}
-		<div  class="row">
+		<div  class="row  m-t-row">
 			<div class = "col-md-2"> {{ form_label(form.stopArea) }} </div>
 			<div class = "col-md-5">
 				{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
@@ -44,7 +44,7 @@
 		</div>
 
 		{# datasources #}
-		<div class="row">
+		<div class="row m-t-row">
 			{% set datasource = form.stopDatasources[0] %}
 			<div class = "col-md-2"> {{ form_label(form.stopDatasources) }} </div>			
 			<div class = "col-md-3">
@@ -56,14 +56,14 @@
 		</div>
 		
 		{# masterStop(phantom) #}
-		<div  class="row">
+		<div  class="row m-t-row">
 			<div class = "col-md-2"> {{ form_label(form.masterStop) }} </div>
 			<div class = "col-md-6"> {{ form_widget(form.masterStop) }} </div>
 		</div>
 
 		{# form buttons #}
         {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-		<div class="row" style="padding: 10px 0 0">
+		<div class="row m-t-row" style="padding: 10px 0 0">
 			<div class = "col-md-2 col-md-offset-3">
 				<button type="submit" id="save-form" class="btn btn-success">
 					<span class="glyphicon glyphicon-pencil"></span>

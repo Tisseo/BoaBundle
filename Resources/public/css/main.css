@@ -11,6 +11,7 @@ hr {
 	border-top: 1px solid black;
 }
 
+
 .type-select {
     width: 200px;
 }
@@ -20,6 +21,9 @@ hr {
 }
 #trip-table th,tr {
     height: 53px;
+}
+.m-t-row {
+    margin-top: 10px;
 }
 .t-row {
     display: table;
