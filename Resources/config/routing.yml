@@ -203,6 +203,11 @@ tisseo_boa_route_calendar_fh:
     defaults: { _controller: TisseoBoaBundle:Route:calFH }
     requirements:
         LineVersionId: \d+
+tisseo_boa_route_duplicate:
+    pattern: /routes/duplicate/{RouteId}
+    defaults: { _controller: TisseoBoaBundle:Route:duplicate }
+    requirements:
+        RouteId: \d+
 
 #Trip Administration
 tisseo_boa_trip_list:

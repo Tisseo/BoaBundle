@@ -53,8 +53,9 @@
                             class="btn btn-default">
                         <span class="glyphicon glyphicon-edit"></span>{{'route.list.columns.edit'|trans({}, 'default')}}
                     </a>
-                    <a href=""
-                            class="btn btn-default">
+                    <a href="{{path('tisseo_boa_route_duplicate',{RouteId: route.id})}}"
+                        data-toggle="modal" data-target="#base-modal"
+                        class="btn btn-default">
                         <span class="glyphicon glyphicon-repeat"></span>{{'route.list.columns.copy'|trans({}, 'default')}}
                     </a>
                     {% if route.services is empty %}

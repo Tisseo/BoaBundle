@@ -47,7 +47,33 @@
                     </div>
                 </div>
             </div>
-
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        {{ form_row(form.direction) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    {% if route.routeDatasources is not empty %}
+                        {% set datasource_list = form_row(form.routeDatasources[0].datasource) %}
+                        {% set datasource_code = form_row(form.routeDatasources[0].code) %}
+                    {% else %}
+                        {% set user_name = app.security.getToken().getUser().getUsername() %}
+                        {% set datasource_list = form_row(form.routeDatasources.vars.prototype.datasource) %}
+                        {% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
+                        {% set datasource_code = form_row(form.routeDatasources.vars.prototype.code, { value : user_name }) %}
+                        {% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
+                    {% endif %}
+                    <div class="col-md-4 col-md-offset-1">
+                        {{ datasource_list | raw }}
+                    </div>
+                    <div class = "col-md-4">
+                        {{ datasource_code | raw }}
+                    </div>
+                </div>
+            </div>
         </div>
 
         <table id="route-table">

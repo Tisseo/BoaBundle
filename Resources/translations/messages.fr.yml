@@ -294,6 +294,11 @@ route:
         service_type:
             first_stop_time: Le premier horaire des services types doit être 00:00
 
+route_datasource:
+    labels:
+        datasource: Datasource
+        code: Code
+
 trip:
     labels:
         name: Nom du service

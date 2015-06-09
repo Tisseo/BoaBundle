@@ -289,7 +289,7 @@ class StopController extends AbstractController
 
 		$closingDate = $request->query->get('closingDate');
 		$stopAreaId = $request->query->get('stopAreaId');
-		
+
 		if( !$closingDate ) {
 			$formBuilder = $this->createFormBuilder($stop)
 			->setAction($this->generateUrl('tisseo_boa_stop_close',
@@ -309,7 +309,7 @@ class StopController extends AbstractController
 			} catch(\Exception $e) {
 				$this->get('session')->getFlashBag()->add('danger', $e->getMessage());
 			}
-			
+
 			//call from stop_area form
 			if( $stopAreaId )
 				return $this->redirect(
@@ -317,7 +317,7 @@ class StopController extends AbstractController
 						array('StopAreaId' => $stopAreaId)
 					)
 				);
-			
+
 			return $this->redirect(
 				$this->generateUrl('tisseo_boa_stop_edit', 
 					array('StopId' => $StopId)

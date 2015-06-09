@@ -44,17 +44,24 @@ class StopAreaController extends AbstractController
 		
 		$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $StopAreaManager->find($StopAreaId);
-		$lines = $StopAreaManager->getLines($stopArea);
-		if (empty($stopArea)) $stopArea = new StopArea($StopAreaManager);
-		
-		$city = $stopArea->getCity();
+
 		$cityLabel = "";
-		$cityMain = $StopAreaManager->getMainStopCityName($stopArea);
-		if (!empty($city)) {
-			$cityLabel = $city->getName()." (".$city->getInsee().")";
+		$lines = array();
+		$stops = array();
+		$cityMain = null;
+		if (empty($stopArea)){
+			$stopArea = new StopArea($StopAreaManager);
+		} else {
+			$lines = $StopAreaManager->getLines($stopArea);
+			
+			$city = $stopArea->getCity();
+			$cityMain = $StopAreaManager->getMainStopCityName($stopArea);
+			if (!empty($city)) {
+				$cityLabel = $city->getName()." (".$city->getInsee().")";
+			}
+			
+			$stops = $StopAreaManager->getCurrentStops($stopArea);
 		}
-		
-		$stops = $StopAreaManager->getCurrentStops($stopArea);
 		
 		$form = $this->createForm( new StopAreaType($StopAreaManager), $stopArea);
         $form->handleRequest($request);

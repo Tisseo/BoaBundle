@@ -5,6 +5,7 @@ namespace Tisseo\BoaBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\BoaBundle\Form\Type\RouteType;
 use Tisseo\BoaBundle\Form\Type\NewRouteType;
+use Tisseo\BoaBundle\Form\Type\RouteDuplicateType;
 use Tisseo\EndivBundle\Entity\Route;
 
 class RouteController extends AbstractController
@@ -168,7 +169,7 @@ class RouteController extends AbstractController
         $route = new Route();
         $route->setLineVersion($lineVersion);
         
-        $form = $this->createForm(new NewRouteType(),$route,
+        $form = $this->createForm(new NewRouteType(), $route,
             array(
                 "action"=>$this->generateUrl('tisseo_boa_route_create',
                                              array("lineVersionId" => $lineVersionId)
@@ -181,6 +182,7 @@ class RouteController extends AbstractController
             try {
                 $routeManager = $this->get('tisseo_endiv.route_manager');
                 $datas = $form->getData();
+                $datas->setLineVersion($lineVersion);
                 $routeManager->save($datas);
 
                 return $this->redirect(
@@ -198,7 +200,8 @@ class RouteController extends AbstractController
 
        return $this->render("TisseoBoaBundle:Route:create.html.twig",
             array(
-                "form" =>$form->createView(),
+                "form" => $form->createView(),
+                "route" => $route,
                 'title' => 'route.create'
             )
         );
@@ -214,4 +217,52 @@ class RouteController extends AbstractController
         $routeManager->remove($route);
         return $this->redirect($this->generateUrl('tisseo_boa_route_list', array("LineVersionId"=>$LineVersionId) ));
     }
+
+    public function duplicateAction(Request $request, $RouteId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $route = $routeManager->findById($RouteId);
+        $line = $route->getLineVersion()->getLine();
+        $activeLineVersions = $line->getActiveLineVersions();
+
+        $form = $this->createForm(new RouteDuplicateType(),$route,
+            array(
+                "action"=>$this->generateUrl('tisseo_boa_route_duplicate',
+                                             array("RouteId" => $RouteId)
+                )
+            )
+        );
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            try {
+                $userName = $this->get('security.context')->getToken()->getUser()->getUsername();
+                $lineVersionId = $request->request->get('line_version');
+                $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
+                $lineVersion = $lineVersionManager->find($lineVersionId);
+
+                $routeManager->duplicate($route, $lineVersion, $userName);
+                return
+                    $this->redirect(
+                        $this->generateUrl('tisseo_boa_route_list', 
+                            array(
+                                "LineVersionId"=>$route->getLineVersion()->getId()
+                            )
+                        )
+                    );
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            }
+        }
+
+        return $this->render("TisseoBoaBundle:Route:duplicate.html.twig",
+            array(
+                'title' => 'route.duplicate',
+                'form' =>$form->createView(),
+                'activeLineVersions' => $activeLineVersions
+            )
+        );
+    }    
 }

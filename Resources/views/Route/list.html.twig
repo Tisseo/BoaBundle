@@ -56,7 +56,7 @@
                         <td>{{ render.line_number(lv, 'lineVersion', 'small') }}</td>
                         <td>{{ lv.line.physicalMode.name }}</td>
                         <td><a href="{{ path('tisseo_boa_route_list', {'LineVersionId': lv.id}) }}"><b>V{{ lv.version }}</b></a></td>
-                        <td>{{ lv.lineVersionDatasources[0].datasource.name }}</td>
+                        <td>{{ lv.line.lineDatasources[0].datasource.name }}</td>
                         <td>{{ lv.startDate.date | date('d/m/Y') }}</td>
                         <td>{{ lv.plannedEndDate.date | date('d/m/Y') }}</td>
                         <td>
@@ -139,6 +139,9 @@
                 $('#date').keyup( function() {
                     $('#datatable').DataTable().draw();
                 });
+
+                $('#datasource').val("Service Données");
+                $( "#datasource" ).trigger( "change" );
             });
         });
     </script>

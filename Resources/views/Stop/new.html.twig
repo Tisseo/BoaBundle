@@ -115,8 +115,8 @@
 				$('#code-div').append($DatasourceInput);
 				
 				{% if stopArea is not empty %}
-					$("#boa_new_stop_stopHistories_0_shortName").val('{{ stopArea.shortName  }}');
-					$("#boa_new_stop_stopHistories_0_longName").val('{{ stopArea.longName  }}');
+					$("#boa_new_stop_stopHistories_0_shortName").val("{{ stopArea.shortName|e('js') }}");
+					$("#boa_new_stop_stopHistories_0_longName").val("{{ stopArea.longName|e('js') }}");
 					$('#boa_new_stop_stopArea option[value={{ stopArea.id }}]').attr('selected', 'selected');
 					$("#stop_area").val($('#boa_new_stop_stopArea option[value={{ stopArea.id }}]').text());
 				{% endif %}

@@ -1,0 +1,25 @@
+{% extends "::modal.html.twig" %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    Selectionnez la version de ligne sur laquelle dupliquer la route:
+    <select name="line_version" {{ class_attribute }}>
+    {% for lv in activeLineVersions %}
+        <option value='{{ lv.id }}'>V{{ lv.version }} ( {{ lv.startDate|date('d/m/Y') }} )</option>
+    {% endfor %}
+    </select>   
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+{% endblock %}

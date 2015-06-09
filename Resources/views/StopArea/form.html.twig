@@ -146,6 +146,9 @@
 								{{ 'global.delete' | trans }}
 							</a>
 						{% endif %}
+                        {% if stop.stopHistories.last.endDate is not null %}
+                            <label>Clôturé au {{ stop.stopHistories.last.endDate|date('d/m/Y')  }}</label>
+                        {% endif %}
 					</td>
                     {% endif %}
 				</tr>

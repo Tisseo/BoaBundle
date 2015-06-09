@@ -13,7 +13,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Tisseo\EndivBundle\Entity\StopHistory;
 use Tisseo\EndivBundle\Entity\Log;
 /**  
-* Class StopHistoryLogSubscriber  
+* Class BoaLogSubscriber  
 */ 
 class BoaLogSubscriber implements EventSubscriber 
 {     
