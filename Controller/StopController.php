@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Stop;
 use Tisseo\EndivBundle\Entity\StopHistory;
 use Tisseo\EndivBundle\Entity\StopAccessibility;
+use Tisseo\EndivBundle\Entity\StopDatasource;
 use Tisseo\BoaBundle\Form\Type\StopType;
 use Tisseo\BoaBundle\Form\Type\NewStopType;
 use Tisseo\BoaBundle\Form\Type\StopAccessibilityType;
@@ -102,6 +103,8 @@ class StopController extends AbstractController
 		
 		$StopManager = $this->get('tisseo_endiv.stop_manager');
 		$stop = new Stop($StopManager);
+        $stop->addStopHistory(new StopHistory());
+        $stop->addStopDatasources(new StopDatasource());
 		
 		$stopAreaId = $request->query->get('stopAreaId');
 		

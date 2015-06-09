@@ -185,6 +185,7 @@ stop:
     modifyAccessibility: Modifier accessibilité
 
 stop_area:
+    show_closed_stops: Afficher les points d'arrêts clôturés
     labels:
         shortName: Nom de la zone d'arrêt 
         longName: Nom long

@@ -17,177 +17,183 @@
     <hr/>
 	
 	{{ form_start(form) }}
-		{{ form_errors(form) }}
-		{{ form_widget(form._token) }}
-		
-		<div class="form form-edit">
-			<div class="row">
-				<div class = "col-md-2"> {{ form_label(form.shortName) }} </div>
-				<div class = "col-md-4"> {{ form_widget(form.shortName) }} </div> 
-			</div>
-			<div class="row">
-				<div class = "col-md-2"> {{ form_label(form.longName) }} </div>
-				<div class = "col-md-4"> {{ form_widget(form.longName) }} </div>
-			</div>
-
-			{# city #}
-			<div class="row">
-				<div class = "col-md-2"> {{ form_label(form.city) }} </div>
-				<div class = "col-md-4">
-					{{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-					
-					{% set readonly = "" %}
-					{% if cityMain is not empty %}
-						{% set readonly = "readonly='readonly'" %}
-					{% endif %}
-					<input type="text" id="city"  class="form-control" data-url="{{ path('tisseo_boa_json_city') }}" value='{{ cityLabel }}' {{readonly}}>
-				</div>
-			</div>
+	{{ form_errors(form) }}
+	{{ form_widget(form._token) }}
+	
+	<div class="form form-edit">
+		<div class="row">
+			<div class = "col-md-2"> {{ form_label(form.shortName) }} </div>
+			<div class = "col-md-4"> {{ form_widget(form.shortName) }} </div> 
 		</div>
-		
-		{# datasource #}
-		<div class="form form-edit">
-			<div class="row">
-				{% if stopArea.id is not null %}
-					{% set datasource_list = form_widget(form.stopAreaDatasources[0].datasource) %}
-					{% set datasource_code = form_widget(form.stopAreaDatasources[0].code) %}
-				{% else %}
-					{#new record#}
-					{% set datasource_list = form_widget(form.stopAreaDatasources.vars.prototype.datasource) %}
-					{% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
-					{% set datasource_code = form_widget(form.stopAreaDatasources.vars.prototype.code) %}
-					{% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
-				{% endif %}
-				<div class = "col-md-2"> {{ form_label(form.stopAreaDatasources) }} </div>			
-				<div class = "col-md-3">
-					{{ datasource_list | raw }} 
-				</div>
+		<div class="row">
+			<div class = "col-md-2"> {{ form_label(form.longName) }} </div>
+			<div class = "col-md-4"> {{ form_widget(form.longName) }} </div>
+		</div>
+
+		{# city #}
+		<div class="row">
+			<div class = "col-md-2"> {{ form_label(form.city) }} </div>
+			<div class = "col-md-4">
+				{{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
 				
-				<div class = "col-md-3">
-					{{ datasource_code | raw }} 
-				</div>
+				{% set readonly = "" %}
+				{% if cityMain is not empty %}
+					{% set readonly = "readonly='readonly'" %}
+				{% endif %}
+				<input type="text" id="city"  class="form-control" data-url="{{ path('tisseo_boa_json_city') }}" value='{{ cityLabel }}' {{readonly}}>
 			</div>
 		</div>
-		
-		{% if cityMain is not empty %}
-			<b>{{ 'stop_area.labels.main_city' | trans({ '%s%': cityMain }) }}<b>
-		{% endif %}
+	</div>
+	
+	{# datasource #}
+	<div class="form form-edit">
+		<div class="row">
+			{% if stopArea.id is not null %}
+				{% set datasource_list = form_widget(form.stopAreaDatasources[0].datasource) %}
+				{% set datasource_code = form_widget(form.stopAreaDatasources[0].code) %}
+			{% else %}
+				{#new record#}
+				{% set datasource_list = form_widget(form.stopAreaDatasources.vars.prototype.datasource) %}
+				{% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
+				{% set datasource_code = form_widget(form.stopAreaDatasources.vars.prototype.code) %}
+				{% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
+			{% endif %}
+			<div class = "col-md-2"> {{ form_label(form.stopAreaDatasources) }} </div>			
+			<div class = "col-md-3">
+				{{ datasource_list | raw }} 
+			</div>
+			
+			<div class = "col-md-3">
+				{{ datasource_code | raw }} 
+			</div>
+		</div>
+	</div>
+	
+	{% if cityMain is not empty %}
+		<b>{{ 'stop_area.labels.main_city' | trans({ '%s%': cityMain }) }}<b>
+	{% endif %}
 
-		{# form button #}
-        {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-            <div class="row" style="padding: 10px 0 0">
-                <div class = "col-md-2 col-md-offset-4">
-                    <button type="submit" id="save-form" class="btn btn-success">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                         {{'global.save'|trans}}
-                    </button>
-                </div>
+	{# form button #}
+    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+        <div class="row" style="padding: 10px 0 0">
+            <div class = "col-md-2 col-md-offset-4">
+                <button type="submit" id="save-form" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                     {{'global.save'|trans}}
+                </button>
             </div>
-        {% endif %}
+        </div>
+    {% endif %}
 
-		{{ form_end(form, { 'render_rest': false} ) }}
-		
-		{# stops #}
-		<div>
-			<div class="stop_table_header">
-				{{ 'stop_area.stop.header' | trans }}
-                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-				<a style="float:right" class="btn btn-default" id="external-transfert" 
-					href="{{ path('tisseo_boa_stop_new', {'stopAreaId': stopArea.id}) }}"
-					data-toggle="modal" data-target="#base-modal">
-					<span class="glyphicon glyphicon-plus"></span>
-						{{ 'stop_area.stop.new' | trans }}
-				</a>
-                {% endif %}
-			</div>
-			<table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
-			<thead>			
-				<th>{{ 'stop_area.stop.columns.agency' | trans }}</th>
-				<th>{{ 'stop_area.stop.columns.code' | trans }}</th>
-				<th>{{ 'stop_area.stop.columns.name' | trans }}</th>
-				<th>{{ 'stop_area.stop.columns.x' | trans }}</th>
-				<th>{{ 'stop_area.stop.columns.y' | trans }}</th>
-				<th>{{ 'stop_area.stop.columns.lines' | trans }}</th>
-                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-                    <th>Action</th>
-                {% endif %}
-			</thead>
-			<tbody>
-			{% for stop in stops %}
-				<tr>
-					<td> {{ stop.stopDatasources[0].datasource.agency.name }} </td>
-					<td>{{ stop.stopDatasources[0].code }}</td>
-					<td>
-						<a href="{{ path('tisseo_boa_stop_edit', {'StopId': stop.id }) }}">
-						{{ stop.getShortLabel }}
-					</td>
-					{% if stop.masterStop is not empty %}
-						<td colspan="3"><b>{{ 'Fantôme de ' ~ stop.getMasterStopLabel }}</b></td>
-						<td class="hide"></td>
-						<td class="hide"></td>
-					{% else %}
-						<td>{{ stop.stopHistories[0].theGeom.x }}</td>
-						<td>{{ stop.stopHistories[0].theGeom.y }}</td>
-						<td>
-						{% if stop.id in lines|keys %}
-							{% for line in lines[stop.id] %}
-								<div class="line-number line-small" style="color:{{ line['fgColor'] }}; background-color:{{ line['bgColor'] }}; font-family:sans-serif; font-weight: bold;">
-									<span style="font-size: 15px;">{{ line['number'] }}</span>
-								</div>
-							{% endfor %}
-						{% endif %}
-						</td>
-					{% endif %}
-                    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-					<td>
-						{% if stop.id not in lines|keys %}
-							<a class="btn btn-default" id="external-transfert" 
-								href="{{ path('tisseo_boa_stop_close', {'StopId': stop.id, 'closingDate': 'now'|date('d/m/Y'), 'stopAreaId': stopArea.id }) }}">
-								{{ 'global.delete' | trans }}
-							</a>
-						{% endif %}
-                        {% if stop.stopHistories.last.endDate is not null %}
-                            <label>Clôturé au {{ stop.stopHistories.last.endDate|date('d/m/Y')  }}</label>
-                        {% endif %}
-					</td>
-                    {% endif %}
-				</tr>
-			{% endfor %}
-			</tbody>
-			</table>
-		</div>
-
-		{# buttons #}
-		{% if stopArea.id is not null %}
+	{{ form_end(form, { 'render_rest': false} ) }}
+	
+	{# stops #}
+	<div>
+		<div class="stop_table_header">
+			{{ 'stop_area.stop.header' | trans }}
             {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-                <div class="row" style="padding: 10px 0 0">
-                    <div class = "col-md-12">
-                        <a class="btn btn-default" id="internal-transfert"
-                            href="{{ path('tisseo_boa_internal_transfer_edit', {'StopAreaId': stopArea.id }) }}"
-                            data-toggle="modal" data-target="#base-modal" >
-                            <span class="glyphicon glyphicon-resize-small"></span>
-                            {{ 'stop_area.labels.internal_transfert' | trans }}
-                            </a>
-                        <a class="btn btn-default" id="external-transfert"
-                            href="{{ path('tisseo_boa_external_transfer_edit', {'StopAreaId': stopArea.id }) }}"
-                            data-toggle="modal" data-target="#base-modal" >
-                            <span class="glyphicon glyphicon-resize-full"></span>
-                            {{ 'stop_area.labels.external_transfert' | trans }}
-                        </a>
-                        <a class="btn btn-default" id="geometries" href="#">
-                            <span class="glyphicon glyphicon-globe"></span>
-                            {{ 'stop_area.labels.geometries' | trans }}
-                        </a>
-                        <a class="btn btn-default" id="alias"
-                            href="{{ path('tisseo_boa_stop_area_alias', {'StopAreaId': stopArea.id }) }}"
-                            data-toggle="modal" data-target="#base-modal" >
-                            <span class="glyphicon glyphicon-tag"></span>
-                            {{ 'stop_area.labels.alias' | trans }}
-                        </a>
-                    </div>
-                </div>
+			<a style="float:right" class="btn btn-default" id="external-transfert" 
+				href="{{ path('tisseo_boa_stop_new', {'stopAreaId': stopArea.id}) }}"
+				data-toggle="modal" data-target="#base-modal">
+				<span class="glyphicon glyphicon-plus"></span>
+					{{ 'stop_area.stop.new' | trans }}
+			</a>
             {% endif %}
-		{% endif %}
+		</div>
+		<table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
+		<thead>			
+			<th>{{ 'stop_area.stop.columns.agency' | trans }}</th>
+			<th>{{ 'stop_area.stop.columns.code' | trans }}</th>
+			<th>{{ 'stop_area.stop.columns.name' | trans }}</th>
+			<th>{{ 'stop_area.stop.columns.x' | trans }}</th>
+			<th>{{ 'stop_area.stop.columns.y' | trans }}</th>
+			<th>{{ 'stop_area.stop.columns.lines' | trans }}</th>
+            {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                <th>Action</th>
+            {% endif %}
+		</thead>
+		<tbody>
+		{% for stop in stops %}
+            {% if stop.stopHistories.last.endDate is not null and stop.stopHistories.last.endDate.format('Ymd') < 'now'|date('Ymd') %} %}
+                <tr class='closed-stop hide'>
+            {% else %}
+                <tr>
+            {% endif %}
+            {{ tr_tag|e }}
+				<td> {{ stop.stopDatasources[0].datasource.agency.name }} </td>
+				<td>{{ stop.stopDatasources[0].code }}</td>
+				<td>
+					<a href="{{ path('tisseo_boa_stop_edit', {'StopId': stop.id }) }}">
+					{{ stop.getShortLabel }}
+				</td>
+				{% if stop.masterStop is not empty %}
+					<td colspan="3"><b>{{ 'Fantôme de ' ~ stop.getMasterStopLabel }}</b></td>
+					<td class="hide"></td>
+					<td class="hide"></td>
+				{% else %}
+					<td>{{ stop.stopHistories[0].theGeom.x }}</td>
+					<td>{{ stop.stopHistories[0].theGeom.y }}</td>
+					<td>
+					{% if stop.id in lines|keys %}
+						{% for line in lines[stop.id] %}
+							<div class="line-number line-small" style="color:{{ line['fgColor'] }}; background-color:{{ line['bgColor'] }}; font-family:sans-serif; font-weight: bold;">
+								<span style="font-size: 15px;">{{ line['number'] }}</span>
+							</div>
+						{% endfor %}
+					{% endif %}
+					</td>
+				{% endif %}
+                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+				<td>
+					{% if stop.id not in lines|keys %}
+						<a class="btn btn-default" id="external-transfert" 
+							href="{{ path('tisseo_boa_stop_close', {'StopId': stop.id, 'closingDate': 'now'|date('d/m/Y'), 'stopAreaId': stopArea.id }) }}">
+							{{ 'global.delete' | trans }}
+						</a>
+					{% endif %}
+                    {% if stop.stopHistories.last.endDate is not null %}
+                        <label>Clôturé au {{ stop.stopHistories.last.endDate|date('d/m/Y')  }}</label>
+                    {% endif %}
+				</td>
+                {% endif %}
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+
+	{# buttons #}
+	{% if stopArea.id is not null %}
+        <div class="row" style="padding: 10px 0 0">
+            <div class = "col-md-12">
+                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                    <a class="btn btn-default" id="internal-transfert"
+                        href="{{ path('tisseo_boa_internal_transfer_edit', {'StopAreaId': stopArea.id }) }}"
+                        data-toggle="modal" data-target="#base-modal" >
+                        <span class="glyphicon glyphicon-resize-small"></span>
+                        {{ 'stop_area.labels.internal_transfert' | trans }}
+                        </a>
+                    <a class="btn btn-default" id="external-transfert"
+                        href="{{ path('tisseo_boa_external_transfer_edit', {'StopAreaId': stopArea.id }) }}"
+                        data-toggle="modal" data-target="#base-modal" >
+                        <span class="glyphicon glyphicon-resize-full"></span>
+                        {{ 'stop_area.labels.external_transfert' | trans }}
+                    </a>
+                    <a class="btn btn-default" id="geometries" href="#">
+                        <span class="glyphicon glyphicon-globe"></span>
+                        {{ 'stop_area.labels.geometries' | trans }}
+                    </a>
+                    <a class="btn btn-default" id="alias"
+                        href="{{ path('tisseo_boa_stop_area_alias', {'StopAreaId': stopArea.id }) }}"
+                        data-toggle="modal" data-target="#base-modal" >
+                        <span class="glyphicon glyphicon-tag"></span>
+                        {{ 'stop_area.labels.alias' | trans }}
+                    </a>
+                {% endif %}
+                <input type="checkbox" id='show-closed-stops'><label> {{ 'stop_area.show_closed_stops' | trans }}</label>
+            </div>
+        </div>
+	{% endif %}
 {% endblock %}
 
 {% block javascripts %}
@@ -231,6 +237,14 @@
 					minLength: 3,
 					delay: 300
 				});
+
+                $('#show-closed-stops').change(function() {
+                    if($(this).is(":checked")) {
+                        $( ".closed-stop" ).removeClass('hide');
+                    } else {
+                        $( ".closed-stop" ).addClass('hide');
+                    }
+                });
 			});
 		});
     </script>
