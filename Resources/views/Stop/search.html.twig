@@ -38,35 +38,13 @@
 
 {% block javascripts %}
    <script>
-		require(['jquery', 'jquery_ui_autocomplete'], function($) {
+        require(['boa/stop/utils'], function(utils) {
+            utils.init_autocomplete("#stop_search", "#stop_id");
 
-			$("#stop_search").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$("#stop_id").val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
-			});
-			
 			$( "#stop_edit" ).click(function() {
 				var stop_id = $("#stop_id").val();
 				if(stop_id == '') {
-					alert( "Vous n'avez pas sélectionné de point d'arrêt valide." );
+					alert( "{{'stop.no_stop_selected'|trans({}, 'default')|e('js')}}" );
 					return false;
 				}
 				$(this).attr("href", $(this).attr("href") + "/" + stop_id);

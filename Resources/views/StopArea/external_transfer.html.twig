@@ -84,8 +84,8 @@
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
 	
-	<script>   
-		require(['jquery', 'jquery_ui_autocomplete'], function($) {
+	<script>
+   		require(['boa/stop/utils'], function(utils) {	
 			$(document).ready(function() {
 				$('.modal-dialog').css('width', '1300px');
 
@@ -122,7 +122,7 @@
 
 					return html;
 				};
-				
+
 				{#end stop cell custom autocomplete(categories stop + stop_area) #}
 				$.widget("custom.catAutocomplete", $.ui.autocomplete, {
 					_renderMenu: function(ul, items) {
@@ -143,10 +143,11 @@
 					'stop': "{{ 'stop_area.labels.stops' | trans }}",
 					'stop_area': "{{ 'stop_area.labels.stop_areas' | trans }}"
 				};
-			
+
 				function addNewExternalTransfer(json_url) {
 					var index = $('#transfer_table >tbody >tr').length;
 					var newLine = "<tr>";
+
 					newLine +="<td>" + stopSelect("transfer_" + index  + "_startStopId", "transfer[" + index  + "][startStopId]") + "</td>";
 					newLine +="<td>";
 					newLine +="<input type='hidden' id='transfer_" + index  + "_endStopType' name='transfer[" + index  + "][endStopType]' class='form-control'>";
@@ -160,7 +161,6 @@
 					newLine +="<td><a class='btn btn-default' href='#'><span class='glyphicon glyphicon-remove'></span>{{'global.delete'|trans({}, 'messages')}}</a></td>";
 					
 					$('#transfer_table >tbody').append(newLine);
-
 					$("#transfer_" + index  + "_endStopLabel").catAutocomplete({
 						source: function (request, response) {
 							var objData = { term: request.term };
@@ -200,57 +200,13 @@
 				$('#add_element').click(function(event) {
 					addNewExternalTransfer("{{ path('tisseo_boa_json_stop_transfer') }}");
 				});
-				
-				{# table data validation before submit #}
-				function transferTableValidation() {
-					var table_validation = true;
-					$("#transfer_table tbody tr").each(function (i, row) {
-						var startStopId = $( "#transfer_" + i  + "_startStopId option:selected" ).val();
-						var endStopId = $("#transfer_" + i  + "_endStopId").val();
-						var duration = $("#transfer_" + i  + "_duration").val();
-						var distance = $("#transfer_" + i  + "_distance").val();
-						var longName = $("#transfer_" + i  + "_longName").val();
-						var theGeom = $("#transfer_" + i  + "_theGeom").val();
-
-						if( !endStopId ) {
-								displayAlert("{{ 'stop_area.transfer.error.end_stop' | trans }}".replace("%i%", (i+1)));
-								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
-								table_validation = false;
-								return false;
-						}
-						
-						if( distance ) {
-							if ( !isInt(distance) ) {
-								displayAlert("{{ 'stop_area.transfer.error.distance' | trans }}".replace("%d%", distance).replace("%i%", (i+1)));
-								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
-								table_validation = false;
-								return false;
-							}
-						}
-						
-						if ( !isInt(duration) ) {
-							displayAlert("{{ 'stop_area.transfer.error.duration' | trans }}".replace("%d%", duration).replace("%i%", (i+1)));
-								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
-							table_validation = false;
-							return false;
-						}
-						if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
-							displayAlert("{{ 'stop_area.transfer.error.duration_value' | trans }}".replace("%i%", (i+1)));
-								$('#transfer_table tbody').find("tr:eq("+i+")").addClass("invalid");
-							table_validation = false;
-							return false;
-						}
-					});
-					
-					return table_validation;
-				};			
-				
+								
 				//ajax form submission
 				var forms = ['[ name="{{ form.vars.full_name }}"]'];
 				$( forms.join(',') ).submit( function( e ){
 					e.preventDefault();
 					
-					if( transferTableValidation() )  {
+					if( utils.externalTransferTableValidation("#transfer_table") )  {
 						var post_url = "{{ path('tisseo_boa_external_transfer_save', {'StopAreaId': stopArea.id }) }}";
 						postForm( $(this), post_url, function( response ){
 							done = true;
@@ -271,89 +227,7 @@
 					//prevent submit done with ajax
 					return false;
 				});			
-				
-				function inArray(array, key, value) {
-					var item = $.grep(array, function(item) {
-						return item[key] == value;
-					});
 
-					if (item.length) {
-						return true;
-					}
-					return false;
-				};
-				
-				
-				function buildExternalTransferLine(transfer, index)
-				{
-					var  line = "<tr><td>";
-					line += "<input type='hidden' id='transfer_" + index  + "_id' name='transfer[" + index  + "][id]'  value='" +  transfer["id"]  + "'>";
-					line += "<input type='hidden' id='transfer_" + index  + "_startStopId' name='transfer[" + index  + "][startStopId]' class='form-control' value='" +  transfer["startStopId"]  + "'>";
-					line += transfer["startStopLabel"];				
-					line += "</td>";
-					
-
-					line += "<td>";				
-					line += "<input type='hidden' id='transfer_" + index  + "_endStopType' name='transfer[" + index  + "][endStopType]' class='form-control' value='stop'>";				
-					line += "<input type='hidden' id='transfer_" + index  + "_endStopId' name='transfer[" + index  + "][endStopId]' class='form-control' value='" +  transfer["endStopId"]  + "'>";				
-					line += transfer["endStopLabel"];				
-					line += "</td>";
-
-					$.each(["duration", "distance", "longName"] , function(i, field) { 
-						line += "<td><input type='text' id='transfer_" + index  + "_" + field + "' name='transfer[" + index  + "][" + field + "]' class='form-control input-value'";
-						if (transfer[field]) line += " value='" +  transfer[field]  + "'";
-						line += "></td>";
-					});
-					line += "</tr>";
-					
-					return line;
-				};
-				
-				function buildExternalTransferTable(transfers, startStopId, endStopId) {
-					var htmlBody = "";
-					var index = 0;
-					startStops.splice(0, startStops.length);
-					endStops.splice(0, endStops.length);
-					$.each(transfers, function(key, transfer) {
-						if( !inArray(startStops, "id", transfer["startStopId"]) ) {
-							startStops.push({ "id":  transfer["startStopId"], "label": transfer["startStopLabel"] });
-						}
-						if( !inArray(endStops, "id", transfer["endStopId"]) ) {
-							endStops.push({ "id":  transfer["endStopId"], "label": transfer["endStopLabel"] });
-						}
-						
-						if( !startStopId || startStopId == transfer["startStopId"] ) {
-							if( !endStopId || endStopId == transfer["endStopId"] ) {
-								htmlBody += buildExternalTransferLine(transfer, index);
-								index +=1;
-							}
-						}
-					});
-					
-					$("#transfer_table >tbody").html(htmlBody);
-				};
-				
-				function buildStopFilter(stops, select_div, select_id, select_class, all_label, all_value, selected_value_id) {
-					var html = "";
-					var html = "<select id='" + select_id + "' class='" + select_class + "'>";
-					html += "<option value='" + all_value + "'>" + all_label + "</option>";
-									
-					var selected = "";
-					$.each(stops, function(i, stop) {
-						selected = "";
-						if( stop["id"] == selected_value_id ) 
-							selected = "selected='selected'";
-						html += "<option value='" + stop["id"] + "' " + selected + ">" + stop["label"] + "</option>";
-					});
-					html += "</select>";
-					
-					$("#" + select_div).html(html);
-					
-					$("#" + select_id).change(function(){
-						stopSelectChange();
-					});				
-				};
-				
 				function getTransfer() {
 					var startStopId = $( "#startStop_select" ).find('option:selected').val() || null;
 					var endStopId = $( "#endStop_select" ).find('option:selected').val() || null;
@@ -362,9 +236,11 @@
 
 					$.ajax({ url: url, data : objData, type: 'POST',
 						success : function(data){
-							buildExternalTransferTable(JSON.parse(data.content), startStopId, endStopId);
-							buildStopFilter(startStops, "startStop_div", "startStop_select", "stop_select", "{{ 'stop_area.transfer.columns.startStop' | trans }}", "", startStopId);
-							buildStopFilter(endStops, "endStop_div", "endStop_select", "stop_select", "{{ 'stop_area.transfer.columns.endStop' | trans }}", "", endStopId);
+							utils.buildExternalTransferTable(JSON.parse(data.content), "#transfer_table", startStopId, endStopId, startStops, endStops);
+							utils.buildStopFilter(startStops, "startStop_div", "startStop_select", "stop_select", 
+								"{{ 'stop_area.transfer.columns.startStop' | trans }}", "", startStopId);
+							utils.buildStopFilter(endStops, "endStop_div", "endStop_select", "stop_select", 
+								"{{ 'stop_area.transfer.columns.endStop' | trans }}", "", endStopId);
 							
 							if($("#transfer_table >tbody >tr").length > 100) {
 								displayAlert("{{ 'stop_area.transfer.error.max_input' | trans }}");

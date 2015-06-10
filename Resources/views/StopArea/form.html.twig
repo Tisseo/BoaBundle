@@ -114,7 +114,7 @@
 		</thead>
 		<tbody>
 		{% for stop in stops %}
-            {% if stop.stopHistories.last.endDate is not null and stop.stopHistories.last.endDate.format('Ymd') < 'now'|date('Ymd') %} %}
+            {% if stop.stopHistories.last.endDate is not null and stop.stopHistories.last.endDate.format('Ymd') < 'now'|date('Ymd') %}
                 <tr class='closed-stop hide'>
             {% else %}
                 <tr>

@@ -43,29 +43,8 @@
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
    <script>   
-		require(['jquery', 'jquery_ui_autocomplete'], function($) {
-			$("#accessibility_calendar").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$('#boa_stop_accessibility_accessibilityType_calendar').val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
-			});
-		 });
+   		require(['boa/stop/utils'], function(utils) {
+			utils.init_autocomplete("#accessibility_calendar", "#boa_stop_accessibility_accessibilityType_calendar");
+		});
     </script>		
 {% endblock %}

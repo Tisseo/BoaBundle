@@ -163,6 +163,7 @@ stop:
     add_inaccessibility: Ajout d'inaccessibilité
     add_history: Modifier un point d'arrêt 
     close_stop: Clôturer un point d'arrêt
+    no_stop_selected: Vous n'avez pas sélectionné de point d'arrêt valide.
 
 stop_area:
     title: Zone d'arrêt
@@ -170,6 +171,7 @@ stop_area:
     edit: Editer une zone d'arrêt
     alias: Alias
     transfer: Transferts de la zone d'arrêt
+    no_stop_area_selected: Vous n'avez pas sélectionné de zone d'arrêt valide.
 
 line:
      list:

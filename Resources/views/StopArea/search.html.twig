@@ -64,7 +64,7 @@
 			$( "#stop_area_btn" ).click(function() {
 				var stop_area_id = $("#stop_area_id").val();
 				if(stop_area_id == '') {
-					alert( "Vous n'avez pas sélectionné de zone d'arrêt valide." );
+					alert( "{{'stop_area.no_stop_area_selected'|trans({}, 'default')|e('js') }}" );
 					return false;
 				}
 				$(this).attr("href", $(this).attr("href") + "/" + stop_area_id);

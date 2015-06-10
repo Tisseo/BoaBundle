@@ -45,12 +45,8 @@
 	<div class="row m-t-row">
 		{% set datasource = form.stopDatasources[0] %}
 		<div class = "col-md-2"> {{ form_label(form.stopDatasources) }} </div>			
-		<div class = "col-md-3">
-			{{ form_widget(datasource.datasource) }} 
-		</div>
-		<div class = "col-md-3">
-			{{ form_widget(datasource.code) }} 
-		</div>
+		<div class = "col-md-3"> {{ form_widget(datasource.datasource) }} </div>
+		<div class = "col-md-3"> {{ form_widget(datasource.code) }} </div>
 	</div>
 	
 	{# masterStop(phantom) #}
@@ -252,54 +248,8 @@
 
 {% block javascripts %}
    <script>
-		require(['jquery', 'jquery_ui_autocomplete'], function($) {
-
-			$("#stop_area").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$("#boa_stop_stopArea").val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
-			});
-
-			$("#master_stop").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$("#boa_stop_masterStop").val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
-			});
-
+   		require(['boa/stop/utils'], function(utils) {
+			utils.init_autocomplete("#stop_area", "#boa_stop_stopArea");
 			$("#stop_area").val($("#boa_stop_stopArea option:selected").text());
 		 });
     </script>

@@ -1,6 +1,33 @@
-define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr'], function($) {
+define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/fr', 'translations/messages'], function($) {
 
-    function displayCalendar(calendarDiv, FirstDate, LastDate, calendarPattern){
+        function init_autocomplete(selector){
+            $(selector).autocomplete({
+                source: function (request, response) {
+                    var objData = { term: request.term };
+                    var url = $(this.element).attr('data-url');
+                    $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+                        success: function (data) {
+                            response($.map(JSON.parse(data.content), function (item) {                                  
+                                return {                
+                                    label: item.name, 
+                                    value: item.name, 
+                                    id: item.id
+                                };
+                            }));
+                        },
+                    });
+                },
+                select: function (event, ui) {
+                    var hidden_id = '#' + $(this).attr('id').replace("calendarName", "includedCalendar");
+                    $(hidden_id).val(ui.item.id);
+                },                  
+                minLength: 2,
+                delay: 300
+            });
+        };
+
+
+    function _displayCalendar(calendarDiv, FirstDate, LastDate, calendarPattern){
         var Beginning = new Date(FirstDate);
         Beginning.setHours(0,0,0,0);
         var Ending = new Date(LastDate);
@@ -120,10 +147,32 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr'], function($
 
             $.ajax({ url: url, data : objData, type: 'POST',
                 success : function(data){
-                    displayCalendar(calendarDivId, start_date, end_date, data.content);
+                    _displayCalendar(calendarDivId, start_date, end_date, data.content);
                 }
             });
 
+        },
+        displayCalendar: function(calendarDiv, FirstDate, LastDate, calendarPattern) {
+            _displayCalendar(calendarDiv, FirstDate, LastDate, calendarPattern);
+        },
+        addCalendarElement: function(tableId, selector) {
+            var $index = $(tableId + ' >tbody >tr').length + 1;
+            var $prototype = $(tableId).attr('data-prototype');
+            var $newLine = $prototype.replace(/__name__/g, $index);
+            $(tableId + ' >tbody').append(
+                "<tr>" + $newLine + 
+                "<td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>" + 
+                Translator.trans('global.delete', {}, 'messages') + 
+                "</a></td></tr>");
+            
+            init_autocomplete(selector);
+
+            $('.element-date').datepicker({
+                language: 'fr',
+                todayHighlight: true,
+                startView: 1,
+                autoclose: true
+            });
         }
     }
 });

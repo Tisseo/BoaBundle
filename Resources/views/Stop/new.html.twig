@@ -44,31 +44,9 @@
     {{ form_end(form, { 'render_rest': false}) }}
 	
    <script>
-		require(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
+		require(['boa/stop/utils', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function(utils) {
 			 $(document).ready(function() {
-				$("#stop_area").autocomplete({
-					source: function (request, response) {
-						var objData = { term: request.term };
-						var url = $(this.element).attr('data-url');
-						$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-							success: function (data) {
-								response($.map(JSON.parse(data.content), function (item) {									
-									return {				
-										label: item.name, 
-										value: item.name, 
-										id: item.id
-									};
-								}));
-							},
-						});
-					},
-					select: function (event, ui) {
-						$("#boa_new_stop_stopArea").val(ui.item.id);
-					},					
-					minLength: 3,
-					delay: 300
-				});
-
+			 	utils.init_autocomplete("#stop_area", "#boa_new_stop_stopArea");
 				
 				{# call from stop area form #}
 				{% if stopArea is not empty %}

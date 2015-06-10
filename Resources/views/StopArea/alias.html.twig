@@ -15,13 +15,11 @@
 	{{ form_widget(form._token) }}
 	
 	<div>
-{#		{{ form_widget(form.alias, { 'attr': {'class': 'hide'}}) }}	#}
 		<div class="stop_table_header">Alias de la zone "{{ stopAreaLabel }}"</div>
 		<table 
 			id='alias_table'
 			class="table table-hover dataTable no-footer"
 			data-prototype="{% filter escape %}{{ form_widget(form.alias.vars.prototype['name']) }} {% endfilter %}"
-{#			data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendar_element.vars.prototype } %} {% endfilter %}"		#}
 		>
 		<thead>
 			<th>Nom</th>
@@ -54,19 +52,13 @@
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
 	<script>   
-		require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
+   		require(['boa/stop/utils'], function(utils) {					
 			$('#add_element').click(function(event) {
-				var $index = $('#alias_table >tbody >tr').length + 1;
-				var $prototype = $('#alias_table').attr('data-prototype');
-				var $newLine = $prototype.replace(/__name__/g, $index);
-				$('#alias_table >tbody')
-					.append("<tr><td>" + 
-								$newLine + 
-								"</td><td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>{{'global.delete'|trans({}, 'messages')}}</a></td></tr>");
+				utils.add_alias('#alias_table');
 			});
 		});
 		
-		$('#alias_table').on('click',  "a", function(event) {
+		$('#alias_table').on('click', "a", function(event) {
 			event.preventDefault();
 			if ($(this).text() === "{{'global.delete'|trans({}, 'messages')}}") { 
 				$(this).closest("tr").remove(); 
