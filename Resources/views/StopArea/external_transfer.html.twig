@@ -228,6 +228,28 @@
 					return false;
 				});			
 
+		        function buildStopFilter(stops, select_div, select_id, select_class, all_label, all_value, selected_value_id) {
+		            var html = "";
+		            var html = "<select id='" + select_id + "' class='" + select_class + "'>";
+		            html += "<option value='" + all_value + "'>" + all_label + "</option>";
+		                            
+		            var selected = "";
+		            $.each(stops, function(i, stop) {
+		                selected = "";
+		                if( stop["id"] == selected_value_id ) 
+		                    selected = "selected='selected'";
+		                html += "<option value='" + stop["id"] + "' " + selected + ">" + stop["label"] + "</option>";
+		            });
+		            html += "</select>";
+		            
+		            $("#" + select_div).html(html);
+		            
+		            $("#" + select_id).change(function(){
+		                stopSelectChange();
+		            });             
+		        };
+
+
 				function getTransfer() {
 					var startStopId = $( "#startStop_select" ).find('option:selected').val() || null;
 					var endStopId = $( "#endStop_select" ).find('option:selected').val() || null;
@@ -237,9 +259,9 @@
 					$.ajax({ url: url, data : objData, type: 'POST',
 						success : function(data){
 							utils.buildExternalTransferTable(JSON.parse(data.content), "#transfer_table", startStopId, endStopId, startStops, endStops);
-							utils.buildStopFilter(startStops, "startStop_div", "startStop_select", "stop_select", 
+							buildStopFilter(startStops, "startStop_div", "startStop_select", "stop_select", 
 								"{{ 'stop_area.transfer.columns.startStop' | trans }}", "", startStopId);
-							utils.buildStopFilter(endStops, "endStop_div", "endStop_select", "stop_select", 
+							buildStopFilter(endStops, "endStop_div", "endStop_select", "stop_select", 
 								"{{ 'stop_area.transfer.columns.endStop' | trans }}", "", endStopId);
 							
 							if($("#transfer_table >tbody >tr").length > 100) {

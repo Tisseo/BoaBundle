@@ -72,26 +72,6 @@ define(['jquery', 'jquery_ui_autocomplete', 'translations/messages'], function($
                 Translator.trans('global.delete', {}, 'messages') + 
                 "</a></td></tr>");
         },
-        buildStopFilter: function(stops, select_div, select_id, select_class, all_label, all_value, selected_value_id) {
-            var html = "";
-            var html = "<select id='" + select_id + "' class='" + select_class + "'>";
-            html += "<option value='" + all_value + "'>" + all_label + "</option>";
-                            
-            var selected = "";
-            $.each(stops, function(i, stop) {
-                selected = "";
-                if( stop["id"] == selected_value_id ) 
-                    selected = "selected='selected'";
-                html += "<option value='" + stop["id"] + "' " + selected + ">" + stop["label"] + "</option>";
-            });
-            html += "</select>";
-            
-            $("#" + select_div).html(html);
-            
-            $("#" + select_id).change(function(){
-                stopSelectChange();
-            });             
-        },
         buildExternalTransferTable: function(transfers, transferTableId, startStopId, endStopId, startStops, endStops) {
             var htmlBody = "";
             var index = 0;

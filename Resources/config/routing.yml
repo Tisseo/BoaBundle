@@ -114,9 +114,13 @@ tisseo_boa_json_city:
 tisseo_boa_json_internal_transfer:
     pattern: /json/internal_transfer
     defaults: { _controller: "TisseoBoaBundle:Json:internalTransfer"}
+    options:
+        expose: true
 tisseo_boa_json_external_transfer:
     pattern: /json/external_transfer
     defaults: { _controller: "TisseoBoaBundle:Json:externalTransfer"}
+    options:
+        expose: true
 tisseo_boa_json_stop_transfer:
     pattern: /json/stop_transfer
     defaults: { _controller: "TisseoBoaBundle:Json:stopTransfer"}
