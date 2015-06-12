@@ -22,45 +22,68 @@
                     {{ form_row(form.name) }}
                 </div>
                 <div class = "col-md-6">
-                    {{ form_label(form.pattern) }}
-                    {{ form_widget(form.pattern, { 'attr': {'class': 'hide pattern'}}) }}
-                    <input
-                        type="text"
-                        id="trip-pattern"
-                        class="form-control"
-                        data-url="{{ path('tisseo_boa_json_trip_template') }}"
-                        required
-                    >
+                    <div class="form-group">
+                        {{ form_label(form.pattern) }}
+                        {{ form_widget(form.pattern, { 'attr': {'class': 'hide pattern'}}) }}
+                        <input
+                            type="text"
+                            id="trip-pattern"
+                            class="form-control"
+                            data-url="{{ path('tisseo_boa_json_trip_template') }}"
+                            required
+                        >
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class = "col-md-12">
             <div class="row">
-                <div class = "col-md-6">                    
-                    {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide day-calendar'}}) }}
-                    {{ form_label(form.dayCalendar) }}
-                    <input 
-                        type="text" 
-                        id="day-calendar"
-                        class="form-control"
-                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
-                        required
-                    >
+                <div class = "col-md-6">
+                    <div class="form-group">
+                        {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide day-calendar'}}) }}
+                        {{ form_label(form.dayCalendar) }}
+                        <input 
+                            type="text" 
+                            id="day-calendar"
+                            class="form-control"
+                            data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
+                            required
+                        >
+                    </div>
                 </div>
-                <div class = "col-md-6">                    
-                    {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide period-calendar'}}) }}
-                    {{ form_label(form.periodCalendar) }}
-                    <input
-                        type="text"
-                        id="period-calendar"
-                        class="form-control"
-                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode,mixte' }) }}"
-                        required
-                    >
+                <div class = "col-md-6">
+                    <div class="form-group">
+                        {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide period-calendar'}}) }}
+                        {{ form_label(form.periodCalendar) }}
+                        <input
+                            type="text"
+                            id="period-calendar"
+                            class="form-control"
+                            data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode,mixte' }) }}"
+                            required
+                        >
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class = "col-md-12">
+            <div class="row">
+                <div class = "col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.datasource) }}
+                    </div>
+                </div>
+                <div class = "col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.code) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <div id="stop_times"></div>

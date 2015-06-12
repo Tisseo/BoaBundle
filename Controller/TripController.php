@@ -4,6 +4,7 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\Trip;
+use Tisseo\EndivBundle\Entity\TripDatasource;
 use Tisseo\BoaBundle\Form\Type\TripType;
 use Tisseo\BoaBundle\Form\Type\NewTripType;
 
@@ -117,9 +118,13 @@ class TripController extends AbstractController
         if ($form->isValid()) {
             try {
                 $new_trip = $form->getData();
+                $datasource = array();
+                $datasource['datasource'] = $form->get('datasource')->getData();
+                $datasource['code'] = $form->get('code')->getData();
+
                 $stop_times = $request->request->get('stop_times');
                 $tripManager = $this->get('tisseo_endiv.trip_manager');
-                $tripManager->createTripAndStopTimes($new_trip, $stop_times, $route, false);
+                $tripManager->createTripAndStopTimes($new_trip, $stop_times, $route, $datasource, false);
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }

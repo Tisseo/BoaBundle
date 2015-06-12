@@ -33,7 +33,24 @@ class NewTripType extends AbstractType
             array(
                 'label' => 'trip.labels.period_calendar',
                 'required' => false)
+        )
+        ->add('datasource', 'entity',
+            array(
+                'mapped' => false,
+                'required' => true,
+                'label' => 'Datasource',
+                'class' => 'TisseoEndivBundle:Datasource',
+                'property' => 'name'
+            )
+        )
+        ->add('code', 'text',
+            array(
+                'mapped' => false,
+                'required' => true,
+                'label' => 'Code'
+            )
         );
+
 
         $builder->setAction($options['action']);
     }

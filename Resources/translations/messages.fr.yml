@@ -326,6 +326,11 @@ trip:
         day_calendar: Le calendrier "jour" est obligatoire (ou sa valeur est incorrecte)
         period_calendar: Le calendrier "période" est obligatoire (ou sa valeur est incorrecte)
 
+trip_datasource:
+    labels:
+        datasource: Datasource
+        code: Code
+
 calendar_fh:
     error: Les champs "Type", "Période" et "Jours de circulation ne sont pas correctement remplis."
     way: Sens

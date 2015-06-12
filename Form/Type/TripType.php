@@ -31,6 +31,11 @@ class TripType extends AbstractType
         )
         ->add('periodCalendar', 'calendar_selector',
             array('label' => 'trip.labels.period_calendar')
+        )
+        ->add('tripDatasources', 'collection',
+            array(
+                'type' => new TripDatasourceType()
+                )
         );
 
         $builder->setAction($options['action']);
@@ -48,8 +53,8 @@ class TripType extends AbstractType
         );
     }
 
-    public function getName(){
-
+    public function getName()
+    {
         return 'boa_trip';
     }
 
