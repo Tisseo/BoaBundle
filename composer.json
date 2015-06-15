@@ -1,15 +1,26 @@
 {
     "name" : "tisseo/boa-bundle",
-    "description" : "An interface tool consisting in public transport data edition.",
+    "description" : "A web interface providing public transport ENDIV database administration.",
     "type" : "symfony-bundle",
-    "authors" : [{
-        "name" : "Vincent Passama",
-        "email" : "vincent.passama@capgemini.com"
-    }],
-    "keywords" : [
-        "tisseo boa bundle"
+    "homepage": "https://github.com/Tisseo/BoaBundle",
+    "authors" : [
+        {
+            "name" : "Vincent Passama",
+            "email" : "vincent.passama@gmail.com"
+        },
+        {
+            "name" : "Rodolphe Duval",
+            "email" : "rdldvl@gmail.com"
+        },
+        {
+            "name" : "Pierre-Yves Claitte",
+            "email" : "pierre.cl@gmail.com"
+        }
     ],
-    "license" : "MIT",
+    "keywords" : [
+        "tisseo boa bundle endiv symfony nmm"
+    ],
+    "license" : "AGPL-3.0",
     "require" : {
         "php": ">=5.4.3",
         "tisseo/endiv-bundle": "dev-master"
@@ -17,12 +28,5 @@
     "autoload" : {
         "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
     },
-    "target-dir" : "Tisseo/BoaBundle",
-    "repositories" : [{
-    }],
-    "extra" : {
-        "branch-alias" : {
-            "dev-master" : "0.1-dev"
-        }
-    }
+    "target-dir" : "Tisseo/BoaBundle"
 }
