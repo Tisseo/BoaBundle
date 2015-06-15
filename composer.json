@@ -23,7 +23,7 @@
     "license" : "AGPL-3.0",
     "require" : {
         "php": ">=5.4.3",
-        "tisseo/endiv-bundle": "dev-master"
+        "tisseo/endiv-bundle": "~1.0.0"
     },
     "autoload" : {
         "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
