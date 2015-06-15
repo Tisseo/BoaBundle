@@ -28,5 +28,6 @@
     "autoload" : {
         "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
     },
-    "target-dir" : "Tisseo/BoaBundle"
+    "target-dir" : "Tisseo/BoaBundle",
+    "version" : "1.0.0"
 }
