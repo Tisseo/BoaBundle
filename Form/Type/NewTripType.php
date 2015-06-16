@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Tisseo\EndivBundle\Entity\Trip;
 
-class NewTripType extends AbstractType 
+class NewTripType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -16,25 +16,40 @@ class NewTripType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',
-            array('label' => 'trip.labels.name')
+        $builder->add(
+            'name',
+            'text',
+            array(
+                'label' => 'trip.labels.name'
+            )
         )
-        ->add('pattern', 'trip_selector',
+        ->add(
+            'pattern',
+            'trip_selector',
             array(
                 'label' => 'trip.labels.pattern',
-                'required' => false)
+                'required' => false
+            )
         )
-        ->add('dayCalendar', 'calendar_selector',
+        ->add(
+            'dayCalendar',
+            'calendar_selector',
             array(
                 'label' => 'trip.labels.day_calendar',
-                'required' => false)
+                'required' => false
+            )
         )
-        ->add('periodCalendar', 'calendar_selector',
+        ->add(
+            'periodCalendar',
+            'calendar_selector',
             array(
                 'label' => 'trip.labels.period_calendar',
-                'required' => false)
+                'required' => false
+            )
         )
-        ->add('datasource', 'entity',
+        ->add(
+            'datasource',
+            'entity',
             array(
                 'mapped' => false,
                 'required' => true,
@@ -43,7 +58,9 @@ class NewTripType extends AbstractType
                 'property' => 'name'
             )
         )
-        ->add('code', 'text',
+        ->add(
+            'code',
+            'text',
             array(
                 'mapped' => false,
                 'required' => true,
