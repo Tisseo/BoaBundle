@@ -12,9 +12,9 @@
 <div class="row">
     <div class="col-md-2">
         <h1>{{ title|trans({}, 'default') }}</h1>
-	</div>
+    </div>
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-	<div class="col-md-10">
+    <div class="col-md-10">
         <a href="{{ path('tisseo_boa_stop_area_edit') }}" class="btn btn-success" id="new_stop">
             <span class="glyphicon glyphicon-plus"></span> {{'stop_area.create'|trans({}, 'default')}}
         </a>
@@ -36,40 +36,40 @@
 
 {% block javascripts %}
    <script>
-		require(['jquery', 'jquery_ui_autocomplete'], function($) {
+        require(['jquery', 'jquery_ui_autocomplete'], function($) {
 
-			$("#stop_area_search").autocomplete({
-				source: function (request, response) {
-					var objData = { term: request.term };
-					var url = $(this.element).attr('data-url');
-					$.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-						success: function (data) {
-							response($.map(JSON.parse(data.content), function (item) {									
-								return {				
-									label: item.name, 
-									value: item.name, 
-									id: item.id
-								};
-							}));
-						},
-					});
-				},
-				select: function (event, ui) {
-					$("#stop_area_id").val(ui.item.id);
-				},					
-				minLength: 3,
-				delay: 300
-			});
-			
-			$( "#stop_area_btn" ).click(function() {
-				var stop_area_id = $("#stop_area_id").val();
-				if(stop_area_id == '') {
-					alert( "{{'stop_area.no_stop_area_selected'|trans({}, 'default')|e('js') }}" );
-					return false;
-				}
-				$(this).attr("href", $(this).attr("href") + "/" + stop_area_id);
-			});
-			
-		 });
+            $("#stop_area_search").autocomplete({
+                source: function (request, response) {
+                    var objData = { term: request.term };
+                    var url = $(this.element).attr('data-url');
+                    $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
+                        success: function (data) {
+                            response($.map(JSON.parse(data.content), function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.name,
+                                    id: item.id
+                                };
+                            }));
+                        },
+                    });
+                },
+                select: function (event, ui) {
+                    $("#stop_area_id").val(ui.item.id);
+                },
+                minLength: 3,
+                delay: 300
+            });
+
+            $( "#stop_area_btn" ).click(function() {
+                var stop_area_id = $("#stop_area_id").val();
+                if(stop_area_id == '') {
+                    alert( "{{'stop_area.no_stop_area_selected'|trans({}, 'default')|e('js') }}" );
+                    return false;
+                }
+                $(this).attr("href", $(this).attr("href") + "/" + stop_area_id);
+            });
+
+         });
     </script>
 {% endblock %}

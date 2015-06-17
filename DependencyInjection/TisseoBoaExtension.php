@@ -27,7 +27,7 @@ class TisseoBoaExtension extends Extension
         $loader->load('permissions.yml');
     }
 
-    public function prepend(ContainerBuilder $container) 
+    public function prepend(ContainerBuilder $container)
     {
         $container->prependExtensionConfig('doctrine', array(
             'orm' => array(

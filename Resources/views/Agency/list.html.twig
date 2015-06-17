@@ -5,10 +5,10 @@
 {% block list_title -%}
     {{'agency.list.title'|trans({}, 'default')}}
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-	-
-	<a href="{{ path('tisseo_boa_agency_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-		<span class="glyphicon glyphicon-plus"></span> {{'agency.create'|trans({}, 'default')}}
-	</a>
+    -
+    <a href="{{ path('tisseo_boa_agency_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> {{'agency.create'|trans({}, 'default')}}
+    </a>
     {% endif %}
 {% endblock %}
 
@@ -19,7 +19,7 @@
     <th>{{'agency.list.columns.lang'|trans({}, 'default')}}</th>
     <th>{{'agency.list.columns.phone'|trans({}, 'default')}}</th>
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-	    <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+        <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
     {% endif %}
 {% endblock %}
 
@@ -39,9 +39,9 @@
                 <td> {{ agency.phone }} </td>
                 {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
                 <td>
-					<a class="btn btn-default" href="{{ path('tisseo_boa_agency_edit', {'AgencyId': agency.id}) }}" data-toggle="modal" data-target="#base-modal">
-						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-					</a>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_agency_edit', {'agencyId': agency.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                    </a>
                 </td>
                 {% endif %}
             </tr>

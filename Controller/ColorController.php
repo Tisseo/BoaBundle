@@ -16,8 +16,8 @@ class ColorController extends AbstractController
                 'BUSINESS_VIEW_CONFIGURATION'
             )
         );
-		
-		$ColorManager = $this->get('tisseo_endiv.color_manager');
+
+        $ColorManager = $this->get('tisseo_endiv.color_manager');
         return $this->render(
             'TisseoBoaBundle:Color:list.html.twig',
             array(
@@ -26,43 +26,43 @@ class ColorController extends AbstractController
             )
         );
     }
-	
-    public function editAction(Request $request, $ColorId)
+
+    public function editAction(Request $request, $colorId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-		
-		$ColorManager = $this->get('tisseo_endiv.color_manager');
-		$form = $this->buildForm($ColorId, $ColorManager);
+
+        $ColorManager = $this->get('tisseo_endiv.color_manager');
+        $form = $this->buildForm($colorId, $ColorManager);
         $render = $this->processForm($request, $form);
-		if (!$render) {
+        if (!$render) {
             return $this->render(
                 'TisseoBoaBundle:Color:form.html.twig',
                 array(
                     'form' => $form->createView(),
-                    'title' => ($ColorId ? 'color.edit' : 'color.create')
+                    'title' => ($colorId ? 'color.edit' : 'color.create')
                 )
             );
         }
         return ($render);
     }
 
-    private function buildForm($ColorId, $ColorManager)
+    private function buildForm($colorId, $ColorManager)
     {
-        $color = $ColorManager->find($ColorId);
+        $color = $ColorManager->find($colorId);
         if (empty($color)) {
             $color = new Color();
-        }		
+        }
 
         $form = $this->createForm( new ColorType(), $color,
             array(
                 'action' => $this->generateUrl('tisseo_boa_color_edit',
-											array('ColorId' => $ColorId)
+                                            array('colorId' => $colorId)
                 )
             )
         );
-		
-		return ($form);
-    }	
+
+        return ($form);
+    }
 
     private function processForm(Request $request, $form)
     {

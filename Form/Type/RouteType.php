@@ -35,7 +35,7 @@ class RouteType extends AbstractType
             )
         );
 
-        $builder->add('routeDatasources', 'collection', 
+        $builder->add('routeDatasources', 'collection',
             array(
                 'type' => new RouteDatasourceType(),
                 'by_reference' => false,

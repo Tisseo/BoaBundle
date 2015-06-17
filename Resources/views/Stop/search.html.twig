@@ -41,15 +41,15 @@
         require(['boa/stop/utils'], function(utils) {
             utils.init_autocomplete("#stop_search", "#stop_id");
 
-			$( "#stop_edit" ).click(function() {
-				var stop_id = $("#stop_id").val();
-				if(stop_id == '') {
-					alert( "{{'stop.no_stop_selected'|trans({}, 'default')|e('js')}}" );
-					return false;
-				}
-				$(this).attr("href", $(this).attr("href") + "/" + stop_id);
-			});
-			
-		 });
+            $( "#stop_edit" ).click(function() {
+                var stop_id = $("#stop_id").val();
+                if(stop_id == '') {
+                    alert( "{{'stop.no_stop_selected'|trans({}, 'default')|e('js')}}" );
+                    return false;
+                }
+                $(this).attr("href", $(this).attr("href") + "/" + stop_id);
+            });
+
+         });
     </script>
 {% endblock %}

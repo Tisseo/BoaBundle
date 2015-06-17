@@ -34,7 +34,7 @@
                         {{ form_row(form.way, {'attr': {'readonly':true} } ) }}
                     </div>
                     <div class = "col-md-3">
-                        <button type="submit" id="form-save" class="btn btn-success route_btn_field">   
+                        <button type="submit" id="form-save" class="btn btn-success route_btn_field">
                             <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
                         </button>
                     </div>
@@ -176,7 +176,7 @@
             </tr>
             <tr>
                 <td colspan=3>
-                    <button style="float:left" type="submit" id="form-save" class="btn btn-success">   
+                    <button style="float:left" type="submit" id="form-save" class="btn btn-success">
                         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
                     </button>
                     <label style='padding-top: 8px;padding-left: 5px;'>{{ 'route.warning' | trans }}</label>
@@ -187,7 +187,7 @@
                         </a>
                     {% endif %}
                 </td>
-            </tr>         
+            </tr>
         </table>
     {{ form_end(form) }}
 {% endblock %}
@@ -203,7 +203,7 @@
             $(document).ready(function () {
                 $( "#add-service" ).click(function() {
                     utils.addService("#trip-table", '#route-stop-table');
-                }); 
+                });
 
                 $('#trip-table').on('click', ".duplicate-trip", function(event) {
                     event.preventDefault();
@@ -215,7 +215,7 @@
                 $('#trip-table').on('click',  ".delete-trip", function(event) {
                     event.preventDefault();
                     utils.deleteService($(this), '#trip-table');
-                }); 
+                });
 
                 {% if serviceTemplates | length == 0 %}
                     $( "#add-route-stop" ).click(function() {
@@ -270,7 +270,7 @@
                         utils.displayAlert("{{ 'route.error_submit.first_stop.not_scheduled' | trans }}");
                         return false;
                     }
-                    
+
                     {# dernier route stop => montée interdite + régulé #}
                     if( $("#route-stop-table tbody tr:last").find(".pickup").is(':checked') ) {
                         utils.displayAlert("{{ 'route.error_submit.last_stop.pickup' | trans }}");

@@ -15,7 +15,7 @@ class PropertyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array('label' => 'property.labels.name'))
-        ->add('default', 'checkbox', 
+        ->add('default', 'checkbox',
             array(
                 'label' => 'property.labels.default',
                 'required' => false
@@ -35,7 +35,7 @@ class PropertyType extends AbstractType
             )
         );
     }
-            
+
     /**
      * @return string
      */

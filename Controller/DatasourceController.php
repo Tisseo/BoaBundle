@@ -11,8 +11,8 @@ class DatasourceController extends AbstractController
     public function listAction()
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-		
-		$DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
+
+        $DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
         return $this->render(
             'TisseoBoaBundle:Datasource:list.html.twig',
             array(
@@ -21,43 +21,43 @@ class DatasourceController extends AbstractController
             )
         );
     }
-	
-    public function editAction(Request $request, $DatasourceId)
+
+    public function editAction(Request $request, $datasourceId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-		
-		$DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
-		$form = $this->buildForm($DatasourceId, $DatasourceManager);
+
+        $DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
+        $form = $this->buildForm($datasourceId, $DatasourceManager);
         $render = $this->processForm($request, $form);
-		if (!$render) {
+        if (!$render) {
             return $this->render(
                 'TisseoBoaBundle:Datasource:form.html.twig',
                 array(
                     'form' => $form->createView(),
-                    'title' => ($DatasourceId ? 'datasource.edit' : 'datasource.create')
+                    'title' => ($datasourceId ? 'datasource.edit' : 'datasource.create')
                 )
             );
         }
         return ($render);
     }
 
-    private function buildForm($DatasourceId, $DatasourceManager)
+    private function buildForm($datasourceId, $DatasourceManager)
     {
-        $datasource = $DatasourceManager->find($DatasourceId);
+        $datasource = $DatasourceManager->find($datasourceId);
         if (empty($datasource)) {
             $datasource = new Datasource();
-        }		
+        }
 
         $form = $this->createForm( new DatasourceType(), $datasource,
             array(
                 'action' => $this->generateUrl('tisseo_boa_datasource_edit',
-											array('DatasourceId' => $DatasourceId)
+                                            array('datasourceId' => $datasourceId)
                 )
             )
         );
-		
-		return ($form);
-    }	
+
+        return ($form);
+    }
 
     private function processForm(Request $request, $form)
     {

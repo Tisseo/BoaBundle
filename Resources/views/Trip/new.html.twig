@@ -16,22 +16,14 @@
     {{ render.route_header(trip.route) }}
 
     <div class="form form-edit">
-        <div class = "col-md-12">	
+        <div class = "col-md-12">
             <div class="row">
-                <div class = "col-md-6">	
+                <div class = "col-md-6">
                     {{ form_row(form.name) }}
                 </div>
                 <div class = "col-md-6">
                     <div class="form-group">
-                        {{ form_label(form.pattern) }}
-                        {{ form_widget(form.pattern, { 'attr': {'class': 'hide pattern'}}) }}
-                        <input
-                            type="text"
-                            id="trip-pattern"
-                            class="form-control"
-                            data-url="{{ path('tisseo_boa_json_trip_template') }}"
-                            required
-                        >
+                        {{ form_row(form.pattern) }}
                     </div>
                 </div>
             </div>
@@ -43,11 +35,11 @@
                     <div class="form-group">
                         {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide day-calendar'}}) }}
                         {{ form_label(form.dayCalendar) }}
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             id="day-calendar"
                             class="form-control"
-                            data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
+                            data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'jour' }) }}"
                             required
                         >
                     </div>
@@ -60,7 +52,7 @@
                             type="text"
                             id="period-calendar"
                             class="form-control"
-                            data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode,mixte' }) }}"
+                            data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'periode,mixte' }) }}"
                             required
                         >
                     </div>
@@ -108,33 +100,33 @@
                 utils.initAutoComplete('#day-calendar', '#boa_trip_dayCalendar');
                 utils.initAutoComplete('#period-calendar', '#boa_trip_periodCalendar');
                 utils.initTripPatternAutoComplete('#trip-pattern', '#boa_trip_pattern', {{ trip.route.id }});
-                utils.addStopTimeBlock("#stop_times",
+                utils.addStopTimeBlock(
+                    "#stop_times",
                     "{{ 'trip.stop_time_template.start' | trans }}",
                     "{{ 'trip.stop_time_template.frequency' | trans }}",
-                    "{{ 'trip.stop_time_template.stop' | trans }}");
+                    "{{ 'trip.stop_time_template.stop' | trans }}"
+                );
 
                 $('#add-stop-time-block').click(function(event) {
                     event.preventDefault();
-                    utils.addStopTimeBlock("#stop_times",
+                    utils.addStopTimeBlock(
+                        "#stop_times",
                         "{{ 'trip.stop_time_template.start' | trans }}",
                         "{{ 'trip.stop_time_template.frequency' | trans }}",
-                        "{{ 'trip.stop_time_template.stop' | trans }}");
+                        "{{ 'trip.stop_time_template.stop' | trans }}"
+                    );
                 });
             });
 
             {# form validation #}
             $('form[name="{{ form.vars.full_name }}"]').submit( function( e ) {
-                if( !$('.pattern').val() ) {
-                        utils.displayAlert("{{ 'trip.error.pattern' | trans }}");
-                        return false;                    
-                }
                 if( !$('.day-calendar').val() ) {
-                        utils.displayAlert("{{ 'trip.error.day_calendar' | trans }}");
-                        return false;                    
+                    utils.displayAlert("{{ 'trip.error.day_calendar' | trans }}");
+                    return false;
                 }
                 if( !$('.period-calendar').val() ) {
-                        utils.displayAlert("{{ 'trip.error.period_calendar' | trans }}");
-                        return false;                    
+                    utils.displayAlert("{{ 'trip.error.period_calendar' | trans }}");
+                    return false;
                 }
 
                 {# check frequencies and stops #}

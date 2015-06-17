@@ -42,4 +42,4 @@ class LogType extends AbstractType
     {
         return 'boa_log';
     }
-}	
+}

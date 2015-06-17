@@ -48,7 +48,7 @@ class TripTransformer implements DataTransformerInterface
     public function reverseTransform($id)
     {
         if (!$id) {
-            return null; 
+            return null;
         }
 
         $trip = $this->om

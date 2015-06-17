@@ -19,39 +19,39 @@ class StopPhantomType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		/*
-		datas are mapped later in sub-forms => need event on pre set data to get the current id
-		*/
-		$builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-				$form = $event->getForm();
-				$stop = $event->getData();
-				
-				$form->add('shortName', 'entity',
-					array(
-						'mapped' => false,
-						'label' => 'stop.labels.shortName',
-						'class' => 'TisseoEndivBundle:StopHistory',
-						'property' => 'shortName',
-						'query_builder' => function(EntityRepository $er)  use ( $stop ) {
-							return $er->createQueryBuilder('s')
-								->where("IDENTITY(s.stop) = :id")
-								->andWhere("s.startDate <= CURRENT_DATE()")
-								->andWhere("s.endDate IS NULL or s.endDate >= CURRENT_DATE()")
-								->setParameter('id', $stop);
-						}
-					)
-				);
-		});
-	
-		$builder->add('id', 'text');
-		
-		$builder->add('stopDatasources', 'collection', 
-			array(
-				'label' => 'stop.labels.datasource',
-				'type' => new StopDatasourceType(),
-				'by_reference' => false,
-			)
-		);
+        /*
+        datas are mapped later in sub-forms => need event on pre set data to get the current id
+        */
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+                $stop = $event->getData();
+
+                $form->add('shortName', 'entity',
+                    array(
+                        'mapped' => false,
+                        'label' => 'stop.labels.shortName',
+                        'class' => 'TisseoEndivBundle:StopHistory',
+                        'property' => 'shortName',
+                        'query_builder' => function(EntityRepository $er)  use ( $stop ) {
+                            return $er->createQueryBuilder('s')
+                                ->where("IDENTITY(s.stop) = :id")
+                                ->andWhere("s.startDate <= CURRENT_DATE()")
+                                ->andWhere("s.endDate IS NULL or s.endDate >= CURRENT_DATE()")
+                                ->setParameter('id', $stop);
+                        }
+                    )
+                );
+        });
+
+        $builder->add('id', 'text');
+
+        $builder->add('stopDatasources', 'collection',
+            array(
+                'label' => 'stop.labels.datasource',
+                'type' => new StopDatasourceType(),
+                'by_reference' => false,
+            )
+        );
 
         $builder->setAction($options['action']);
     }
@@ -65,8 +65,8 @@ class StopPhantomType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Stop'
             )
-        );	
-	}
+        );
+    }
 
     /**
      * @return string

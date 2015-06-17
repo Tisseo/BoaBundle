@@ -48,21 +48,21 @@ class CityTransformer implements DataTransformerInterface
     public function reverseTransform($id)
     {
         if (!$id) {
-			return null; 
-		}
+            return null;
+        }
 
         $city = $this->om
             ->getRepository('TisseoEndivBundle:City')
             ->findOneBy(array('id' => $id));
 
         if (null === $city) {
-			return null;
-/*			
+            return null;
+/*
             throw new TransformationFailedException(sprintf(
                 "Le calendrier avec l'id "%s" ne peut pas être trouvé!",
                 $id
             ));
-*/			
+*/
         }
 
         return $city;

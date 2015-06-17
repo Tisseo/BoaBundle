@@ -6,7 +6,7 @@
     {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
                    filter='cssrewrite' output='css/datatables_boa.css' %}
         <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}    
+    {% endstylesheets %}
     {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
                    filter='cssrewrite' output='css/trip_boa.css' %}
         <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
@@ -16,10 +16,10 @@
 {% block main_content %}
     <h1>
         {{'trip.list.title'|trans({}, 'default')}}
-    	-
-    	<a href="{{ path('tisseo_boa_trip_new', {'RouteId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-    		<span class="glyphicon glyphicon-plus"></span> {{'trip.create'|trans({}, 'default')}}
-    	</a>
+        -
+        <a href="{{ path('tisseo_boa_trip_new', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{'trip.create'|trans({}, 'default')}}
+        </a>
     </h1>
     <hr/>
 
@@ -39,7 +39,7 @@
             {% for trip in trips %}
                 <tr>
                     <td>
-                        <a href="{{ path('tisseo_boa_trip_edit', {'TripId': trip.id}) }}">
+                        <a href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
                             {{ trip.name }}
                         </a>
                     </td>
@@ -51,14 +51,14 @@
                     <td>{{ trip.pattern.name }}</td>
                     <td>
                         {% if trip.dayCalendar %}
-                            <a href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': trip.dayCalendar.id}) }}">
+                            <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': trip.dayCalendar.id}) }}">
                                 {{ trip.dayCalendar.name }}
                             </a>
                         {% endif %}
                     </td>
                     <td>
                         {% if trip.periodCalendar %}
-                            <a href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': trip.periodCalendar.id}) }}">
+                            <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': trip.periodCalendar.id}) }}">
                                 {{ trip.periodCalendar.name }}
                             </a>
                         {% endif %}
@@ -76,8 +76,8 @@
                             {% endif %}
                         {% endif %}
 
-                        <a class="btn btn-default delete-action" href="{{ path('tisseo_boa_trip_delete', {'TripId': trip.id}) }}" {{ style|raw }}>
-                            <span class="glyphicon glyphicon-remove"></span>{{ 'global.delete'|trans }}
+                        <a class="btn btn-default delete-action" href="{{ path('tisseo_boa_trip_delete', {'tripId': trip.id}) }}" {{ style|raw }}>
+                            <span class="glyphicon glyphicon-remove"></span> {{ 'global.delete'|trans }}
                         </a>
                     </td>
                 </tr>

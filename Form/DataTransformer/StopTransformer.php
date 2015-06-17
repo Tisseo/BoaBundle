@@ -48,21 +48,21 @@ class StopTransformer implements DataTransformerInterface
     public function reverseTransform($id)
     {
         if (!$id) {
-			return null; 
-		}
+            return null;
+        }
 
         $stop = $this->om
             ->getRepository('TisseoEndivBundle:Stop')
             ->findOneBy(array('id' => $id));
 
         if (null === $stop) {
-			return null;
-/*			
+            return null;
+/*
             throw new TransformationFailedException(sprintf(
                 "Le calendrier avec l'id "%s" ne peut pas être trouvé!",
                 $id
             ));
-*/			
+*/
         }
 
         return $stop;

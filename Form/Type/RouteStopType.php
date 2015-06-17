@@ -26,7 +26,7 @@ class RouteStopType extends AbstractType {
                 ->add('dropOff', 'checkbox', array('required'=>false))
                 ->add('pickup', 'checkbox',array('required'=>false))
 
-           
+
         ;
 
         $builder->setAction($options['action']);

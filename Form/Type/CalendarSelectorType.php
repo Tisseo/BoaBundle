@@ -30,25 +30,6 @@ class CalendarSelectorType extends AbstractType
         $builder->addModelTransformer($transformer);
     }
 
-/*	
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\Calendar'
-            )
-        );	
-	}
-	
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'invalid_message' => 'The selected calendar does not exist',
-        ));
-    }
-*/
-	
     public function getParent()
     {
         return 'text';

@@ -25,54 +25,50 @@
 {% endmacro %}
 
 {% macro time_format(time) %}
-  {% set hour = time//3600 %}
-  {% set min = (time-hour*3600)/60 %}
-  {% if hour|length < 2 %}
-      {% set hour = "0" ~ hour %}
-  {% endif %}
-  {% if min|length < 2 %}
-      {% set min = "0" ~ min %}
-  {% endif %}
-  {{ hour ~ ":" ~ min }}
+    {% set hour = time//3600 %}
+    {% set min = (time-hour*3600)/60 %}
+    {% if hour|length < 2 %}
+        {% set hour = "0" ~ hour %}
+    {% endif %}
+    {% if min|length < 2 %}
+        {% set min = "0" ~ min %}
+    {% endif %}
+    {{ hour ~ ":" ~ min }}
 {% endmacro %}
 
 {% macro color_display(object) %}
-	{% if object.name is defined %}
-		<div  class="line-number line-small" style="width:60px; height:20px;border: 1px solid black;color:{{ object.html }}; background-color:{{ object.html }}">
-		</div>
-	{% endif %}
+    {% if object.name is defined %}
+        <div  class="line-number line-small" style="width:60px; height:20px;border: 1px solid black;color:{{ object.html }}; background-color:{{ object.html }}">
+        </div>
+    {% endif %}
 {% endmacro %}
 
 {% macro stop_select(stops, select_id, select_class, all_label, all_value, select_name) %}
-	<select id='{{ select_id }}' name='{{ select_name }}' class='{{ select_class }}'>
-		<option value='{{ all_value }}'>{{ all_label }}</option>
-	{%  for Stop in stops %}
-		{%  if Stop.masterStop is empty %}
-		<option value='{{ Stop.id }}'>{{ Stop.getStopLabel }}</option>
-		{%  endif %}
-	{%  endfor %}
-	</select>
+    <select id='{{ select_id }}' name='{{ select_name }}' class='{{ select_class }}'>
+        <option value='{{ all_value }}'>{{ all_label }}</option>
+    {%  for Stop in stops %}
+        {%  if Stop.masterStop is empty %}
+        <option value='{{ Stop.id }}'>{{ Stop.getStopLabel }}</option>
+        {%  endif %}
+    {%  endfor %}
+    </select>
 {% endmacro %}
 
 {% macro route_header(route) %}
-  <div class="form form-edit">
-      <div class="col-md-12">
-          <div class="row">
-              <div class="col-md-12">
-                  <label>{{'trip.list.route.network'|trans({}, 'default')}}:</label>{{ route.lineVersion.line.lineDatasources[0].datasource.agency.name }}
-                  -
-                  <label>{{'trip.list.route.line'|trans({}, 'default')}}:</label>{{ route.lineVersion.line.number }}
-                  -
-                  <label>{{'trip.list.route.version'|trans({}, 'default')}}:</label>{{ route.lineVersion.version }}
-                  -
-                  <label>{{'trip.list.route.name'|trans({}, 'default')}}:</label>
-                  <a href="{{ path('tisseo_boa_route_list', {'LineVersionId': route.lineVersion.id }) }}">
-                      {{ route.name ~ ' (' ~ route.way ~ ')' }}
-                  </a>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <label>{{'trip.list.route.network'|trans({}, 'default')}} : </label>
+            {{ route.lineVersion.line.lineDatasources[0].datasource.agency.name }} -
+            <label>{{'trip.list.route.line'|trans({}, 'default')}} : </label>
+            {{ route.lineVersion.line.number }} -
+            <label>{{'trip.list.route.version'|trans({}, 'default')}} : </label>
+            {{ route.lineVersion.version }} -
+            <label>{{'trip.list.route.name'|trans({}, 'default')}} : </label>
+            <a href="{{ path('tisseo_boa_route_list', {'lineVersionId': route.lineVersion.id }) }}">
+                {{ route.name ~ ' (' ~ route.way ~ ')' }}
+            </a>
+        </div>
+    </div>
 {% endmacro %}
 
 {% macro select(values, name, class_name) %}
@@ -101,9 +97,9 @@
         {% for trip in trips %}
           <tr>
             <td>
-              <a href="{{ path('tisseo_boa_trip_edit', {'TripId': trip.id}) }}">
+              <a href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
                 {{ trip.name }}
-              </a>                        
+              </a>
             </td>
             <td>
               {% if trip.stopTimes %}
@@ -116,7 +112,7 @@
               {% endif %}
             </td>
             <td>
-              <a href="{{path('tisseo_boa_route_edit',{RouteId: trip.route.id})}}">
+              <a href="{{ path('tisseo_boa_route_edit', {'routeId': trip.route.id}) }}">
                 {{ trip.route.name }}
               </a>
             </td>

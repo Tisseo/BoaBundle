@@ -16,22 +16,22 @@ class StopAreaDatasourceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('datasource', 'entity',  
-			array(
-				'label' => 'stop_area_datasource.labels.datasource',
-				'required' => true,
-				'class' => 'TisseoEndivBundle:Datasource',
+        $builder->add('datasource', 'entity',
+            array(
+                'label' => 'stop_area_datasource.labels.datasource',
+                'required' => true,
+                'class' => 'TisseoEndivBundle:Datasource',
                 'property' => 'name'
-			)
-		);
-		
+            )
+        );
+
         $builder->add('code', 'text',
-				array(
-					'label' => 'stop_area_datasource.labels.code',
-					'required' => false
-				)
-		);
-		
+                array(
+                    'label' => 'stop_area_datasource.labels.code',
+                    'required' => false
+                )
+        );
+
         $builder->setAction($options['action']);
     }
 
@@ -44,10 +44,10 @@ class StopAreaDatasourceType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\StopAreaDatasource'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

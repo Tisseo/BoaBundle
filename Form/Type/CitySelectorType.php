@@ -30,16 +30,16 @@ class CitySelectorType extends AbstractType
         $builder->addModelTransformer($transformer);
     }
 
-/*	
+/*
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\City'
             )
-        );	
-	}
-	
+        );
+    }
+
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -48,7 +48,7 @@ class CitySelectorType extends AbstractType
         ));
     }
 */
-	
+
     public function getParent()
     {
         return 'text';

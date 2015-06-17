@@ -11,6 +11,7 @@ global:
     status: Statut
     warning: Avertissement
     generatePdf: Générer le PDF
+    refresh: Rafraîchir
     remove: Retirer
     add: Ajouter
     empty: Vider
@@ -127,6 +128,7 @@ datasource:
         name: Nom
         agency: Réseau
         code: Code
+        title: Datasource
 
 exception_type:
     labels:
@@ -166,7 +168,7 @@ stop:
             shortName: Nom
             longName: Nom long
             x: X
-            y: Y    
+            y: Y
     phantom:
         header: Fantômes de l'arrêt
         columns:
@@ -174,7 +176,7 @@ stop:
             stop: Arrêt
             code: Code
     labels:
-        shortName: Nom du point d'arrêt 
+        shortName: Nom du point d'arrêt
         longName: Nom long
         stopArea: Zone d'arrêt
         masterStop: Fantôme de
@@ -187,7 +189,7 @@ stop:
 stop_area:
     show_closed_stops: Afficher les points d'arrêts clôturés
     labels:
-        shortName: Nom de la zone d'arrêt 
+        shortName: Nom de la zone d'arrêt
         longName: Nom long
         city: Ville
         datasource: Datasource

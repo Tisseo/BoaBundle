@@ -10,7 +10,7 @@ use Tisseo\EndivBundle\Entity\Route;
 
 class RouteController extends AbstractController
 {
-    public function listAction(Request $request)
+    public function listAction()
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
@@ -43,9 +43,10 @@ class RouteController extends AbstractController
         );
     }
 
-    public function calFHAction(Request $request, $LineVersionId)
+    public function calFHAction($lineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $request = $this->getRequest();
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         if ($request->getMethod() == 'POST') {
@@ -56,8 +57,8 @@ class RouteController extends AbstractController
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
         }
-        $calFH = $routeManager->getCalendarFH($LineVersionId);
-        $calendarTypes = $routeManager->getFHCalendarTypeValues();
+        $calFH = $routeManager->getCalendarFH($lineVersionId);
+        $calendarTypes = $routeManager->getFHcalendarTypeValues();
         $calendarPeriods = $routeManager->getFHCalendarPeriodValues();
 
         return $this->render("TisseoBoaBundle:Route:cal_fh.html.twig",
@@ -70,15 +71,15 @@ class RouteController extends AbstractController
         );
     }
 
-    public function routeAction(Request $request, $LineVersionId)
+    public function routeAction($lineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
-        $lv = $lineVersionManager->find($LineVersionId);
+        $lv = $lineVersionManager->find($lineVersionId);
         $lineVersionName = $lv->getLine()->getNumber().' ( version '.$lv->getVersion().' )';
-        $routes = $routeManager->getRoutesByLine($LineVersionId);
+        $routes = $routeManager->getRoutesByLine($lineVersionId);
 
         return $this->render("TisseoBoaBundle:Route:route.html.twig", array(
            'routes' => $routes,
@@ -87,9 +88,10 @@ class RouteController extends AbstractController
        ));
     }
 
-    public function editAction(Request $request, $RouteId = null)
+    public function editAction($routeId = null)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $request = $this->getRequest();
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
 
@@ -97,22 +99,25 @@ class RouteController extends AbstractController
         $serviceTemplates = array();
         $instantiatedServiceTemplates = array();
         $routeIsUpdatable = true;
-        if( $RouteId == null) {
+        if ($routeId == null) {
             $route = new Route();
             $warnings = array();
         } else {
-            $route = $routeManager->findById($RouteId);
-            $routeStops = $routeManager->getRouteStops($RouteId);
-            $serviceTemplates = $routeManager->getServiceTemplates($RouteId);
+            $route = $routeManager->findById($routeId);
+            $routeStops = $routeManager->getRouteStops($routeId);
+            $serviceTemplates = $routeManager->getServiceTemplates($routeId);
             $instantiatedServiceTemplates = $routeManager->getInstantiatedServiceTemplates($route);
             $warnings = $routeManager->getRouteStopsWithoutRouteSection($routeStops);
             $routeIsUpdatable = (count($serviceTemplates) < 1);
         }
 
-        $form = $this->createForm(new RouteType(),$route,
+        $form = $this->createForm(
+            new RouteType(),
+            $route,
             array(
-                "action"=>$this->generateUrl('tisseo_boa_route_edit',
-                                             array("RouteId" => $RouteId)
+                'action'=> $this->generateUrl(
+                    'tisseo_boa_route_edit',
+                    array('routeId' => $routeId)
                 )
             )
         );
@@ -130,7 +135,7 @@ class RouteController extends AbstractController
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
 
-            return $this->redirect($this->generateUrl('tisseo_boa_route_edit', array("RouteId" => $RouteId) ));
+            return $this->redirect($this->generateUrl('tisseo_boa_route_edit', array("routeId" => $routeId) ));
         }
 
         //route sections warnings
@@ -138,7 +143,7 @@ class RouteController extends AbstractController
             foreach ($warnings as $w) {
                 $warning = $this->get('translator')->trans(
                     'route.route_stops.warning',
-                    array('%s' => $w), 
+                    array('%s' => $w),
                     'messages'
                 );
                 $this->get('session')->getFlashBag()->add('danger', $warning);
@@ -158,21 +163,24 @@ class RouteController extends AbstractController
         );
     }
 
-    public function createAction(Request $request, $lineVersionId)
+    public function createAction($lineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $request = $this->getRequest();
 
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
-
         $lineVersion = $lineVersionManager->find($lineVersionId);
 
         $route = new Route();
         $route->setLineVersion($lineVersion);
-        
-        $form = $this->createForm(new NewRouteType(), $route,
+
+        $form = $this->createForm(
+            new NewRouteType(),
+            $route,
             array(
-                "action"=>$this->generateUrl('tisseo_boa_route_create',
-                                             array("lineVersionId" => $lineVersionId)
+                'action' => $this->generateUrl(
+                    'tisseo_boa_route_create',
+                    array('lineVersionId' => $lineVersionId)
                 )
             )
         );
@@ -187,9 +195,9 @@ class RouteController extends AbstractController
 
                 return $this->redirect(
                     $this->generateUrl(
-                        'tisseo_boa_route_edit', 
+                        'tisseo_boa_route_edit',
                         array(
-                            "RouteId" => $datas->getId()
+                            'routeId' => $datas->getId()
                         )
                     )
                 );
@@ -207,30 +215,36 @@ class RouteController extends AbstractController
         );
     }
 
-    public function deleteAction(Request $request, $RouteId)
+    public function deleteAction($routeId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        $route = $routeManager->findById($RouteId);
-        $LineVersionId = $route->getLineVersion()->getId();
+        $route = $routeManager->findById($routeId);
         $routeManager->remove($route);
-        return $this->redirect($this->generateUrl('tisseo_boa_route_list', array("LineVersionId"=>$LineVersionId) ));
+
+        return $this->redirect(
+            $this->generateUrl(
+                'tisseo_boa_route_list',
+                array('lineVersionId' => $route->getLineVersion()->getId())
+            )
+        );
     }
 
-    public function duplicateAction(Request $request, $RouteId)
+    public function duplicateAction($routeId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $request = $this->getRequest();
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        $route = $routeManager->findById($RouteId);
+        $route = $routeManager->findById($routeId);
         $line = $route->getLineVersion()->getLine();
         $activeLineVersions = $line->getActiveLineVersions();
 
         $form = $this->createForm(new RouteDuplicateType(),$route,
             array(
                 "action"=>$this->generateUrl('tisseo_boa_route_duplicate',
-                                             array("RouteId" => $RouteId)
+                                             array("routeId" => $routeId)
                 )
             )
         );
@@ -246,10 +260,9 @@ class RouteController extends AbstractController
                 $routeManager->duplicate($route, $lineVersion, $userName);
                 return
                     $this->redirect(
-                        $this->generateUrl('tisseo_boa_route_list', 
-                            array(
-                                "LineVersionId"=>$route->getLineVersion()->getId()
-                            )
+                        $this->generateUrl(
+                            'tisseo_boa_route_list',
+                            array('lineVersionId' => $route->getLineVersion()->getId())
                         )
                     );
             } catch(\Exception $e) {
@@ -264,5 +277,5 @@ class RouteController extends AbstractController
                 'activeLineVersions' => $activeLineVersions
             )
         );
-    }    
+    }
 }

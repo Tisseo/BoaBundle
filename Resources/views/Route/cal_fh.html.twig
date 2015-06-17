@@ -16,13 +16,13 @@
             </button>
         </div>
     </div>
-    
+
     <hr style="clear: both;"/>
 
     {% set grid_index = 0 %}
     {% for way, values in calendars %}
         <h4><b>{{ 'calendar_fh.way'|trans }} "{{ way }}"</b></h4>
-        
+
         <table class="table datatable table-hover dataTable no-footer grid-calendar">
             <thead>
                 <th>{{ 'calendar_fh.grid.columns.day'|trans }}</th>
@@ -38,13 +38,13 @@
                 <tr name="grid_{{ way }}_{{ grid_index }}" class="grid-item">
                     <td>
                         <input type='hidden' name="grid[{{ grid_index }}][calendar_day]" value = "{{ datas['calendars']['day'].id }}">
-                        <a href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': datas['calendars']['day'].id}) }}">
+                        <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': datas['calendars']['day'].id}) }}">
                             {{ array[0] }}
                         </a>
                     </td>
                     <td>
                         <input type='hidden' name="grid[{{ grid_index }}][calendar_period]" value = "{{ datas['calendars']['period'].id }}">
-                        <a href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': datas['calendars']['period'].id}) }}">
+                        <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': datas['calendars']['period'].id}) }}">
                             {{ array[1] }}
                         </a>
                     </td>
@@ -65,7 +65,7 @@
                         {% else %}
                             {{ render.select(calendarTypes, "grid[" ~ grid_index ~ "][grid_calendar_type]", "grid_calendar_type") }}
                         {% endif %}
-                            
+
                     </td>
                     <td>
                         {% if datas['objects']['grid_mask_type'] is not empty %}

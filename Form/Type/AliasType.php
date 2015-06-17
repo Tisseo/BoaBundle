@@ -27,10 +27,10 @@ class AliasType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Alias'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

@@ -29,10 +29,10 @@ class ExceptionTypeType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\ExceptionType'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

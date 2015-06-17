@@ -22,7 +22,7 @@ class DatasourceType extends AbstractType
                 'label' => 'datasource.labels.agency'
             )
         );
-		
+
         $builder->setAction($options['action']);
     }
 

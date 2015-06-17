@@ -11,7 +11,7 @@ class PropertyController extends AbstractController
     public function listAction()
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-        
+
         $PropertyManager = $this->get('tisseo_endiv.property_manager');
         return $this->render(
             'TisseoBoaBundle:Property:list.html.twig',
@@ -21,19 +21,19 @@ class PropertyController extends AbstractController
             )
         );
     }
-    
-    public function editAction(Request $request, $PropertyId)
+
+    public function editAction(Request $request, $propertyId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-        
+
         $PropertyManager = $this->get('tisseo_endiv.property_manager');
-        $property = $PropertyManager->find($PropertyId);
-        if (empty($property)) { $property = new Property(); }       
+        $property = $PropertyManager->find($propertyId);
+        if (empty($property)) { $property = new Property(); }
         $form = $this->createForm( new PropertyType(), $property,
             array(
                 'action' => $this->generateUrl(
                     'tisseo_boa_property_edit',
-                    array('PropertyId' => $PropertyId)
+                    array('propertyId' => $propertyId)
                 )
             )
         );
@@ -42,7 +42,7 @@ class PropertyController extends AbstractController
         if ($form->isValid()) {
             try {
                 $PropertyManager->save($form->getData());
-                
+
                 $this->get('session')->getFlashBag()->add('success',
                     $this->get('translator')->trans(
                         'property.created',
@@ -63,7 +63,7 @@ class PropertyController extends AbstractController
             'TisseoBoaBundle:Property:form.html.twig',
             array(
                 'form' => $form->createView(),
-                'title' => ($PropertyId ? 'property.edit' : 'property.create')
+                'title' => ($propertyId ? 'property.edit' : 'property.create')
             )
         );
     }

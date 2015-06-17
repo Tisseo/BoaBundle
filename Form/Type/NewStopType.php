@@ -18,61 +18,61 @@ class NewStopType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('stopArea', 'entity', 
-			array(
-				'label' => 'stop.labels.stopArea',
-				'class' => 'TisseoEndivBundle:StopArea',
-				'property' => 'name_label',
-				'required' => true
-			)
-		);		
-		
-		$builder->add('stopHistories', 'collection', 
-			array(
-				'type' => new StopHistoryType(),
-				'allow_add' => true,
-				'by_reference' => false,
-			)
-		);
+        $builder->add('stopArea', 'entity',
+            array(
+                'label' => 'stop.labels.stopArea',
+                'class' => 'TisseoEndivBundle:StopArea',
+                'property' => 'name_label',
+                'required' => true
+            )
+        );
 
-		$builder->add('stopDatasources', 'collection', 
-			array(
-				'allow_add' => true,
-				'type' => new StopDatasourceType(),
-				'by_reference' => false,
-			)
-		);
+        $builder->add('stopHistories', 'collection',
+            array(
+                'type' => new StopHistoryType(),
+                'allow_add' => true,
+                'by_reference' => false,
+            )
+        );
 
-		$builder->add('x', 'text',
-			array(
-				'mapped' => false,
-				'required' => true
-			)
-		);
-		$builder->add('y', 'text',
-			array(
-				'mapped' => false,
-				'required' => true
-			)
-		);
-		
-		$builder->add('srid', 'text', 
-			array(
-				'mapped' => false,
-				'label' => 'SRID',
-				'data' => '3943'
-			)
-		);
-/*	
-		$builder->add('srid', 'choice',  
-			array(		
-				'mapped' => false,
-				'label' => 'SRID',
-				'choices'    => StopHistory::getSridList(),
-				'data' => 1
-			)
-		);
-*/			
+        $builder->add('stopDatasources', 'collection',
+            array(
+                'allow_add' => true,
+                'type' => new StopDatasourceType(),
+                'by_reference' => false,
+            )
+        );
+
+        $builder->add('x', 'text',
+            array(
+                'mapped' => false,
+                'required' => true
+            )
+        );
+        $builder->add('y', 'text',
+            array(
+                'mapped' => false,
+                'required' => true
+            )
+        );
+
+        $builder->add('srid', 'text',
+            array(
+                'mapped' => false,
+                'label' => 'SRID',
+                'data' => '3943'
+            )
+        );
+/*
+        $builder->add('srid', 'choice',
+            array(
+                'mapped' => false,
+                'label' => 'SRID',
+                'choices'    => StopHistory::getSridList(),
+                'data' => 1
+            )
+        );
+*/
 
         $builder->setAction($options['action']);
     }
@@ -86,8 +86,8 @@ class NewStopType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Stop'
             )
-        );	
-	}
+        );
+    }
 
     /**
      * @return string

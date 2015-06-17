@@ -4,12 +4,21 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityRepository;
 
 use Tisseo\EndivBundle\Entity\Trip;
 
 class NewTripType extends AbstractType
 {
+    private $user;
+
+    public function __construct($user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -23,14 +32,27 @@ class NewTripType extends AbstractType
                 'label' => 'trip.labels.name'
             )
         )
-        ->add(
-            'pattern',
-            'trip_selector',
-            array(
-                'label' => 'trip.labels.pattern',
-                'required' => false
-            )
-        )
+        ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            $trip = $event->getData();
+
+            $form->add(
+                'pattern',
+                'entity',
+                array(
+                    'label' => 'trip.labels.pattern',
+                    'required' => true,
+                    'class' => 'TisseoEndivBundle:Trip',
+                    'property' => 'name',
+                    'query_builder' => function(EntityRepository $er) use ($trip) {
+                        return $er->createQueryBuilder('t')
+                            ->where("IDENTITY(t.route) = :routeId")
+                            ->andWhere("t.isPattern = true")
+                            ->setParameter('routeId', $trip->getRoute()->getId());
+                    }
+                )
+            );
+        })
         ->add(
             'dayCalendar',
             'calendar_selector',
@@ -53,7 +75,7 @@ class NewTripType extends AbstractType
             array(
                 'mapped' => false,
                 'required' => true,
-                'label' => 'Datasource',
+                'label' => 'datasource.labels.title',
                 'class' => 'TisseoEndivBundle:Datasource',
                 'property' => 'name'
             )
@@ -62,12 +84,11 @@ class NewTripType extends AbstractType
             'code',
             'text',
             array(
+                'label' => 'datasource.labels.code',
                 'mapped' => false,
-                'required' => true,
-                'label' => 'Code'
+                'data' => $this->user
             )
         );
-
 
         $builder->setAction($options['action']);
     }

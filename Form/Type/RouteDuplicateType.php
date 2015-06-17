@@ -32,7 +32,7 @@ class RouteDuplicateType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Route'
             )
-        );  
+        );
     }
 
     /**

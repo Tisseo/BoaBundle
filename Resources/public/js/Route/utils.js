@@ -34,7 +34,7 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
         var service_header = "<th>";
         service_header += "<input type='hidden' name='" + name_pattern + "[id]' value=" + trip_id + ">";
         service_header += "<div><div style='display: table-cell;vertical-align: middle;'>";
-        if( trip_is_instantiated ) 
+        if( trip_is_instantiated )
             service_header += "<input type='hidden' name='" + name_pattern + "[name]' value='" + trip_name + "'>" + trip_name;
         else
             service_header += "<input type='text' name='" + name_pattern + "[name]' class='form-control' style='float:left' required value='" + trip_name + "'>";
@@ -133,13 +133,13 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
         },
         addService: function(tripTableId, routeStopTableId) {
             var col_index = $(tripTableId + " thead th:last").index();
-            
+
             //header
             var $service_name_input = "<div><div style='display: table-cell'>";
             $service_name_input += "<input type='text' name='services[" + col_index + "][name]' required class='form-control' maxlength='20'></div>";
             $service_name_input += getHTMLHeaderMenu(true) +  "</div>";;
             $(tripTableId + " thead th:last").before('<th>' + $service_name_input + '</th>');
-            
+
             //inputs
             $(tripTableId + ' tbody').find('tr').each(function(i, el) {
                 var row_index = $(el).index();
@@ -148,7 +148,7 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
                 if(!scheduled) {
                     addedAttributes = "readonly value='00:00'";
                 }
-                var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index + 
+                var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index +
                     "][time]' required class='form-control time' " + addedAttributes +  " ></div>";
                 stop_time_input += "<div class='summary'  style='color: #000088;font-weight: bold;padding-left: 5px;display: table-cell'></div></div>";
                 $(el).find("td:last").before('<td>' + stop_time_input + '</td>');
@@ -156,24 +156,24 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
         },
         duplicateService: function(index, tripTableId, routeStopTableId) {
             var col_index = $(tripTableId + " thead th:last").index();
-            
+
             //header
             var $service_name_input = "<div><div style='display: table-cell'>";
             $service_name_input += "<input type='text' name='services[" + col_index + "][name]' required class='form-control' maxlength='20'></div>";
             $service_name_input += getHTMLHeaderMenu(true) +  "</div>";;
             $(tripTableId + " thead th:last").before('<th>' + $service_name_input + '</th>');
-            
+
             //inputs
             $(tripTableId + ' tbody').find('tr').each(function(i, el) {
                 var row_index = $(el).index();
                 var scheduled = $(routeStopTableId + " tr").eq(row_index+1).find('input.scheduled').attr("checked");
-                
+
                 var addedAttributes = "";
                 if(!scheduled)  addedAttributes += " readonly";
                 var value = $(tripTableId + " tr:eq(" + (row_index+1) + ") td:eq(" + index + ")").find('input.time').val();
                 addedAttributes += " value='" + value + "'";
 
-                var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index + 
+                var stop_time_input = "<div><div style='display: table-cell'><input type='time' name='services[" + col_index + "][" + row_index +
                     "][time]' required class='form-control time'" + addedAttributes +  " ></div>";
                 stop_time_input += "<div class='summary'  style='color: #000088;font-weight: bold;padding-left: 5px;display: table-cell'></div></div>";
                 $(el).find("td:last").before('<td>' + stop_time_input + '</td>');
@@ -187,7 +187,7 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
             var $index = $(routeStopTableId + ' tbody tr').length;
             var $line = "<tr>";
             $line += "<td>" + ($index+1) + "</td>";
-           
+
             $line += "<td colspan='3'><input type='hidden' name='route_stops[" + $index + "][waypoint_id]'>";
             $line += "<input type='text' id='route_stops[" + $index + "][waypoint_id]' class='form-control stop-search'></td>";
             $line += "<td><input type='checkbox' name='route_stops[" + $index + "][dropOff]' checked></td>";
@@ -205,10 +205,10 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
                     var url = Routing.generate('tisseo_boa_json_stop');
                     $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
                         success: function (data) {
-                            response($.map(JSON.parse(data.content), function (item) {                                  
-                                return {                
-                                    label: item.name, 
-                                    value: item.name, 
+                            response($.map(JSON.parse(data.content), function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.name,
                                     id: item.id
                                 };
                             }));
@@ -219,14 +219,14 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
                     var $id = $(this).attr('id');
                     var $hidden_input = $("input[name='" + $id + "']");
                     $hidden_input.val(ui.item.id);
-                },                  
+                },
                 minLength: 3,
                 delay: 300
             });
 
             var $service_count = $("#trip-table thead").find("th").length;
             $line = "<tr>";
-            for (i = 0; i < $service_count-1; i++) { 
+            for (i = 0; i < $service_count-1; i++) {
                 $line += "<td><input type='time' name='services[" + i + "][" + $index + "][time]' required class='form-control'></td>";
             }
             $line += "<td><a style='color: red; float:right' class='btn btn-default remove-route-stop'>";
@@ -260,7 +260,7 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
             var tr_name = $(item).closest('tr').attr('name');
             var tr_trips_name = 'trips_' + tr_name.split('_')[1] + '_' + tr_name.split('_')[2];
             var tr_trips = $('tr[name=' + tr_trips_name + ']');
-            
+
             if( $(item).html() == detailsLabel ) {
                 tr_trips.removeClass( "hide" );
                 $(item).html(hideLabel);
@@ -281,7 +281,7 @@ define(['jquery', 'jquery_ui_autocomplete'  , 'fosjsrouting', 'translations/mess
                     var calendar_period_valid = calendar_period.length == 0 ? true: $(calendar_period).val();
 
                     var circulationIsSet = circulationDayIsSet(this);
-                    if( !((calendar_type_valid && calendar_period_valid && circulationIsSet) || 
+                    if( !((calendar_type_valid && calendar_period_valid && circulationIsSet) ||
                             (!calendar_type_valid && !calendar_period_valid && !circulationIsSet)) ) {
                         displayAlert(errorMessage);
                         formIsValid = false;

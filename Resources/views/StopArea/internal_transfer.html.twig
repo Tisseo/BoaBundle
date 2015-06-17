@@ -5,10 +5,10 @@
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block javascripts %}
-	 {{ parent() }}
-	 {% javascripts '@TisseoBoaBundle/Resources/public/js/transfer.js' %}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	 {%  endjavascripts %}
+     {{ parent() }}
+     {% javascripts '@TisseoBoaBundle/Resources/public/js/transfer.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+     {%  endjavascripts %}
 {% endblock %}
 
 
@@ -21,186 +21,186 @@
 {% endblock %}
 
 {% block modal_body %}
-	<div id="error_alert">
-	</div>
+    <div id="error_alert">
+    </div>
 
     {{ form_errors(form) }}
-	{{ form_widget(form._token) }}
-	
-	<div class="row">
-		<div class = "col-md-4"> {{ form_label(form.transferDuration) }} </div> 
-		<div class = "col-md-1"> {{ form_widget(form.transferDuration) }} </div> 
-	</div>
-	
-	<div>
-		<div class="stop_table_header">
-			<div style="float: left">
-				{{ 'stop_area.labels.internal_transfert' | trans }}
-			</div>
-			<div style="float: right">
-				<button type="submit" id="form-save" class="btn btn-success">	
-					<span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
-				</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">	
-					{{ 'global.close'|trans }}
-				</button>
-			</div>
-		</div>
-		<table 
-			id='transfer_table'
-			class="table table-hover dataTable no-footer"
-		>
-		<thead>
-			<th>
-				{{ render.stop_select(stops, "startStop_select", "stop_select", 'stop_area.transfer.columns.startStop' | trans, "") }}
-			</th>
-			<th>
-				{{ render.stop_select(stops, "endStop_select", "stop_select", 'stop_area.transfer.columns.endStop' | trans, "") }}
-			</th>
-			<th>{{ 'stop_area.transfer.columns.duration' | trans }}</th>
-			<th>{{ 'stop_area.transfer.columns.distance' | trans }}</th>
-			<th>{{ 'stop_area.transfer.columns.longName' | trans }}</th>
-		</thead>
-		<tbody></tbody>
-		</table>
-	</div>
+    {{ form_widget(form._token) }}
+
+    <div class="row">
+        <div class = "col-md-4"> {{ form_label(form.transferDuration) }} </div>
+        <div class = "col-md-1"> {{ form_widget(form.transferDuration) }} </div>
+    </div>
+
+    <div>
+        <div class="stop_table_header">
+            <div style="float: left">
+                {{ 'stop_area.labels.internal_transfert' | trans }}
+            </div>
+            <div style="float: right">
+                <button type="submit" id="form-save" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    {{ 'global.close'|trans }}
+                </button>
+            </div>
+        </div>
+        <table
+            id='transfer_table'
+            class="table table-hover dataTable no-footer"
+        >
+        <thead>
+            <th>
+                {{ render.stop_select(stops, "startStop_select", "stop_select", 'stop_area.transfer.columns.startStop' | trans, "") }}
+            </th>
+            <th>
+                {{ render.stop_select(stops, "endStop_select", "stop_select", 'stop_area.transfer.columns.endStop' | trans, "") }}
+            </th>
+            <th>{{ 'stop_area.transfer.columns.duration' | trans }}</th>
+            <th>{{ 'stop_area.transfer.columns.distance' | trans }}</th>
+            <th>{{ 'stop_area.transfer.columns.longName' | trans }}</th>
+        </thead>
+        <tbody></tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block modal_actions %}
-    <button type="submit" id="form-save" class="btn btn-success">	
+    <button type="submit" id="form-save" class="btn btn-success">
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
-	
+
     {{ form_end(form, { 'render_rest': false}) }}
-	
-	<script>   
-		require(['jquery'], function($) {		
-			$('.modal-dialog').css('width', '1300px');
 
-			//change in table datas
-			var change = false;
-			
-			var stoparea_id = "{{ stopArea.id }}";
-			var stops = {};
-			///load stops variable
-			$('#startStop_select option').each(function(index,item){
-				if ( index > 0 )
-					stops[item.value] = item.text; 
-			});
-			
-			//ajax synchronisation variable when saving on changing filters
-			var load_transferts = false;
+    <script>
+        require(['jquery'], function($) {
+            $('.modal-dialog').css('width', '1300px');
 
-			function transferTableValidation() {
-				var table_validation = true;
-				$("#transfer_table tbody tr").each(function (i, row) {
-					var transfer_duration = $("#boa_stop_area_transfer_transferDuration").val();
-					var duration = $("#transfer_" + i  + "_duration").val();
-					var distance = $("#transfer_" + i  + "_distance").val();
-					var longName = $("#transfer_" + i  + "_longName").val();
+            //change in table datas
+            var change = false;
 
-					if( transfer_duration ) {
-						if ( !isInt(transfer_duration) ) {
-							displayAlert("{{ 'stop_area.transfer.error.transfer_duration' | trans }}".replace("%d%", transfer_duration));
-							table_validation = false;
-							return false;
-						}
-					}
+            var stoparea_id = "{{ stopArea.id }}";
+            var stops = {};
+            ///load stops variable
+            $('#startStop_select option').each(function(index,item){
+                if ( index > 0 )
+                    stops[item.value] = item.text;
+            });
 
-					if( distance ) {
-						if ( !isInt(distance) ) {
-							displayAlert("{{ 'stop_area.transfer.error.distance' | trans }}".replace("%d%", distance).replace("%i%", (i+1)));
-							table_validation = false;
-							return false;
-						}
-					}
-					
-					if( duration ) {						
-						if ( !isInt(duration) ) {
-							displayAlert("{{ 'stop_area.transfer.error.duration' | trans }}".replace("%d%", duration).replace("%i%", (i+1)));
-							table_validation = false;
-							return false;
-						}
-						if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
-							displayAlert("{{ 'stop_area.transfer.error.duration_value' | trans }}".replace("%i%", (i+1)));
-							table_validation = false;
-							return false;
-						}
-					} else {
-						if ( distance || longName || theGeom ) {
-							displayAlert("{{ 'stop_area.transfer.error.empty_duration' | trans }}".replace("%i%", (i+1)));
-							table_validation = false;
-							return false;
-						}
-					}
-				});
-				
-				return table_validation;
-			};
-			
-			function getTransfer() {
-				var startStopId = $( "#startStop_select" ).val();
-				var endStopId = $( "#endStop_select" ).val();
-			
-				var url = "{{ path('tisseo_boa_json_internal_transfer') }}";
-				var objData = { 'stopAreaId': stoparea_id };
+            //ajax synchronisation variable when saving on changing filters
+            var load_transferts = false;
 
-				$.ajax({ url: url, data : objData, type: 'POST',
-					success : function(data){						
-						buildInternalTransferTable(JSON.parse(data.content));
-						
-						if($("#transfer_table >tbody >tr").length > 100) {
-							displayAlert("{{ 'stop_area.transfer.error.max_input' | trans }}");
-							$(document).find("#transfer_table >tbody :input").prop('disabled', true);
-						}
-						load_transferts = false;
-					}
-				});
-			};
-			
-			$( ".stop_select" ).change(function () {
-				if( change ) {
-					change = false;
-					if( true == window.confirm("{{ 'stop_area.transfer.save_confirmation' | trans }}") ) {
-						load_transfer = true;
-						$('#form-save').trigger('click');
-						//change = false;
-					} else {
-						getTransfer();
-					}
-				} else {
-					getTransfer();
-				}
-			});
-			
-			$(document).on('change', '.input-value', function(){
-				change = true;
-			});
+            function transferTableValidation() {
+                var table_validation = true;
+                $("#transfer_table tbody tr").each(function (i, row) {
+                    var transfer_duration = $("#boa_stop_area_transfer_transferDuration").val();
+                    var duration = $("#transfer_" + i  + "_duration").val();
+                    var distance = $("#transfer_" + i  + "_distance").val();
+                    var longName = $("#transfer_" + i  + "_longName").val();
 
-			//ajax form submission
-			var forms = ['[ name="{{ form.vars.full_name }}"]'];
-			$( forms.join(',') ).submit( function( e ){
-				e.preventDefault();
-				
-				if( transferTableValidation() ) {
-					var post_url = "{{ path('tisseo_boa_internal_transfer_save', {'StopAreaId': stopArea.id }) }}";
-					postForm( $(this), post_url, function( response ){
-						done = true;
-						if (response['success']) {
-							displayAlert("{{ 'stop_area.transfer.data_saved' | trans }}");
-							getTransfer();
-							change = false;
-						} else {
-							displayAlert("{{ 'stop_area.transfer.saving_error' | trans }}".replace("%s%", response["cause"]));
-						}
-					});
-				}
+                    if( transfer_duration ) {
+                        if ( !isInt(transfer_duration) ) {
+                            displayAlert("{{ 'stop_area.transfer.error.transfer_duration' | trans }}".replace("%d%", transfer_duration));
+                            table_validation = false;
+                            return false;
+                        }
+                    }
 
-				//prevent submit done with ajax
-				return false;
-			});			
-			
-			getTransfer();
-		});
-    </script>		
+                    if( distance ) {
+                        if ( !isInt(distance) ) {
+                            displayAlert("{{ 'stop_area.transfer.error.distance' | trans }}".replace("%d%", distance).replace("%i%", (i+1)));
+                            table_validation = false;
+                            return false;
+                        }
+                    }
+
+                    if( duration ) {
+                        if ( !isInt(duration) ) {
+                            displayAlert("{{ 'stop_area.transfer.error.duration' | trans }}".replace("%d%", duration).replace("%i%", (i+1)));
+                            table_validation = false;
+                            return false;
+                        }
+                        if ( !(duration == 99 || ( duration >=0 && duration <= 60)) ) {
+                            displayAlert("{{ 'stop_area.transfer.error.duration_value' | trans }}".replace("%i%", (i+1)));
+                            table_validation = false;
+                            return false;
+                        }
+                    } else {
+                        if ( distance || longName || theGeom ) {
+                            displayAlert("{{ 'stop_area.transfer.error.empty_duration' | trans }}".replace("%i%", (i+1)));
+                            table_validation = false;
+                            return false;
+                        }
+                    }
+                });
+
+                return table_validation;
+            };
+
+            function getTransfer() {
+                var startstopId = $( "#startStop_select" ).val();
+                var endstopId = $( "#endStop_select" ).val();
+
+                var url = "{{ path('tisseo_boa_json_internal_transfer') }}";
+                var objData = { 'stopAreaId': stoparea_id };
+
+                $.ajax({ url: url, data : objData, type: 'POST',
+                    success : function(data){
+                        buildInternalTransferTable(JSON.parse(data.content));
+
+                        if($("#transfer_table >tbody >tr").length > 100) {
+                            displayAlert("{{ 'stop_area.transfer.error.max_input' | trans }}");
+                            $(document).find("#transfer_table >tbody :input").prop('disabled', true);
+                        }
+                        load_transferts = false;
+                    }
+                });
+            };
+
+            $( ".stop_select" ).change(function () {
+                if( change ) {
+                    change = false;
+                    if( true == window.confirm("{{ 'stop_area.transfer.save_confirmation' | trans }}") ) {
+                        load_transfer = true;
+                        $('#form-save').trigger('click');
+                        //change = false;
+                    } else {
+                        getTransfer();
+                    }
+                } else {
+                    getTransfer();
+                }
+            });
+
+            $(document).on('change', '.input-value', function(){
+                change = true;
+            });
+
+            //ajax form submission
+            var forms = ['[ name="{{ form.vars.full_name }}"]'];
+            $( forms.join(',') ).submit( function( e ){
+                e.preventDefault();
+
+                if( transferTableValidation() ) {
+                    var post_url = "{{ path('tisseo_boa_internal_transfer_save', {'stopAreaId': stopArea.id }) }}";
+                    postForm( $(this), post_url, function( response ){
+                        done = true;
+                        if (response['success']) {
+                            displayAlert("{{ 'stop_area.transfer.data_saved' | trans }}");
+                            getTransfer();
+                            change = false;
+                        } else {
+                            displayAlert("{{ 'stop_area.transfer.saving_error' | trans }}".replace("%s%", response["cause"]));
+                        }
+                    });
+                }
+
+                //prevent submit done with ajax
+                return false;
+            });
+
+            getTransfer();
+        });
+    </script>
 {% endblock %}

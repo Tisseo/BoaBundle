@@ -14,7 +14,7 @@
     {% for lv in activeLineVersions %}
         <option value='{{ lv.id }}'>V{{ lv.version }} ( {{ lv.startDate|date('d/m/Y') }} )</option>
     {% endfor %}
-    </select>   
+    </select>
 {% endblock %}
 
 {% block modal_actions %}

@@ -6,66 +6,66 @@
 #}
 {% block list_title -%}
     {{ 'calendar.list.title'|trans({}, 'default') ~ ' ' ~ calendarType }}
-	-
-	<a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
-		<span class="glyphicon glyphicon-plus"></span> {{'calendar.create'|trans({}, 'default')}}
-	</a>	
+    -
+    <a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> {{'calendar.create'|trans({}, 'default')}}
+    </a>
 {% endblock %}
 
 {% block table_head -%}
-	<th>{{'calendar.list.columns.name'|trans({}, 'default')}}</th>
-	{% if calendarType == 'mixte' or calendarType == 'periode' %}
-		<th>{{'calendar.list.columns.line'|trans({}, 'default')}}</th>
-	{% endif %}
+    <th>{{'calendar.list.columns.name'|trans({}, 'default')}}</th>
+    {% if calendarType == 'mixte' or calendarType == 'periode' %}
+        <th>{{'calendar.list.columns.line'|trans({}, 'default')}}</th>
+    {% endif %}
     <th>{{'calendar.list.columns.startDate'|trans({}, 'default')}}</th>
     <th>{{'calendar.list.columns.endDate'|trans({}, 'default')}}</th>
-	<th class="no-sort">{{'global.edit'|trans({}, 'messages')}}</th>
-	<th class="no-sort">{{'global.delete'|trans({}, 'messages')}}</th>
+    <th class="no-sort">{{'global.edit'|trans({}, 'messages')}}</th>
+    <th class="no-sort">{{'global.delete'|trans({}, 'messages')}}</th>
 {% endblock %}
 
 {% block table_body -%}
     {% if calendars|length == 0 %}
         <tr>
             <td colspan="3"> {{'global.no_items'|trans}} </td>
-			<td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td><td></td>
         </tr>
     {% else %}
         {% for calendar in calendars %}
             <tr>
                 <td> {{ calendar.calendar.name }} </td>
-					{% if calendarType == 'mixte' or calendarType == 'periode' %}
+                    {% if calendarType == 'mixte' or calendarType == 'periode' %}
                 <td>
-						{% if calendar.calendar.lineVersion is not null %}
-							{{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
-						{% endif %}
-				</td>
-					{% endif %}
+                        {% if calendar.calendar.lineVersion is not null %}
+                            {{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
+                        {% endif %}
+                </td>
+                    {% endif %}
                 <td>
-					{% if calendar.calendar.computedStartDate is not null %}
-						{{ calendar.calendar.computedStartDate|date("d/m/Y") }}
-					{% endif %}
-				</td>
-                <td> 
-					{% if calendar.calendar.computedEndDate is not null %}
-						{{ calendar.calendar.computedEndDate|date("d/m/Y") }}
-					{% endif %}
-                 </td>
-				<td>
-					<a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'CalendarId': calendar.calendar.id}) }}">
-						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-					</a>
+                    {% if calendar.calendar.computedStartDate is not null %}
+                        {{ calendar.calendar.computedStartDate|date("d/m/Y") }}
+                    {% endif %}
                 </td>
                 <td>
-					{% if not((calendar.calendar.periodTrips is not empty)  or 
-						(calendar.calendar.dayTrips is not empty) or 
-						(calendar.calendar.accessibilityTypes is not empty) or 
-						(calendar.nb_elements > 0)) %}
-						<a class="btn btn-default" 
-						{% set calendarType = app.request.get('CalendarType') %}
-							href="{{ path('tisseo_boa_calendar_delete', {'CalendarId': calendar.calendar.id, 'CalendarType': calendarType }) }}">
-							<span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
-						</a>
-					{% endif %}
+                    {% if calendar.calendar.computedEndDate is not null %}
+                        {{ calendar.calendar.computedEndDate|date("d/m/Y") }}
+                    {% endif %}
+                 </td>
+                <td>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': calendar.calendar.id}) }}">
+                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                    </a>
+                </td>
+                <td>
+                    {% if not((calendar.calendar.periodTrips is not empty)  or
+                        (calendar.calendar.dayTrips is not empty) or
+                        (calendar.calendar.accessibilityTypes is not empty) or
+                        (calendar.nb_elements > 0)) %}
+                        <a class="btn btn-default"
+                        {% set calendarType = app.request.get('calendarType') %}
+                            href="{{ path('tisseo_boa_calendar_delete', {'calendarId': calendar.calendar.id, 'calendarType': calendarType }) }}">
+                            <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
+                        </a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

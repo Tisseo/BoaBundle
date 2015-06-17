@@ -16,34 +16,34 @@ class StopAreaType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('shortName', 'text',
-				array(
-					'label' => 'stop_area.labels.shortName',
-					'required' => false
-				)
-		);
+        $builder->add('shortName', 'text',
+                array(
+                    'label' => 'stop_area.labels.shortName',
+                    'required' => false
+                )
+        );
         $builder->add('longName', 'text',
-				array(
-					'label' => 'stop_area.labels.longName',
-					'required' => false
-				)
-		);
-		
-		$builder->add('city', 'city_selector',
-			array(
-				'label' =>  'stop_area.labels.city',
-				'required' => false
-			)
-		);
-		
-		$builder->add('stopAreaDatasources', 'collection', 
-			array(
-				'label' => 'stop_area.labels.datasource',
-				'type' => new StopAreaDatasourceType(),
-				'by_reference' => false,
-				'allow_add' => true
-			)
-		);
+                array(
+                    'label' => 'stop_area.labels.longName',
+                    'required' => false
+                )
+        );
+
+        $builder->add('city', 'city_selector',
+            array(
+                'label' =>  'stop_area.labels.city',
+                'required' => false
+            )
+        );
+
+        $builder->add('stopAreaDatasources', 'collection',
+            array(
+                'label' => 'stop_area.labels.datasource',
+                'type' => new StopAreaDatasourceType(),
+                'by_reference' => false,
+                'allow_add' => true
+            )
+        );
 
         $builder->setAction($options['action']);
   }
@@ -57,10 +57,10 @@ class StopAreaType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\StopArea'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

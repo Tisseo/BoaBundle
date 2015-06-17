@@ -4,11 +4,11 @@
 
 {% block list_title -%}
     {{'physical_mode.list.title'|trans({}, 'default')}}
-	{% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+    {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
     -
-	<a href="{{ path('tisseo_boa_physical_mode_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-		<span class="glyphicon glyphicon-plus"></span> {{'physical_mode.create'|trans({}, 'default')}}
-	</a>
+    <a href="{{ path('tisseo_boa_physical_mode_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> {{'physical_mode.create'|trans({}, 'default')}}
+    </a>
     {% endif %}
 {% endblock %}
 
@@ -33,9 +33,9 @@
                 <td> {{ physical_mode.type }} </td>
                 {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
                 <td>
-					<a class="btn btn-default" href="{{ path('tisseo_boa_physical_mode_edit', {'PhysicalModeId': physical_mode.id}) }}" data-toggle="modal" data-target="#base-modal">
-						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-					</a>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_physical_mode_edit', {'physicalModeId': physical_mode.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                    </a>
                 </td>
                 {% endif %}
             </tr>
