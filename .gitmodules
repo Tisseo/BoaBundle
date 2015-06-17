@@ -1,6 +1,0 @@
-[submodule "Resources/config/doctrine"]
-    path = Resources/config/doctrine
-    url = http://apps/git/endiv-doctrine.mapping
-[submodule "Entity"]
-    path = Entity
-    url = http://apps/git/endiv-doctrine
