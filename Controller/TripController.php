@@ -116,8 +116,17 @@ class TripController extends AbstractController
 
         $user = $this->get('security.token_storage')->getToken()->getUser()->getUsername();
 
+        $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
+
+        // TODO: Change this ugly way to get back a specific datasource 
+        $datasource = $datasourceManager->findByName('Service Données');
+        if (count($datasource) === 1)
+            $datasource = $datasource[0];
+        else
+            $datasource = null;
+
         $form = $this->createForm(
-            new NewTripType($user),
+            new NewTripType($user, $datasource),
             $trip,
             array(
                 "action"=>$this->generateUrl(

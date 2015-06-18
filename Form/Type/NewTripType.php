@@ -13,10 +13,12 @@ use Tisseo\EndivBundle\Entity\Trip;
 class NewTripType extends AbstractType
 {
     private $user;
+    private $datasource;
 
-    public function __construct($user)
+    public function __construct($user, $datasource)
     {
         $this->user = $user;
+        $this->datasource = $datasource;
     }
 
     /**
@@ -77,7 +79,8 @@ class NewTripType extends AbstractType
                 'required' => true,
                 'label' => 'datasource.labels.title',
                 'class' => 'TisseoEndivBundle:Datasource',
-                'property' => 'name'
+                'property' => 'name',
+                'data' => $this->datasource
             )
         )
         ->add(
