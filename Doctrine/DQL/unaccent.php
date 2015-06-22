@@ -6,9 +6,9 @@ use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 
 /**
- * Unaccent string using postgresql extension unaccent : 
+ * Unaccent string using postgresql extension unaccent :
  * http://www.postgresql.org/docs/current/static/unaccent.html
- * 
+ *
  * Usage : StringFunction UNACCENT(string)
  *
  */

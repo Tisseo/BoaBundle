@@ -4,10 +4,10 @@
 
 {% block list_title -%}
     {{'exception_type.list.title'|trans({}, 'default')}}
-	-
-	<a href="{{ path('tisseo_boa_exception_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-		<span class="glyphicon glyphicon-plus"></span> {{'exception_type.create'|trans({}, 'default')}}
-	</a>
+    -
+    <a href="{{ path('tisseo_boa_exception_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> {{'exception_type.create'|trans({}, 'default')}}
+    </a>
 {% endblock %}
 
 {% block table_head -%}
@@ -15,14 +15,14 @@
     <th>{{'exception_type.list.columns.exceptionText'|trans({}, 'default')}}</th>
     <th>{{'exception_type.list.columns.gridCalendarPattern'|trans({}, 'default')}}</th>
     <th>{{'exception_type.list.columns.tripCalendarPattern'|trans({}, 'default')}}</th>
-	<th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+    <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
 {% endblock %}
 
 {% block table_body -%}
     {% if exception_types|length == 0 %}
         <tr>
             <td colspan="3"> {{'global.no_items'|trans}} </td>
-			<td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
         </tr>
     {% else %}
         {% for exception_type in exception_types %}
@@ -32,9 +32,9 @@
                 <td> {{ exception_type.gridCalendarPattern }} </td>
                 <td> {{ exception_type.tripCalendarPattern }} </td>
                 <td>
-					<a class="btn btn-default" href="{{ path('tisseo_boa_exception_type_edit', {'ExceptionTypeId': exception_type.id}) }}" data-toggle="modal" data-target="#base-modal">
-						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-					</a>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_exception_type_edit', {'exceptionTypeId': exception_type.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                    </a>
                 </td>
             </tr>
         {% endfor %}

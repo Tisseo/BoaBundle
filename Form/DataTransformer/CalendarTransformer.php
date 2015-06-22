@@ -47,23 +47,12 @@ class CalendarTransformer implements DataTransformerInterface
      */
     public function reverseTransform($id)
     {
-        if (!$id) {
-			return null; 
-		}
+        if (!$id)
+            return null;
 
         $calendar = $this->om
             ->getRepository('TisseoEndivBundle:Calendar')
             ->findOneBy(array('id' => $id));
-
-        if (null === $calendar) {
-			return null;
-/*			
-            throw new TransformationFailedException(sprintf(
-                "Le calendrier avec l'id "%s" ne peut pas être trouvé!",
-                $id
-            ));
-*/			
-        }
 
         return $calendar;
     }

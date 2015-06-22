@@ -37,4 +37,4 @@ class PoiTypeType extends AbstractType
     {
         return 'boa_poi_type';
     }
-}	
+}

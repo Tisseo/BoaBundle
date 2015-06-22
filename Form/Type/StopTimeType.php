@@ -18,7 +18,7 @@ class StopTimeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('id', 'text')
+        $builder->add('id', 'text')
                 ->add('departureTime', 'text')
                 ->add('arrivalTime', 'text');
 
@@ -35,8 +35,8 @@ class StopTimeType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\StopTime'
             )
-        );	
-	}
+        );
+    }
 
     /**
      * @return string

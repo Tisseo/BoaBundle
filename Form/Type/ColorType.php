@@ -41,10 +41,10 @@ class ColorType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Color'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

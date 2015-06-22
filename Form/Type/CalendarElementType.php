@@ -17,56 +17,56 @@ class CalendarElementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('rank', 'integer',
-				array(
-					'label' => 'calendar_element.labels.rank',
-					'required' => false
-				)
-		);
-       $builder->add('startDate', 'date', 
-				array(
+                array(
+                    'label' => 'calendar_element.labels.rank',
+                    'required' => false
+                )
+        );
+       $builder->add('startDate', 'date',
+                array(
                     'label' => 'calendar_element.labels.startDate',
                     'widget' => 'single_text',
                     'format' => 'dd/MM/yyyy',
-					'required' => false
+                    'required' => false
                 )
-		);
-        $builder->add('endDate', 'date',  
-				array(
+        );
+        $builder->add('endDate', 'date',
+                array(
                     'label' => 'calendar_element.labels.endDate',
                     'widget' => 'single_text',
                     'format' => 'dd/MM/yyyy',
-					'required' => false
+                    'required' => false
                 )
-		);
-		$builder->add('operator', 'choice',  
-			array(			
-				'label' => 'calendar_element.labels.operator',
-				'choices'    => CalendarElement::getOperatorValues()
-			)
-		);
+        );
+        $builder->add('operator', 'choice',
+            array(
+                'label' => 'calendar_element.labels.operator',
+                'choices'    => CalendarElement::getOperatorValues()
+            )
+        );
         $builder->add('interval', 'text',
-				array(
-					'label' => 'calendar_element.labels.interval',
-					'data' => '1',
-					'required' => false
-				)
-		);
-		
-		$builder->add('includedCalendar', 'calendar_selector',
-				array('required' => false));
-				
-		$builder->add('calendarName', 'text',				
-				array(
-					'required' => false,
-					'mapped' => false));
-		
-		$builder->add('remove', 'checkbox', 
-				array(
-					'label' => 'global.delete',
-					'required'  => false,
-					'mapped' => false
-		));		
-		
+                array(
+                    'label' => 'calendar_element.labels.interval',
+                    'data' => '1',
+                    'required' => false
+                )
+        );
+
+        $builder->add('includedCalendar', 'calendar_selector',
+                array('required' => false));
+
+        $builder->add('calendarName', 'text',
+                array(
+                    'required' => false,
+                    'mapped' => false));
+
+        $builder->add('remove', 'checkbox',
+                array(
+                    'label' => 'global.delete',
+                    'required'  => false,
+                    'mapped' => false
+        ));
+
         $builder->setAction($options['action']);
     }
 
@@ -79,10 +79,10 @@ class CalendarElementType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\CalendarElement'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */
@@ -97,19 +97,19 @@ class RemoveElementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('id', 'integer', array(
-			'label'     => 'element id to remove',
-			'required'  => false,
-		));
-		$builder->add('remove', 'checkbox', array(
-			'label'     => 'remove if true',
-			'required'  => false,
-			'attr'     => array('checked'   => 'checked')
-		));
-		$builder->setAction($options['action']);
-	}
-	
+            'label'     => 'element id to remove',
+            'required'  => false,
+        ));
+        $builder->add('remove', 'checkbox', array(
+            'label'     => 'remove if true',
+            'required'  => false,
+            'attr'     => array('checked'   => 'checked')
+        ));
+        $builder->setAction($options['action']);
+    }
+
     public function getName()
     {
         return 'boa_remove_elements';
-    }	
+    }
 }

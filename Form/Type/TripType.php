@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Tisseo\EndivBundle\Entity\Trip;
 
-class TripType extends AbstractType 
+class TripType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder

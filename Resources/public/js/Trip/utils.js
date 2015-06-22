@@ -15,9 +15,9 @@ define(['jquery', 'jquery_ui_autocomplete'], function($) {
                     var url = $(this.element).attr('data-url');
                     $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
                         success: function (data) {
-                            response($.map(JSON.parse(data.content), function (item) {                                  
-                                return {                
-                                    label: item.name, 
+                            response($.map(JSON.parse(data.content), function (item) {
+                                return {
+                                    label: item.name,
                                     id: item.id
                                 };
                             }));
@@ -26,8 +26,8 @@ define(['jquery', 'jquery_ui_autocomplete'], function($) {
                 },
                 select: function (event, ui) {
                     $(IdFieldId).val(ui.item.id);
-                },                  
-                minLength: 3,
+                },
+                minLength: 1,
                 delay: 300
             });
         },
@@ -38,9 +38,9 @@ define(['jquery', 'jquery_ui_autocomplete'], function($) {
                     var url = $(this.element).attr('data-url');
                     $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
                         success: function (data) {
-                            response($.map(JSON.parse(data.content), function (item) {                                  
-                                return {                
-                                    label: item.name, 
+                            response($.map(JSON.parse(data.content), function (item) {
+                                return {
+                                    label: item.name,
                                     id: item.id
                                 };
                             }));
@@ -49,7 +49,7 @@ define(['jquery', 'jquery_ui_autocomplete'], function($) {
                 },
                 select: function (event, ui) {
                     $(IdFieldId).val(ui.item.id);
-                },                  
+                },
                 minLength: 2,
                 delay: 300
             });
@@ -72,5 +72,4 @@ define(['jquery', 'jquery_ui_autocomplete'], function($) {
         }
 
     }
-
 });

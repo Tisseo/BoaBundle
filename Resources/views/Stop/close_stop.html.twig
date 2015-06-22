@@ -11,13 +11,13 @@
 {% endblock %}
 
 {% block modal_body %}
-	{{ form_widget(form._token) }}
-	
-	<div class="form form-edit">
-		<div class="col-md-12">
-			<label class="control-label required" for="closingDate">Date de clôture</label>
-			<input type="text" id="datePicker" name="closingDate" required="required" class="datepicker form-control">
-		</div>
+    {{ form_widget(form._token) }}
+
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <label class="control-label required" for="closingDate">Date de clôture</label>
+            <input type="text" id="datePicker" name="closingDate" required="required" class="datepicker form-control">
+        </div>
 {% endblock %}
 
 {% block modal_actions %}
@@ -26,14 +26,14 @@
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
 
-	<script>   
-		require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
-			$('#datePicker').datepicker({
-					startDate: "today",
-					language: '{{ app.request.locale }}',
-					todayHighlight: true,
-					autoclose: true
-				});
-			});
-    </script>		
+    <script>
+        require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function($) {
+            $('#datePicker').datepicker({
+                    startDate: "today",
+                    language: '{{ app.request.locale }}',
+                    todayHighlight: true,
+                    autoclose: true
+                });
+            });
+    </script>
 {% endblock %}

@@ -40,7 +40,7 @@ calendar:
             endDate: Fin
             calendar: Calendrier
             positive: Signe
-            interval: Récurrence    
+            interval: Récurrence
             delete: Supprimer
             add: Ajouter un élément
             dateValidationMessage: la date de début ne peut être supérieure à la date de fin
@@ -161,7 +161,7 @@ stop:
     validate: Valider
     see: Voir
     add_inaccessibility: Ajout d'inaccessibilité
-    add_history: Modifier un point d'arrêt 
+    add_history: Modifier un point d'arrêt
     close_stop: Clôturer un point d'arrêt
     no_stop_selected: Vous n'avez pas sélectionné de point d'arrêt valide.
 

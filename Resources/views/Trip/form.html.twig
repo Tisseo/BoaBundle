@@ -13,17 +13,17 @@
 {% block main_content -%}
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
-    
+
     {{ form_start(form) }}
 
     {{ form_errors(form) }}
     <div class="form form-edit">
-        <div class = "col-md-12">   
+        <div class = "col-md-12">
             <div class="row">
                 <div class = "col-md-6">
                     {{ form_row(form.name) }}
                 </div>
-                <div class = "col-md-6">    
+                <div class = "col-md-6">
                     <label class="control-label required" >{{ 'trip.labels.pattern' | trans }}</label>
                     {% set pattern_name = "" %}
                     {% if trip.pattern %}
@@ -73,28 +73,28 @@
     </table>
 
     <div class="form form-edit">
-        <div class = "col-md-12">   
+        <div class = "col-md-12">
             <div class="row">
-                <div class = "col-md-6">                    
+                <div class = "col-md-6">
                     {{ form_widget(form.dayCalendar, { 'attr': {'class': 'hide'}}) }}
                     {{ form_label(form.dayCalendar) }}
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         id="day_calendar"
                         class="form-control"
-                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'jour' }) }}"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'jour' }) }}"
                         value="{{trip.dayCalendar.name}}"
                         disabled
                     >
                 </div>
-                <div class = "col-md-6">                    
+                <div class = "col-md-6">
                     {{ form_widget(form.periodCalendar, { 'attr': {'class': 'hide'}}) }}
                     {{ form_label(form.periodCalendar) }}
                     <input
                         type="text"
                         id="period_calendar"
                         class="form-control"
-                        data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'periode' }) }}"
+                        data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'periode' }) }}"
                         value="{{trip.periodCalendar.name}}"
                         disabled
                     >
@@ -126,7 +126,7 @@
         </div>
         <div id='calendar_view' class="calendar_view">
         </div>
-    </div>    
+    </div>
 {% endblock %}
 
 {% block javascripts %}

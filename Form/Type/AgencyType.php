@@ -32,9 +32,9 @@ class AgencyType extends AbstractType
                 'data_class' => 'Tisseo\EndivBundle\Entity\Agency'
             )
         );
-	}
+    }
 
-			
+
     /**
      * @return string
      */

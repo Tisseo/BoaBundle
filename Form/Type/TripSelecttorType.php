@@ -30,16 +30,16 @@ class StopSelectorType extends AbstractType
         $builder->addModelTransformer($transformer);
     }
 
-/*  
+/*
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Stop'
             )
-        );  
+        );
     }
-    
+
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -48,7 +48,7 @@ class StopSelectorType extends AbstractType
         ));
     }
 */
-    
+
     public function getParent()
     {
         return 'text';

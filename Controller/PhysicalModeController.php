@@ -16,8 +16,8 @@ class PhysicalModeController extends AbstractController
                 'BUSINESS_VIEW_CONFIGURATION'
             )
         );
-		
-		$physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
+
+        $physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
         return $this->render(
             'TisseoBoaBundle:PhysicalMode:list.html.twig',
             array(
@@ -26,43 +26,43 @@ class PhysicalModeController extends AbstractController
             )
         );
     }
-	
-    public function editAction(Request $request, $PhysicalModeId)
+
+    public function editAction(Request $request, $physicalModeId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-		
-		$physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
-		$form = $this->buildForm($PhysicalModeId, $physicalModeManager);
+
+        $physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
+        $form = $this->buildForm($physicalModeId, $physicalModeManager);
         $render = $this->processForm($request, $form);
-		if (!$render) {
+        if (!$render) {
             return $this->render(
                 'TisseoBoaBundle:PhysicalMode:form.html.twig',
                 array(
                     'form' => $form->createView(),
-                    'title' => ($PhysicalModeId ? 'physical_mode.edit' : 'physical_mode.create')
+                    'title' => ($physicalModeId ? 'physical_mode.edit' : 'physical_mode.create')
                 )
             );
         }
         return ($render);
     }
 
-    private function buildForm($PhysicalModeId, $physicalModeManager)
+    private function buildForm($physicalModeId, $physicalModeManager)
     {
-        $physical_mode = $physicalModeManager->find($PhysicalModeId);
+        $physical_mode = $physicalModeManager->find($physicalModeId);
         if (empty($physical_mode)) {
             $physical_mode = new PhysicalMode();
-        }		
+        }
 
         $form = $this->createForm( new PhysicalModeType(), $physical_mode,
             array(
                 'action' => $this->generateUrl('tisseo_boa_physical_mode_edit',
-											array('PhysicalModeId' => $PhysicalModeId)
+                                            array('physicalModeId' => $physicalModeId)
                 )
             )
         );
-		
-		return ($form);
-    }	
+
+        return ($form);
+    }
 
     private function processForm(Request $request, $form)
     {

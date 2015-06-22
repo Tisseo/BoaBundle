@@ -17,34 +17,34 @@ class CalendarAccessibilityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$calendar= $builder->getData();
-		
-		$builder->add('name', 'text',  array('label' => 'calendar.labels.name'));
+        $calendar= $builder->getData();
 
-		$builder->add('computedStartDate', 'date',  
-			array(
-				'read_only' => true,
-				'label' => 'calendar.labels.computedStartDate', 
-				'widget' => 'single_text',
-			)
-		);
-		$builder->add('computedEndDate', 'date',  
-			array(
-				'read_only' => true,
-				'label' => 'calendar.labels.computedEndDate',
-				'widget' => 'single_text',
-			)
-		);
+        $builder->add('name', 'text',  array('label' => 'calendar.labels.name'));
+
+        $builder->add('computedStartDate', 'date',
+            array(
+                'read_only' => true,
+                'label' => 'calendar.labels.computedStartDate',
+                'widget' => 'single_text',
+            )
+        );
+        $builder->add('computedEndDate', 'date',
+            array(
+                'read_only' => true,
+                'label' => 'calendar.labels.computedEndDate',
+                'widget' => 'single_text',
+            )
+        );
         $builder->add('calendarDatasources', 'collection',
             array(
-				'read_only' => true,
+                'read_only' => true,
                 'type' => new CalendarDatasourceType(),
                 'allow_add' => true,
                 'by_reference' => false
             )
         );
 
-		$builder->setAction($options['action']);
+        $builder->setAction($options['action']);
     }
 
     /**
@@ -56,8 +56,8 @@ class CalendarAccessibilityType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\Calendar'
             )
-        );	
-	}
+        );
+    }
 
     /**
      * @return string

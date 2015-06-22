@@ -6,4 +6,4 @@ controller:
 services:
     navitia:
         no_lines_for_network: Aucune ligne n'a été trouvée pour le réseau %network%
-        no_data_for_this_route: Il n'y a aucune information pour la route %RouteId%
+        no_data_for_this_route: Il n'y a aucune information pour la route %routeId%

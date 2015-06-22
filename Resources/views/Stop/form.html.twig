@@ -11,123 +11,123 @@
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>
     <hr/>
-	
-	{{ form_start(form) }}
-	{{ form_errors(form) }}
-	{{ form_widget(form._token) }}
-	
-	<div class="row">
-		<div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
-		<div class = "col-md-4"> {{ form_widget(form.short_name, {'attr': {"readonly":true, "disabled":true}}) }} </div> 
-	</div>
-	<div class="row  m-t-row">
-		<div class = "col-md-2"> {{ form_label(form.long_name) }} </div>
-		<div class = "col-md-4"> {{ form_widget(form.long_name, {'attr': {"readonly":true, "disabled":true}}) }} </div>
-	</div>
-	
-	{# stop area #}
-	<div  class="row  m-t-row">
-		<div class = "col-md-2"> {{ form_label(form.stopArea) }} </div>
-		<div class = "col-md-5">
-			{{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
-			<input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
-		</div>
-		<div class = "col-md-2">
-			<a class="btn btn-default" 
-					href="{{ path('tisseo_boa_stop_area_edit', {'StopAreaId': form.stopArea.vars.data.id}) }}">
-				<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}							
-			</a>
-		
-		</div>
-	</div>
 
-	{# datasources #}
-	<div class="row m-t-row">
-		{% set datasource = form.stopDatasources[0] %}
-		<div class = "col-md-2"> {{ form_label(form.stopDatasources) }} </div>			
-		<div class = "col-md-3"> {{ form_widget(datasource.datasource) }} </div>
-		<div class = "col-md-3"> {{ form_widget(datasource.code) }} </div>
-	</div>
-	
-	{# masterStop(phantom) #}
-	<div  class="row m-t-row">
-		<div class = "col-md-2"> {{ form_label(form.masterStop) }} </div>
-		<div class = "col-md-6"> {{ form_widget(form.masterStop) }} </div>
-	</div>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_widget(form._token) }}
 
-	{# form buttons #}
+    <div class="row">
+        <div class = "col-md-2"> {{ form_label(form.short_name) }} </div>
+        <div class = "col-md-4"> {{ form_widget(form.short_name, {'attr': {"readonly":true, "disabled":true}}) }} </div>
+    </div>
+    <div class="row  m-t-row">
+        <div class = "col-md-2"> {{ form_label(form.long_name) }} </div>
+        <div class = "col-md-4"> {{ form_widget(form.long_name, {'attr': {"readonly":true, "disabled":true}}) }} </div>
+    </div>
+
+    {# stop area #}
+    <div  class="row  m-t-row">
+        <div class = "col-md-2"> {{ form_label(form.stopArea) }} </div>
+        <div class = "col-md-5">
+            {{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
+            <input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
+        </div>
+        <div class = "col-md-2">
+            <a class="btn btn-default"
+                    href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': form.stopArea.vars.data.id}) }}">
+                <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+            </a>
+
+        </div>
+    </div>
+
+    {# datasources #}
+    <div class="row m-t-row">
+        {% set datasource = form.stopDatasources[0] %}
+        <div class = "col-md-2"> {{ form_label(form.stopDatasources) }} </div>
+        <div class = "col-md-3"> {{ form_widget(datasource.datasource) }} </div>
+        <div class = "col-md-3"> {{ form_widget(datasource.code) }} </div>
+    </div>
+
+    {# masterStop(phantom) #}
+    <div  class="row m-t-row">
+        <div class = "col-md-2"> {{ form_label(form.masterStop) }} </div>
+        <div class = "col-md-6"> {{ form_widget(form.masterStop) }} </div>
+    </div>
+
+    {# form buttons #}
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-	<div class="row m-t-row" style="padding: 10px 0 0">
-		<div class = "col-md-2 col-md-offset-3">
-			<button type="submit" id="save-form" class="btn btn-success">
-				<span class="glyphicon glyphicon-pencil"></span>
-				 {{'global.save'|trans}}
-			</button>			
-		</div>
-		<div class = "col-md-2">
-			<a href="" class="btn btn-success" id="reset">
-				<span class="glyphicon glyphicon-repeat"></span> Annuler
-			</a>
-		</div>
-	</div>
+    <div class="row m-t-row" style="padding: 10px 0 0">
+        <div class = "col-md-2 col-md-offset-3">
+            <button type="submit" id="save-form" class="btn btn-success">
+                <span class="glyphicon glyphicon-pencil"></span>
+                 {{'global.save'|trans}}
+            </button>
+        </div>
+        <div class = "col-md-2">
+            <a href="" class="btn btn-success" id="reset">
+                <span class="glyphicon glyphicon-repeat"></span> Annuler
+            </a>
+        </div>
+    </div>
     {% endif %}
-			
-	{# phantoms #}
-	{% if phantoms is not empty and form.masterStop is empty %}
-		<div>
-			<div class="stop_table_header">{{ 'stop.phantom.header' | trans }}</div>
-			<table class="table table-hover dataTable no-footer">
-			<thead>			
-				<th>{{ 'stop.phantom.columns.agency' | trans }}</th>
-				<th>{{ 'stop.phantom.columns.stop' | trans }}</th>
-				<th>{{ 'stop.phantom.columns.code' | trans }}</th>
-			</thead>
-			<tbody>
-			{% for f in phantoms %}
-				<tr>
-				<td>{{ f.stopDatasources[0].datasource.name }}</td>
-				<td>{{ f.getShortLabel }}</td>
-				<td>{{ f.stopDatasources[0].code }}</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-			</table>
-		</div>
-	{% endif %}
 
-	{# stop history #}
-	<div>
-		<div class="stop_table_header">{{ 'stop.history.header' | trans }}</div>
-		<table class="table table-hover dataTable no-footer">
-		<thead>			
-			<th>{{ 'stop.history.columns.startDate' | trans }}</th>
-			<th>{{ 'stop.history.columns.endDate' | trans }}</th>
-			<th>{{ 'stop.history.columns.shortName' | trans }}</th>
-			<th>{{ 'stop.history.columns.longName' | trans }}</th>
-			<th>{{ 'stop.history.columns.x' | trans }}</th>
-			<th>{{ 'stop.history.columns.y' | trans }}</th>
+    {# phantoms #}
+    {% if phantoms is not empty and form.masterStop is empty %}
+        <div>
+            <div class="stop_table_header">{{ 'stop.phantom.header' | trans }}</div>
+            <table class="table table-hover dataTable no-footer">
+            <thead>
+                <th>{{ 'stop.phantom.columns.agency' | trans }}</th>
+                <th>{{ 'stop.phantom.columns.stop' | trans }}</th>
+                <th>{{ 'stop.phantom.columns.code' | trans }}</th>
+            </thead>
+            <tbody>
+            {% for f in phantoms %}
+                <tr>
+                <td>{{ f.stopDatasources[0].datasource.name }}</td>
+                <td>{{ f.getShortLabel }}</td>
+                <td>{{ f.stopDatasources[0].code }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {# stop history #}
+    <div>
+        <div class="stop_table_header">{{ 'stop.history.header' | trans }}</div>
+        <table class="table table-hover dataTable no-footer">
+        <thead>
+            <th>{{ 'stop.history.columns.startDate' | trans }}</th>
+            <th>{{ 'stop.history.columns.endDate' | trans }}</th>
+            <th>{{ 'stop.history.columns.shortName' | trans }}</th>
+            <th>{{ 'stop.history.columns.longName' | trans }}</th>
+            <th>{{ 'stop.history.columns.x' | trans }}</th>
+            <th>{{ 'stop.history.columns.y' | trans }}</th>
             {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-			    <th>Action</th>
+                <th>Action</th>
             {% endif %}
-		</thead>
-		<tbody>
-		{% for sh in stopHistories %}
-			<tr>
-			<td> {{ sh.startDate|date("d/m/Y") }} </td>
-			<td>
-			{% if sh.endDate is not empty %}
-				{{ sh.endDate|date("d/m/Y") }}
-			{% endif %}
-			</td>
-			<td>{{ sh.shortName }}</td>
-			<td>{{ sh.longName }}</td>
-			<td>{{ sh.theGeom.x }}</td>
-			<td>{{ sh.theGeom.y }}</td>
+        </thead>
+        <tbody>
+        {% for sh in stopHistories %}
+            <tr>
+            <td> {{ sh.startDate|date("d/m/Y") }} </td>
+            <td>
+            {% if sh.endDate is not empty %}
+                {{ sh.endDate|date("d/m/Y") }}
+            {% endif %}
+            </td>
+            <td>{{ sh.shortName }}</td>
+            <td>{{ sh.longName }}</td>
+            <td>{{ sh.theGeom.x }}</td>
+            <td>{{ sh.theGeom.y }}</td>
             {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
                 {% if  sh.startDate|date("Ymd") > now|date("Ymd") %}
                     <td>
                     <a class="btn btn-default"
-                            href="{{ path('tisseo_boa_stop_history_delete', {'StopId': stop.id, 'StopHistoryId': sh.id }) }}">
+                            href="{{ path('tisseo_boa_stop_history_delete', {'stopId': stop.id, 'StopHistoryId': sh.id }) }}">
                             <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
                         </a>
                     </td>
@@ -135,89 +135,89 @@
                     <td></td>
                 {% endif %}
             {% endif %}
-			</tr>
-		{% endfor %}
-		</tbody>
-		</table>
-	</div>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-	<div class = "col-md-2">
-                <a href="{{ path('tisseo_boa_stop_history_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
-				<span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyStop' | trans }}
-			</a>
-	</div>
-	<div class = "col-md-2">
-			<a href="{{ path('tisseo_boa_stop_close', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="close_history">
-				<span class="glyphicon glyphicon-remove"></span>  {{ 'stop.closeStop' | trans }}
-			</a>
-	</div>
-	{% endif %}
-	{# stop accessibility #}
-	<div>
-		{% if form.masterStop.vars.value is empty %}
-			<div class="stop_table_header">
-				{{ 'stop.accessibility.header' | trans }}
-			</div>
-		{% else %}					
-			<div class="stop_table_header" style="background-color: #666666">
-				{{ 'stop.accessibility.phantom_header' | trans  ~ " " ~ masterStopLabel }}
-			</div>
-		{% endif %}
-		
-		<table class="table table-hover dataTable no-footer">
-		<thead>
-			<th>{{ 'stop.accessibility.columns.startTime' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.endTime' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.isRecursive' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.accessibilityMode' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.calendar' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.startDate' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.endDate' | trans }}</th>
-			<th>{{ 'stop.accessibility.columns.datasource' | trans }}</th>
+    <div class = "col-md-2">
+                <a href="{{ path('tisseo_boa_stop_history_new', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_history">
+                <span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyStop' | trans }}
+            </a>
+    </div>
+    <div class = "col-md-2">
+            <a href="{{ path('tisseo_boa_stop_close', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="close_history">
+                <span class="glyphicon glyphicon-remove"></span>  {{ 'stop.closeStop' | trans }}
+            </a>
+    </div>
+    {% endif %}
+    {# stop accessibility #}
+    <div>
+        {% if form.masterStop.vars.value is empty %}
+            <div class="stop_table_header">
+                {{ 'stop.accessibility.header' | trans }}
+            </div>
+        {% else %}
+            <div class="stop_table_header" style="background-color: #666666">
+                {{ 'stop.accessibility.phantom_header' | trans  ~ " " ~ masterStopLabel }}
+            </div>
+        {% endif %}
+
+        <table class="table table-hover dataTable no-footer">
+        <thead>
+            <th>{{ 'stop.accessibility.columns.startTime' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.endTime' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.isRecursive' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.accessibilityMode' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.calendar' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.startDate' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.endDate' | trans }}</th>
+            <th>{{ 'stop.accessibility.columns.datasource' | trans }}</th>
             {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-			    <th>Action</th>
+                <th>Action</th>
             {% endif %}
-		</thead>
-		<tbody>
-		
-	{% if form.masterStop.vars.value is not empty %}
-		{% set list_accessibility = phantomAccessibilities %}
-	{% else %}
-		{% set list_accessibility = accessibilities %}
-	{% endif %}
-	
-	{% if list_accessibility is not empty %}
-		{% for sa in list_accessibility %}
-			<tr>
-				<td>
-				{% if sa.accessibilityType.startTime is not empty %}
-					{{ sa.accessibilityType.startTime|date("H:i") }}
-				{% endif %}
-				</td>
-				<td>
-				{% if sa.accessibilityType.endTime is not empty %}
-					{{ sa.accessibilityType.endTime|date("H:i") }}
-				{% endif %}
-				</td>
-				<td>
-					{% if sa.accessibilityType.isRecursive is not empty %}
-						{% if sa.accessibilityType.isRecursive == 1 %}
-							{{ 'stop.accessibility.isRecursive' | trans }}
-						{% endif %}
-					{% endif %}
-				</td>
-				<td>{{ sa.accessibilityType.accessibilityMode.name }}</td>
-				<td>{{ sa.accessibilityType.calendar.name }}</td>
-				<td>{{ sa.accessibilityType.calendar.computedStartDate.date|date("d/m/Y") }}</td>
-				<td>{{ sa.accessibilityType.calendar.computedEndDate.date|date("d/m/Y") }}</td>
-				<td>{{ sa.accessibilityType.calendar.calendarDatasources[0].datasource.name }}</td>
+        </thead>
+        <tbody>
+
+    {% if form.masterStop.vars.value is not empty %}
+        {% set list_accessibility = phantomAccessibilities %}
+    {% else %}
+        {% set list_accessibility = accessibilities %}
+    {% endif %}
+
+    {% if list_accessibility is not empty %}
+        {% for sa in list_accessibility %}
+            <tr>
+                <td>
+                {% if sa.accessibilityType.startTime is not empty %}
+                    {{ sa.accessibilityType.startTime|date("H:i") }}
+                {% endif %}
+                </td>
+                <td>
+                {% if sa.accessibilityType.endTime is not empty %}
+                    {{ sa.accessibilityType.endTime|date("H:i") }}
+                {% endif %}
+                </td>
+                <td>
+                    {% if sa.accessibilityType.isRecursive is not empty %}
+                        {% if sa.accessibilityType.isRecursive == 1 %}
+                            {{ 'stop.accessibility.isRecursive' | trans }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ sa.accessibilityType.accessibilityMode.name }}</td>
+                <td>{{ sa.accessibilityType.calendar.name }}</td>
+                <td>{{ sa.accessibilityType.calendar.computedStartDate.date|date("d/m/Y") }}</td>
+                <td>{{ sa.accessibilityType.calendar.computedEndDate.date|date("d/m/Y") }}</td>
+                <td>{{ sa.accessibilityType.calendar.calendarDatasources[0].datasource.name }}</td>
                 {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
                     {% if  phantomAccessibilities is empty %}
                         {% if  sa.accessibilityType.calendar.computedStartDate.date|date("Ymd") > now|date("Ymd") %}
                             {% if   sa.accessibilityType.calendar.calendarDatasources[0].datasource.name != "HASTUS" %}
                                 <td>
                                 <a class="btn btn-default"
-                                    href="{{ path('tisseo_boa_stop_accessibility_delete', {'StopId': stop.id, 'StopAccessibilityId': sa.id }) }}">
+                                    href="{{ path('tisseo_boa_stop_accessibility_delete', {'stopId': stop.id, 'StopAccessibilityId': sa.id }) }}">
                                     <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
                                 </a>
                                 </td>
@@ -227,31 +227,31 @@
                         <td></td>
                     {% endif %}
                 {% endif %}
-			</tr>
-		{% endfor %}				
-	{% endif %}
-		</tbody>
-		</table>
-	</div>
+            </tr>
+        {% endfor %}
+    {% endif %}
+        </tbody>
+        </table>
+    </div>
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
         {% if form.masterStop.vars.value is empty %}
             <div class = "col-md-2">
-                    <a href="{{ path('tisseo_boa_stop_accessibility_new', {'StopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
+                    <a href="{{ path('tisseo_boa_stop_accessibility_new', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
                         <span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyAccessibility' | trans }}
                     </a>
             </div>
         {% endif %}
     {% endif %}
-	
-	{{ form_end(form, { 'render_rest': false} ) }}
+
+    {{ form_end(form, { 'render_rest': false} ) }}
 {% endblock %}
 
 {% block javascripts %}
    <script>
-   		require(['boa/stop/utils'], function(utils) {
-			utils.init_autocomplete("#stop_area", "#boa_stop_stopArea");
-			$("#stop_area").val($("#boa_stop_stopArea option:selected").text());
-		 });
+           require(['boa/stop/utils'], function(utils) {
+            utils.init_autocomplete("#stop_area", "#boa_stop_stopArea");
+            $("#stop_area").val($("#boa_stop_stopArea option:selected").text());
+         });
     </script>
 {% endblock %}
 

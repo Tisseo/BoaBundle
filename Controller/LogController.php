@@ -11,8 +11,8 @@ class LogController extends AbstractController
     public function listAction()
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-		
-		$LogManager = $this->get('tisseo_endiv.log_manager');
+
+        $LogManager = $this->get('tisseo_endiv.log_manager');
         return $this->render(
             'TisseoBoaBundle:Log:list.html.twig',
             array(

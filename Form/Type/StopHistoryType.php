@@ -18,56 +18,56 @@ class StopHistoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder->add('shortName', 'text',
-				array(
-					'label' => 'stop_history.labels.shortName',
-					'required' => true
-				)
-		);
+                array(
+                    'label' => 'stop_history.labels.shortName',
+                    'required' => true
+                )
+        );
         $builder->add('longName', 'text',
-				array(
-					'label' => 'stop_history.labels.longName',
-					'required' => false
-				)
-		);
+                array(
+                    'label' => 'stop_history.labels.longName',
+                    'required' => false
+                )
+        );
 
-       $builder->add('startDate', 'date', 
-				array(
+       $builder->add('startDate', 'date',
+                array(
                     'label' => 'stop_history.labels.startDate',
                     'widget' => 'single_text',
                     'format' => 'dd/MM/yyyy',
-					'required' => true
+                    'required' => true
                 )
-		);
-/*		
-        $builder->add('endDate', 'date',  
-				array(
+        );
+/*
+        $builder->add('endDate', 'date',
+                array(
                     'label' => 'stop_history.labels.endDate',
                     'widget' => 'single_text',
                     'format' => 'dd/MM/yyyy',
-					'required' => false
+                    'required' => false
                 )
-		);
-*/		
-		$builder->add('x', 'text',
-			array(
-				'mapped' => false,
-				'required' => true
-			)
-		);
-		$builder->add('y', 'text',
-			array(
-				'mapped' => false,
-				'required' => true
-			)
-		);
-		$builder->add('srid', 'text', 
-			array(
-				'mapped' => false,
-				'label' => 'SRID',
-				'data' => '3943'
-			)
-		);
-				
+        );
+*/
+        $builder->add('x', 'text',
+            array(
+                'mapped' => false,
+                'required' => true
+            )
+        );
+        $builder->add('y', 'text',
+            array(
+                'mapped' => false,
+                'required' => true
+            )
+        );
+        $builder->add('srid', 'text',
+            array(
+                'mapped' => false,
+                'label' => 'SRID',
+                'data' => '3943'
+            )
+        );
+
         $builder->setAction($options['action']);
     }
 
@@ -80,10 +80,10 @@ class StopHistoryType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\StopHistory'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

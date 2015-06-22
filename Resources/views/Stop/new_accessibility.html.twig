@@ -12,29 +12,29 @@
 
 {% block modal_body %}
     {{ form_errors(form) }}
-	{{ form_widget(form._token) }}
+    {{ form_widget(form._token) }}
 
-	<div class="form form-edit">
-		<div class="col-md-12">
-			{{ form_row(form.accessibilityType.accessibilityMode) }}		
-		</div>
-		<div class="col-md-12">
-			{{ form_label(form.accessibilityType.calendar) }}
-			{{ form_widget(form.accessibilityType.calendar, { 'attr': {'class': 'hide'}}) }}	
-			<input type="text" id="accessibility_calendar"  class="form-control" data-url="{{ path('tisseo_boa_json_calendars', {'CalendarType': 'accessibilite' }) }}" required>
-		</div>
-		<div class="col-md-12">
-			{{ form_row(form.accessibilityType.startTime) }}		
-		</div>
+    <div class="form form-edit">
+        <div class="col-md-12">
+            {{ form_row(form.accessibilityType.accessibilityMode) }}
+        </div>
+        <div class="col-md-12">
+            {{ form_label(form.accessibilityType.calendar) }}
+            {{ form_widget(form.accessibilityType.calendar, { 'attr': {'class': 'hide'}}) }}
+            <input type="text" id="accessibility_calendar"  class="form-control" data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'accessibilite' }) }}" required>
+        </div>
+        <div class="col-md-12">
+            {{ form_row(form.accessibilityType.startTime) }}
+        </div>
 
-		<div class="col-md-12">
-			{{ form_row(form.accessibilityType.endTime) }}		
-		</div>
+        <div class="col-md-12">
+            {{ form_row(form.accessibilityType.endTime) }}
+        </div>
 
-		<div class="col-md-12">
-			{{ form_row(form.accessibilityType.isRecursive) }}		
-		</div>
-	</div>
+        <div class="col-md-12">
+            {{ form_row(form.accessibilityType.isRecursive) }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block modal_actions %}
@@ -42,9 +42,9 @@
         <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
     </button>
     {{ form_end(form, { 'render_rest': false}) }}
-   <script>   
-   		require(['boa/stop/utils'], function(utils) {
-			utils.init_autocomplete("#accessibility_calendar", "#boa_stop_accessibility_accessibilityType_calendar");
-		});
-    </script>		
+   <script>
+           require(['boa/stop/utils'], function(utils) {
+            utils.init_autocomplete("#accessibility_calendar", "#boa_stop_accessibility_accessibilityType_calendar");
+        });
+    </script>
 {% endblock %}

@@ -26,7 +26,7 @@
     <th>{{'color.list.columns.rgbGreen'|trans({}, 'default')}}</th>
     <th>{{'color.list.columns.rgbBlue'|trans({}, 'default')}}</th>
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-	    <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+        <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
     {% endif %}
 {% endblock %}
 
@@ -39,7 +39,7 @@
     {% else %}
         {% for color in colors %}
             <tr>
-				<td> {{ render.color_display(color) }} </td>				
+                <td> {{ render.color_display(color) }} </td>
                 <td> {{ color.name }} </td>
                 <td> {{ color.html }} </td>
                 <td> {{ color.pantoneOc }} </td>
@@ -53,7 +53,7 @@
                 <td> {{ color.rgbBlue }} </td>
                 {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
                     <td>
-                        <a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'ColorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'colorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
                         </a>
                     </td>

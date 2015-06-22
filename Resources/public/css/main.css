@@ -3,12 +3,12 @@
 }
 
 .ui-helper-hidden-accessible {
-	position: absolute; 
-	left: -9999px; 
+    position: absolute;
+    left: -9999px;
 }
 
 hr {
-	border-top: 1px solid black;
+    border-top: 1px solid black;
 }
 
 
@@ -56,10 +56,10 @@ th.trips-cols {
 
 /* datepicker + autocomplete fix chrome bug (on modal form) */
 .datepicker {
-	z-index:9999 !important;
+    z-index:9999 !important;
 }
 .ui-autocomplete {
-	z-index:9999 !important;
+    z-index:9999 !important;
 }
 
 .form {
@@ -97,52 +97,52 @@ th.trips-cols {
     margin-bottom: 30px;
 }
 .btn_form_submit {
-	padding-top: 21px;
+    padding-top: 21px;
 }
 
 .calendar_div {
-	padding-top: 20px;
+    padding-top: 20px;
 }
 
 .last_week_of_month {
-	border-bottom: thin solid white;
+    border-bottom: thin solid white;
 }
 
 .first_day_of_month {
-	border-left: thin solid white;
+    border-left: thin solid white;
 }
 
 .first_week_of_month {
-	border-top: thin solid white;
+    border-top: thin solid white;
 }
 
 .calendar_view {
-	padding-top: 10px;
+    padding-top: 10px;
 }
 
 .calendar_button {
-	padding-top: 10px;
+    padding-top: 10px;
 }
 
 .calendar_date {
-	margin-top: 7px;
+    margin-top: 7px;
 }
 
 .calendar_table {
-	color: white;
-	font-weight: bold;
-	background-color: gray;
-	width: 400px;
+    color: white;
+    font-weight: bold;
+    background-color: gray;
+    width: 400px;
 }
 
 .calendar_cell {
-	color: black;
-	font-weight: normal;
-	vertical-align: middle;
+    color: black;
+    font-weight: normal;
+    vertical-align: middle;
 }
 
 .month_cell {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .inaccessible {

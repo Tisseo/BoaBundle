@@ -6,7 +6,7 @@
     {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
                    filter='cssrewrite' output='css/datatables_boa.css' %}
         <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}    
+    {% endstylesheets %}
 {% endblock %}
 
 {% block main_content %}
@@ -55,13 +55,13 @@
                     <tr role="row">
                         <td>{{ render.line_number(lv, 'lineVersion', 'small') }}</td>
                         <td>{{ lv.line.physicalMode.name }}</td>
-                        <td><a href="{{ path('tisseo_boa_route_list', {'LineVersionId': lv.id}) }}"><b>V{{ lv.version }}</b></a></td>
+                        <td><a href="{{ path('tisseo_boa_route_list', {'lineVersionId': lv.id}) }}"><b>V{{ lv.version }}</b></a></td>
                         <td>{{ lv.line.lineDatasources[0].datasource.name }}</td>
                         <td>{{ lv.startDate.date | date('d/m/Y') }}</td>
                         <td>{{ lv.plannedEndDate.date | date('d/m/Y') }}</td>
                         <td>
-                            
-                            <a class="btn btn-default" href="{{ path('tisseo_boa_route_calendar_fh', {'LineVersionId': lv.id}) }}">
+
+                            <a class="btn btn-default" href="{{ path('tisseo_boa_route_calendar_fh', {'lineVersionId': lv.id}) }}">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </a>
                         </td>
@@ -105,7 +105,7 @@
                         var startDate = convertStringToDate(data[4]);
                         var endDate = convertStringToDate(data[5]);
 
-                        lineDatesValid = ( date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime() );                    
+                        lineDatesValid = ( date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime() );
                     }
 
                     if( !$('#datasource').val() ) return lineDatesValid;

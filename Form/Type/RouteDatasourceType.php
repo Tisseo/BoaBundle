@@ -16,7 +16,7 @@ class RouteDatasourceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('datasource', 'entity',  
+        $builder->add('datasource', 'entity',
             array(
                 'label' => 'route_datasource.labels.datasource',
                 'required' => true,
@@ -24,14 +24,14 @@ class RouteDatasourceType extends AbstractType
                 'property' => 'name'
             )
         );
-        
+
         $builder->add('code', 'text',
                 array(
                     'label' => 'route_datasource.labels.code',
                     'required' => true
                 )
         );
-        
+
         $builder->setAction($options['action']);
     }
 
@@ -44,10 +44,10 @@ class RouteDatasourceType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\RouteDatasource'
             )
-        );  
+        );
     }
 
-            
+
     /**
      * @return string
      */

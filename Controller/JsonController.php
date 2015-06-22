@@ -12,28 +12,28 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class JsonController extends AbstractController
 {
-    public function CalendarsAction($CalendarType = null)
+    public function CalendarsAction($calendarType = null)
     {
-		$request = $this->get('request');
-        if( strpos($CalendarType, ',') ) 
-            $CalendarType = explode( ',', $CalendarType );
-		
+        $request = $this->get('request');
+        if( strpos($calendarType, ',') )
+            $calendarType = explode( ',', $calendarType );
+
         if($request->isXmlHttpRequest())
         {
             $term = $request->request->get('term');
             $array= $this->get('tisseo_endiv.calendar_manager')
-                ->findCalendarsLike($term, $CalendarType);
-				
+                ->findCalendarsLike($term, $calendarType);
+
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
 
     public function BitmaskAction()
     {
         $request = $this->get('request');
- 
+
         if($request->isXmlHttpRequest())
         {
             $id = $request->request->get('id');
@@ -52,7 +52,7 @@ class JsonController extends AbstractController
     public function ServiceCalendarBitmaskAction()
     {
         $request = $this->get('request');
- 
+
         if($request->isXmlHttpRequest())
         {
             $id1 = $request->request->get('id1');
@@ -69,11 +69,11 @@ class JsonController extends AbstractController
         }
     }
 
-	
+
     public function StopAction()
     {
         $request = $this->get('request');
-		
+
         if($request->isXmlHttpRequest())
         {
             $term = $request->request->get('term');
@@ -83,134 +83,134 @@ class JsonController extends AbstractController
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
 
     public function StopAreaAction()
     {
         $request = $this->get('request');
-		
+
         if($request->isXmlHttpRequest())
         {
             $term = $request->request->get('term');
             $array= $this->get('tisseo_endiv.stop_area_manager')
                 ->findStopAreasLike($term);
-				
+
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
-	
+
     public function CityAction()
     {
-		
+
         $request = $this->get('request');
- 
-		if($request->isXmlHttpRequest())
+
+        if($request->isXmlHttpRequest())
         {
-			$term = $request->request->get('term');
-			
+            $term = $request->request->get('term');
+
             $array= $this->get('tisseo_endiv.city_manager')
                 ->findCityLike($term);
-				
+
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
-	
+
     public function InternalTransferAction()
     {
-		
+
         $request = $this->get('request');
- 
-		if($request->isXmlHttpRequest())
+
+        if($request->isXmlHttpRequest())
         {
-			$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-			
+            $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+
             $stopAreaId = $request->request->get('stopAreaId');
-			$stopArea = $StopAreaManager->find($stopAreaId);
-			
+            $stopArea = $StopAreaManager->find($stopAreaId);
+
             $array= $this->get('tisseo_endiv.transfer_manager')
                 ->getInternalTransfer($stopArea);
-				
+
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
-	
+
     public function ExternalTransferAction()
     {
-		
+
         $request = $this->get('request');
- 
-		if($request->isXmlHttpRequest())
+
+        if($request->isXmlHttpRequest())
         {
-			$StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-			
+            $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+
             $stopAreaId = $request->request->get('stopAreaId');
-			$stopArea = $StopAreaManager->find($stopAreaId);
-			
+            $stopArea = $StopAreaManager->find($stopAreaId);
+
             $array= $this->get('tisseo_endiv.transfer_manager')
                 ->getExternalTransfer($stopArea);
-				
+
             $response = new Response(json_encode($array));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
 
     public function StopTransferAction()
     {
-		
+
         $request = $this->get('request');
- 
-		if($request->isXmlHttpRequest())
+
+        if($request->isXmlHttpRequest())
         {
             $term = $request->request->get('term');
-			$array = array();
-			$results = array();
-			$array= $this->get('tisseo_endiv.stop_manager')
+            $array = array();
+            $results = array();
+            $array= $this->get('tisseo_endiv.stop_manager')
                 ->findStopsLike($term);
-			foreach($array as $item) {
-				$results[] = array(
-					"id" => $item["id"],
-					"name" => $item["name"],
-					"category" => "stop"
-				);
-			}
+            foreach($array as $item) {
+                $results[] = array(
+                    "id" => $item["id"],
+                    "name" => $item["name"],
+                    "category" => "stop"
+                );
+            }
             $array= $this->get('tisseo_endiv.stop_area_manager')
                 ->findStopAreasLike($term);
-			foreach($array as $item) {
-				$results[] = array(
-					"id" => $item["id"],
-					"name" => $item["name"],
-					"category" => "stop_area"
-				);
-			}
-			
+            foreach($array as $item) {
+                $results[] = array(
+                    "id" => $item["id"],
+                    "name" => $item["name"],
+                    "category" => "stop_area"
+                );
+            }
+
             $response = new Response(json_encode($results));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
-    	}
+        }
     }
 
     public function TripTemplateAction()
     {
         $request = $this->get('request');
- 
+
         if($request->isXmlHttpRequest())
         {
             $term = $request->request->get('term');
             $routeId = $request->request->get('routeId');
             $results= $this->get('tisseo_endiv.trip_manager')
                 ->getTripTemplates($term, $routeId);
-            
+
             $response = new Response(json_encode($results));
             $response -> headers -> set('Content-Type', 'application/json');
             return $response;
         }
-    }    
+    }
 }

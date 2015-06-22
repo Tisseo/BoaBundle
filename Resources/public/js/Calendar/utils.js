@@ -7,10 +7,10 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                     var url = $(this.element).attr('data-url');
                     $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
                         success: function (data) {
-                            response($.map(JSON.parse(data.content), function (item) {                                  
-                                return {                
-                                    label: item.name, 
-                                    value: item.name, 
+                            response($.map(JSON.parse(data.content), function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.name,
                                     id: item.id
                                 };
                             }));
@@ -20,7 +20,7 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                 select: function (event, ui) {
                     var hidden_id = '#' + $(this).attr('id').replace("calendarName", "includedCalendar");
                     $(hidden_id).val(ui.item.id);
-                },                  
+                },
                 minLength: 2,
                 delay: 300
             });
@@ -32,10 +32,10 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
         Beginning.setHours(0,0,0,0);
         var Ending = new Date(LastDate);
         Ending.setHours(0,0,0,0);
-        
+
         var table_html = "<table class='calendar_table'>";
         table_html += "<thead><tr><th></th><th>Lu</th><th>Ma</th><th>Me</th><th>Je</th><th>Ve</th><th>Sa</th><th>Di</th></tr></thead>";
-        
+
         //days before month
         if(Beginning.getDay() != 1){
             table_html += "<tr>";
@@ -49,19 +49,19 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                 table_html += "<td>" + Beginning.toDateString().split(' ')[1] + " " + Beginning.toDateString().split(' ')[3] + "</td>";
             }
         }
-        
-        var pattern_index = 1;              
+
+        var pattern_index = 1;
         var changeMonth = false;
         for (var currentDate = Beginning; currentDate <= Ending; currentDate.setDate(currentDate.getDate() + 1)) {
             var td_class = "calendar_cell ";
             if(changeMonth) {
-                if(currentDate.getDate() > 7) { 
+                if(currentDate.getDate() > 7) {
                     td_class += "last_week_of_month ";
                 } else {
                     if(currentDate.getDate() == 1) td_class += "first_day_of_month ";
                     if(currentDate.getDate() >= 1) td_class += "first_week_of_month ";
                     if(currentDate.getDay() == 0) changeMonth = false;
-                }                       
+                }
             }
             if(calendarPattern[pattern_index] ==  1)  {
                 td_class += "accessible ";
@@ -75,7 +75,7 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                     table_html += "</tr>";
                 } else {
                     table_html += "</tr><tr>";
-                    
+
                     var next_week_month = new Date(currentDate.getTime());
                     next_week_month.setDate(next_week_month.getDate() + 7);
                     if(next_week_month.getMonth() != currentDate.getMonth()) {
@@ -100,9 +100,9 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
             var month = (firstDate.getMonth()<10 ? "0" + firstDate.getMonth() : firstDate.getMonth());
             var sFirstDate = '01/' + month + '/' + firstDate.getFullYear();
 
-            $(startDatePickerId).val(sFirstDate);    
+            $(startDatePickerId).val(sFirstDate);
             $(startDatePickerId).datepicker('update');
-            
+
             month = (lastDate.getMonth()<10 ? "0" + (lastDate.getMonth()+1) : (lastDate.getMonth()+1));
             var sLastDate = lastDate.getDate() + '/' + month + '/' + firstDate.getFullYear();
             $(endDatePickerId).val(sLastDate);
@@ -137,7 +137,7 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
             var start_date  =  start_array[2] + '-' + start_array[1] + '-' + start_array[0];
             var end_array = $(endDateId).val().split("/");
             var end_date  =  end_array[2] + '-' + end_array[1] + '-' + end_array[0];
-            
+
             var objData = {
                 id1: $(Calendar1Id).val(),
                 id2: $(Calendar2Id).val(),
@@ -160,11 +160,11 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
             var $prototype = $(tableId).attr('data-prototype');
             var $newLine = $prototype.replace(/__name__/g, $index);
             $(tableId + ' >tbody').append(
-                "<tr>" + $newLine + 
-                "<td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>" + 
-                Translator.trans('global.delete', {}, 'messages') + 
+                "<tr>" + $newLine +
+                "<td><a class=\"btn btn-default\" href=\"#\"><span class=\"glyphicon glyphicon-remove\"></span>" +
+                Translator.trans('global.delete', {}, 'messages') +
                 "</a></td></tr>");
-            
+
             init_autocomplete(selector);
 
             $('.element-date').datepicker({

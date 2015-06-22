@@ -4,10 +4,10 @@ README
 Description
 -----------
 
-BoaBundle for French acronym "Base Offre Affrêtée" is used in public transport 
+BoaBundle for French acronym "Base Offre Affrêtée" is used in public transport
 ENDIV project (https://github.com/Tisseo/TID).
-This bundle is working with Symfony NMM application and use mapping information 
-provided by EndivBundle (https://github.com/Tisseo/EndivBundle) in order to 
+This bundle is working with Symfony NMM application and use mapping information
+provided by EndivBundle (https://github.com/Tisseo/EndivBundle) in order to
 administrate ENDIV database and create new public transport commercial offers.
 
 BoaBundle is aimed to work in NMM application environment.
@@ -18,7 +18,7 @@ Requirements
 
 - PHP 5.4.3
 - https://github.com/Tisseo/TID
-- https://github.com/Tisseo/EndivBundle 
+- https://github.com/Tisseo/EndivBundle
 
 Installation
 ------------
@@ -27,7 +27,7 @@ Installation
 
 '''
     "repositories": [
-        {   
+        {
             "type": "git",
             "url": "https://github.com/Tisseo/BoaBundle.git"
         },

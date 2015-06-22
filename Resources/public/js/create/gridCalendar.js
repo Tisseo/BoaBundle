@@ -1,6 +1,6 @@
 define(['jquery', 'fosjsrouting'], function($) {
     $(document).ready(function() {
-        /* 
+        /*
          * delete calendar button removes gridCalendar's <tbody> from left table in
          * calendars.html.twig, then when submitting data, the gridCalendar will
          * be deleted from the current LineVersion in database.
@@ -23,7 +23,7 @@ define(['jquery', 'fosjsrouting'], function($) {
                     }
                     $(".grid-mask-type-table").prepend(gridCalendar);
                 }
-                $(this).closest('tbody').remove();        
+                $(this).closest('tbody').remove();
             });
         });
 

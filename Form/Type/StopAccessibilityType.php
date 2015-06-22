@@ -17,11 +17,11 @@ class StopAccessibilityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('accessibilityType', new AccessibilityTypeType(), 
-			array(
-				'data_class' => 'Tisseo\EndivBundle\Entity\AccessibilityType'
-			)
-		);
+        $builder->add('accessibilityType', new AccessibilityTypeType(),
+            array(
+                'data_class' => 'Tisseo\EndivBundle\Entity\AccessibilityType'
+            )
+        );
 
         $builder->setAction($options['action']);
     }
@@ -35,10 +35,10 @@ class StopAccessibilityType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\StopAccessibility'
             )
-        );	
-	}
+        );
+    }
 
-			
+
     /**
      * @return string
      */

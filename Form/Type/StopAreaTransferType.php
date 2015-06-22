@@ -17,21 +17,21 @@ class StopAreaTransferType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$stop= $builder->getData();
-		
-		$builder->add('transferDuration', 'text',
-			array(
-				'label' => 'stop_area.labels.tranfer_duration'
-			)
-		);
-			
-		$builder->add('transfer', 'collection', 
-			array(
-				'mapped' => false,
-				'type' => new TransferType(),
-				'by_reference' => false,
-			)
-		);
+        $stop= $builder->getData();
+
+        $builder->add('transferDuration', 'text',
+            array(
+                'label' => 'stop_area.labels.tranfer_duration'
+            )
+        );
+
+        $builder->add('transfer', 'collection',
+            array(
+                'mapped' => false,
+                'type' => new TransferType(),
+                'by_reference' => false,
+            )
+        );
 
         $builder->setAction($options['action']);
     }
@@ -45,8 +45,8 @@ class StopAreaTransferType extends AbstractType
             array(
                 'data_class' => 'Tisseo\EndivBundle\Entity\StopArea'
             )
-        );	
-	}
+        );
+    }
 
     /**
      * @return string

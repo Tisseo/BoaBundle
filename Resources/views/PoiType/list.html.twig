@@ -5,10 +5,10 @@
 {% block list_title -%}
     {{'poi_type.list.title'|trans({}, 'default')}}
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-	-
-	<a href="{{ path('tisseo_boa_poi_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-		<span class="glyphicon glyphicon-plus"></span> {{'poi_type.create'|trans({}, 'default')}}
-	</a>
+    -
+    <a href="{{ path('tisseo_boa_poi_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> {{'poi_type.create'|trans({}, 'default')}}
+    </a>
     {% endif %}
 {% endblock %}
 
@@ -33,9 +33,9 @@
                 <td> {{ poi_type.name }} </td>
                 {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
                 <td>
-					<a class="btn btn-default" href="{{ path('tisseo_boa_poi_type_edit', {'PoiTypeId': poi_type.id}) }}" data-toggle="modal" data-target="#base-modal">
-						<span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-					</a>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_poi_type_edit', {'poiTypeId': poi_type.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                    </a>
                 </td>
                 {% endif %}
             </tr>

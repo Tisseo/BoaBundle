@@ -27,7 +27,7 @@
                 <td> {{ property.name }} </td>
                 <td> {{ property.default ? 'TRUE': 'FALSE' }} </td>
                 <td>
-                    <a class="btn btn-default" href="{{ path('tisseo_boa_property_edit', {'PropertyId': property.id}) }}" data-toggle="modal" data-target="#base-modal">
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_property_edit', {'propertyId': property.id}) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
                     </a>
                 </td>

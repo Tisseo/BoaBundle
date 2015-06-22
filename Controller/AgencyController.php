@@ -16,8 +16,8 @@ class AgencyController extends AbstractController
                 'BUSINESS_VIEW_CONFIGURATION'
             )
         );
-		
-		$AgencyManager = $this->get('tisseo_endiv.agency_manager');
+
+        $AgencyManager = $this->get('tisseo_endiv.agency_manager');
         return $this->render(
             'TisseoBoaBundle:Agency:list.html.twig',
             array(
@@ -26,43 +26,43 @@ class AgencyController extends AbstractController
             )
         );
     }
-	
-    public function editAction(Request $request, $AgencyId)
+
+    public function editAction(Request $request, $agencyId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-		$AgencyManager = $this->get('tisseo_endiv.agency_manager');
-		$form = $this->buildForm($AgencyId, $AgencyManager);
+        $AgencyManager = $this->get('tisseo_endiv.agency_manager');
+        $form = $this->buildForm($agencyId, $AgencyManager);
         $render = $this->processForm($request, $form);
-		if (!$render) {
+        if (!$render) {
             return $this->render(
                 'TisseoBoaBundle:Agency:form.html.twig',
                 array(
                     'form' => $form->createView(),
-                    'title' => ($AgencyId ? 'agency.edit' : 'agency.create')
+                    'title' => ($agencyId ? 'agency.edit' : 'agency.create')
                 )
             );
         }
         return ($render);
     }
 
-    private function buildForm($AgencyId, $AgencyManager)
+    private function buildForm($agencyId, $AgencyManager)
     {
-        $agency = $AgencyManager->find($AgencyId);
+        $agency = $AgencyManager->find($agencyId);
         if (empty($agency)) {
             $agency = new Agency();
-        }		
+        }
 
         $form = $this->createForm( new AgencyType(), $agency,
             array(
                 'action' => $this->generateUrl('tisseo_boa_agency_edit',
-											array('AgencyId' => $AgencyId)
+                                            array('agencyId' => $agencyId)
                 )
             )
         );
-		
-		return ($form);
-    }	
+
+        return ($form);
+    }
 
     private function processForm(Request $request, $form)
     {

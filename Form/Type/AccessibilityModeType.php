@@ -29,7 +29,7 @@ class AccessibilityModeType extends AbstractType
             )
         );
     }
-	
+
     /**
      * @return string
      */
