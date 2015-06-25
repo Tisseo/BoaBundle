@@ -1,14 +1,8 @@
-{% extends "TisseoBoaBundle::container.html.twig" %}
+{% extends "TisseoCoreBundle::container.html.twig" %}
 
-{% form_theme calendarForm 'TisseoBoaBundle:Form:fields.html.twig' %}
+{% set bundle = 'TisseoBoaBundle' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
-                   filter='cssrewrite' output='css/calendar_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-{% endblock %}
+{% form_theme calendarForm 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>
@@ -87,7 +81,7 @@
         <button type="submit" id="save-form" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
              {{'global.save'|trans}}
         </button>
-    {{ form_end(calendarForm, {'render_rest': false})}}
+    {{ form_end(calendarForm, {'render_rest': false}) }}
 
     <div class="calendar_div">
         <form id="calendarDisplayForm">
@@ -113,6 +107,7 @@
 
 {% block javascripts %}
     <script>
+        {# TODO: inspect JS and maybe create isolated file #}
         require(['boa/calendar/utils'], function(utils) {
 
             function display_dates_save() {

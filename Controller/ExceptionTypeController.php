@@ -10,14 +10,19 @@ class ExceptionTypeController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 
         $ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
         return $this->render(
             'TisseoBoaBundle:ExceptionType:list.html.twig',
             array(
                 'pageTitle' => 'menu.exception_type',
-                'exception_types' => $ExceptionTypeManager->findAll()
+                'exceptionTypes' => $ExceptionTypeManager->findAll()
             )
         );
     }

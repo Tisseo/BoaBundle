@@ -25,7 +25,7 @@ class AccessibilityModeController extends AbstractController
             array(
                 'action' => $this->generateUrl(
                     'tisseo_boa_accessibility_mode_edit',
-                    array('accessibilityModeId' => $accessibilityModeId)
+                    array('accessibilityModeId' => $accessibilityMode->getId())
                 )
             )
         );

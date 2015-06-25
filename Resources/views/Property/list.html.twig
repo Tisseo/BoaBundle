@@ -1,37 +1,34 @@
-{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
-
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
 
 {% block list_title -%}
-    {{'property.list.title'|trans({}, 'default')}}
-    -
-    <a href="{{ path('tisseo_boa_property_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-        <span class="glyphicon glyphicon-plus"></span> {{'property.create'|trans({}, 'default')}}
-    </a>
+    {{ 'property.list.title'|trans({}, 'default') }}
+    {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+        -
+        <a href="{{ path('tisseo_boa_property_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'property.create'|trans({}, 'default') }}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block table_head -%}
-    <th>{{'property.list.columns.name'|trans({}, 'default')}}</th>
-    <th>{{'property.list.columns.default'|trans({}, 'default')}}</th>
-    <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
+    <th class="col-sm-6">{{ 'property.list.columns.name'|trans({}, 'default') }}</th>
+    <th class="col-sm-4">{{ 'property.list.columns.default'|trans({}, 'default') }}</th>
+    <th class="col-sm-2 no-sort no-search">{{ 'global.actions'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
-    {% if properties|length == 0 %}
+    {% for property in properties %}
         <tr>
-            <td colspan="3"> {{'global.no_items'|trans}} </td>
+            <td>{{ property.name }}</td>
+            <td><input type="checkbox" onclick="return false;" {% if property.default %}checked{% endif %}></td>
+            <td>
+            {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+                <a class="btn btn-default" href="{{ path('tisseo_boa_property_edit', {'propertyId': property.id}) }}" data-toggle="modal" data-target="#base-modal">
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+                </a>
+            {% endif %}
+            </td>
         </tr>
-    {% else %}
-        {% for property in properties %}
-            <tr>
-                <td> {{ property.name }} </td>
-                <td> {{ property.default ? 'TRUE': 'FALSE' }} </td>
-                <td>
-                    <a class="btn btn-default" href="{{ path('tisseo_boa_property_edit', {'propertyId': property.id}) }}" data-toggle="modal" data-target="#base-modal">
-                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-    {% endif %}
+    {% endfor %}
 {% endblock %}

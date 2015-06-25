@@ -1,29 +1,3 @@
-{% macro line_number(object, type, size) %}
-       {% if type == 'lineVersion' %}
-
-           {% if object.line.number is defined %}
-               {% if size == 'small' %}
-             <div class="line-number line-small" style="color:{{ object.fgColor.html }}; background-color:{{ object.bgColor.html }}; font-family:sans-serif; font-weight: bold;">
-                     {% elseif size == 'big' %}
-           <div class="line-number line-big" style="color:{{ object.fgColor.html }}; background-color:{{ object.bgColor.html }}; font-family:sans-serif; font-weight: bold;">
-               {% endif %}
-               <span style="font-size: 15px;">{{ object.line.number }}</span>
-          </div>
-          {% endif %}
-      {% elseif type == 'line' %}
-          {% if object.LastLineVersion is defined %}
-              {% set lineVersion = object.LastLineVersion %}
-              {% if size == 'small' %}
-             <div class="line-number line-small" style="color:{{ lineVersion.fgColor.html }}; background-color:{{ lineVersion.bgColor.html }}; font-family:sans-serif; font-weight: bold;">
-                     {% elseif size == 'big' %}
-          <div class="line-number line-big" style="color:{{ lineVersion.fgColor.html }}; background-color:{{ lineVersion.bgColor.html }}; font-family:sans-serif; font-weight: bold;">
-              {% endif %}
-              <span>{{ object.number }}</span>
-          </div>
-          {% endif %}
-      {% endif %}
-{% endmacro %}
-
 {% macro time_format(time) %}
     {% set hour = time//3600 %}
     {% set min = (time-hour*3600)/60 %}
@@ -38,19 +12,18 @@
 
 {% macro color_display(object) %}
     {% if object.name is defined %}
-        <div  class="line-number line-small" style="width:60px; height:20px;border: 1px solid black;color:{{ object.html }}; background-color:{{ object.html }}">
-        </div>
+        <div class="line-number line-free" style="width:60px;height:25px;border: 1px solid #aaa;color:{{ object.html }}; background-color:{{ object.html }}"></div>
     {% endif %}
 {% endmacro %}
 
 {% macro stop_select(stops, select_id, select_class, all_label, all_value, select_name) %}
     <select id='{{ select_id }}' name='{{ select_name }}' class='{{ select_class }}'>
         <option value='{{ all_value }}'>{{ all_label }}</option>
-    {%  for Stop in stops %}
-        {%  if Stop.masterStop is empty %}
+    {% for Stop in stops %}
+        {% if Stop.masterStop is empty %}
         <option value='{{ Stop.id }}'>{{ Stop.getStopLabel }}</option>
-        {%  endif %}
-    {%  endfor %}
+        {% endif %}
+    {% endfor %}
     </select>
 {% endmacro %}
 
@@ -72,75 +45,75 @@
 {% endmacro %}
 
 {% macro select(values, name, class_name) %}
-  {% set class_attribute = "" %}
-  {% if class_name is not empty %}
-    {% set class_attribute = "class=" ~ class_name %}
-  {% endif %}
-  <select name="{{ name }}" {{ class_attribute }}>
-    <option></option>
-  {%  for value in values %}
-    <option value='{{ value }}'>{{ value }}</option>
-  {%  endfor %}
-  </select>
+    {% set class_attribute = "" %}
+    {% if class_name is not empty %}
+        {% set class_attribute = "class=" ~ class_name %}
+    {% endif %}
+    <select name="{{ name }}" {{ class_attribute }}>
+        <option></option>
+    {% for value in values %}
+        <option value='{{ value }}'>{{ value }}</option>
+    {% endfor %}
+    </select>
 {% endmacro %}
 
 {% macro tableTrip(trips) %}
-  <table class="table datatable table-hover dataTable no-footer" style="border: 1px solid black;">
-    <thead>
-      <th>{{ 'calendar_fh.trip.columns.name'|trans }}</th>
-      <th>{{ 'calendar_fh.trip.columns.start'|trans }}</th>
-      <th>{{ 'calendar_fh.trip.columns.service_type'|trans }}</th>
-      <th>{{ 'calendar_fh.trip.columns.route'|trans }}</th>
-      <th>{{ 'calendar_fh.trip.columns.start_end'|trans }}</th>
-    </thead>
-      <tbody>
+    <table class="table datatable table-hover dataTable no-footer" style="border: 1px solid black;">
+        <thead>
+            <th>{{ 'calendar_fh.trip.columns.name'|trans }}</th>
+            <th>{{ 'calendar_fh.trip.columns.start'|trans }}</th>
+            <th>{{ 'calendar_fh.trip.columns.service_type'|trans }}</th>
+            <th>{{ 'calendar_fh.trip.columns.route'|trans }}</th>
+            <th>{{ 'calendar_fh.trip.columns.start_end'|trans }}</th>
+        </thead>
+        <tbody>
         {% for trip in trips %}
-          <tr>
-            <td>
-              <a href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
-                {{ trip.name }}
-              </a>
-            </td>
-            <td>
-              {% if trip.stopTimes %}
-                {{ _self.time_format(trip.stopTimes.first.arrivalTime) }}
-              {% endif %}
-            </td>
-            <td>
-              {% if trip.pattern %}
-                {{ trip.pattern.name }}
-              {% endif %}
-            </td>
-            <td>
-              <a href="{{ path('tisseo_boa_route_edit', {'routeId': trip.route.id}) }}">
-                {{ trip.route.name }}
-              </a>
-            </td>
-            <td>
-              {{ trip.route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
-              /
-              {{ trip.route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
-            </td>
-          </tr>
+            <tr>
+                <td>
+                    <a href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
+                    {{ trip.name }}
+                    </a>
+                </td>
+                <td>
+                {% if trip.stopTimes %}
+                    {{ _self.time_format(trip.stopTimes.first.arrivalTime) }}
+                {% endif %}
+                </td>
+                <td>
+                {% if trip.pattern %}
+                    {{ trip.pattern.name }}
+                {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('tisseo_boa_route_edit', {'routeId': trip.route.id}) }}">
+                    {{ trip.route.name }}
+                    </a>
+                </td>
+                <td>
+                {{ trip.route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
+                /
+                {{ trip.route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
+                </td>
+            </tr>
         {% endfor %}
-      </tbody>
-  </table>
+        </tbody>
+    </table>
 {% endmacro %}
 
 {% macro TripCalendarInputs(grid_index, trip_calendar) %}
-  {% if trip_calendar is not empty %}
-    {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
-      {% if attribute(trip_calendar, day) %}
-        {% set checked = "checked" %}
-      {% else %}
-        {% set checked = "" %}
-      {% endif %}
+    {% if trip_calendar is not empty %}
+        {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+            {% if attribute(trip_calendar, day) %}
+                {% set checked = "checked" %}
+            {% else %}
+                {% set checked = "" %}
+            {% endif %}
 
-      <input type='checkbox' class="circulation-day" name="grid[{{ grid_index }}][{{ day }}]" {{ checked }}  >
-    {% endfor %}
-  {% else %}
-    {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
-      <input type='checkbox' class="circulation-day" name="grid[{{ grid_index }}][{{ day }}]">
-    {% endfor %}
-  {% endif %}
+            <input type='checkbox' class="circulation-day" name="grid[{{ grid_index }}][{{ day }}]" {{ checked }}  >
+        {% endfor %}
+    {% else %}
+        {% for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+            <input type='checkbox' class="circulation-day" name="grid[{{ grid_index }}][{{ day }}]">
+        {% endfor %}
+    {% endif %}
 {% endmacro %}

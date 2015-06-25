@@ -60,6 +60,7 @@ tisseo_boa_exception_type_list:
 tisseo_boa_exception_type_edit:
     pattern: /exception_type/edit/{exceptionTypeId}
     defaults: { _controller: TisseoBoaBundle:ExceptionType:edit, exceptionTypeId: null }
+
 #Property administration
 tisseo_boa_property_list:
     pattern: /property/list
@@ -76,6 +77,7 @@ tisseo_boa_log_edit:
     pattern: /log/edit/{logId}
     defaults: { _controller: TisseoBoaBundle:Log:edit, logId: null }
 
+#Physical mode administration
 tisseo_boa_physical_mode_list:
     pattern: /physical_mode/list
     defaults: { _controller: TisseoBoaBundle:PhysicalMode:list }
@@ -83,6 +85,7 @@ tisseo_boa_physical_mode_edit:
     pattern: /physical_mode/edit/{physicalModeId}
     defaults: { _controller: TisseoBoaBundle:PhysicalMode:edit, physicalModeId: null }
 
+#POI administration
 tisseo_boa_poi_type_list:
     pattern: /poi_type/list
     defaults: { _controller: TisseoBoaBundle:PoiType:list }
@@ -179,12 +182,12 @@ tisseo_boa_external_transfer_edit:
     defaults: { _controller: TisseoBoaBundle:StopArea:externalTransfer }
 
 #Route administration
-tisseo_boa_linesv_list:
-    pattern: /routes/lines/list
-    defaults: { _controller: TisseoBoaBundle:Route:list }
+tisseo_boa_line_versions_list:
+    pattern: /offers/list
+    defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 tisseo_boa_route_list:
     pattern: /routes/list/{lineVersionId}
-    defaults: { _controller: TisseoBoaBundle:Route:route }
+    defaults: { _controller: TisseoBoaBundle:Route:list }
     requirements:
         lineVersionId: \d+
 tisseo_boa_route_edit:
@@ -202,9 +205,9 @@ tisseo_boa_route_delete:
     defaults: { _controller: TisseoBoaBundle:Route:delete }
     requirements:
         routeId: \d+
-tisseo_boa_route_calendar_fh:
-    pattern: /routes/calendar/{lineVersionId}
-    defaults: { _controller: TisseoBoaBundle:Route:calFH }
+tisseo_boa_route_trip_calendar:
+    pattern: /routes/tripcalendars/{lineVersionId}
+    defaults: { _controller: TisseoBoaBundle:Route:tripCalendar }
     requirements:
         lineVersionId: \d+
 tisseo_boa_route_duplicate:

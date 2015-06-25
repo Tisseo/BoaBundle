@@ -2,44 +2,33 @@ parameters:
     boa.permissions:
         BUSINESS_MANAGE_CONFIGURATION:
             label: Administrer la configuration
-            description: Administrer la configuration.
+            description: Administrer la configuration
 
         BUSINESS_VIEW_CONFIGURATION:
             label: Consulter la configuration
-            description: Consulter la configuration.
+            description: Consulter la configuration
 
         BUSINESS_MANAGE_CALENDARS:
             label: Administrer les calendriers
-            description: Accès au menu d'administration des calendriers.
+            description: Administrer les calendriers
 
-        BUSINESS_MANAGE_DAY_CALENDARS:
-            label: Administrer les calendriers "Jours"
-            description: Administrer les calendriers "Jours"
-
-        BUSINESS_MANAGE_PERIOD_CALENDARS:
-            label: Administrer les calendriers "Périodes"
-            description: Administrer les calendriers "Périodes"
-
-        BUSINESS_MANAGE_MIXED_CALENDARS:
-            label: Administrer les calendriers "Mixte"
-            description: Administrer les calendriers "Mixte"
-
-        BUSINESS_MANAGE_BRICK_CALENDARS:
-            label: Administrer les calendriers "Brique"
-            description: Administrer les calendriers "Brique"
-
-        BUSINESS_MANAGE_ACCESSIBILITY_CALENDARS:
-            label: Administrer les calendriers "Accessibilité"
-            description: Administrer les calendriers "Accessibilité"
+        BUSINESS_VIEW_CALENDARS:
+            label: Consulter les calendriers
+            description: Consulter les calendriers
 
         BUSINESS_MANAGE_ROUTES:
-            label: Gerer les routes
-            description: Gerer les routes
+            label: Administrer les routes
+            description: Administrer les routes
+
+        BUSINESS_VIEW_ROUTES:
+            label: Consulter les routes
+            description: Consulter les routes
 
         BUSINESS_MANAGE_STOPS:
-            label: Administrer les points et zones d'arrêt
-            description: Administrer les points et zones d'arrêt.
+            label: Administrer les arrêts
+            description: Administrer les arrêts
 
         BUSINESS_VIEW_STOPS:
-            label: Consulter la configuration
-            description: Consulter la configuration.
+            label: Consulter les arrêts
+            description: Consulter les arrêts
+

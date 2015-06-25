@@ -11,7 +11,12 @@ class TripController extends AbstractController
 {
     public function listAction($routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_ROUTES',
+                'BUSINESS_VIEW_ROUTES'
+            )
+        );
 
         $tripManager = $this->get('tisseo_endiv.trip_manager');
         $routeManager = $this->get('tisseo_endiv.route_manager');

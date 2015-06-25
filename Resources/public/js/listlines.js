@@ -1,18 +1,13 @@
-/**
- * Created by clesauln on 10/04/2015.
- */
-require(['jquery'], function($){
+require(['jquery'], function($) {
     function displayError(responseText) {
         document.open();
         document.write(responseText);
         document.close();
     }
-    $(document).ready(function(){
+    $(document).ready(function() {
         $(document).on("click", "tr", function() {
-
             var indexo=$(this).index();
             var idLine = $(this).find("td").first().attr("id");
-
             var data = { lineId: idLine};
 
             //simulate a form and submit idLine to get routes//
@@ -22,12 +17,7 @@ require(['jquery'], function($){
             '</form>');
             $('body').append(form);
             form.submit();
-
         });
-
-
     });
-
-
 });
 

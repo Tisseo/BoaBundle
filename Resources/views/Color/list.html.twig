@@ -1,64 +1,46 @@
-{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block list_title -%}
-    {{'color.list.title'|trans({}, 'default')}}
+    {{ 'color.list.title'|trans({}, 'default') }}
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
         -
         <a href="{{ path('tisseo_boa_color_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{'color.create'|trans({}, 'default')}}
+            <span class="glyphicon glyphicon-plus"></span> {{ 'color.create'|trans({}, 'default') }}
         </a>
     {% endif %}
 {% endblock %}
 
 {% block table_head -%}
-    <th>{{'color.list.title'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.name'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.html'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.pantoneOc'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.hoxis'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.cmykCyan'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.cmykMagenta'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.cmykYellow'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.cmykBlack'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.rgbRed'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.rgbGreen'|trans({}, 'default')}}</th>
-    <th>{{'color.list.columns.rgbBlue'|trans({}, 'default')}}</th>
-    {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-        <th class="no-sort">{{'global.actions'|trans({}, 'messages')}}</th>
-    {% endif %}
+    <th class="col-sm-1 no-search no-sort">{{ 'color.list.title'|trans({}, 'default') }}</th>
+    <th class="col-sm-2">{{ 'color.list.columns.name'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'color.list.columns.html'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'color.list.columns.pantoneOc'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'color.list.columns.hoxis'|trans({}, 'default') }}</th>
+    <th class="col-sm-2">{{ 'color.list.columns.cmyk'|trans({}, 'default') }}</th>
+    <th class="col-sm-2">{{ 'color.list.columns.rgb'|trans({}, 'default') }}</th>
+    <th class="col-sm-2 no-sort no-search">{{ 'global.actions'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
-    {% if colors|length == 0 %}
-        {% set nbCol = is_granted('BUSINESS_MANAGE_CONFIGURATION') ? 13 : 12 %}
-        <tr>
-            <td colspan="{{ nbCol }}"> {{'global.no_items'|trans}} </td>
-        </tr>
-    {% else %}
-        {% for color in colors %}
-            <tr>
-                <td> {{ render.color_display(color) }} </td>
-                <td> {{ color.name }} </td>
-                <td> {{ color.html }} </td>
-                <td> {{ color.pantoneOc }} </td>
-                <td> {{ color.hoxis }} </td>
-                <td> {{ color.cmykCyan }} </td>
-                <td> {{ color.cmykMagenta }} </td>
-                <td> {{ color.cmykYellow }} </td>
-                <td> {{ color.cmykBlack }} </td>
-                <td> {{ color.rgbRed }} </td>
-                <td> {{ color.rgbGreen }} </td>
-                <td> {{ color.rgbBlue }} </td>
-                {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-                    <td>
-                        <a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'colorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
-                            <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
-                        </a>
-                    </td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-    {% endif %}
+    {% for color in colors %}
+    <tr>
+        <td>{{ render.color_display(color) }}</td>
+        <td>{{ color.name }}</td>
+        <td>{{ color.html }}</td>
+        <td>{{ color.pantoneOc }}</td>
+        <td>{{ color.hoxis }}</td>
+        <td>{{ color.cmykCyan }} {{ color.cmykMagenta }} {{ color.cmykYellow }} {{ color.cmykBlack }}</td>
+        <td>{{ color.rgbRed }} {{ color.rgbGreen }} {{ color.rgbBlue }}</td>
+        <td>
+        {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+            <a class="btn btn-default" href="{{ path('tisseo_boa_color_edit', {'colorId': color.id}) }}" data-toggle="modal" data-target="#base-modal">
+                <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+            </a>
+        {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
 {% endblock %}

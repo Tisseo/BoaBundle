@@ -1,37 +1,28 @@
-{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
-
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
 
 {% block list_title -%}
-    {{'log.list.title'|trans({}, 'default')}}
+    {{ 'log.list.title'|trans({}, 'default') }}
 {% endblock %}
 
 {% block table_head -%}
-    <th>{{'log.list.columns.datetime'|trans({}, 'default')}}</th>
-    <th>{{'log.list.columns.table'|trans({}, 'default')}}</th>
-    <th>{{'log.list.columns.action'|trans({}, 'default')}}</th>
-    <th>{{'log.list.columns.previousData'|trans({}, 'default')}}</th>
-    <th>{{'log.list.columns.insertedData'|trans({}, 'default')}}</th>
-    <th>{{'log.list.columns.user'|trans({}, 'default')}}</th>
+    <th>{{ 'log.list.columns.datetime'|trans({}, 'default') }}</th>
+    <th>{{ 'log.list.columns.table'|trans({}, 'default') }}</th>
+    <th>{{ 'log.list.columns.action'|trans({}, 'default') }}</th>
+    <th>{{ 'log.list.columns.previousData'|trans({}, 'default') }}</th>
+    <th>{{ 'log.list.columns.insertedData'|trans({}, 'default') }}</th>
+    <th>{{ 'log.list.columns.user'|trans({}, 'default') }}</th>
 {% endblock %}
 
 {% block table_body -%}
-    {% if logs|length == 0 %}
+    {% for log in logs %}
         <tr>
-            <td colspan="3"> {{'global.no_items'|trans}} </td>
-            {# prevent warning from datatables #}
-            <td></td><td></td><td></td><td></td><td></td>
+            <td>{{ log.datetime | date("d/m/Y H:i:s") }}</td>
+            <td>{{ log.table }}</td>
+            <td>{{ log.action }}</td>
+            <td>{{ log.previousData }}</td>
+            <td>{{ log.insertedData }}</td>
+            <td>{{ log.user }}</td>
         </tr>
-    {% else %}
-        {% for log in logs %}
-            <tr>
-                <td> {{ log.datetime | date("d/m/Y H:i:s") }} </td>
-                <td> {{ log.table }} </td>
-                <td> {{ log.action }} </td>
-                <td> {{ log.previousData }} </td>
-                <td> {{ log.insertedData }} </td>
-                <td> {{ log.user }} </td>
-            </tr>
-        {% endfor %}
-    {% endif %}
+    {% endfor %}
 {% endblock %}

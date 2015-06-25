@@ -75,13 +75,8 @@ color:
             html: html
             pantoneOc: pantoneOc
             hoxis: hoxis
-            cmykCyan: cmykCyan
-            cmykMagenta: cmykMagenta
-            cmykYellow: cmykYellow
-            cmykBlack: cmykBlack
-            rgbRed: rgbRed
-            rgbGreen: rgbGreen
-            rgbBlue: rgbBlue
+            cmyk: CMYK
+            rgb: RGB
         title: Couleurs
     edit: Editer une couleur
     create: Créer une couleur
@@ -102,8 +97,8 @@ exception_type:
         columns:
             label: Nom
             exceptionText: Description
-            gridCalendarPattern: Pattern pour gridCalendar
-            tripCalendarPattern: pattern pour tripCalendar
+            gridCalendarPattern: Calendrier d'offre
+            tripCalendarPattern: Calendrier de service
         title: Exception Type
     edit: Editer une exception type
     create: Créer une exception type
@@ -173,9 +168,9 @@ stop_area:
     transfer: Transferts de la zone d'arrêt
     no_stop_area_selected: Vous n'avez pas sélectionné de zone d'arrêt valide.
 
-line:
+line_version:
      list:
-        title: Liste des lignes
+        title: Liste des offres
         filter:
             datasource: Datasource
             date: Date
@@ -186,26 +181,26 @@ line:
             datasource: Datasource
             startDate: Date de début
             endDate: Date de fin
-            calendar: Calendrier FH
+     actions:
+        calendar: Calendrier FH
+        route_list: Routes
 
 route:
      create: Créer une route
      edit: Editer une route
      duplicate: Dupliquer une route
-     cal_fh: Attribution de calendrier fiche horaire aux services
      list:
-        line: Liste des routes de la ligne
+        line: Liste des routes de la ligne %number% (version %version%)
         columns:
             name: Nom
             firstStop: Départ
             lastStop: Arrivée
             comment: Commentaire
             way: Sens
-            actions: Actions
-            services: Services
-            copy: Dupliquer
-            edit: Editer
-            delete: Supprimer
+
+trip_calendar:
+    list:
+        title: Attribution de calendrier fiche horaire aux services
 
 trip:
     create: Créer un service

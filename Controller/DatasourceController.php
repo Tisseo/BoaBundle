@@ -10,7 +10,12 @@ class DatasourceController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )    
+        );
 
         $DatasourceManager = $this->get('tisseo_endiv.datasource_manager');
         return $this->render(
@@ -78,5 +83,4 @@ class DatasourceController extends AbstractController
         }
         return (null);
     }
-
 }

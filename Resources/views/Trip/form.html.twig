@@ -1,14 +1,8 @@
-{% extends "TisseoBoaBundle::container2.html.twig" %}
+{% extends "TisseoBoaBundle::container.html.twig" %}
+
+{% set bundle = 'TisseoBoaBundle' %}
+
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
-                   filter='cssrewrite' output='css/trip_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-{% endblock %}
-
 
 {% block main_content -%}
     <h1>{{ title|trans({}, 'default') }}</h1>
@@ -56,7 +50,8 @@
         </thead>
         <tbody>
             {% for stop_time in stopTimes %}
-                <tr>
+            <tr>
+                    {# TODO: TRANSLATION + TIME FORMAT #}
                     <td>{{ stop_time.routeStop.rank }}</td>
                     <td>{{ stop_time.routeStop.waypoint.stop.stopArea.city.name }}</td>
                     <td>{{ stop_time.routeStop.waypoint.stop.stopArea.shortName }}</td>

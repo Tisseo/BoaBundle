@@ -18,10 +18,10 @@ class CalendarController extends AbstractController
         $request = $this->getRequest();
 
         //current calendar
-        $CalendarManager = $this->get('tisseo_endiv.calendar_manager');
-        $calendar = $CalendarManager->find($calendarId);
-        if (empty($calendar)) $calendar = new Calendar($CalendarManager);
-        $calendarForm = $this->createForm( new CalendarType($CalendarManager),
+        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $calendar = $calendarManager->find($calendarId);
+        if (empty($calendar)) $calendar = new Calendar($calendarManager);
+        $calendarForm = $this->createForm( new CalendarType($calendarManager),
                 $calendar,
                 array('action' => $this->generateUrl('tisseo_boa_calendar_edit',
                                                         array('calendarId' => $calendarId)
@@ -43,7 +43,7 @@ class CalendarController extends AbstractController
                 if ($calendarForm->isValid()) {
                         $datas = $calendarForm->getData();
                         try {
-                            $CalendarManager->save($datas);
+                            $calendarManager->save($datas);
                             $calendarId = $datas->getId();
 
                             $new_datas = $calendarForm->get('calendar_element')->getData();
@@ -84,14 +84,20 @@ class CalendarController extends AbstractController
 
     public function listAction($calendarType)
     {
-        $this->isGranted('BUSINESS_MANAGE_CALENDARS');
-        $CalendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CALENDARS',
+                'BUSINESS_VIEW_CALENDARS'
+            )
+        );
+
+        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
 
         return $this->render(
             'TisseoBoaBundle:Calendar:list.html.twig',
             array(
                 'pageTitle' => 'menu.calendar',
-                'calendars' => ($calendarType ? $CalendarManager->findbyType($calendarType) : $CalendarManager->findAll()),
+                'calendars' => ($calendarType ? $calendarManager->findbyType($calendarType) : $calendarManager->findAll()),
                 'calendarType' => $calendarType
             )
         );
@@ -102,9 +108,9 @@ class CalendarController extends AbstractController
     {
         $this->isGranted('BUSINESS_MANAGE_CALENDARS');
 
-        $CalendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
         try {
-            $CalendarManager->delete($calendarId);
+            $calendarManager->delete($calendarId);
         } catch(\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }

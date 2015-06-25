@@ -1,61 +1,55 @@
-{% extends "TisseoBoaBundle::datatable_list.html.twig" %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set paginate = true %}
 
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
-{#
-{% form_theme filterForm 'TisseoBoaBundle:Form:fields.html.twig' %}
-#}
 {% block list_title -%}
     {{ 'calendar.list.title'|trans({}, 'default') ~ ' ' ~ calendarType }}
-    -
-    <a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
-        <span class="glyphicon glyphicon-plus"></span> {{'calendar.create'|trans({}, 'default')}}
-    </a>
+    {% if is_granted('BUSINESS_MANAGE_CALENDARS') %}
+        -
+        <a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'calendar.create'|trans({}, 'default') }}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block table_head -%}
-    <th>{{'calendar.list.columns.name'|trans({}, 'default')}}</th>
+    <th class="col-sm-3">{{ 'calendar.list.columns.name'|trans({}, 'default') }}</th>
     {% if calendarType == 'mixte' or calendarType == 'periode' %}
-        <th>{{'calendar.list.columns.line'|trans({}, 'default')}}</th>
+        <th class="col-sm-2">{{ 'calendar.list.columns.line'|trans({}, 'default') }}</th>
     {% endif %}
-    <th>{{'calendar.list.columns.startDate'|trans({}, 'default')}}</th>
-    <th>{{'calendar.list.columns.endDate'|trans({}, 'default')}}</th>
-    <th class="no-sort">{{'global.edit'|trans({}, 'messages')}}</th>
-    <th class="no-sort">{{'global.delete'|trans({}, 'messages')}}</th>
+    <th class="col-sm-2">{{ 'calendar.list.columns.startDate'|trans({}, 'default') }}</th>
+    <th class="col-sm-2">{{ 'calendar.list.columns.endDate'|trans({}, 'default') }}</th>
+    <th class="col-sm-3 no-search no-sort">{{ 'global.actions'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
-    {% if calendars|length == 0 %}
+    {% for calendar in calendars %}
         <tr>
-            <td colspan="3"> {{'global.no_items'|trans}} </td>
-            <td></td><td></td><td></td><td></td><td></td>
-        </tr>
-    {% else %}
-        {% for calendar in calendars %}
-            <tr>
-                <td> {{ calendar.calendar.name }} </td>
-                    {% if calendarType == 'mixte' or calendarType == 'periode' %}
-                <td>
-                        {% if calendar.calendar.lineVersion is not null %}
-                            {{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
-                        {% endif %}
-                </td>
-                    {% endif %}
-                <td>
-                    {% if calendar.calendar.computedStartDate is not null %}
-                        {{ calendar.calendar.computedStartDate|date("d/m/Y") }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if calendar.calendar.computedEndDate is not null %}
-                        {{ calendar.calendar.computedEndDate|date("d/m/Y") }}
-                    {% endif %}
-                 </td>
-                <td>
+            <td>
+                {{ calendar.calendar.name }}
+            </td>
+            {% if calendarType == 'mixte' or calendarType == 'periode' %}
+            <td>
+                {% if calendar.calendar.lineVersion is not null %}
+                    {{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
+                {% endif %}
+            </td>
+            {% endif %}
+            <td>
+                {% if calendar.calendar.computedStartDate is not null %}
+                    {{ calendar.calendar.computedStartDate|date("d/m/Y") }}
+                {% endif %}
+            </td>
+            <td>
+                {% if calendar.calendar.computedEndDate is not null %}
+                    {{ calendar.calendar.computedEndDate|date("d/m/Y") }}
+                {% endif %}
+            </td>
+            <td>
+                {% if is_granted('BUSINESS_MANAGE_CALENDARS') %}
                     <a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': calendar.calendar.id}) }}">
-                        <span class="glyphicon glyphicon-edit"></span> {{'global.edit'|trans({}, 'messages')}}
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
                     </a>
-                </td>
-                <td>
                     {% if not((calendar.calendar.periodTrips is not empty)  or
                         (calendar.calendar.dayTrips is not empty) or
                         (calendar.calendar.accessibilityTypes is not empty) or
@@ -63,11 +57,11 @@
                         <a class="btn btn-default"
                         {% set calendarType = app.request.get('calendarType') %}
                             href="{{ path('tisseo_boa_calendar_delete', {'calendarId': calendar.calendar.id, 'calendarType': calendarType }) }}">
-                            <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
+                            <span class="glyphicon glyphicon-remove"></span> {{ 'global.delete'|trans }}
                         </a>
                     {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
 {% endblock %}

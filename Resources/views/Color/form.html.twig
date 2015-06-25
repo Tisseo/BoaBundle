@@ -1,6 +1,6 @@
 {% extends "::modal.html.twig" %}
 
-{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block open_form %}
     {{ form_start(form) }}
@@ -12,20 +12,21 @@
 
 {% block modal_body %}
     {{ form_errors(form) }}
+
     <div class="form form-edit">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-6"> {{ form_row(form.name) }} </div>
-                <div class="col-md-6"> {{ form_row(form.html) }} </div>
-                <div class="col-md-6"> {{ form_row(form.pantoneOc) }} </div>
-                <div class="col-md-6"> {{ form_row(form.hoxis) }} </div>
-                <div class="col-md-6"> {{ form_row(form.cmykCyan) }} </div>
-                <div class="col-md-6"> {{ form_row(form.cmykMagenta) }} </div>
-                <div class="col-md-6"> {{ form_row(form.cmykYellow) }} </div>
-                <div class="col-md-6"> {{ form_row(form.cmykBlack) }} </div>
-                <div class="col-md-6"> {{ form_row(form.rgbRed) }} </div>
-                <div class="col-md-6"> {{ form_row(form.rgbGreen) }} </div>
-                <div class="col-md-6"> {{ form_row(form.rgbBlue) }} </div>
+                <div class="col-md-6">{{ form_row(form.name) }}</div>
+                <div class="col-md-6">{{ form_row(form.html) }}</div>
+                <div class="col-md-6">{{ form_row(form.pantoneOc) }}</div>
+                <div class="col-md-6">{{ form_row(form.hoxis) }}</div>
+                <div class="col-md-6">{{ form_row(form.cmykCyan) }}</div>
+                <div class="col-md-6">{{ form_row(form.cmykMagenta) }}</div>
+                <div class="col-md-6">{{ form_row(form.cmykYellow) }}</div>
+                <div class="col-md-6">{{ form_row(form.cmykBlack) }}</div>
+                <div class="col-md-6">{{ form_row(form.rgbRed) }}</div>
+                <div class="col-md-6">{{ form_row(form.rgbGreen) }}</div>
+                <div class="col-md-6">{{ form_row(form.rgbBlue) }}</div>
             </div>
         </div>
     </div>

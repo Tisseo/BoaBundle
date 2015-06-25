@@ -1,13 +1,9 @@
-{% extends "TisseoBoaBundle::container2.html.twig" %}
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% extends "TisseoCoreBundle::container.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set datatable = true %}
+{% set smoothness = true %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
-                   filter='cssrewrite' output='css/calendar_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-{% endblock %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block main_content -%}
     <div id="error_alert"></div>
@@ -143,8 +139,6 @@
                         </tbody>
                     </table>
                 </td>
-{#                <td style="background-color: #4F81BD;">###</td>   #}
-                <td>###</td>
                 <td>
                     <div class="route_table_header">
                         {{ 'route.templates_services' | trans }}

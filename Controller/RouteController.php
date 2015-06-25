@@ -10,45 +10,12 @@ use Tisseo\EndivBundle\Entity\Route;
 
 class RouteController extends AbstractController
 {
-    public function listAction()
-    {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-
-        $linesVManager = $this->get('tisseo_endiv.line_version_manager');
-        $time = new \DateTime('now');
-        $lineVersions = $linesVManager->findActiveLineVersions($time);
-
-        $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
-        $datasources = $datasourceManager->findAll();
-
-        // sort by priority, number and start date
-        usort($lineVersions, function($val1, $val2) {
-            $line1 = $val1->getLine();
-            $line2 = $val2->getLine();
-            if( $line1->getPriority() > $line2->getPriority() ) return 1;
-            if( $line1->getPriority() < $line2->getPriority() ) return -1;
-            if( $line1->getNumber() > $line2->getNumber() ) return 1;
-            if( $line1->getNumber() < $line2->getNumber() ) return -1;
-            if( $val1->getStartDate()->format("Ymd") >= $val2->getStartDate()->format("Ymd") ) return 1;
-            return -1;
-        });
-
-        return $this->render(
-            'TisseoBoaBundle:Route:list.html.twig',
-            array(
-                'pageTitle' => 'menu.line',
-                'linesV' => $lineVersions,
-                'datasources' => $datasources
-            )
-        );
-    }
-
-    public function calFHAction($lineVersionId)
+    public function tripCalendarAction($lineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
         $request = $this->getRequest();
-
         $routeManager = $this->get('tisseo_endiv.route_manager');
+
         if ($request->getMethod() == 'POST') {
             try {
                 $grids = $request->request->get('grid');
@@ -57,35 +24,31 @@ class RouteController extends AbstractController
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
         }
-        $calFH = $routeManager->getCalendarFH($lineVersionId);
-        $calendarTypes = $routeManager->getFHcalendarTypeValues();
-        $calendarPeriods = $routeManager->getFHCalendarPeriodValues();
 
-        return $this->render("TisseoBoaBundle:Route:cal_fh.html.twig",
+        return $this->render("TisseoBoaBundle:Route:tripCalendar.html.twig",
             array(
-                'title' => 'route.cal_fh',
-                'calendars' => $calFH,
-                'calendarTypes' => $calendarTypes,
-                'calendarPeriods' => $calendarPeriods
+                'pageTitle' => 'menu.route_manage',
+                'calendars' => $routeManager->getTimetableCalendars($lineVersionId),
+                'calendarTypes' => $routeManager->getSortedTypesOfGridMaskType(),
+                'calendarPeriods' => $routeManager->getSortedPeriodsOfGridMaskType()
             )
         );
     }
 
-    public function routeAction($lineVersionId)
+    public function listAction($lineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
-        $lv = $lineVersionManager->find($lineVersionId);
-        $lineVersionName = $lv->getLine()->getNumber().' ( version '.$lv->getVersion().' )';
-        $routes = $routeManager->getRoutesByLine($lineVersionId);
 
-        return $this->render("TisseoBoaBundle:Route:route.html.twig", array(
-           'routes' => $routes,
-           'line_version_name' => $lineVersionName,
-           'lineVersionId' => $lv->getId()
-       ));
+        return $this->render("TisseoBoaBundle:Route:list.html.twig",
+            array(
+                'pageTitle' => 'menu.route_manage',
+                'routes' => $routeManager->getRoutesByLine($lineVersionId),
+                'lineVersion' => $lineVersionManager->find($lineVersionId)
+            )
+        );
     }
 
     public function editAction($routeId = null)

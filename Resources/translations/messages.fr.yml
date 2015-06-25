@@ -56,17 +56,15 @@ menu:
     poi_type: Types de poi
     color: Couleurs
     log: Logs
-    route_manage: Routes
-    line: Liste des lignes
+    route_manage: Gestion des routes
     property: Propriétés
     calendar_manage: Gestion des calendriers
-    calendar_jour: Jour
-    calendar_periode: Période
-    calendar_accessibilite: Accessibilité
-    calendar_mixte: Mixte
-    calendar_brique: Brique
-    calendar: Calendriers
-    stop_manage: Arrêts
+    calendar_day: Jour
+    calendar_period: Période
+    calendar_accessibility: Accessibilité
+    calendar_hybrid: Mixte
+    calendar_brick: Brique
+    stop_manage: Gestion des arrêts
     stop_point: Point d'arrêt
     stop_area: Zone d'arrêt
 
@@ -275,6 +273,12 @@ route:
         way: Sens
         direction: Direction
     route_details: Détails de la route
+    actions:
+        actions: Opérations
+        services: Services
+        copy: Dupliquer
+        edit: Editer
+        delete: Supprimer
     templates_services: Services type
     route_stops:
         labels:

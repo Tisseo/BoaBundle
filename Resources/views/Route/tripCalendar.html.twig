@@ -1,13 +1,15 @@
-{% extends "TisseoBoaBundle::container2.html.twig" %}
+{% extends "TisseoCoreBundle::container.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set datatable = true %}
+
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
-{% block main_content -%}
-    <div id="error_alert"></div>
+{% block main_content %}
+    <h1>
+        {{ 'trip_calendar.list.title'|trans({}, 'default') }}
+    </h1>
 
     <div style="overflow: auto">
-        <div style="display: table-cell;float: left;">
-            <h1>{{ title|trans({}, 'default') }}</h1>
-        </div>
 
     <form method="post">
         <div style="display: table-cell;float: right;">
@@ -19,7 +21,7 @@
 
     <hr style="clear: both;"/>
 
-    {% set grid_index = 0 %}
+    {% set calendarIndex = 0 %}
     {% for way, values in calendars %}
         <h4><b>{{ 'calendar_fh.way'|trans }} "{{ way }}"</b></h4>
 
@@ -105,6 +107,11 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        require(['core/datatables'], function() {
+            datatable(false);
+        });
+    </script>
     <script>
         require(['boa/route/utils'], function(utils) {
             $(document).ready(function() {

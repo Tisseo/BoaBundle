@@ -15,8 +15,8 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
     private $users = array(
         array(
             'id'        => null,
-            'username'  => 'utilisateur Boa',
-            'firstname' => 'utilisateur',
+            'username'  => 'user_boa',
+            'firstname' => 'User',
             'lastname'  => 'Boa',
             'email'     => 'user-boa@tisseo.fr',
             'password'  => 'boa',
@@ -25,21 +25,11 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
         ),
         array(
             'id'        => null,
-            'username'  => 'consult Boa',
-            'firstname' => 'consult',
-            'lastname'  => 'Boa',
-            'email'     => 'consult-boa@tisseo.fr',
-            'password'  => 'boa',
-            'roles'     => array('role-consult-boa'),
-            'customer'  => 'customer-tisseo'
-        ),
-        array(
-            'id'        => null,
-            'username'  => 'admin Boa',
-            'firstname' => 'admin',
+            'username'  => 'admin_boa',
+            'firstname' => 'Admin',
             'lastname'  => 'Boa',
             'email'     => 'admin-boa@tisseo.fr',
-            'password'  => 'admin',
+            'password'  => 'boa',
             'roles'     => array('role-admin-boa'),
             'customer'  => 'customer-tisseo'
         )
