@@ -1,6 +1,6 @@
 {% extends "::modal.html.twig" %}
 
-{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block open_form %}
     {{ form_start(form) }}
@@ -12,6 +12,7 @@
 
 {% block modal_body %}
     {{ form_errors(form) }}
+
     <div class="form form-edit">
         <div class="col-md-12">
             <div class="row">

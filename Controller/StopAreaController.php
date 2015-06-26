@@ -35,7 +35,8 @@ class StopAreaController extends AbstractController
         if ($request->isMethod('POST')) {
             $this->isGranted('BUSINESS_MANAGE_STOPS');
         } else {
-            $this->isGranted(array(
+            $this->isGranted(
+                array(
                     'BUSINESS_MANAGE_STOPS',
                     'BUSINESS_VIEW_STOPS',
                 )

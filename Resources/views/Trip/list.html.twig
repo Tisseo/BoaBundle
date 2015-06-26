@@ -1,31 +1,26 @@
-{% extends "TisseoBoaBundle::container2.html.twig" %}
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% extends "TisseoCoreBundle::container.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+{% set datatable = true %}
+{% set paginate = true %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
-                   filter='cssrewrite' output='css/datatables_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
-                   filter='cssrewrite' output='css/trip_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-{% endblock %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
 
 {% block main_content %}
     <h1>
         {{'trip.list.title'|trans({}, 'default')}}
-        -
-        <a href="{{ path('tisseo_boa_trip_new', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{'trip.create'|trans({}, 'default')}}
-        </a>
+        {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
+            -
+            <a href="{{ path('tisseo_boa_trip_new', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span> {{ 'trip.create'|trans({}, 'default') }}
+            </a>
+        {% endif %}
     </h1>
     <hr/>
 
     {{ render.route_header(route) }}
 
-    <table id="datatable" class="table table-hover dataTable no-footer" role="grid" aria-describedby="datatable_info">
+    <table class="table table-hover datatable no-footer" role="grid" aria-describedby="datatable_info">
         <thead>
             <th>{{ 'trip.list.columns.name'|trans({}, 'default') }}</th>
             <th>{{ 'trip.list.columns.start'|trans({}, 'default') }}</th>
@@ -33,7 +28,7 @@
             <th>{{ 'trip.list.columns.day'|trans({}, 'default') }}</th>
             <th>{{ 'trip.list.columns.period'|trans({}, 'default') }}</th>
             <th>{{ 'trip.list.columns.lastDay'|trans({}, 'default') }}</th>
-            <th class="no-sort"> - </th>
+            <th class="col-md-2 no-sort no-search">{{ 'global.actions'|trans }}</th>
         </thead>
         <tbody>
             {% for trip in trips %}
@@ -88,17 +83,18 @@
 
 {% block javascripts %}
     <script>
-        require(['jquery', 'datatables'], function($) {
+        require(['jquery', 'core/datatables'], function($) {
+            datatable(true);
+
+            {# TODO: IS THIS NECESSARY ? #}
             $(document).ready(function() {
                 $("#datatable").DataTable({
                     "order": [[ 1, "asc" ]],
-                    "pageLength" : 25,
-                    "language": {
-                        "sZeroRecords":    "{{'trip.list.no_data'|trans({}, 'default')}}"
-                    }
+                    "pageLength" : 25
                 });
 
-                $('#datatable').on('click',  ".delete-action", function(event) {
+                {# TODO: TRANSLATOR #}
+                $('#datatable').on("click", ".delete-action", function(event) {
                     if( !confirm("Confirmez-vous la suppression de ce service ?") ) {
                         event.preventDefault();
                     }

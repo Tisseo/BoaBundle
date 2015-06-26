@@ -1,147 +1,90 @@
-{% extends "TisseoBoaBundle::container2.html.twig" %}
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
-                   filter='cssrewrite' output='css/datatables_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
+{% block list_title -%}
+    {{ 'route.list.line'|trans({'%number%': lineVersion.line.number, '%version%': lineVersion.version}, 'default') }}
+    {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
+        -
+        <a href="{{ path('tisseo_boa_route_create', {'lineVersionId':lineVersion.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'route.create'|trans({}, 'default') }}
+        </a>
+    {% endif %}
 {% endblock %}
 
-{% block main_content %}
-    <h1>
-        {{ 'line.list.title'|trans({}, 'default') }}
-    </h1>
-    <hr/>
+{% block table_head -%}
+    <th class="col-md-4">{{ 'route.list.columns.name'|trans({}, 'default') }}</th>
+    <th class="col-md-1">{{ 'route.list.columns.firstStop'|trans({}, 'default') }}</th>
+    <th class="col-md-1">{{ 'route.list.columns.lastStop'|trans({}, 'default') }}</th>
+    <th class="col-md-2">{{ 'route.list.columns.comment'|trans({}, 'default') }}</th>
+    <th class="col-md-1">{{ 'route.list.columns.way'|trans({}, 'default') }}</th>
+    <th class="col-md-3 no-sort no-search">{{ 'global.actions'|trans }}</th>
+{% endblock %}
 
-    <table id="filter" border="0">
-        <tbody>
-        <tr style="height: 0px;">
-            <td><label>{{ 'line.list.filter.datasource'|trans({}, 'default') }}:</label></td>
+{% block table_body -%}
+    {% for route in routes %}
+        <tr>
+            <td>{{ route.name }}</td>
             <td>
-                <select id="datasource" name="datasource">
-                    <option value></option>
-                    {% for d in datasources %}
-                        <option value="{{ d.name }}">{{ d.name }}</option>
-                    {% endfor %}
-                </select>
+                {% if route.routeStops.first.waypoint.stop is not empty %}
+                    {{ route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
+                {% else %}
+                    {{ route.routeStops.first.waypoint.area.name }}
+                {% endif %}
+            </td>
+            <td>
+                {% if route.routeStops.last.waypoint.stop is not empty %}
+                    {{ route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
+                {% else %}
+                    {{ route.routeStops.last.waypoint.area.name }}
+                {% endif %}
+            </td>
+            <td>{{ route.comment }}</td>
+            <td>{{ route.way }}</td>
+            <td>
+                {% if (is_granted('BUSINESS_VIEW_ROUTES')) %}
+                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_trip_list',{routeId: route.id}) }}">
+                    <span class="glyphicon glyphicon-list"></span> {{ 'route.actions.services'|trans({}, 'messages') }}
+                </a>
+                {% endif %}
+                {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+                <div class="btn-group">
+                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">{{ 'route.actions.actions'|trans({}, 'messages') }} <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_edit',{routeId: route.id}) }}">
+                                {{ 'route.actions.edit'|trans({}, 'messages') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate',{routeId: route.id}) }}" data-toggle="modal" data-target="#base-modal">
+                                {{ 'route.actions.copy'|trans({}, 'messages') }}
+                            </a>
+                        </li>
+                        {% if route.services is empty %}
+                        <li>
+                            <a class="btn delete-action" role="button" href="{{ path('tisseo_boa_route_delete',{routeId: route.id}) }}">
+                                {{ 'route.actions.delete'|trans({}, 'messages') }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
             </td>
         </tr>
-        <tr style="height: 0px;">
-            <td><label>{{ 'line.list.filter.date'|trans({}, 'default') }}:</label></td>
-            <td><input type="text" id="date" name="date"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="datatable_info">
-        <thead>
-            <th class="no-sort">{{'line.list.columns.number'|trans({}, 'default')}}</th>
-            <th class="no-sort">{{'line.list.columns.mode'|trans({}, 'default')}}</th>
-            <th class="no-sort">{{'line.list.columns.version'|trans({}, 'default')}}</th>
-            <th class="no-sort">{{'line.list.columns.datasource'|trans({}, 'default')}}</th>
-            <th class="no-sort">{{'line.list.columns.startDate'|trans({}, 'default')}}</th>
-            <th class="no-sort">{{'line.list.columns.endDate'|trans({}, 'default')}}</th>
-            <th class="no-sort">{{'line.list.columns.calendar'|trans({}, 'default')}}</th>
-        </thead>
-        <tbody>
-            {% if linesV|length == 0 %}
-                <tr>
-                    <td colspan="5"> {{'global.no_items'|trans}} </td>
-                </tr>
-            {% else %}
-                {% for lv in linesV %}
-                    <tr role="row">
-                        <td>{{ render.line_number(lv, 'lineVersion', 'small') }}</td>
-                        <td>{{ lv.line.physicalMode.name }}</td>
-                        <td><a href="{{ path('tisseo_boa_route_list', {'lineVersionId': lv.id}) }}"><b>V{{ lv.version }}</b></a></td>
-                        <td>{{ lv.line.lineDatasources[0].datasource.name }}</td>
-                        <td>{{ lv.startDate.date | date('d/m/Y') }}</td>
-                        <td>{{ lv.plannedEndDate.date | date('d/m/Y') }}</td>
-                        <td>
-
-                            <a class="btn btn-default" href="{{ path('tisseo_boa_route_calendar_fh', {'lineVersionId': lv.id}) }}">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-        </tbody>
-    </table>
+    {% endfor %}
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script>
-        require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr', 'datatables'], function($) {
-            //var previousDate;
-            $('#filter td').find('input[id=date]').datepicker({
-                language: 'fr',
-                todayHighlight: true,
-                autoclose: true
-            })
-            .on('changeDate', function(e) {
-                $('#datatable').DataTable().draw();
-            });
-
-            $( "#datasource" ).change(function() {
-                $('#datatable').DataTable().draw();
-            });
-
-            function convertStringToDate(dateString) {
-                var d = dateString.split("/");
-                return new Date(d[2], d[1] - 1, d[0]);
-            }
-
-
-            $.fn.dataTable.ext.search.push(
-                function( settings, data, dataIndex ) {
-                    if( !$('#date').val() && !$('#datasource').val() ) return true;
-
-                    var lineDatesValid = true;
-                    if( $('#date').val() ) {
-                        var date = convertStringToDate($('#date').val());
-                        var startDate = convertStringToDate(data[4]);
-                        var endDate = convertStringToDate(data[5]);
-
-                        lineDatesValid = ( date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime() );
-                    }
-
-                    if( !$('#datasource').val() ) return lineDatesValid;
-
-
-                    var selectedDatasource = $('#datasource').val();
-                    var currentDatasource = data[3];
-
-                    return lineDatesValid && ( selectedDatasource == currentDatasource );
-                }
-            );
+        require(['jquery'], function($) {
             $(document).ready(function() {
-
-                $("#datatable").DataTable({
-                    "aaSorting": [],
-                    "aoColumns": [
-                        { "bSortable": false },
-                        { "bSortable": false },
-                        { "bSortable": false },
-                        { "bSortable": false },
-                        { "bSortable": false },
-                        { "bSortable": false },
-                        { "bSortable": false }
-                    ],
-                    "pageLength" : 50,
-                    "language": {
-                        "sZeroRecords":    "{{'trip.list.no_data'|trans({}, 'default')}}"
+                $('#datatable').on('click', ".delete-action", function(event) {
+                    if (!confirm("Confirmez-vous la suppression de cette route ?")) {
+                        event.preventDefault();
                     }
-                });
-
-                $('#date').keyup( function() {
-                    $('#datatable').DataTable().draw();
-                });
-
-                $('#datasource').val("Service Données");
-                $( "#datasource" ).trigger( "change" );
+                })
             });
         });
     </script>

@@ -1,16 +1,6 @@
-{% extends "TisseoBoaBundle::container2.html.twig" %}
+{% extends "TisseoCoreBundle::container.html.twig" %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 'components/jquery-ui/themes/smoothness/jquery-ui.css'
-                   filter='cssrewrite' output='css/stop_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-    {% stylesheets 'bundles/tisseoboa/css/jquery.dataTables.min.css'
-                   filter='cssrewrite' output='css/datatables_boa.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
-    {% endstylesheets %}
-{% endblock %}
+{% set bundle = 'TisseoBoaBundle' %}
 
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>

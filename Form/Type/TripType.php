@@ -12,8 +12,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
-
-use Tisseo\EndivBundle\Entity\Trip;
+use Tisseo\BoaBundle\Form\Type\TripDatasourceType;
 
 class TripType extends AbstractType
 {
@@ -23,19 +22,33 @@ class TripType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',
-            array('label' => 'trip.labels.name')
+        $builder->add(
+            'name',
+            'text',
+            array(
+                'label' => 'trip.labels.name'
+            )
         )
-        ->add('dayCalendar', 'calendar_selector',
-            array('label' => 'trip.labels.day_calendar')
+        ->add(
+            'dayCalendar',
+            'calendar_selector',
+            array(
+                'label' => 'trip.labels.day_calendar'
+            )
         )
-        ->add('periodCalendar', 'calendar_selector',
-            array('label' => 'trip.labels.period_calendar')
+        ->add(
+            'periodCalendar',
+            'calendar_selector',
+            array(
+                'label' => 'trip.labels.period_calendar'
+            )
         )
-        ->add('tripDatasources', 'collection',
+        ->add(
+            'tripDatasources',
+            'collection',
             array(
                 'type' => new TripDatasourceType()
-                )
+            )
         );
 
         $builder->setAction($options['action']);

@@ -10,7 +10,12 @@ class PropertyController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 
         $PropertyManager = $this->get('tisseo_endiv.property_manager');
         return $this->render(

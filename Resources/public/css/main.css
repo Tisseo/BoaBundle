@@ -1,202 +1,138 @@
-#application-navbar.container .navbar.navbar-default .navbar-brand a {
-    font-size: 1em;
-}
-
 .ui-helper-hidden-accessible {
-    position: absolute;
-    left: -9999px;
+    position:absolute;
+    left:-9999px;
 }
-
 hr {
-    border-top: 1px solid black;
+    border-top:1px solid black;
 }
-
-
 .type-select {
-    width: 200px;
+    width:200px;
 }
-
-#route-stop-table th,tr {
-    height: 53px;
-}
-#trip-table th,tr {
-    height: 53px;
+#route-stop-table th,
+#route-stop-table tr,
+#trip-table th,
+#trip-table tr {
+    height:53px;
 }
 .m-t-row {
-    margin-top: 10px;
+    margin-top:10px;
 }
 .t-row {
-    display: table;
+    display:table;
 }
 .t-header {
-    display: table;
-    font-weight: bold;
+    display:table;
+    font-weight:bold;
 }
 .t-body {
-    display: table;
+    display:table;
 }
 .t-cell {
-    display: table-cell;
+    display:table-cell;
 }
 .route_btn_field {
-    margin-top: 22px;
+    margin-top:22px;
 }
-
 /* table datatable */
-
 .timeStop{
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
 }
-
 th.trips-cols {
-    border: 1px solid #ccc;
-}
-
-/* datepicker + autocomplete fix chrome bug (on modal form) */
-.datepicker {
-    z-index:9999 !important;
-}
-.ui-autocomplete {
-    z-index:9999 !important;
-}
-
-.form {
-    border-radius:5px;
     border:1px solid #ccc;
 }
-
-.form-edit {
-    padding:10px 10px 10px 0;
-    margin:10px 0;
-    display:inline-block;
+#saveList {
+    margin-top:30px;
+    margin-left:50%;
+    margin-right:auto;
+    text-align:center;
+}
+#formRoute {
+    margin-left:auto;
+    margin-right:auto;
     width:100%;
 }
-
-#saveList {
-    margin-top: 30px;
-    margin-left: 50%;
-    margin-right: auto;
-    text-align: center;
-}
-
-#formRoute {
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-}
-
 #headRstops{
-    background: #005A64;
-    color: #fff;
+    background:#005A64;
+    color:#fff;
 }
-
 #datatable_filter {
-    margin-right: 40px;
-    margin-bottom: 30px;
+    margin-right:40px;
+    margin-bottom:30px;
 }
 .btn_form_submit {
-    padding-top: 21px;
+    padding-top:21px;
 }
-
 .calendar_div {
-    padding-top: 20px;
+    padding-top:20px;
 }
-
 .last_week_of_month {
-    border-bottom: thin solid white;
+    border-bottom:thin solid white;
 }
-
 .first_day_of_month {
-    border-left: thin solid white;
+    border-left:thin solid white;
 }
-
 .first_week_of_month {
-    border-top: thin solid white;
+    border-top:thin solid white;
 }
-
 .calendar_view {
-    padding-top: 10px;
+    padding-top:10px;
 }
-
 .calendar_button {
-    padding-top: 10px;
+    padding-top:10px;
 }
-
 .calendar_date {
-    margin-top: 7px;
+    margin-top:7px;
 }
-
 .calendar_table {
-    color: white;
-    font-weight: bold;
-    background-color: gray;
-    width: 400px;
+    color:white;
+    font-weight:bold;
+    background-color:gray;
+    width:400px;
 }
-
 .calendar_cell {
-    color: black;
-    font-weight: normal;
-    vertical-align: middle;
+    color:black;
+    font-weight:normal;
+    vertical-align:middle;
 }
-
 .month_cell {
-    vertical-align: middle;
+    vertical-align:middle;
 }
-
 .inaccessible {
-    background-color: silver;
+    background-color:silver;
 }
-
 .accessible {
-    background-color: green;
+    background-color:green;
 }
-
 .stop_table_header {
-  background-color: #4F81BD;
-  padding: 5px;
-  line-height: 27px;
-  width: 100%;
-  display: inline-block;
-  color: white;
-  margin: 10px 0 0;
-  cursor: pointer;
-  text-decoration: none;
+    background-color:#4F81BD;
+    padding:5px;
+    line-height:27px;
+    width:100%;
+    display:inline-block;
+    color:white;
+    margin:10px 0 0;
+    cursor:pointer;
+    text-decoration:none;
 }
-
 .route_table_header {
-  background-color: #4F81BD;
-  padding: 5px;
-  width: 100%;
-  height: 45px;
-  display: inline-block;
-  color: white;
-  margin: 10px 0 0;
-  cursor: pointer;
-  text-decoration: none;
+    background-color:#4F81BD;
+    padding:5px;
+    width:100%;
+    height:45px;
+    display:inline-block;
+    color:white;
+    margin:10px 0 0;
+    cursor:pointer;
+    text-decoration:none;
 }
-
-.line-number {
-  border-radius: 3px;
-  text-align: center;
-  padding: 0 5px;
-  display: table-cell;
-}
-
-.line-small {
-  height: 30px;
-  width: 30px;
-  line-height: 32px;
-}
-
 .invalid {
-    color: red !important;
+    color:red !important;
 }
-
 .summary {
-  color: #000088;
-  font-weight: bold;
-  padding-left: 5px;
-  display: table-cell
+  color:#000088;
+  font-weight:bold;
+  padding-left:5px;
+  display:table-cell
 }

@@ -53,7 +53,7 @@ class ColorController extends AbstractController
             $color = new Color();
         }
 
-        $form = $this->createForm( new ColorType(), $color,
+        $form = $this->createForm(new ColorType(), $color,
             array(
                 'action' => $this->generateUrl('tisseo_boa_color_edit',
                                             array('colorId' => $colorId)
@@ -83,5 +83,4 @@ class ColorController extends AbstractController
         }
         return (null);
     }
-
 }

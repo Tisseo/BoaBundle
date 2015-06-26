@@ -104,7 +104,6 @@ class JsonController extends AbstractController
 
     public function CityAction()
     {
-
         $request = $this->get('request');
 
         if($request->isXmlHttpRequest())
@@ -122,7 +121,6 @@ class JsonController extends AbstractController
 
     public function InternalTransferAction()
     {
-
         $request = $this->get('request');
 
         if($request->isXmlHttpRequest())
@@ -143,7 +141,6 @@ class JsonController extends AbstractController
 
     public function ExternalTransferAction()
     {
-
         $request = $this->get('request');
 
         if($request->isXmlHttpRequest())
@@ -164,7 +161,6 @@ class JsonController extends AbstractController
 
     public function StopTransferAction()
     {
-
         $request = $this->get('request');
 
         if($request->isXmlHttpRequest())

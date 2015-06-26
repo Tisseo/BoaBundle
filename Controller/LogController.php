@@ -10,7 +10,12 @@ class LogController extends AbstractController
 {
     public function listAction()
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
 
         $LogManager = $this->get('tisseo_endiv.log_manager');
         return $this->render(

@@ -22,14 +22,14 @@ class PoiTypeController extends AbstractController
             'TisseoBoaBundle:PoiType:list.html.twig',
             array(
                 'pageTitle' => 'menu.poi_type',
-                'poi_types' => $PoiTypeManager->findAll()
+                'poiTypes' => $PoiTypeManager->findAll()
             )
         );
     }
 
     public function editAction(Request $request, $poiTypeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_PARAMETERS');
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $PoiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
         $form = $this->buildForm($poiTypeId, $PoiTypeManager);
@@ -83,5 +83,4 @@ class PoiTypeController extends AbstractController
         }
         return (null);
     }
-
 }

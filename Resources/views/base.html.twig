@@ -1,9 +1,9 @@
-{% extends "::base.html.twig" %}
+{% extends "TisseoCoreBundle::base.html.twig" %}
 
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets 'bundles/tisseoboa/css/main.css'
-                   filter='cssrewrite' output='css/full_boa.css' %}
+                   filter='cssrewrite' output='css/boa.css' %}
         <link rel="stylesheet" href="{{ asset_url }}?{{ assets_version }}" />
     {% endstylesheets %}
 {% endblock %}
@@ -20,7 +20,10 @@
     - {{ pageTitle|trans }}
     {% endif %}
 {% endblock %}
-{% block navbar_brand %}<a href="{% if externalNetworkId %}{{ path('tisseo_boa_homepage', {'externalNetworkId':externalNetworkId }) }}{% else %}{{ path('tisseo_boa_homepage') }}{% endif %}">Boa</a>{% endblock %}
+
+{% block navbar_brand %}
+    <a href="{% if externalNetworkId %}{{ path('tisseo_boa_homepage', {'externalNetworkId':externalNetworkId }) }}{% else %}{{ path('tisseo_boa_homepage') }}{% endif %}">Boa</a>
+{% endblock %}
 
 {% block root_breadcrumb %}
     <ol class="breadcrumb">
@@ -37,14 +40,4 @@
             {% endif %}
         {% endblock %}
     </ol>
-{% endblock %}
-
-{% block body %}
-    {% block subheader %}
-    {% endblock %}
-    {% block container %}
-    {% endblock %}
-{% endblock %}
-
-{% block javascripts %}
 {% endblock %}
