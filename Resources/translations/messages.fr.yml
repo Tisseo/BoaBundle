@@ -5,6 +5,7 @@ global:
     validate: Valider
     save: Enregistrer
     close: Fermer
+    closure: Clôturer
     delete: Supprimer
     duplicate: Dupliquer
     cancel: Annuler
@@ -125,6 +126,7 @@ datasource:
     labels:
         name: Nom
         agency: Réseau
+        datasource: Source de donnée
         code: Code
         title: Datasource
 
@@ -158,31 +160,14 @@ stop:
             startDate: Date début
             endDate: Date fin
             datasource: Datasource
-    history:
-        header: Historique du point d'arrêt
-        columns:
-            startDate: Du
-            endDate: Au
-            shortName: Nom
-            longName: Nom long
-            x: X
-            y: Y
-    phantom:
-        header: Fantômes de l'arrêt
-        columns:
-            agency: Réseau
-            stop: Arrêt
-            code: Code
+        modify_accessibility: Modifier accessibilité
     labels:
-        shortName: Nom du point d'arrêt
-        longName: Nom long
-        stopArea: Zone d'arrêt
-        masterStop: Fantôme de
-        datasource: Datasource
-        phantoms: Fantômes de l'arrêt
-    modifyStop: Modifier point d'arrêt
-    closeStop: Clôturer point d'arrêt
-    modifyAccessibility: Modifier accessibilité
+        short_name: Nom court
+        long_name: Nom long
+        stop_area: Zone d'arrêt
+        master_stop: Fantôme de l'arrêt :
+    created: Point d'arrêt créé
+    edited: Point d'arrêt édité
 
 stop_area:
     show_closed_stops: Afficher les points d'arrêts clôturés
@@ -247,12 +232,18 @@ stop_datasource:
 
 stop_history:
     labels:
-        shortName: Nom
-        longName: Nom long
-        startDate: Du
-        endDate: Au
+        short_name: Nom court
+        long_name: Nom long
+        start_date: Date de début
+        end_date: Date de fin
         x: X
         y: Y
+        srid: SRID
+    created: Propriété du point d'arrêt mise à jour
+    closed: Propriété du point d'arrêt clôturée
+    errors:
+        min_date: La date de début doit être au minimum celle de demain : %date%.
+        min_date_end: La date de début doit être supérieure à la date de fin de la dernière propriété : %date%.
 
 accessibility_type:
     labels:

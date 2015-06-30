@@ -17,58 +17,64 @@ class StopHistoryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-         $builder->add('shortName', 'text',
+        $builder
+            ->add(
+                'shortName',
+                'text',
                 array(
-                    'label' => 'stop_history.labels.shortName',
+                    'label' => 'stop_history.labels.short_name',
                     'required' => true
                 )
-        );
-        $builder->add('longName', 'text',
+            )
+            ->add(
+                'longName',
+                'text',
                 array(
-                    'label' => 'stop_history.labels.longName',
+                    'label' => 'stop_history.labels.long_name',
                     'required' => false
                 )
-        );
-
-       $builder->add('startDate', 'date',
+            )
+            ->add(
+                'startDate',
+                'tisseo_datepicker',
                 array(
-                    'label' => 'stop_history.labels.startDate',
-                    'widget' => 'single_text',
-                    'format' => 'dd/MM/yyyy',
+                    'label' => 'stop_history.labels.start_date',
+                    'attr' => array(
+                        'data-to-date' => true
+                    )
+                )
+            )
+            ->add(
+                'x',
+                'text',
+                array(
+                    'label' => 'stop_history.labels.x',
+                    'mapped' => false,
                     'required' => true
                 )
-        );
-/*
-        $builder->add('endDate', 'date',
+            )
+            ->add(
+                'y',
+                'text',
                 array(
-                    'label' => 'stop_history.labels.endDate',
-                    'widget' => 'single_text',
-                    'format' => 'dd/MM/yyyy',
-                    'required' => false
+                    'label' => 'stop_history.labels.y',
+                    'mapped' => false,
+                    'required' => true
                 )
-        );
-*/
-        $builder->add('x', 'text',
-            array(
-                'mapped' => false,
-                'required' => true
             )
-        );
-        $builder->add('y', 'text',
-            array(
-                'mapped' => false,
-                'required' => true
+            ->add(
+                'srid',
+                'text',
+                array(
+                    'label' => 'stop_history.labels.srid',
+                    'mapped' => false,
+                    'data' => '3943',
+                    'read_only' => true,
+                    'required' => true
+                )
             )
-        );
-        $builder->add('srid', 'text',
-            array(
-                'mapped' => false,
-                'label' => 'SRID',
-                'data' => '3943'
-            )
-        );
-
-        $builder->setAction($options['action']);
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -78,11 +84,11 @@ class StopHistoryType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\StopHistory'
+                'data_class' => 'Tisseo\EndivBundle\Entity\StopHistory',
+                'validation_groups' => array('StopHistory', 'edit')
             )
         );
     }
-
 
     /**
      * @return string

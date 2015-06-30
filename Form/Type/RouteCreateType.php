@@ -1,20 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: clesauln
- * Date: 13/04/2015
- * Time: 14:25
- */
+
 namespace Tisseo\BoaBundle\Form\Type;
 
-//use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Tisseo\EndivBundle\Entity\Route;
 
-class NewRouteType extends AbstractType
+class RouteCreateType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -55,12 +48,10 @@ class NewRouteType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * @return string
      */
     public function getName()
     {
-        return 'boa_new_route';
+        return 'boa_route_create';
     }
 }

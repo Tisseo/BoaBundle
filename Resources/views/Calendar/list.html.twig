@@ -1,6 +1,6 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
-{% set paginate = true %}
+{% set paginate = 'true' %}
 
 {% block list_title -%}
     {{ 'calendar.list.title'|trans({}, 'default') ~ ' ' ~ calendarType }}

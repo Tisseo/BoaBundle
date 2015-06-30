@@ -8,9 +8,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityRepository;
 
-use Tisseo\EndivBundle\Entity\Trip;
-
-class NewTripType extends AbstractType
+class TripCreateType extends AbstractType
 {
     private $user;
     private $datasource;
@@ -108,9 +106,12 @@ class NewTripType extends AbstractType
         );
     }
 
-    public function getName(){
-
-        return 'boa_trip';
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'boa_trip_create';
     }
 
 }

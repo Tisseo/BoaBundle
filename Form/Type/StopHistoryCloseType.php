@@ -6,7 +6,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class StopAreaDatasourceType extends AbstractType
+use Tisseo\EndivBundle\Entity\StopHistory;
+use CrEOF\Spatial\PHP\Types\Geometry\Point;
+
+class StopHistoryCloseType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -16,20 +19,23 @@ class StopAreaDatasourceType extends AbstractType
     {
         $builder
             ->add(
-                'datasource',
-                'entity',
+                'startDate',
+                'date',
                 array(
-                    'label' => 'datasource.labels.datasource',
-                    'class' => 'TisseoEndivBundle:Datasource',
-                    'property' => 'name',
-                    'required' => true
+                    'label' => 'stop_history.labels.start_date',
+                    'read_only' => true,
+                    'widget' => 'single_text',
+                    'format' => 'dd/MM/yyyy'
                 )
             )
             ->add(
-                'code',
-                'text',
+                'endDate',
+                'tisseo_datepicker',
                 array(
-                    'label' => 'datasource.labels.code'
+                    'label' => 'stop_history.labels.end_date',
+                    'attr' => array(
+                        'data-to-date' => true
+                    )
                 )
             )
             ->setAction($options['action'])
@@ -43,17 +49,17 @@ class StopAreaDatasourceType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\StopAreaDatasource'
+                'data_class' => 'Tisseo\EndivBundle\Entity\StopHistory',
+                'validation_groups' => array('StopHistory', 'close')
             )
         );
     }
-
 
     /**
      * @return string
      */
     public function getName()
     {
-        return 'boa_stop_area_datasource';
+        return 'boa_stop_history_close';
     }
 }

@@ -5,9 +5,7 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Tisseo\EndivBundle\Entity\AccessibilityType;
-use Tisseo\BoaBundle\Form\Type\CalendarAccessibilityType;
 
 class AccessibilityTypeType extends AbstractType
 {
@@ -17,47 +15,54 @@ class AccessibilityTypeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-/*
-    private $calendar;
-*/
-         $builder->add('startTime', 'time',
+        $builder
+            ->add(
+                'startTime',
+                'time',
                 array(
                     'label' => 'accessibility_type.labels.startTime',
                     'input'  => 'timestamp',
                     'widget' => 'single_text',
                     'required' => false
                 )
-        );
-         $builder->add('endTime', 'time',
+            )
+            ->add(
+                'endTime',
+                'time',
                 array(
                     'label' => 'accessibility_type.labels.endTime',
                     'input'  => 'timestamp',
                     'widget' => 'single_text',
                     'required' => false
                 )
-        );
-         $builder->add('isRecursive', 'checkbox',
+            )
+            ->add(
+                'isRecursive',
+                'checkbox',
                 array(
                     'label' => 'accessibility_type.labels.isRecursive',
                     'required' => false
                 )
-        );
-        $builder->add('accessibilityMode', 'entity',
-            array(
-                'required' => true,
-                'label' => 'accessibility_type.labels.accessibilityMode',
-                'class' => 'Tisseo\EndivBundle\Entity\AccessibilityMode',
-                'property' => 'name'
             )
-        );
-
-        $builder->add('calendar', 'calendar_selector',
-            array(
-                'label' => 'Calendrier'
+            ->add(
+                'accessibilityMode',
+                'entity',
+                array(
+                    'required' => true,
+                    'label' => 'accessibility_type.labels.accessibilityMode',
+                    'class' => 'Tisseo\EndivBundle\Entity\AccessibilityMode',
+                    'property' => 'name'
+                )
             )
-        );
-
-        $builder->setAction($options['action']);
+            ->add(
+                'calendar',
+                'calendar_selector',
+                array(
+                    'label' => 'Calendrier'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -71,7 +76,6 @@ class AccessibilityTypeType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

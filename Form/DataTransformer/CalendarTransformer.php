@@ -57,4 +57,3 @@ class CalendarTransformer implements DataTransformerInterface
         return $calendar;
     }
 }
-

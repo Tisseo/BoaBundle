@@ -117,7 +117,10 @@
                     return lineDatesValid && ( selectedDatasource == currentDatasource );
                 }
             );
-            $('#datasource').val('Service Données');
+            $(document).ready(function() {
+                $('#datasource').val('Service Données');
+                $('#datasource').trigger('change');
+            });
         });
     </script>
 {% endblock %}
