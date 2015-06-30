@@ -149,8 +149,28 @@ customer:
     actions:
         assign_twig: Assigner
 
+stop_history:
+    create: Nouvelle propriété de point d'arrêt
+    list:
+        columns:
+            agency: Réseau
+            code: Code
+            short_label: Nom
+            short_name: Nom court
+            long_name: Nom long
+            start_date: Date de début
+            end_date: Date de fin
+            lines: Lignes
+            x: X
+            y: Y
+
 stop:
-    title: Point d'arrêt
+    list:
+        title: Gestion des points d'arrêt
+        search: Rechercher un point d'arrêt
+        headers:
+            stop_history: Propriétés du point d'arrêt
+            edit_form: Edition du point d'arrêt
     create: Créer un point d'arrêt
     edit: Editer un point d'arrêt
     validate: Valider
@@ -161,7 +181,11 @@ stop:
     no_stop_selected: Vous n'avez pas sélectionné de point d'arrêt valide.
 
 stop_area:
-    title: Zone d'arrêt
+    list:
+        title: Gestion des zones d'arrêt
+        headers:
+            edit_form: Edition de la zone d'arrêt
+            stop_point: Liste des points d'arrêts 
     create: Créer une zone d'arrêt
     edit: Editer une zone d'arrêt
     alias: Alias

@@ -6,33 +6,34 @@ services:
     tisseo_boa.perimeter_manager:
        class: %tisseo_boa.perimeter.class%
        arguments: ['@doctrine.orm.default_entity_manager']
+    
     tisseo_boa.user_manager:
        class: %tisseo_boa.user.class%
        arguments: ['@doctrine.orm.default_entity_manager', '@translator', '@service_container']
-
-    form.type.datepicker_boa:
-        class: Tisseo\BoaBundle\Form\Type\DatepickerType
-        tags:
-            - { name: form.type, alias: datepicker_boa }
+    
     tisseo_boa.ajax_form_listener:
         class: CanalTP\SamCoreBundle\EventListener\AjaxFormListener
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    
     tisseo_boa.type.calendar_selector:
         class: Tisseo\BoaBundle\Form\Type\CalendarSelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: calendar_selector }
+    
     tisseo_boa.type.stop_selector:
         class: Tisseo\BoaBundle\Form\Type\StopSelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: stop_selector }
+    
     tisseo_boa.type.city_selector:
         class: Tisseo\BoaBundle\Form\Type\CitySelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: city_selector }
+    
     tisseo_boa.type.trip_selector:
         class: Tisseo\BoaBundle\Form\Type\TripSelectorType
         arguments: ["@doctrine.orm.endiv_entity_manager"]

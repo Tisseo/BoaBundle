@@ -6,9 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Tisseo\EndivBundle\Entity\StopAccessibility;
-// use Tisseo\BoaBundle\Form\Type\AccessibilityTypeType;
-
 class StopAccessibilityType extends AbstractType
 {
     /**
@@ -17,13 +14,16 @@ class StopAccessibilityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('accessibilityType', new AccessibilityTypeType(),
-            array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\AccessibilityType'
+        $builder
+            ->add(
+                'accessibilityType',
+                new AccessibilityTypeType(),
+                array(
+                    'data_class' => 'Tisseo\EndivBundle\Entity\AccessibilityType'
+                )
             )
-        );
-
-        $builder->setAction($options['action']);
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -37,7 +37,6 @@ class StopAccessibilityType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class StopAreaDatasourceType extends AbstractType
+class StopCreateType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -16,20 +16,31 @@ class StopAreaDatasourceType extends AbstractType
     {
         $builder
             ->add(
-                'datasource',
+                'stopArea',
                 'entity',
                 array(
-                    'label' => 'datasource.labels.datasource',
-                    'class' => 'TisseoEndivBundle:Datasource',
-                    'property' => 'name',
+                    'label' => 'stop.labels.stop_area',
+                    'class' => 'TisseoEndivBundle:StopArea',
+                    'property' => 'nameLabel',
                     'required' => true
                 )
             )
             ->add(
-                'code',
-                'text',
+                'stopHistories',
+                'collection',
                 array(
-                    'label' => 'datasource.labels.code'
+                    'type' => new StopHistoryType(),
+                    'label' => 'stop.labels.stop_history',
+                    'by_reference' => false
+                )
+            )
+            ->add(
+                'stopDatasources',
+                'collection',
+                array(
+                    'type' => new StopDatasourceType(),
+                    'label' => 'stop.labels.stop_datasource',
+                    'by_reference' => false
                 )
             )
             ->setAction($options['action'])
@@ -43,17 +54,17 @@ class StopAreaDatasourceType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\StopAreaDatasource'
+                'data_class' => 'Tisseo\EndivBundle\Entity\Stop'
             )
         );
     }
-
 
     /**
      * @return string
      */
     public function getName()
     {
-        return 'boa_stop_area_datasource';
+        return 'boa_stop_create';
     }
 }
+

@@ -16,37 +16,44 @@ class StopAreaType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('shortName', 'text',
+        $builder
+            ->add(
+                'shortName',
+                'text',
                 array(
                     'label' => 'stop_area.labels.shortName',
                     'required' => false
                 )
-        );
-        $builder->add('longName', 'text',
+            )
+            ->add(
+                'longName',
+                'text',
                 array(
                     'label' => 'stop_area.labels.longName',
                     'required' => false
                 )
-        );
-
-        $builder->add('city', 'city_selector',
-            array(
-                'label' =>  'stop_area.labels.city',
-                'required' => false
             )
-        );
-
-        $builder->add('stopAreaDatasources', 'collection',
-            array(
-                'label' => 'stop_area.labels.datasource',
-                'type' => new StopAreaDatasourceType(),
-                'by_reference' => false,
-                'allow_add' => true
+            ->add(
+                'city',
+                'city_selector',
+                array(
+                    'label' => 'stop_area.labels.city',
+                    'required' => false
+                )
             )
-        );
-
-        $builder->setAction($options['action']);
-  }
+            ->add(
+                'stopAreaDatasources',
+                'collection',
+                array(
+                    'label' => 'stop_area.labels.datasource',
+                    'type' => new StopAreaDatasourceType(),
+                    'by_reference' => false,
+                    'allow_add' => true
+                )
+            )
+            ->setAction($options['action'])
+        ;
+    }
 
     /**
      * @param OptionsResolverInterface $resolver
@@ -59,7 +66,6 @@ class StopAreaType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

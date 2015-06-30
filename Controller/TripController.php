@@ -135,7 +135,7 @@ class TripController extends AbstractController
             $trip,
             array(
                 "action"=>$this->generateUrl(
-                    'tisseo_boa_trip_new',
+                    'tisseo_boa_trip_create',
                     array("routeId" => $routeId)
                 )
             )

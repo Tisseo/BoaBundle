@@ -1,20 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: clesauln
- * Date: 06/05/2015
- * Time: 10:15
- */
 
 namespace Tisseo\BoaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\EntityRepository;
-use Tisseo\BoaBundle\Form\Type\TripDatasourceType;
 
-class TripType extends AbstractType
+class TripEditType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -66,9 +58,12 @@ class TripType extends AbstractType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
-        return 'boa_trip';
+        return 'boa_trip_edit';
     }
 
 }

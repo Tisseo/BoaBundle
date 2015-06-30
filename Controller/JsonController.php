@@ -3,210 +3,214 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Tisseo\EndivBundle\Entity\RouteStop;
-use Tisseo\EndivBundle\Entity\Stop;
-use Tisseo\EndivBundle\Entity\StopTime;
-use Tisseo\EndivBundle\Entity\Waypoint;
-use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class JsonController extends AbstractController
 {
-    public function CalendarsAction($calendarType = null)
+    private function sendJsonResponse($data)
     {
-        $request = $this->get('request');
-        if( strpos($calendarType, ',') )
-            $calendarType = explode( ',', $calendarType );
+        $response = new JsonResponse();
+        $response->setData($data);
 
-        if($request->isXmlHttpRequest())
-        {
-            $term = $request->request->get('term');
-            $array= $this->get('tisseo_endiv.calendar_manager')
-                ->findCalendarsLike($term, $calendarType);
-
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        return $response;
     }
 
-    public function BitmaskAction()
+    public function CalendarsAction(Request $request, $calendarType = null)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_CALENDARS',
+                'BUSINESS_MANAGE_CALENDARS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $id = $request->request->get('id');
-            $startDate = $request->request->get('startDate');
-            $endDate = $request->request->get('endDate');
+        $this->isPostAjax($request);
 
-            $array= $this->get('tisseo_endiv.calendar_manager')
-                ->getCalendarsBitmask($id, $startDate, $endDate);
+        if (strpos($calendarType, ','))
+            $calendarType = explode(',', $calendarType);
 
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        $term = $request->request->get('term');
+        $data = $this->get('tisseo_endiv.calendar_manager')->findCalendarsLike($term, $calendarType);
+
+        return $this->sendJsonResponse($data);
     }
 
-    public function ServiceCalendarBitmaskAction()
+    public function BitmaskAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_CALENDARS',
+                'BUSINESS_MANAGE_CALENDARS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $id1 = $request->request->get('id1');
-            $id2 = $request->request->get('id2');
-            $startDate = $request->request->get('startDate');
-            $endDate = $request->request->get('endDate');
+        $this->isPostAjax($request);
 
-            $array= $this->get('tisseo_endiv.calendar_manager')
-                ->getServiceCalendarsBitmask($id1, $id2, $startDate, $endDate);
+        $calendarId = $request->request->get('id');
+        $startDate = $request->request->get('startDate');
+        $endDate = $request->request->get('endDate');
+        $data = $this->get('tisseo_endiv.calendar_manager')->getCalendarsBitmask($calendarId, $startDate, $endDate);
 
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        return $this->sendJsonResponse($data);
+    }
+
+    public function ServiceCalendarBitmaskAction(Request $request)
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_CALENDARS',
+                'BUSINESS_MANAGE_CALENDARS'
+            )
+        );
+
+        $this->isPostAjax($request);
+            
+        $id1 = $request->request->get('id1');
+        $id2 = $request->request->get('id2');
+        $startDate = $request->request->get('startDate');
+        $endDate = $request->request->get('endDate');
+        $data = $this->get('tisseo_endiv.calendar_manager')->getServiceCalendarsBitmask($id1, $id2, $startDate, $endDate);
+
+        return $this->sendJsonResponse($data);
     }
 
 
-    public function StopAction()
+    public function StopAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $term = $request->request->get('term');
-            $array= $this->get('tisseo_endiv.stop_manager')
-                ->findStopsLike($term);
+        $this->isPostAjax($request);
 
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        $term = $request->request->get('term');
+        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term);
+
+        return $this->sendJsonResponse($data);
     }
 
-    public function StopAreaAction()
+    public function StopAreaAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $term = $request->request->get('term');
-            $array= $this->get('tisseo_endiv.stop_area_manager')
-                ->findStopAreasLike($term);
+        $this->isPostAjax($request);
 
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        $term = $request->request->get('term');
+        $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+
+        return $this->sendJsonResponse($data);
     }
 
-    public function CityAction()
+    public function CityAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $term = $request->request->get('term');
+        $this->isPostAjax($request);
 
-            $array= $this->get('tisseo_endiv.city_manager')
-                ->findCityLike($term);
+        $term = $request->request->get('term');
+        $data = $this->get('tisseo_endiv.city_manager')->findCityLike($term);
 
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        return $this->sendJsonResponse($data);
     }
 
-    public function InternalTransferAction()
+    public function InternalTransferAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $this->isPostAjax($request);
 
-            $stopAreaId = $request->request->get('stopAreaId');
-            $stopArea = $StopAreaManager->find($stopAreaId);
+        $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($request->request->get('stopAreaId'));
+        $data = $this->get('tisseo_endiv.transfer_manager')->getInternalTransfer($stopArea);
 
-            $array= $this->get('tisseo_endiv.transfer_manager')
-                ->getInternalTransfer($stopArea);
-
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        return $this->sendJsonResponse($data);
     }
 
-    public function ExternalTransferAction()
+    public function ExternalTransferAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $this->isPostAjax($request);
 
-            $stopAreaId = $request->request->get('stopAreaId');
-            $stopArea = $StopAreaManager->find($stopAreaId);
+        $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($request->request->get('stopAreaId'));
+        $data = $this->get('tisseo_endiv.transfer_manager')->getExternalTransfer($stopArea);
 
-            $array= $this->get('tisseo_endiv.transfer_manager')
-                ->getExternalTransfer($stopArea);
-
-            $response = new Response(json_encode($array));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        return $this->sendJsonResponse($data);
     }
 
-    public function StopTransferAction()
+    public function StopTransferAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
+        $this->isPostAjax($request);
+
+        $term = $request->request->get('term');
+        $result = array();
+        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term);
+        foreach ($data as $item)
         {
-            $term = $request->request->get('term');
-            $array = array();
-            $results = array();
-            $array= $this->get('tisseo_endiv.stop_manager')
-                ->findStopsLike($term);
-            foreach($array as $item) {
-                $results[] = array(
-                    "id" => $item["id"],
-                    "name" => $item["name"],
-                    "category" => "stop"
-                );
-            }
-            $array= $this->get('tisseo_endiv.stop_area_manager')
-                ->findStopAreasLike($term);
-            foreach($array as $item) {
-                $results[] = array(
-                    "id" => $item["id"],
-                    "name" => $item["name"],
-                    "category" => "stop_area"
-                );
-            }
-
-            $response = new Response(json_encode($results));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
+            $result[] = array(
+                "id" => $item["id"],
+                "name" => $item["name"],
+                "category" => "stop"
+            );
         }
+        $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+        foreach ($data as $item)
+        {
+            $result[] = array(
+                "id" => $item["id"],
+                "name" => $item["name"],
+                "category" => "stop_area"
+            );
+        }
+
+        return $this->sendJsonResponse($result);
     }
 
-    public function TripTemplateAction()
+    public function TripTemplateAction(Request $request)
     {
-        $request = $this->get('request');
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_ROUTES',
+                'BUSINESS_MANAGE_ROUTES'
+            )
+        );
 
-        if($request->isXmlHttpRequest())
-        {
-            $term = $request->request->get('term');
-            $routeId = $request->request->get('routeId');
-            $results= $this->get('tisseo_endiv.trip_manager')
-                ->getTripTemplates($term, $routeId);
+        $this->isPostAjax($request);
 
-            $response = new Response(json_encode($results));
-            $response -> headers -> set('Content-Type', 'application/json');
-            return $response;
-        }
+        $data = $this->get('tisseo_endiv.trip_manager')->getTripTemplates(
+            $request->request->get('term'),
+            $request->request->get('routeId')
+        );
+
+        return $this->sendJsonResponse($data);
     }
 }

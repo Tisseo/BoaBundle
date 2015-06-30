@@ -49,6 +49,7 @@ Tisseo\EndivBundle\Entity\Color:
         rgbBlue:
             - NotBlank: ~
 Tisseo\EndivBundle\Entity\Datasource:
+    properties:
         name:
             - NotBlank: ~
             - Length:
@@ -63,6 +64,7 @@ Tisseo\EndivBundle\Entity\ExceptionType:
         tripCalendarPattern:
             - Tisseo\BoaBundle\Validator\Constraints\CalendarPattern: ~
 Tisseo\EndivBundle\Entity\PhysicalMode:
+    properties:
         name:
             - NotBlank: ~
             - Length:
@@ -72,7 +74,19 @@ Tisseo\EndivBundle\Entity\PhysicalMode:
             - Length:
                 max: 30
 Tisseo\EndivBundle\Entity\PoiType:
+    properties:
         name:
             - NotBlank: ~
             - Length:
                 max: 50
+Tisseo\EndivBundle\Entity\StopHistory:
+    properties:
+        endDate:
+            - DateTime: ~
+            - Tisseo\CoreBundle\Validator\Constraints\GreaterThanField:
+                groups: [close]
+                field: startDate
+    constraints:
+        - Callback: 
+            methods: [minStartDate]
+            groups: [edit]

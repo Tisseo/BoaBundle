@@ -1,14 +1,15 @@
 {% extends "::modal.html.twig" %}
 
-{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
 
 {% block modal_title %}
     {{ title|trans({}, 'default') }}
 {% endblock %}
 
-{% block open_form %}
-    {{ form_start(form) }}
-{% endblock %}
 
 {% block modal_body %}
     {{ form_errors(form) }}

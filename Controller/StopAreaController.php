@@ -25,35 +25,32 @@ class StopAreaController extends AbstractController
         return $this->render(
             'TisseoBoaBundle:StopArea:search.html.twig',
             array(
-                'title' => 'stop_area.title'
+                'pageTitle' => 'menu.stop_area'
             )
         );
     }
 
     public function editAction(Request $request, $stopAreaId = null)
     {
-        if ($request->isMethod('POST')) {
-            $this->isGranted('BUSINESS_MANAGE_STOPS');
-        } else {
-            $this->isGranted(
-                array(
-                    'BUSINESS_MANAGE_STOPS',
-                    'BUSINESS_VIEW_STOPS',
-                )
-            );
-        }
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
 
         $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $StopAreaManager->find($stopAreaId);
 
+        // wtf
         $cityLabel = "";
         $lines = array();
         $stops = array();
         $cityMain = null;
-        if (empty($stopArea)){
-            $stopArea = new StopArea($StopAreaManager);
-        } else {
-            $lines = $StopAreaManager->getLines($stopArea);
+
+
+        if (empty($stopArea))
+        {
+            $stopArea = new StopArea();
+        }
+        else
+        {
+            $lineVersions = $StopAreaManager->getLineVersions($stopAreaId);
 
             $city = $stopArea->getCity();
             $cityMain = $StopAreaManager->getMainStopCityName($stopArea);
@@ -89,12 +86,13 @@ class StopAreaController extends AbstractController
             'TisseoBoaBundle:StopArea:form.html.twig',
             array(
                 'form' => $form->createView(),
+                'pageTitle' => 'menu.stop_area',
                 'title' => ($stopAreaId ? 'stop_area.edit' : 'stop_area.create'),
                 'cityLabel' => $cityLabel,
                 'cityMain' => $cityMain,
                 'stopArea' => $stopArea,
                 'stops' => $stops,
-                'lines' => $lines
+                'lineVersions' => $lineVersions
             )
         );
     }

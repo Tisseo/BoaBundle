@@ -30,25 +30,6 @@ class CitySelectorType extends AbstractType
         $builder->addModelTransformer($transformer);
     }
 
-/*
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\City'
-            )
-        );
-    }
-
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'invalid_message' => 'The selected city does not exist',
-        ));
-    }
-*/
-
     public function getParent()
     {
         return 'text';

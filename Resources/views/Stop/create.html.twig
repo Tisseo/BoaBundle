@@ -1,0 +1,116 @@
+{% extends "::modal.html.twig" %}
+
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+    <div class="form form-edit">
+        <div class="col-md-12">
+            {% for stopHistory in form.stopHistories %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(stopHistory.shortName) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(stopHistory.longName) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(stopHistory.startDate) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(stopHistory.srid) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(stopHistory.x) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(stopHistory.y) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form form-edit">
+        <div class="col-md-12">
+            {% for stopDatasource in form.stopDatasources %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(stopDatasource.datasource) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(stopDatasource.code) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-md-8">
+                    {{ form_label(form.stopArea) }}
+                    {{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
+                    <input type="text" id="stop_area"  class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}" required>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+
+    <script>
+        require(['boa/stop/edit'], function() {
+           init_autocomplete("#stop_area", "#boa_stop_create_stopArea");
+        }); 
+    </script>
+    <script>
+        require(['bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function() {
+             $(document).ready(function() {
+                {# call from stop area form #}
+                {% if stopArea is not empty %}
+                    $("#boa_stop_create_stopHistories_0_shortName").val("{{ stopArea.shortName|e('js') }}");
+                    $("#boa_stop_create_stopHistories_0_longName").val("{{ stopArea.longName|e('js') }}");
+                    $('#boa_stop_create_stopArea option[value={{ stopArea.id }}]').attr('selected', 'selected');
+                    $("#stop_area").val($('#boa_stop_create_stopArea option[value={{ stopArea.id }}]').text());
+                {% endif %}
+
+                $(".readonly").keydown(function(e){
+                    e.preventDefault();
+                });
+
+                var previousDate;
+                $('#boa_stop_create_stopHistories_0_startDate').datepicker({
+                    language: '{{ app.request.locale }}',
+                    todayHighlight: true,
+                    autoclose: true
+                })
+                // Save date picked
+                .on('show', function () {
+                    previousDate = $(this).val();
+                })
+                .on('hide', function () {
+                    if ($(this).val() === '' || $(this).val() === null) {
+                        $(this).val(previousDate).datepicker('update');
+                    }
+                });
+            });
+         });
+    </script>
+{% endblock %}

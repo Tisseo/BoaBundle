@@ -6,8 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Tisseo\EndivBundle\Entity\StopDatasource;
-
 class StopDatasourceType extends AbstractType
 {
     /**
@@ -16,23 +14,26 @@ class StopDatasourceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('datasource', 'entity',
-            array(
-                'label' => 'stop_datasource.labels.datasource',
-                'required' => true,
-                'class' => 'TisseoEndivBundle:Datasource',
-                'property' => 'name'
-            )
-        );
-
-        $builder->add('code', 'text',
+        $builder
+            ->add(
+                'datasource',
+                'entity',
                 array(
-                    'label' => 'stop_datasource.labels.code',
-                    'required' => false
+                    'label' => 'datasource.labels.datasource',
+                    'class' => 'TisseoEndivBundle:Datasource',
+                    'property' => 'name',
+                    'required' => true
                 )
-        );
-
-        $builder->setAction($options['action']);
+            )
+            ->add(
+                'code',
+                'text',
+                array(
+                    'label' => 'datasource.labels.code'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -46,7 +47,6 @@ class StopDatasourceType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string
