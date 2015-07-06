@@ -23,12 +23,12 @@
     "license" : "AGPL-3.0",
     "require" : {
         "php": ">=5.4.3",
-        "tisseo/endiv-bundle": "~1.0.2",
-        "tisseo/core-bundle": "~1.0.0"
+        "tisseo/endiv-bundle": "~1.0.3",
+        "tisseo/core-bundle": "~1.0.1"
     },
     "autoload" : {
         "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
     },
     "target-dir" : "Tisseo/BoaBundle",
-    "version" : "1.0.2"
+    "version" : "1.0.3"
 }
