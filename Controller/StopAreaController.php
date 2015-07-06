@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Tisseo\EndivBundle\Entity\StopArea;
+use Tisseo\EndivBundle\Entity\StopAreaDatasource;
 use Tisseo\BoaBundle\Form\Type\StopAreaType;
 use Tisseo\BoaBundle\Form\Type\AliasType;
 use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
@@ -37,49 +38,51 @@ class StopAreaController extends AbstractController
         $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $StopAreaManager->find($stopAreaId);
 
-        // wtf
-        $cityLabel = "";
-        $lines = array();
-        $stops = array();
-        $cityMain = null;
-
-
         if (empty($stopArea))
         {
             $stopArea = new StopArea();
+            $stopAreaDatasource = new StopAreaDatasource();
+            $stopArea->addStopAreaDatasources($stopAreaDatasource);
+            $lineVersions = null;
+            $mainStopArea = false;
+            $stops = null;
         }
         else
         {
             $lineVersions = $StopAreaManager->getLineVersions($stopAreaId);
-
-            $city = $stopArea->getCity();
-            $cityMain = $StopAreaManager->getMainStopCityName($stopArea);
-            if (!empty($city)) {
-                $cityLabel = $city->getName()." (".$city->getInsee().")";
-            }
-
+            $mainStopArea = $stopArea->isMainOfCity();
             $stops = $StopAreaManager->getCurrentStops($stopArea);
         }
 
-        $form = $this->createForm( new StopAreaType($StopAreaManager), $stopArea);
+        $form = $this->createForm(
+            new StopAreaType(),
+            $stopArea,
+            array(
+                'action' => $this->generateUrl(
+                    'tisseo_boa_stop_area_edit',
+                    array('stopAreaId' => $stopAreaId)
+                )
+            )
+        );
+
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isValid())
+        {
+            $stopArea = $form->getData();
             try {
-                $datas = $form->getData();
-                $StopAreaManager->save($datas);
-                if( !$stopAreaId ) $stopAreaId = $datas->getId();
-
-                return $this->redirect(
-                                $this->generateUrl(
-                                    'tisseo_boa_stop_area_edit',
-                                    array('stopAreaId' => $stopAreaId)
-                                )
-                );
-
-
+                $stopAreaId = $StopAreaManager->save($stopArea);
+                $this->get('session')->getFlashBag()->add('success', 'stop_area.edited');
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+                $stopAreaId = null;
             }
+
+            return $this->redirect(
+                $this->generateUrl(
+                    'tisseo_boa_stop_area_edit',
+                    array('stopAreaId' => $stopAreaId)
+                )
+            );
         }
 
         return $this->render(
@@ -88,11 +91,10 @@ class StopAreaController extends AbstractController
                 'form' => $form->createView(),
                 'pageTitle' => 'menu.stop_area',
                 'title' => ($stopAreaId ? 'stop_area.edit' : 'stop_area.create'),
-                'cityLabel' => $cityLabel,
-                'cityMain' => $cityMain,
                 'stopArea' => $stopArea,
                 'stops' => $stops,
-                'lineVersions' => $lineVersions
+                'lineVersions' => $lineVersions,
+                'mainStopArea' => $mainStopArea
             )
         );
     }

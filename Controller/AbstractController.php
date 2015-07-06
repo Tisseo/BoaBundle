@@ -19,4 +19,13 @@ abstract class AbstractController extends Controller
         if (!($request->isXmlHttpRequest() && $request->isMethod('POST')))
             throw new AccessDeniedException();
     }
+
+    // TODO: This is ugly, change it
+    // SEE TODO IN ENDIVBUNDLE
+    protected function buildDefaultDatasource($datasource)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $datasource->setCode($user->getUsername());
+        $datasource->setDatasource($this->get('tisseo_endiv.datasource_manager')->findDefaultDatasource());
+    }
 }

@@ -7,16 +7,25 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityRepository;
+use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
+use Tisseo\Form\Type\TripDatasource;
 
 class TripCreateType extends AbstractType
 {
-    private $user;
-    private $datasource;
+    private $calendarTransformer = null;
+    private $routeTransformer = null;
 
-    public function __construct($user, $datasource)
+    private function buildTransformers($em)
     {
-        $this->user = $user;
-        $this->datasource = $datasource;
+        $this->calendarTransformer = new EntityToIntTransformer($em);
+        $this->calendarTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Calendar");
+        $this->calendarTransformer->setEntityRepository("TisseoEndivBundle:Calendar");
+        $this->calendarTransformer->setEntityType("calendar");
+
+        $this->routeTransformer = new EntityToIntTransformer($em);
+        $this->routeTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Route");
+        $this->routeTransformer->setEntityRepository("TisseoEndivBundle:Route");
+        $this->routeTransformer->setEntityType("route");
     }
 
     /**
@@ -25,73 +34,64 @@ class TripCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'name',
-            'text',
-            array(
-                'label' => 'trip.labels.name'
-            )
-        )
-        ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
-            $trip = $event->getData();
+        $this->buildTransformers($options['em']);
 
-            $form->add(
-                'pattern',
-                'entity',
+        $builder
+            ->add(
+                'name',
+                'text',
                 array(
-                    'label' => 'trip.labels.pattern',
-                    'required' => true,
-                    'class' => 'TisseoEndivBundle:Trip',
-                    'property' => 'name',
-                    'query_builder' => function(EntityRepository $er) use ($trip) {
-                        return $er->createQueryBuilder('t')
-                            ->where("IDENTITY(t.route) = :routeId")
-                            ->andWhere("t.isPattern = true")
-                            ->setParameter('routeId', $trip->getRoute()->getId());
-                    }
+                    'label' => 'trip.labels.name'
                 )
-            );
-        })
-        ->add(
-            'dayCalendar',
-            'calendar_selector',
-            array(
-                'label' => 'trip.labels.day_calendar',
-                'required' => false
             )
-        )
-        ->add(
-            'periodCalendar',
-            'calendar_selector',
-            array(
-                'label' => 'trip.labels.period_calendar',
-                'required' => false
-            )
-        )
-        ->add(
-            'datasource',
-            'entity',
-            array(
-                'mapped' => false,
-                'required' => true,
-                'label' => 'datasource.labels.title',
-                'class' => 'TisseoEndivBundle:Datasource',
-                'property' => 'name',
-                'data' => $this->datasource
-            )
-        )
-        ->add(
-            'code',
-            'text',
-            array(
-                'label' => 'datasource.labels.code',
-                'mapped' => false,
-                'data' => $this->user
-            )
-        );
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+                $trip = $event->getData();
 
-        $builder->setAction($options['action']);
+                $form->add(
+                    'pattern',
+                    'entity',
+                    array(
+                        'label' => 'trip.labels.pattern',
+                        'required' => true,
+                        'class' => 'TisseoEndivBundle:Trip',
+                        'property' => 'name',
+                        'query_builder' => function(EntityRepository $er) use ($trip) {
+                            return $er->createQueryBuilder('t')
+                                ->where("IDENTITY(t.route) = :routeId")
+                                ->andWhere("t.isPattern = true")
+                                ->setParameter('routeId', $trip->getRoute()->getId());
+                        }
+                    )
+                );
+            })
+            ->add(
+                $builder->create(
+                    'dayCalendar',
+                    'hidden'
+                )->addModelTransformer($this->calendarTransformer)
+            )
+            ->add(
+                $builder->create(
+                    'periodCalendar',
+                    'hidden'
+                )->addModelTransformer($this->calendarTransformer)
+            )
+            ->add(
+                $builder->create(
+                    'route',
+                    'hidden'
+                )->addModelTransformer($this->routeTransformer)
+            )
+            ->add(
+                'tripDatasources',
+                'collection',
+                array(
+                    'type' => new TripDatasourceType()
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -104,6 +104,14 @@ class TripCreateType extends AbstractType
                 'data_class' => 'Tisseo\EndivBundle\Entity\Trip'
             )
         );
+
+        $resolver->setRequired(array(
+            'em'
+        ));
+
+        $resolver->setAllowedTypes(array(
+            'em' => 'Doctrine\Common\Persistence\ObjectManager',
+        ));
     }
 
     /**
@@ -113,5 +121,4 @@ class TripCreateType extends AbstractType
     {
         return 'boa_trip_create';
     }
-
 }

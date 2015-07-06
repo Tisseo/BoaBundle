@@ -1,21 +1,3 @@
-{% macro time_format(time) %}
-    {% set hour = time//3600 %}
-    {% set min = (time-hour*3600)/60 %}
-    {% if hour|length < 2 %}
-        {% set hour = "0" ~ hour %}
-    {% endif %}
-    {% if min|length < 2 %}
-        {% set min = "0" ~ min %}
-    {% endif %}
-    {{ hour ~ ":" ~ min }}
-{% endmacro %}
-
-{% macro color_display(object) %}
-    {% if object.name is defined %}
-        <div class="line-number line-free" style="width:60px;height:25px;border: 1px solid #aaa;color:{{ object.html }}; background-color:{{ object.html }}"></div>
-    {% endif %}
-{% endmacro %}
-
 {% macro stop_select(stops, select_id, select_class, all_label, all_value, select_name) %}
     <select id='{{ select_id }}' name='{{ select_name }}' class='{{ select_class }}'>
         <option value='{{ all_value }}'>{{ all_label }}</option>
@@ -28,20 +10,16 @@
 {% endmacro %}
 
 {% macro route_header(route) %}
-    <div class="form form-edit">
-        <div class="col-md-12">
-            <label>{{'trip.list.route.network'|trans({}, 'default')}} : </label>
-            {{ route.lineVersion.line.lineDatasources[0].datasource.agency.name }} -
-            <label>{{'trip.list.route.line'|trans({}, 'default')}} : </label>
-            {{ route.lineVersion.line.number }} -
-            <label>{{'trip.list.route.version'|trans({}, 'default')}} : </label>
-            {{ route.lineVersion.version }} -
-            <label>{{'trip.list.route.name'|trans({}, 'default')}} : </label>
-            <a href="{{ path('tisseo_boa_route_list', {'lineVersionId': route.lineVersion.id }) }}">
-                {{ route.name ~ ' (' ~ route.way ~ ')' }}
-            </a>
-        </div>
-    </div>
+    {{ 'trip.list.route.network'|trans({}, 'default') }} : 
+    {% for datasource in route.lineVersion.line.lineDatasources %}
+        {{ datasource.datasource.agency.name }} -
+    {% endfor %}
+    {{ 'trip.list.route.line'|trans({}, 'default') }} : 
+    {{ route.lineVersion.line.number }} -
+    {{ 'trip.list.route.version'|trans({}, 'default') }} : 
+    {{ route.lineVersion.version }} - 
+    {{ 'trip.list.route.name'|trans({}, 'default') }} : 
+    {{ route.name }} ({{ route.way }})
 {% endmacro %}
 
 {% macro select(values, name, class_name) %}

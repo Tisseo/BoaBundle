@@ -1,5 +1,5 @@
 define(['jquery_ui_autocomplete'], function($) {
-    init_autocomplete = function(input, target, button) {
+    init_autocomplete = function(input, target) {
         $(document).ready(function() {
             $(input).autocomplete({
                 source: function (request, response) {
@@ -23,14 +23,9 @@ define(['jquery_ui_autocomplete'], function($) {
                 },
                 select: function(event, ui) {
                     $(target).val(ui.item.id);
-                    $(button).attr('disabled','disabled');
                 },
                 minLength: 3,
                 delay: 300
-            });
-
-            $(target).click(function() {
-                return $(this).attr("href", $(this).attr("href") + "/" + $(this).attr('data-stop'));
             });
         });
     };

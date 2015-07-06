@@ -1,0 +1,178 @@
+{% extends "::modal.html.twig" %}
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+
+{% block modal_title %}
+    {{ title|trans({}, 'default') }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    <div id="error_alert"></div>
+    {{ form_errors(form) }}
+
+    {{ render.route_header(trip.route) }}
+
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.pattern) }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{ 'trip.labels.day_calendar'|trans }}</label>
+                        {{ form_row(form.dayCalendar) }}
+                        <input type="text" id="day-calendar" class="form-control" data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'jour' }) }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{ 'trip.labels.period_calendar'|trans }}</label>
+                        {{ form_row(form.periodCalendar) }}
+                        <input type="text" id="period-calendar" class="form-control" data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'periode,mixte' }) }}" required>
+                    </div>
+                </div>
+            </div>
+
+            {% for datasource in form.tripDatasources %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(datasource.datasource) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(datasource.code) }}
+                </div>
+            </div>
+            {% endfor %}
+
+            {{ form_row(form.route) }}
+        </div>
+    </div>
+
+    <div id="stop-times">
+    </div>
+    
+    <div>
+        <a id="add-stop-time-block" class="btn btn-success small-button">
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+    </div>
+
+    <div id="stop-time-container" class="hidden">
+        <div class="form form-edit">
+            <div class="col-md-12">
+                <div class="row stop-time-block">
+                    <div class="col-md-4">
+                        <label>{{ 'trip.pattern.labels.begin'|trans }}</label>
+                        <input id="begin" type="time" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label>{{ 'trip.pattern.labels.frequency'|trans }}</label>
+                        <input id="frequency" type="number" class="form-control" min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label>{{ 'trip.pattern.labels.end'|trans }}</label>
+                        <input id="end" type="time" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+
+    <script>
+        require(['jquery_ui_autocomplete'], function() {
+            $(document).ready(function () {
+                $('#day-calendar').autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $(this.element).data('url'),
+                            dataType: 'json',
+                            data : { term: request.term },
+                            type: 'POST',
+                            success: function (data) {
+                                response($.map(data, function(item) {
+                                    return {
+                                        label: item.name,
+                                        id: item.id
+                                    };
+                                }));
+                            },
+                        });
+                    },
+                    select: function (event, ui) {
+                        $('#boa_trip_create_dayCalendar').val(ui.item.id);
+                    },
+                    minLength: 1,
+                    delay: 300
+                });
+
+                $('#period-calendar').autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $(this.element).data('url'),
+                            dataType: 'json',
+                            data : { term: request.term },
+                            type: 'POST',
+                            success: function (data) {
+                                response($.map(data, function(item) {
+                                    return {
+                                        label: item.name,
+                                        id: item.id
+                                    };
+                                }));
+                            },
+                        });
+                    },
+                    select: function (event, ui) {
+                        $('#boa_trip_create_periodCalendar').val(ui.item.id);
+                    },
+                    minLength: 1,
+                    delay: 300
+                });
+
+                $('#add-stop-time-block').click(function(event) {
+                    event.preventDefault();
+                    var index = $('#stop-times').children().length;
+
+                    $('#stop-times').append($('#stop-time-container').children().clone());
+                    $('#stop-times').find('input#begin').last().attr('name', 'stop_times['+index+'][begin]');
+                    $('#stop-times').find('input#frequency').last().attr('name', 'stop_times['+index+'][frequency]');
+                    $('#stop-times').find('input#end').last().attr('name', 'stop_times['+index+'][end]');
+                });
+
+                /*
+                $('form[name="boa_trip_create"]').submit(function(e) {
+                    $('#stop_times').find('div.stop-time-block').each(function() {
+                        var frequency = $(this).find('input#frequency').val();
+                        var stop = $(this).find('input#stop').val();
+
+                        if ((frequency && !stop) || (!frequency && stop)) {
+                            utils.displayAlert("{{ 'trip.error.stop_time'|trans }}");
+                            return false;
+                        }
+                    });
+
+                    return true;
+                });*/
+            });
+        });
+    </script>
+{% endblock %}

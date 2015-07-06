@@ -1,0 +1,20 @@
+{% form_theme form 'TisseoCoreBundle:Form:noErrorMessagesFields.html.twig' %}
+
+{{ form_start(form) }}
+{{ form_errors(form) }}
+<td>{{ form_widget(form.rank) }}</td>
+<td></td>
+<td><input type="text" id="stop-search" class="form-control input-sm" data-url="{{ path('tisseo_boa_json_stop') }}"></td>
+<td></td>
+<td>{{ form_widget(form.pickup) }}</td>
+<td>{{ form_widget(form.dropOff) }}</td>
+<td>{{ form_widget(form.scheduledStop) }}</td>
+<td></td>
+<td>
+    <button id="apply-route-stop-form" type="submit" class="btn btn-success small-button">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+    {{ form_widget(form.waypoint) }}
+    {{ form_widget(form.route) }}
+</td>
+{{ form_end(form) }}

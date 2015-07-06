@@ -14,32 +14,40 @@ class RouteEditType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',
-            array(
-                'label' => 'route.labels.name',
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'route.labels.name',
+                )
             )
-        )
-        ->add('direction', 'text',
-            array(
-                'label' => 'route.labels.direction',
+            ->add(
+                'direction',
+                'text',
+                array(
+                    'label' => 'route.labels.direction',
+                )
             )
-        )
-        ->add('way', 'text',
-            array(
-                'label' => 'route.labels.way'
+            ->add(
+                'way',
+                'text',
+                array(
+                    'label' => 'route.labels.way',
+                    'read_only' => true
+                )
             )
-        );
-
-        $builder->add('routeDatasources', 'collection',
-            array(
-                'type' => new RouteDatasourceType(),
-                'by_reference' => false,
-                'allow_add' => true
+            ->add(
+                'routeDatasources',
+                'collection',
+                array(
+                    'label' => 'route.labels.datasource',
+                    'type' => new RouteDatasourceType(),
+                    'by_reference' => false
+                )
             )
-        );
-
-
-        $builder->setAction($options['action']);
+            ->setAction($options['action'])
+        ;
     }
 
     /**

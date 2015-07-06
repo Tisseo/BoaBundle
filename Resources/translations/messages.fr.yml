@@ -147,20 +147,6 @@ poi_type:
         name: Nom
 
 stop:
-    accessibility:
-        isRecursive: OUI
-        header: Historique d'inaccessibilité
-        phantom_header: Historique d'inaccessibilité du stop
-        columns:
-            startTime: De
-            endTime: A
-            isRecursive: Récursif
-            accessibilityMode: Mode
-            calendar: Calendrier
-            startDate: Date début
-            endDate: Date fin
-            datasource: Datasource
-        modify_accessibility: Modifier accessibilité
     labels:
         short_name: Nom court
         long_name: Nom long
@@ -170,34 +156,10 @@ stop:
     edited: Point d'arrêt édité
 
 stop_area:
-    show_closed_stops: Afficher les points d'arrêts clôturés
     labels:
-        shortName: Nom de la zone d'arrêt
+        shortName: Nom court
         longName: Nom long
         city: Ville
-        datasource: Datasource
-        alias: Alias
-        internal_transfert: Transferts intra-zone
-        external_transfert: Transferts extra-zone
-        geometries: Géométries
-        tranfer_duration: Temps des transferts intra-zone par défaut (en minutes)
-        stops: Points d'arrêt
-        stop_areas: Zones d'arrêt
-        all_stops: Tous les points d'arrêt
-        no_stops: aucun élément à afficher
-        main_city: cette zone d'arrêt est considérée comme zone d'arrêt principale de la commune de %s%
-    stop:
-        new: Nouveau point d'arrêt
-        header: Liste des points d'arrêt
-        columns:
-            agency: Réseau
-            code: Code
-            name: Nom
-            x: X
-            y: Y
-            lines: Lignes
-    alias:
-        name: Nom
     transfer:
         save_confirmation: Voulez-vous enregistrer les modifications apportées ?
         data_saved: Données enregistrées
@@ -212,13 +174,6 @@ stop_area:
             max_input: Volume de données trop important, pour pouvoir saisir des transfert, veuillez renseigner un filtre
             end_stop: Ligne %i%: Vous n'avez pas sélectionné de destination
         internalHeader: Transferts intra-zone
-        columns:
-            startStop: Point d'arrêt de départ
-            endStop: Point d'arrêt de destination
-            duration: Durée en minutes (99 pour interdit)
-            distance: Distance en mètres
-            longName: Description
-            theGeom: Géométrie
 
 stop_area_datasource:
     labels:
@@ -258,44 +213,42 @@ network:
         wrong_token: Le token n'est pas correct
 
 route:
-    warning: Il n'est pas possible de modifier la route une fois un service type créé
     labels:
         name: Nom
         way: Sens
         direction: Direction
-    route_details: Détails de la route
     actions:
         actions: Opérations
         services: Services
         copy: Dupliquer
         edit: Editer
         delete: Supprimer
-    templates_services: Services type
-    route_stops:
-        labels:
-            rank: Ordre
-            city: Ville
-            name: Nom Arrêt
-            code: Num. Arrêt
-            drop_off: Descente autorisée
-            pick_up: Montée autorisée
-            scheduled: Régulé
-            internal_service: Desserte interne
-        warning: L'arrêt %s n'a pas de route section attaché
-    error_submit:
-        first_stop:
-            dropoff: Le premier arrêt de la route ne doit pas permettre la descente.
-            not_scheduled: Le premier arrêt de la route doit être régulé.
-        last_stop:
-            pickup: Le dernier arrêt de la route ne doit pas permettre la montée
-            not_scheduled: Le dernier arrêt de la route doit être régulé.
-        service_type:
-            first_stop_time: Le premier horaire des services types doit être 00:00
+    created: Route créée
+    edited: Route éditée
 
 route_datasource:
     labels:
         datasource: Datasource
         code: Code
+
+route_stop:
+    error:
+        first_stop_dropoff: La descente doit être interdite pour le premier arrêt.
+        first_stop_regulated: Le premier arrêt doit être régulé.
+        last_stop_pickup: La montée doit être interdite pour le dernier arrêt.
+        last_stop_regulated: Le dernier arrêt doit être régulé.
+    edited: Itinéraire de la route édité
+
+stop_time:
+    labels:
+        rank: Rang
+        city: Ville
+        name: Arrêt
+        code: Code
+        drop_off: Descente
+        pick_up: Montée
+        scheduled: Régulation
+        schedule: Horaire
 
 trip:
     labels:
@@ -303,25 +256,19 @@ trip:
         pattern: Patron de service
         day_calendar: Calendrier jour
         period_calendar: Calendrier période
-    stop_time:
-        labels:
-            rank: Ordre
-            city: Ville
-            name: Nom Arrêt
-            code: Num Arrêt
-            no_drop_off: Descente interdite
-            no_pick_up: Montée interdite
-            scheduled: Régulé
-            schedule: Horaire
-    stop_time_template:
-        start: Heure de départ
-        frequency: Fréquence
-        stop: Jusqu'à
     error:
         stop_time: Les champs "Fréquence" et "Jusqu'à" doivent être saisis ensemble
         pattern: Le patron de service est obligatoire (ou sa valeur est incorrecte)
         day_calendar: Le calendrier "jour" est obligatoire (ou sa valeur est incorrecte)
         period_calendar: Le calendrier "période" est obligatoire (ou sa valeur est incorrecte)
+        pattern_name_empty: Renseignez le/les nom(s) de patron de service.
+        pattern_time_invalid: Au moins une horaire est invalide.
+    pattern:
+        edited: Patrons de service édités
+        labels:
+            begin: Heure de départ
+            frequency: Fréquence
+            end: Jusqu'à
 
 trip_datasource:
     labels:

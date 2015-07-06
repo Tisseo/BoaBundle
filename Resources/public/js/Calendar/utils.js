@@ -1,5 +1,4 @@
 define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/fr', 'translations/messages'], function($) {
-
         function init_autocomplete(selector){
             $(selector).autocomplete({
                 source: function (request, response) {
@@ -24,7 +23,7 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                 minLength: 2,
                 delay: 300
             });
-        };
+        }
 
 
     function _displayCalendar(calendarDiv, FirstDate, LastDate, calendarPattern){
@@ -60,17 +59,17 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                 } else {
                     if(currentDate.getDate() == 1) td_class += "first_day_of_month ";
                     if(currentDate.getDate() >= 1) td_class += "first_week_of_month ";
-                    if(currentDate.getDay() == 0) changeMonth = false;
+                    if(currentDate.getDay() === 0) changeMonth = false;
                 }
             }
-            if(calendarPattern[pattern_index] ==  1)  {
+            if (calendarPattern[pattern_index] ==  1)  {
                 td_class += "accessible ";
             } else {
                 td_class += "inaccessible ";
             }
             table_html += "<td class='" + td_class + "'>" + currentDate.getDate() + "</td>";
 
-            if(currentDate.getDay() == 0){
+            if(currentDate.getDay() === 0){
                 if(+currentDate == +Ending) {
                     table_html += "</tr>";
                 } else {
@@ -90,7 +89,7 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
         }
         table_html += "</table>";
         $(calendarDiv).html(table_html);
-    };
+    }
 
     return {
         initStandardDateInputs: function(startDatePickerId, endDatePickerId, pickerClass) {
@@ -174,5 +173,5 @@ define(['jquery', 'jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/d
                 autoclose: true
             });
         }
-    }
+    };
 });

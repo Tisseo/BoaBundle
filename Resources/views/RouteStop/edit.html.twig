@@ -1,0 +1,53 @@
+<div id="route-stops-list" class="panel col-md-12">
+    <input type="hidden" id="route-id" value="{{ route.id }}"></input>
+    <table id="table-route-stops" class="table table-hover">
+        <thead>
+            <th class="col-md-1">{{ 'route_stop.list.columns.rank'|trans({}, 'default') }}</th>
+            <th class="col-md-2">{{ 'route_stop.list.columns.city'|trans({}, 'default') }}</th>
+            <th class="col-md-2">{{ 'route_stop.list.columns.name'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'route_stop.list.columns.code'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'route_stop.list.columns.pick_up'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'route_stop.list.columns.drop_off'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'route_stop.list.columns.scheduled'|trans({}, 'default') }}</th>
+            <th class="col-md-2">{{ 'route_stop.list.columns.internal_service'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'global.actions'|trans }}</th>
+        </thead>
+        <tbody>
+        {% set rank = 1 %}
+        {% for routeStop in route.routeStops %}
+            <tr class="route-stop">
+                <input type='hidden' class="route-stop-id" name="id" value="{{ routeStop.id }}">
+                <td class="route-stop-rank">{{ routeStop.rank }}</td>
+                <td>{{ routeStop.waypoint.stop.stopArea.city.name }}</td>
+                <td>{{ routeStop.waypoint.stop.stopArea.shortName }}</td>
+                <td>
+                {% for datasource in routeStop.waypoint.stop.stopDatasources %}
+                    {{ datasource.code }}
+                {% endfor %}
+                </td>
+                <td><input type='checkbox' class="pickup" name="pickup" {% if routeStop.pickup %}checked="checked"{% endif %}></td>
+                <td><input type='checkbox' class="dropOff" name="dropOff" {% if routeStop.dropOff %}checked="checked"{% endif %}></td>
+                <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if routeStop.scheduledStop %}checked="checked"{% endif %}></td>
+                <td></td>
+                <td>
+                    <button class="btn btn-xs btn-danger small-button delete-route-stop"><span class="glyphicon glyphicon-minus"></span></button>
+                    <input type='hidden' name="waypoint" value="{{ routeStop.waypoint.id }}">
+                    <input type="hidden" class="route-stop-rank" name="rank" value="{{ routeStop.rank }}">
+                </td>
+            </tr>
+            {% if loop.last %}
+                {% set rank = routeStop.rank + 1 %}
+            {% endif %}
+        {% endfor %}
+        </tbody>
+        <tbody>
+            <tr class="new-route-stop">
+                {{ render(controller('TisseoBoaBundle:RouteStop:renderForm', {'routeId': route.id, 'rank': rank})) }}
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <button id="submit-route-stops" type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+    </button>
+</div>

@@ -6,8 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-use Tisseo\BoaBundle\Form\DataTransformer\CalendarTransformer;
+use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
 
 class CalendarSelectorType extends AbstractType
 {
@@ -26,7 +25,11 @@ class CalendarSelectorType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $transformer = new CalendarTransformer($this->om);
+        $transformer = new EntityToIntTransformer($this->om);
+        $transformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Calendar");
+        $transformer->setEntityRepository("TisseoEndivBundle:Calendar");
+        $transformer->setEntityType("Calendar");
+
         $builder->addModelTransformer($transformer);
     }
 

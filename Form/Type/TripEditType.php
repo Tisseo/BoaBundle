@@ -5,6 +5,7 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tisseo\BoaBundle\Form\Type\TripDatasourceType;
 
 class TripEditType extends AbstractType
 {
@@ -14,36 +15,59 @@ class TripEditType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'name',
-            'text',
-            array(
-                'label' => 'trip.labels.name'
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'trip.labels.name'
+                )
             )
-        )
-        ->add(
-            'dayCalendar',
-            'calendar_selector',
-            array(
-                'label' => 'trip.labels.day_calendar'
+            ->add(
+                'dayCalendar',
+                'entity',
+                array(
+                    'label' => 'trip.labels.day_calendar',
+                    'class' => 'Tisseo\EndivBundle\Entity\Calendar',
+                    'property' => 'name',
+                    'read_only' => true,
+                    'required' => false,
+                    'disabled' => true
+                )
             )
-        )
-        ->add(
-            'periodCalendar',
-            'calendar_selector',
-            array(
-                'label' => 'trip.labels.period_calendar'
+            ->add(
+                'periodCalendar',
+                'entity',
+                array(
+                    'label' => 'trip.labels.period_calendar',
+                    'class' => 'Tisseo\EndivBundle\Entity\Calendar',
+                    'property' => 'name',
+                    'read_only' => true,
+                    'required' => false,
+                    'disabled' => true
+                )
             )
-        )
-        ->add(
-            'tripDatasources',
-            'collection',
-            array(
-                'type' => new TripDatasourceType()
+            ->add(
+                'pattern',
+                'entity',
+                array(
+                    'label' => 'trip.labels.pattern',
+                    'class' => 'Tisseo\EndivBundle\Entity\Trip',
+                    'property' => 'name',
+                    'read_only' => true,
+                    'required' => false,
+                    'disabled' => true
+                )
             )
-        );
-
-        $builder->setAction($options['action']);
+            ->add(
+                'tripDatasources',
+                'collection',
+                array(
+                    'type' => new TripDatasourceType()
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -65,5 +89,4 @@ class TripEditType extends AbstractType
     {
         return 'boa_trip_edit';
     }
-
 }

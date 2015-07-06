@@ -5,7 +5,6 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Tisseo\EndivBundle\Entity\StopArea;
 
 class StopAreaType extends AbstractType
@@ -35,9 +34,11 @@ class StopAreaType extends AbstractType
             )
             ->add(
                 'city',
-                'city_selector',
+                'entity',
                 array(
                     'label' => 'stop_area.labels.city',
+                    'class' => 'TisseoEndivBundle:City',
+                    'property' => 'nameLabel',
                     'required' => false
                 )
             )

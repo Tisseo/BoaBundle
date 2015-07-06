@@ -82,6 +82,7 @@ class StopHistoryController extends AbstractController
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
+
         if (!$stop->closable())
         {
             $this->get('session')->getFlashBag()->add(
@@ -101,7 +102,7 @@ class StopHistoryController extends AbstractController
             );
         }
 
-        $stopHistory = $stopManager->getLatestStopHistory($stopId);
+        $stopHistory = $stop->getLatestStopHistory();
 
         $form = $this->createForm(
             new StopHistoryCloseType(),
