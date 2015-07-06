@@ -34,7 +34,9 @@ class StopEditType extends AbstractType
                 array(
                     'label' => 'stop.labels.stop_area',
                     'class' => 'TisseoEndivBundle:StopArea',
-                    'property' => 'nameLabel'
+                    'property' => 'nameLabel',
+                    'empty_data' => '',
+                    'empty_value' => ''
                 )
             )
             ->add(

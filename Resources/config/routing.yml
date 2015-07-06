@@ -145,6 +145,11 @@ tisseo_boa_stop_create:
 tisseo_boa_stop_edit:
     pattern: /stop/edit/{stopId}
     defaults: { _controller: TisseoBoaBundle:Stop:edit, stopId: null }
+tisseo_boa_stop_detach:
+    pattern: /stop/detach/{stopId}
+    defaults: { _controller: TisseoBoaBundle:Stop:detach }
+    requirements:
+        stopId: \d+
 
 # StopAccessibility routes
 tisseo_boa_stop_accessibility_create:
@@ -207,7 +212,7 @@ tisseo_boa_external_transfer_save:
         stopAreaId: \d+
 
 # LineVersion routes
-tisseo_boa_line_versions_list:
+tisseo_boa_line_version_list:
     pattern: /offer/list
     defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 
@@ -243,6 +248,30 @@ tisseo_boa_route_duplicate:
     requirements:
         routeId: \d+
 
+# RouteStop routes
+tisseo_boa_route_stop_create:
+    pattern: /route/{routeId}/route_stop/create
+    defaults: { _controller: TisseoBoaBundle:RouteStop:create }
+    requirements:
+        routeId: \d+
+    options:
+        expose: true
+tisseo_boa_route_stop_edit:
+    pattern: /route/{routeId}/route_stop/edit
+    defaults: { _controller: TisseoBoaBundle:RouteStop:edit }
+    requirements:
+        routeId: \d+
+    options:
+        expose: true
+tisseo_boa_route_stop_form:
+    pattern: /route/{routeId}/route_stop/form/{rank}
+    defaults: { _controller: TisseoBoaBundle:RouteStop:renderForm }
+    requirements:
+        routeId: \d+
+        rank: \d+
+    options:
+        expose: true
+
 # Trip routes
 tisseo_boa_trip_list:
     pattern: /route/{routeId}/trip/list
@@ -264,3 +293,10 @@ tisseo_boa_trip_delete:
     defaults: { _controller: TisseoBoaBundle:Trip:delete }
     requirements:
         tripId: \d+
+tisseo_boa_trip_edit_pattern:
+    pattern: /route{routeId}/trip/editpattern
+    defaults: { _controller: TisseoBoaBundle:Trip:editPattern }
+    requirements:
+        routeId: \d+
+    options:
+        expose: true

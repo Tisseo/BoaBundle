@@ -27,7 +27,7 @@
 {% block table_body -%}
     {% for color in colors %}
     <tr>
-        <td>{{ render.color_display(color) }}</td>
+        <td><div class="color-container" style="color:{{ color.html }};background-color:{{ color.html }}"></div></td>
         <td>{{ color.name }}</td>
         <td>{{ color.html }}</td>
         <td>{{ color.pantoneOc }}</td>

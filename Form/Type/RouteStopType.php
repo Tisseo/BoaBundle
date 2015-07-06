@@ -1,19 +1,29 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: clesauln
- * Date: 06/05/2015
- * Time: 10:15
- */
 
 namespace Tisseo\BoaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
 
-class RouteStopType extends AbstractType {
+class RouteStopType extends AbstractType
+{
+    private $waypointTransformer = null;
+    private $routeTransformer = null;
 
+    private function buildTransformers($em)
+    {
+        $this->waypointTransformer = new EntityToIntTransformer($em);
+        $this->waypointTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Waypoint");
+        $this->waypointTransformer->setEntityRepository("TisseoEndivBundle:Waypoint");
+        $this->waypointTransformer->setEntityType("Waypoint");
+
+        $this->routeTransformer = new EntityToIntTransformer($em);
+        $this->routeTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Route");
+        $this->routeTransformer->setEntityRepository("TisseoEndivBundle:Route");
+        $this->routeTransformer->setEntityType("Route");
+    }
 
     /**
      * @param FormBuilderInterface $builder
@@ -21,15 +31,57 @@ class RouteStopType extends AbstractType {
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('id','text',array('attr'=>array('class'=>"idRS")))
-                ->add('rank', 'number')
-                ->add('dropOff', 'checkbox', array('required'=>false))
-                ->add('pickup', 'checkbox',array('required'=>false))
+        $this->buildTransformers($options['em']);
 
-
+        $builder
+            ->add(
+                'rank',
+                'number',
+                array(
+                    'required' => true,
+                    'read_only' => true,
+                    'attr' => array(
+                        'class' => 'input-sm'
+                    )
+                )
+            )
+            ->add(
+                $builder->create(
+                    'waypoint',
+                    'hidden'
+                )->addModelTransformer($this->waypointTransformer)
+            )
+            ->add(
+                $builder->create(
+                    'route',
+                    'hidden'
+                )->addModelTransformer($this->routeTransformer)
+            )
+            ->add(
+                'pickup',
+                'checkbox',
+                array(
+                    'required' => false,
+                    'data' => true
+                )
+            )
+            ->add(
+                'dropOff',
+                'checkbox',
+                array(
+                    'required' => false,
+                    'data' => true
+                )
+            )
+            ->add(
+                'scheduledStop',
+                'checkbox',
+                array(
+                    'required' => false
+                )
+            )
+            ->setAction($options['action'])
         ;
-
-        $builder->setAction($options['action']);
     }
 
     /**
@@ -42,11 +94,18 @@ class RouteStopType extends AbstractType {
                 'data_class' => 'Tisseo\EndivBundle\Entity\RouteStop'
             )
         );
+
+        $resolver->setRequired(array(
+            'em'
+        ));
+
+        $resolver->setAllowedTypes(array(
+            'em' => 'Doctrine\Common\Persistence\ObjectManager',
+        ));
     }
 
-    public function getName(){
-
-        return 'boa_routestop';
+    public function getName()
+    {
+        return 'boa_route_stop';
     }
-
 }

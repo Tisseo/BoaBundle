@@ -1,295 +1,90 @@
 {% extends "TisseoCoreBundle::container.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
-{% set datatable = true %}
 {% set smoothness = true %}
+{% set datatable = true %}
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block main_content -%}
-    <div id="error_alert"></div>
-
     <h1>{{ title|trans({}, 'default') }}</h1>
-    <hr/>
+    <br>
 
-    {{ render.route_header(route) }}
+    <a id="route" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ render.route_header(route) }}
+    </a>
+    <div class="panel col-md-12">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
 
-    {% set inputState = "" %}
-    {% if serviceTemplates | length %}
-        {# prevent checkbox to change state#}
-        {% set inputState = "onclick=\"return false\"" %}
-    {% endif %}
-
-    {{ form_start(form) }}
-        <div id="route-fields" class="form form-edit">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class = "col-md-4 col-md-offset-1">
-                        {{ form_row(form.name) }}
-                    </div>
-                    <div class = "col-md-4">
-                        {{ form_row(form.way, {'attr': {'readonly':true} } ) }}
-                    </div>
-                    <div class = "col-md-3">
-                        <button type="submit" id="form-save" class="btn btn-success route_btn_field">
-                            <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
-                        </button>
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_row(form.name) }}
             </div>
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-1">
-                        {{ form_row(form.direction) }}
-                    </div>
-                </div>
+            <div class="col-md-4">
+                {{ form_row(form.way) }}
             </div>
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-1">
-                        {{ form_row(form.direction) }}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="row">
-                    {% if route.routeDatasources is not empty %}
-                        {% set datasource_list = form_row(form.routeDatasources[0].datasource) %}
-                        {% set datasource_code = form_row(form.routeDatasources[0].code) %}
-                    {% else %}
-                        {% set user_name = app.security.getToken().getUser().getUsername() %}
-                        {% set datasource_list = form_row(form.routeDatasources.vars.prototype.datasource) %}
-                        {% set datasource_list = datasource_list | replace( {'__name__': 0} ) %}
-                        {% set datasource_code = form_row(form.routeDatasources.vars.prototype.code, { value : user_name }) %}
-                        {% set datasource_code = datasource_code | replace( {'__name__': 0} ) %}
-                    {% endif %}
-                    <div class="col-md-4 col-md-offset-1">
-                        {{ datasource_list | raw }}
-                    </div>
-                    <div class = "col-md-4">
-                        {{ datasource_code | raw }}
-                    </div>
-                </div>
+            <div class="col-md-4">
+                {{ form_row(form.direction) }}
             </div>
         </div>
 
-        <table id="route-table">
-            <tr>
-                <td>
-                    <div class="route_table_header">{{ 'route.route_details' | trans }}</div>
-                    <table id="route-stop-table" class="table datatable table-hover dataTable no-footer">
-                        <thead>
-                            <th>
-                                <div>
-                                    {{ 'route.route_stops.labels.rank' | trans }}
-                                </div>
-                            </th>
-                            <th>{{ 'route.route_stops.labels.city' | trans }}</th>
-                            <th>{{ 'route.route_stops.labels.name' | trans }}</th>
-                            <th>{{ 'route.route_stops.labels.code' | trans }}</th>
-                            <th>{{ 'route.route_stops.labels.drop_off' | trans }}</th>
-                            <th>{{ 'route.route_stops.labels.pick_up' | trans }}</th>
-                            <th>{{ 'route.route_stops.labels.scheduled' | trans }}</th>
-                            {% if route.way == 'Zonal' %}
-                                <th>{{ 'route.route_stops.labels.internal_service' | trans }}</th>
-                            {% endif %}
-                        </thead>
-                        <tbody>
-                            {% set index = 0 %}
-                            {% set warnings = {} %}
-                            {% for rs in routeStops %}
-                                <tr class="sortable">
-                                    <input type='hidden' name='route_stops[{{ index }}][id]' value="{{ rs.id }}">
-                                    <td>{{ rs.rank }}</td>
-                                    <td>{{ rs.waypoint.stop.stopArea.city.name }}</td>
-                                    <td>{{ rs.waypoint.stop.stopArea.shortName }}</td>
-                                    <td>{{ rs.waypoint.stop.stopDatasources[0].code }}</td>
-                                    <td>
-                                        {% set checked = "" %}
-                                        {% if rs.dropOff %}
-                                            {% set checked = "checked" %}
-                                        {% endif %}
-                                        <input type='checkbox' class='dropoff' name='route_stops[{{ index }}][dropOff]' {{ checked }} {{ inputState|raw }}>
-                                    </td>
-                                    <td>
-                                        {% set checked = "" %}
-                                        {% if rs.pickup %}
-                                            {% set checked = "checked" %}
-                                        {% endif %}
-                                         <input type='checkbox' class='pickup' name='route_stops[{{ index }}][pickUp]' {{ checked }} {{ inputState|raw }}>
-                                    </td>
-                                    <td>
-                                        {% set checked = "" %}
-                                        {% if rs.scheduledStop %}
-                                            {% set checked = "checked" %}
-                                        {% endif %}
-                                        <input type='checkbox' class='scheduled' name='route_stops[{{ index }}][scheduled]' {{ checked }} {{ inputState|raw }}>
-                                    </td>
-                                    {% if route.way == 'Zonal' %}
-                                        <td>
-                                            {% set checked = "" %}
-                                            {% if rs.internalService %}
-                                                {% set checked = "checked" %}
-                                            {% endif %}
-                                            <input type='checkbox' name='route_stops[{{ index }}][internal]' {{ checked }} {{ inputState|raw }}>
-                                        </td>
-                                    {% endif %}
-                                </tr>
-                                {% set index = index + 1 %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-                <td>
-                    <div class="route_table_header">
-                        {{ 'route.templates_services' | trans }}
-                        <a style="float:right" class="btn btn-default" id="add-service">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </a>
-                    </div>
-                    <table id="trip-table"  class="table datatable table-hover dataTable no-footer">
-                        <thead>
-                            <th>
-                                <div></div>
-                            </th>
-                        </thead>
-                        <tbody>
-                            {% for rs in routeStops %}
-                                <tr id="{{ rs.id }}">
-                                    <td>
-                                        {% if serviceTemplates | length == 0 %}
-                                        <a style="color: red; float:right" class="btn btn-default remove-route-stop">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </a>
-                                    {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td colspan=3>
-                    <button style="float:left" type="submit" id="form-save" class="btn btn-success">
-                        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
-                    </button>
-                    <label style='padding-top: 8px;padding-left: 5px;'>{{ 'route.warning' | trans }}</label>
+        {% for datasource in form.routeDatasources %}
+        <div class="row">
+            <div class="col-md-3">
+                {{ form_row(datasource.datasource) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(datasource.code) }}
+            </div>
+        </div>
+        {% else %}
+            <div class="row">
+                {{ 'global.no_items'|trans }}
+            </div>
+        {% endfor %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+                </button>
+                <a href="" class="btn btn-default">
+                    <span class="glyphicon glyphicon-repeat"></span> {{ 'global.cancel'|trans }}
+                </a>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
 
-                    {% if serviceTemplates | length == 0 %}
-                        <a style="float:right" class="btn btn-default" id="add-route-stop">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </a>
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-    {{ form_end(form) }}
+    <a id="route-stops" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'route.list.headers.route_stops'|trans({}, 'default') }}
+    </a>
+    {% if route.hasTripsNotPattern %}
+        {{ render(controller('TisseoBoaBundle:RouteStop:list', {'routeId': route.id })) }}
+    {% else %}
+        {{ render(controller('TisseoBoaBundle:RouteStop:edit', {'routeId': route.id })) }}
+    {% endif %}
+
+    <a id="trip-patterns" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'route.list.headers.trip_patterns'|trans({}, 'default') }}
+    </a>
+    {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
+
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        require(['boa/route/utils', 'jquery_ui_sortable'], function(utils) {
-
-            {# twig variables to javascript #}
-            var $stopTimes = JSON.parse("{{ serviceTemplates | json_encode | e('js') }}");
-            var $instanciatedTripPatterns = JSON.parse("{{ instantiatedServiceTemplates | json_encode | e('js') }}");
-
-            $(document).ready(function () {
-                $( "#add-service" ).click(function() {
-                    utils.addService("#trip-table", '#route-stop-table');
-                });
-
-                $('#trip-table').on('click', ".duplicate-trip", function(event) {
-                    event.preventDefault();
-
-                    console.log($(this).closest('th').index());
-                    utils.duplicateService($(this).closest('th').index(), "#trip-table", '#route-stop-table');
-                });
-
-                $('#trip-table').on('click',  ".delete-trip", function(event) {
-                    event.preventDefault();
-                    utils.deleteService($(this), '#trip-table');
-                });
-
-                {% if serviceTemplates | length == 0 %}
-                    $( "#add-route-stop" ).click(function() {
-                        var zonal = {{ route.way == 'Zonal' ? 'true' : 'false' }};
-                        utils.addRouteStop('#route-stop-table', '#trip-table', zonal);
-                    });
-
-                    $('#trip-table').on('click', ".remove-route-stop", function(event) {
-                        event.preventDefault();
-                        utils.deleteRouteStop(this, "#trip-table", "#route-stop-table");
-                    });
-                {% endif %}
-
-                $('#trip-table').on('focus', ".time", function(event) {
-                    $(this).data('originalValue', this.value);
-                });
-
-                $('#trip-table').on('blur', ".time", function(event) {
-                    var original = $(this).data('originalValue');
-                    if (original !== this.value) {
-                        var column_index = $(this).parents('td').index();
-                        utils.updateColumnDuration(column_index, "#trip-table", "#route-stop-table");
-                    }
-                });
-
-                {% if serviceTemplates | length == 0 %}
-                    $('#route-stop-table').on('change',  ".scheduled", function(event) {
-                        utils.scheduledRouteStopChange(this, '#trip-table');
-                    });
-
-                    {# route stops drag & drop + rank sorting #}
-                    $( "#route-stop-table tbody" ).sortable(
-                        {
-                            items: '.sortable',
-                            stop: function(event, ui) {
-                                $(this).find('tr').each(function(i){
-                                    $(this).find('td:first').text( i+1 );
-                                });
-                            }
-                        }
-                    );
-                {% endif %}
-
-                {# form validation #}
-                $('form[name="{{ form.vars.full_name }}"]').submit( function( e ){
-                    {# premier route stop => descente interdite + régulé #}
-                    if( ($("#route-stop-table tbody tr:first").find(".dropoff").is(':checked')) ) {
-                        utils.displayAlert("{{ 'route.error_submit.first_stop.dropoff' | trans }}");
-                        return false;
-                    }
-                    if( !($("#route-stop-table tbody tr:first").find(".scheduled").is(':checked')) ) {
-                        utils.displayAlert("{{ 'route.error_submit.first_stop.not_scheduled' | trans }}");
-                        return false;
-                    }
-
-                    {# dernier route stop => montée interdite + régulé #}
-                    if( $("#route-stop-table tbody tr:last").find(".pickup").is(':checked') ) {
-                        utils.displayAlert("{{ 'route.error_submit.last_stop.pickup' | trans }}");
-                        return false;
-                    }
-                    if( !($("#route-stop-table tbody tr:last").find(".scheduled").is(':checked')) ) {
-                        utils.displayAlert("{{ 'route.error_submit.last_stop.not_scheduled' | trans }}");
-                        return false;
-                    }
-
-                    {# premiers services types => horaire 00:00 #}
-                    $('#trip-table tbody tr:first').each(function() {
-                        $(this).find('td input.time').each(function() {
-                            if( $(this).val() !== '00:00' ) {
-                                utils.displayAlert("{{ 'route.error_submit.service_type.first_stop_time' | trans }}");
-                                return false;
-                            }
-                        });
-                    });
-
-                    return true;
-                 });
-
-                utils.loadStoptimes($stopTimes, "#trip-table", "#route-stop-table", $instanciatedTripPatterns);
-            });
+        require(['boa/route_stop/edit']);
+    </script>
+    <script>
+        require(['boa/trip/edit_pattern']);
+    </script>
+    {% if not route.hasTripsNotPattern %}
+    <script>
+        require(['core/datatables'], function() {
+            datatable(false, '10');
         });
     </script>
+    {% endif %}
 {% endblock %}

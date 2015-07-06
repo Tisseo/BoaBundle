@@ -1,0 +1,138 @@
+{% extends "TisseoCoreBundle::container.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set datatable = true %}
+
+{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% block main_content -%}
+    <h1>{{ title|trans({}, 'default') }}</h1>
+    <br>
+
+    <a id="trip" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.headers.trip'|trans({}, 'default') }}
+    </a>
+    <div class="col-md-12 panel">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        <div class="row">
+            <div class="col-md-3">
+                {{ form_row(form.name) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.pattern) }}
+            </div>
+        </div>
+
+        {% for datasource in form.tripDatasources %}
+        <div class="row">
+            <div class="col-md-3">
+                {{ form_row(datasource.datasource) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(datasource.code) }}
+            </div>
+        </div>
+        {% endfor %}
+    
+        <div class="row">
+            <div class="col-md-3">
+                {{ form_row(form.dayCalendar) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.periodCalendar) }}
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+                </button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+ 
+    <a id="calendar" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.headers.calendar'|trans({}, 'default') }}
+    </a>
+    <div id="calendar-panel" class="col-md-12 panel">
+        <div class="row">
+            <div class="col-md-2 input-range">
+                <input type="text" id='start-date' name="start-date" class="form-control">
+            </div>
+            <div class="col-md-2 input-range">
+                <input type="text" id='end-date'  name="end-date" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <button type="button" id='refresh-button' class="calendar-button btn btn-default" data-url="{{ path('tisseo_boa_json_service_calendar_bitmask') }}">
+                    <span class="glyphicon glyphicon-refresh"></span> {{ 'global.refresh'|trans }}
+                </button>
+            </div>
+        </div>
+        <div id='calendar-view'>
+        </div>
+    </div>
+   
+    <a id="stop-times" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.headers.stop_time'|trans({}, 'default') }}
+    </a>
+    <div class="col-md-12 panel">
+        <table class="table table-hover datatable">
+            <thead>
+                <th>{{ 'stop_time.labels.rank'|trans }}</th>
+                <th>{{ 'stop_time.labels.city'|trans }}</th>
+                <th>{{ 'stop_time.labels.name'|trans }}</th>
+                <th>{{ 'stop_time.labels.code'|trans }}</th>
+                <th>{{ 'stop_time.labels.pick_up'|trans }}</th>
+                <th>{{ 'stop_time.labels.drop_off'|trans }}</th>
+                <th>{{ 'stop_time.labels.scheduled'|trans }}</th>
+                <th>{{ 'stop_time.labels.schedule'|trans }}</th>
+            </thead>
+            <tbody>
+            {% for stopTime in trip.stopTimes %}
+                <tr>
+                    <td>{{ stopTime.routeStop.rank }}</td>
+                    <td>{{ stopTime.routeStop.waypoint.stop.stopArea.city.name }}</td>
+                    <td>{{ stopTime.routeStop.waypoint.stop.stopArea.shortName }}</td>
+                    <td>
+                        {% for datasource in stopTime.routeStop.waypoint.stop.stopDatasources %}
+                            {{ datasource.code }} 
+                        {% endfor %}
+                    </td>
+                    <td><input type='checkbox' class="pickup" name="pickup" {% if stopTime.routeStop.pickup %}checked="checked"{% endif %} disabled="disabled"></td>
+                    <td><input type='checkbox' class="dropOff" name="dropOff" {% if stopTime.routeStop.dropOff %}checked="checked"{% endif %} disabled="disabled"></td>
+                    <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if stopTime.routeStop.scheduledStop %}checked="checked"{% endif %} disabled="disabled"></td>
+                    <td>{{ stopTime.arrivalTime|date('H:i', false) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        require(['core/datatables'], function() {
+            datatable(false, '10');
+        });
+    </script>
+    <script>
+        require(['bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function() {
+            $(document).ready(function() {
+                $('#calendar-panel .input-range input').datepicker({
+                    language: '{{ app.request.locale }}',
+                    todayHighlight: true,
+                    autoclose: true,
+                });
+
+                $('#calendar-panel input#start-date').datepicker("update", "{{ startDate|date('d/m/Y') }}");
+                $('#calendar-panel input#end-date').datepicker("update", "{{ endDate|date('d/m/Y') }}");
+            });
+        });
+    </script>
+{% endblock %}

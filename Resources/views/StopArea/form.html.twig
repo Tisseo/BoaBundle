@@ -27,7 +27,7 @@
             <div class="col-md-3">
                 {{ form_label(form.city) }}
                 {{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-                <input type="text" class="form-control" data-url="{{ path('tisseo_boa_json_city') }}"{% if cityMain is not empty %}"readonly=readonly"{% endif %}>
+                <input type="text" id="city" class="form-control" data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
             </div>
         </div>
 
@@ -59,6 +59,8 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'stop_area.list.headers.stop_point'|trans({}, 'default') }}
     </a>
     <div class="panel col-md-12">
+        <input type="checkbox" id="show-closed-stops"><label> {{ 'stop_area.show_closed_stops'|trans({}, 'default') }}</label>
+
         <table id="stop-history" class="table datatable table-hover">
             <thead>
                 <th class="col-md-2">{{ 'stop_history.list.columns.agency'|trans({}, 'default') }}</th>
@@ -72,12 +74,17 @@
             <tbody>
             {% set now = date('now') %}
             {% for stop in stops %}
-            {% set stopHistory = stop.CurrentStopHistory(now) %}
-            {% if stopHistory %}
-            <tr>
-            {% else %}
-            <tr class='closed-stop hide' style='background-color:red;'>
-            {% endif %}
+                {% set stopHistory = stop.CurrentStopHistory(now) %}
+                {% if not stopHistory %}
+                    {% set stopHistory = stop.LatestStopHistory() %}
+                    {% if stopHistory.endDate and stopHistory.endDate < now %}
+                        <tr class="closed-stop" style="background-color:#E4E4E4;">
+                    {% else %}
+                        <tr></tr>
+                    {% endif %}
+                {% else %}
+                    <tr></tr>
+                {% endif %}
                 <td>{{ stop.stopDatasources[0].datasource.agency.name }}</td>
                 <td>{{ stop.stopDatasources[0].code }}</td>
                 <td><a href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stopHistory.shortName }}</a></td>
@@ -99,13 +106,13 @@
                     {% else %}
                         <td></td>
                         <td>
-                            <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': stop.id }) }}">
+                            <a class="btn btn-default" href="{{ path('tisseo_boa_stop_detach', {'stopId': stop.id }) }}">
                                 <span class="glyphicon glyphicon-remove"></span> {{ 'global.delete'|trans }}
                             </a>
                         </td>
                     {% endif %}
                 {% endif %}
-            </tr>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
@@ -116,33 +123,22 @@
 
     {# buttons #}
     {% if stopArea.id is not null %}
-        <div class="row" style="padding: 10px 0 0">
+        <div class="row" style="padding:10px 0 0;">
             <div class = "col-md-12">
                 {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-                    <a class="btn btn-default" id="internal-transfert"
-                        href="{{ path('tisseo_boa_internal_transfer_edit', {'stopAreaId': stopArea.id }) }}"
-                        data-toggle="modal" data-target="#base-modal" >
-                        <span class="glyphicon glyphicon-resize-small"></span>
-                        {{ 'stop_area.labels.internal_transfert' | trans }}
-                        </a>
-                    <a class="btn btn-default" id="external-transfert"
-                        href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}"
-                        data-toggle="modal" data-target="#base-modal" >
-                        <span class="glyphicon glyphicon-resize-full"></span>
-                        {{ 'stop_area.labels.external_transfert' | trans }}
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_internal_transfer_edit', {'stopAreaId': stopArea.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-resize-small"></span> {{ 'stop_area.internal_transfert'|trans({}, 'default') }}
                     </a>
-                    <a class="btn btn-default" id="geometries" href="#">
-                        <span class="glyphicon glyphicon-globe"></span>
-                        {{ 'stop_area.labels.geometries' | trans }}
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-resize-full"></span> {{ 'stop_area.external_transfert'|trans({}, 'default') }}
                     </a>
-                    <a class="btn btn-default" id="alias"
-                        href="{{ path('tisseo_boa_stop_area_alias', {'stopAreaId': stopArea.id }) }}"
-                        data-toggle="modal" data-target="#base-modal" >
-                        <span class="glyphicon glyphicon-tag"></span>
-                        {{ 'stop_area.labels.alias' | trans }}
+                    <a class="btn btn-default disabled" id="geometries" href="#">
+                        <span class="glyphicon glyphicon-globe"></span> {{ 'stop_area.geometries'|trans({}, 'default') }}
+                    </a>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_stop_area_alias', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-tag"></span> {{ 'stop_area.alias'|trans({}, 'default') }}
                     </a>
                 {% endif %}
-                <input type="checkbox" id='show-closed-stops'><label> {{ 'stop_area.show_closed_stops' | trans }}</label>
             </div>
         </div>
     {% endif %}
@@ -155,40 +151,20 @@
         });
     </script>
     <script>
-        require(['jquery_ui_autocomplete'], function($) {
-            $(document).ready(function() {
-                $("#city").autocomplete({
-                    source: function (request, response) {
-                        var objData = { term: request.term };
-                        var url = $(this.element).attr('data-url');
-                        $.ajax({ url: url, dataType: "json", data : objData,  type: 'POST',
-                            success: function (data) {
-                                response($.map(JSON.parse(data.content), function (item) {
-                                    return {
-                                        label: item.name,
-                                        value: item.name,
-                                        id: item.id
-                                    };
-                                }));
-                            },
-                        });
-                    },
-                    select: function (event, ui) {
-                        $("#boa_stop_area_city").val(ui.item.id);
-                    },
-                    minLength: 3,
-                    delay: 300
-                });
-
-                $('#show-closed-stops').change(function() {
-                    if($(this).is(":checked")) {
-                        $( ".closed-stop" ).removeClass('hide');
-                    } else {
-                        $( ".closed-stop" ).addClass('hide');
-                    }
-                });
-            });
+        require(['boa/stop_area/edit'], function() {
+            init_autocomplete("#city", "#boa_stop_area_city", null);
+            $("#city").val($("#boa_stop_area_city option:selected").text());
         });
+    </script>
+    <script>
+        require(['jquery'], function() {
+        $('#show-closed-stops').change(function() {
+            if ($(this).is(":checked"))
+                $(".closed-stop").fadeIn();
+            else
+                $(".closed-stop").fadeOut();
+        });
+    });
     </script>
 {% endblock %}
 

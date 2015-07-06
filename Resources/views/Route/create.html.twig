@@ -20,49 +20,52 @@
                     {{ form_row(form.name) }}
                 </div>
                 <div class="col-md-4">
-                    {{ form_row(form.way, {'attr': {'class': 'way-select'}}) }}
+                    {{ form_row(form.way) }}
                 </div>
             </div>
         </div>
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
-                    {{ form_row(form.direction, {'attr': {'class': 'direction-input'}}) }}
+                    {{ form_row(form.direction) }}
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="form form-edit">
+        <div class="col-md-12">
+            {% for routeDatasource in form.routeDatasources %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(routeDatasource.datasource) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(routeDatasource.code) }}
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
 
 {% block modal_actions %}
     <button type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
     </button>
-
     {{ form_end(form) }}
 
     <script>
         require(['jquery'], function($) {
-            var forward_direction = "{{ route.lineVersion.forwardDirection }}";
-            var backward_direction = "{{ route.lineVersion.backwardDirection }}";
-
             $(document).ready(function () {
-                $( ".way-select" ).change(function() {
+                $(".way-select").change(function() {
                     var select_value = $(this).val();
-                    var input_value = $( ".direction-input" ).val();
 
-                    if( !input_value ) {
-                        if( select_value == "Aller" ) {
-                            $( ".direction-input" ).val(forward_direction);
-                        }
-                        if( select_value == "Retour" ) {
-                            $( ".direction-input" ).val(backward_direction);
-                        }
-                    }
-
+                    if (select_value === "Aller")
+                        $(".direction-input").val("{{ route.lineVersion.forwardDirection }}");
+                    if (select_value === "Retour")
+                        $(".direction-input").val("{{ route.lineVersion.backwardDirection }}");
                 });
             });
         });
     </script>
-
 {% endblock %}

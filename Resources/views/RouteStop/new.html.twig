@@ -1,0 +1,20 @@
+<tr class="route-stop">
+    <input type='hidden' class="route-stop-id" name="id" value="">
+    <td class="route-stop-rank">{{ routeStop.rank }}</td>
+    <td>{{ routeStop.waypoint.stop.stopArea.city.name }}</td>
+    <td>{{ routeStop.waypoint.stop.stopArea.shortName }}</td>
+    <td>
+    {% for datasource in routeStop.waypoint.stop.stopDatasources %}
+        {{ datasource.code }}
+    {% endfor %}
+    </td>
+    <td><input type='checkbox' class="pickup" name="pickup" {% if routeStop.pickup %}checked="checked"{% endif %}></td>
+    <td><input type='checkbox' class="dropOff"  name="dropOff" {% if routeStop.dropOff %}checked="checked"{% endif %}></td>
+    <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if routeStop.scheduledStop %}checked="checked"{% endif %}></td>
+    <td></td>
+    <td>
+        <button class="btn btn-xs btn-danger small-button delete-route-stop"><span class="glyphicon glyphicon-minus"></span></button>
+        <input type='hidden' name="waypoint" value="{{ routeStop.waypoint.id }}">
+        <input type="hidden" class="route-stop-rank" name="rank" value="{{ routeStop.rank }}">
+    </td>
+</tr>

@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block table_body -%}
-    {% for route in routes %}
+    {% for route in lineVersion.routes %}
         <tr>
             <td>{{ route.name }}</td>
             <td>
@@ -41,29 +41,27 @@
             <td>{{ route.comment }}</td>
             <td>{{ route.way }}</td>
             <td>
-                {% if (is_granted('BUSINESS_VIEW_ROUTES')) %}
-                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_trip_list',{routeId: route.id}) }}">
-                    <span class="glyphicon glyphicon-list"></span> {{ 'route.actions.services'|trans({}, 'messages') }}
+                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_trip_list', {routeId: route.id}) }}">
+                    <span class="glyphicon glyphicon-list"></span> {{ 'route.actions.services'|trans }}
                 </a>
-                {% endif %}
-                {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+                {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
                 <div class="btn-group">
-                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">{{ 'route.actions.actions'|trans({}, 'messages') }} <span class="caret"></span></button>
+                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">{{ 'route.actions.actions'|trans }} <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_edit',{routeId: route.id}) }}">
-                                {{ 'route.actions.edit'|trans({}, 'messages') }}
+                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate', {routeId: route.id}) }}" data-toggle="modal" data-target="#base-modal">
+                                {{ 'route.actions.copy'|trans }}
                             </a>
                         </li>
                         <li>
-                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate',{routeId: route.id}) }}" data-toggle="modal" data-target="#base-modal">
-                                {{ 'route.actions.copy'|trans({}, 'messages') }}
+                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_edit', {routeId: route.id}) }}">
+                                {{ 'route.actions.edit'|trans }}
                             </a>
                         </li>
-                        {% if route.services is empty %}
+                        {% if not route.hasTripsNotPattern %}
                         <li>
-                            <a class="btn delete-action" role="button" href="{{ path('tisseo_boa_route_delete',{routeId: route.id}) }}">
-                                {{ 'route.actions.delete'|trans({}, 'messages') }}
+                            <a class="btn delete-action" role="button" href="{{ path('tisseo_boa_route_delete', {routeId: route.id}) }}">
+                                {{ 'route.actions.delete'|trans }}
                             </a>
                         </li>
                         {% endif %}
@@ -81,6 +79,7 @@
         require(['jquery'], function($) {
             $(document).ready(function() {
                 $('#datatable').on('click', ".delete-action", function(event) {
+                    // TODO: change this or use translator at least
                     if (!confirm("Confirmez-vous la suppression de cette route ?")) {
                         event.preventDefault();
                     }

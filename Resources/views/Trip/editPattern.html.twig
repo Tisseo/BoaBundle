@@ -1,0 +1,95 @@
+<div id="trip-patterns-list" class="panel col-md-12">
+    <input type="hidden" id="route-id" value="{{ route.id }}"></input>
+    <table id="table-trip-patterns" class="table table-hover">
+        <thead>
+            <th class="col-md-1">{{ 'route_stop.list.columns.rank'|trans({}, 'default') }}</th>
+            <th class="col-md-3">{{ 'route_stop.list.columns.name'|trans({}, 'default') }}</th>
+            {% for pattern in route.TripsPattern %}
+            <th id="{{ loop.index }}" class="col-md-1 text-center pattern-column name {{ loop.index }}">
+                <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}"{% if route.IsPatternLocked(pattern) %}readonly{% endif %}>
+                <input type="hidden" class="pattern-id" value="{{ pattern.id }}">              
+            </th>
+            {% endfor %}
+            <th class="col-md-1 text-center add-pattern name"></th>
+            <th class="container col-md-{{ 12 - route.TripsPattern|length - 5 }}"></th>
+        </thead>
+        <thead>
+            <th></th>
+            <th></th>
+            {% for pattern in route.TripsPattern %}
+                {% if route.IsPatternLocked(pattern) %}
+                <th id="{{ loop.index }}" class="text-center {{ loop.index }}"></th>
+                {% else %}
+                <th id="{{ loop.index }}" class="text-center {{ loop.index }}">
+                    <button title="{{ 'global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
+                    <button title="{{ 'global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
+                </th>
+                {% endif %}
+            {% endfor %}
+            <th class="text-center add-pattern action">
+                <button title="{{ 'global.add'|trans }}" id="add-pattern" class="btn btn-xs btn-success small-button"><span class="glyphicon glyphicon-plus"></span></button>
+            </th>
+            <th></th>
+        </thead>
+        <tbody>
+        {% for rs, routeStop in route.routeStops %}
+            <tr class="route-stop">
+                <td class="route-stop-rank">
+                    {{ routeStop.rank }}
+                    <input type="hidden" class="route-stop-id" value="{{ routeStop.id }}">
+                </td>
+                <td>{{ routeStop.waypoint.stop.stopArea.shortName }}</td>
+                {% for pattern in route.TripsPattern %}
+                    {% set stopTime = pattern.stopTime(routeStop) %}
+                    {% if rs > 0 %}
+                        {% set prevStopTime = pattern.stopTime(route.routeStops[rs-1]) %}
+                    {% endif %}
+                    {% if stopTime %}
+                        <td id="{{ loop.index }}" class="time text-center {{ loop.index }}">
+                            <input type="number" class="stop-time-departure form-control input-sm" min="0" value="{{ (stopTime.departureTime - prevStopTime.departureTime)/60 }}" {% if loop.parent.loop.first or route.IsPatternLocked(pattern) %}readonly{%endif%}>
+                            <span>{{ stopTime.departureTime|date('H:i', false) }}</span>
+                            <input type="hidden" class="stop-time-id" value="{{ stopTime.id }}">
+                        </td>
+                    {% else %}
+                        <td id="{{ loop.index }}" class="time text-center {{ loop.index }}">
+                            <input type="number" class="stop-time-departure form-control input-sm" min="0" value="0" {% if loop.parent.loop.first or route.IsPatternLocked(pattern) %}readonly{%endif%}>
+                            <span>00:00</span>
+                            <input type="hidden" class="stop-time-id" value="">
+                        </td>
+                    {% endif %}
+                {% endfor %}
+                <td class="add-pattern time"></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <button id="submit-trip-patterns" type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+    </button>
+</div>
+
+<div id="new-pattern-container" class="hidden">
+    <table>
+        <thead>
+            <th class="col-md-1 text-center new-pattern name" style="display:none;">
+                <input type="text" class="pattern-name input-sm form-control" value="">
+                <input type="hidden" class="pattern-id" value="">
+            </th>
+        </thead>
+        <thead>
+            <th class="text-center new-pattern action" style="display:none;">
+                <button title="{{ 'global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
+                <button title="{{ 'global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
+            </th>
+        </thead>
+        <tbody>
+            <td class="new-pattern time text-center" style="display:none;">
+                <input type="number" class="stop-time-departure form-control input-sm" min="0" value="0">
+                <span>00:00</span>
+                <input type="hidden" class="stop-time-id" value="">
+            </td>
+        </tbody>
+    </table>
+</div>

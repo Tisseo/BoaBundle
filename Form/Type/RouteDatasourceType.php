@@ -6,8 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Tisseo\EndivBundle\Entity\RouteDatasource;
-
 class RouteDatasourceType extends AbstractType
 {
     /**
@@ -16,23 +14,27 @@ class RouteDatasourceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('datasource', 'entity',
-            array(
-                'label' => 'route_datasource.labels.datasource',
-                'required' => true,
-                'class' => 'TisseoEndivBundle:Datasource',
-                'property' => 'name'
-            )
-        );
-
-        $builder->add('code', 'text',
+        $builder
+            ->add(
+                'datasource',
+                'entity',
                 array(
-                    'label' => 'route_datasource.labels.code',
+                    'label' => 'datasource.labels.datasource',
+                    'class' => 'TisseoEndivBundle:Datasource',
+                    'property' => 'name',
                     'required' => true
                 )
-        );
-
-        $builder->setAction($options['action']);
+            )
+            ->add(
+                'code',
+                'text',
+                array(
+                    'label' => 'datasource.labels.code',
+                    'required' => true
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -46,7 +48,6 @@ class RouteDatasourceType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

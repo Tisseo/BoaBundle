@@ -11,39 +11,34 @@
         {{'trip.list.title'|trans({}, 'default')}}
         {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
             -
-            <a href="{{ path('tisseo_boa_trip_new', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <a href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
                 <span class="glyphicon glyphicon-plus"></span> {{ 'trip.create'|trans({}, 'default') }}
             </a>
         {% endif %}
     </h1>
     <hr/>
 
-    {{ render.route_header(route) }}
-
-    <table class="table table-hover datatable no-footer" role="grid" aria-describedby="datatable_info">
+    <a id="route" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ render.route_header(route) }}
+    </a>
+    <table class="table table-hover datatable">
         <thead>
-            <th>{{ 'trip.list.columns.name'|trans({}, 'default') }}</th>
-            <th>{{ 'trip.list.columns.start'|trans({}, 'default') }}</th>
-            <th>{{ 'trip.list.columns.type'|trans({}, 'default') }}</th>
-            <th>{{ 'trip.list.columns.day'|trans({}, 'default') }}</th>
-            <th>{{ 'trip.list.columns.period'|trans({}, 'default') }}</th>
-            <th>{{ 'trip.list.columns.lastDay'|trans({}, 'default') }}</th>
-            <th class="col-md-2 no-sort no-search">{{ 'global.actions'|trans }}</th>
+            <th class="col-md-2">{{ 'trip.list.columns.name'|trans({}, 'default') }}</th>
+            <th class="col-md-2">{{ 'trip.list.columns.start'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'trip.list.columns.type'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'trip.list.columns.day'|trans({}, 'default') }}</th>
+            <th class="col-md-2">{{ 'trip.list.columns.period'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'trip.list.columns.lastDay'|trans({}, 'default') }}</th>
+            <th class="col-md-3 no-sort no-search">{{ 'global.actions'|trans }}</th>
         </thead>
         <tbody>
-            {% for trip in trips %}
+            {% for trip in route.TripsNotPattern %}
+                {% set stopTime = trip.FirstStopTime %}
+                {% set bounds = tripBounds[trip.id] %}
                 <tr>
-                    <td>
-                        <a href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
-                            {{ trip.name }}
-                        </a>
-                    </td>
-                    <td>
-                        {% if trip.stopTimes.first.arrivalTime %}
-                            {{ render.time_format(trip.stopTimes.first.arrivalTime) }}
-                        {% endif %}
-                    </td>
-                    <td>{{ trip.pattern.name }}</td>
+                    <td>{{ trip.name }}</td>
+                    <td>{% if stopTime %}{{ stopTime.arrivalTime|date('H:i', false) }}{% endif %}</td>
+                    <td>{% if trip.pattern %}{{ trip.pattern.name }}{% endif %}</td>
                     <td>
                         {% if trip.dayCalendar %}
                             <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': trip.dayCalendar.id}) }}">
@@ -58,20 +53,12 @@
                             </a>
                         {% endif %}
                     </td>
+                    <td>{% if bounds %}{{ bounds['end']|date("d/m/Y") }}{% endif %}</td>
                     <td>
-                        {% if tripBounds[trip.id] is defined %}
-                            {{ tripBounds[trip.id]['end'] | date("d/m/Y") }}
-                        {% endif %}
-                    </td>   {#Last Day#}
-                    <td>
-                        {% set style = "" %}
-                        {% if tripBounds[trip.id] is defined %}
-                            {% if tripBounds[trip.id]['start'] | date("Ymd") < "now"|date_modify("-1 day")|date('Ymd') %}
-                                {% set style = "style='color: red'" %}
-                            {% endif %}
-                        {% endif %}
-
-                        <a class="btn btn-default delete-action" href="{{ path('tisseo_boa_trip_delete', {'tripId': trip.id}) }}" {{ style|raw }}>
+                        <a class="btn btn-default" href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ 'global.edit'|trans }}
+                        </a>
+                        <a class="btn {% if bounds and bounds['start'] < yesterday %}btn-danger{% else %}btn-default{% endif %} delete-action" href="{{ path('tisseo_boa_trip_delete', {'tripId': trip.id}) }}">
                             <span class="glyphicon glyphicon-remove"></span> {{ 'global.delete'|trans }}
                         </a>
                     </td>
@@ -85,21 +72,6 @@
     <script>
         require(['jquery', 'core/datatables'], function($) {
             datatable(true);
-
-            {# TODO: IS THIS NECESSARY ? #}
-            $(document).ready(function() {
-                $("#datatable").DataTable({
-                    "order": [[ 1, "asc" ]],
-                    "pageLength" : 25
-                });
-
-                {# TODO: TRANSLATOR #}
-                $('#datatable').on("click", ".delete-action", function(event) {
-                    if( !confirm("Confirmez-vous la suppression de ce service ?") ) {
-                        event.preventDefault();
-                    }
-                })
-            });
         });
     </script>
 {% endblock %}

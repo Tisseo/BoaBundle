@@ -6,8 +6,8 @@ accessibility_mode:
         columns:
             name: Nom
         title: Mode d'accessibilité
-    edit: Editer un mode d'accessibilité
-    create: Créer un mode d'accessibilité
+    edit: Edition de mode d'accessibilité
+    create: Création de mode d'accessibilité
     created: Mode d'accessibilité sauvegardé
 
 agency:
@@ -19,8 +19,8 @@ agency:
             lang: Langue
             phone: Téléphone
         title: Réseaux
-    edit: Editer un réseau
-    create: Créer un réseau
+    edit: Edition de réseau
+    create: Création de réseau
     created: Réseau sauvegardé
 
 property:
@@ -29,8 +29,8 @@ property:
             name: Nom
             default: Défaut
         title: Propriétés
-    edit: Editer une propriété
-    create: Créer une propriété
+    edit: Edition de propriété
+    create: Création de propriété
     created: Propriété sauvegardé
 
 calendar:
@@ -52,8 +52,8 @@ calendar:
             startDate: Début
             endDate: Fin
         title: Calendriers
-    edit: Editer un calendrier
-    create: Créer un calendrier
+    edit: Edition de calendrier
+    create: Création de calendrier
     created: Calendrier sauvegardé
     empty_elements: Confirmez-vous la suppression de tous les éléments du calendrier ?
     not_saved: Vous devez d'abord enregistrer le calendrier
@@ -78,8 +78,8 @@ color:
             cmyk: CMYK
             rgb: RGB
         title: Couleurs
-    edit: Editer une couleur
-    create: Créer une couleur
+    edit: Edition de couleur
+    create: Création de couleur
     created: Couleur sauvegardée
 
 datasource:
@@ -88,8 +88,8 @@ datasource:
             name: Nom
             agency: Réseau
         title: Sources de données
-    edit: Editer une source de données
-    create: Créer une source de données
+    edit: Edition de source de données
+    create: Création de source de données
     created: Source de données sauvegardé
 
 exception_type:
@@ -100,8 +100,8 @@ exception_type:
             gridCalendarPattern: Calendrier d'offre
             tripCalendarPattern: Calendrier de service
         title: Exception Type
-    edit: Editer une exception type
-    create: Créer une exception type
+    edit: Edition d'exception
+    create: Création d'exception
     created: Exception type sauvegardée
 
 log:
@@ -121,8 +121,8 @@ physical_mode:
             name: Nom
             type: Type
         title: Modes de transport
-    edit: Editer un mode de transport
-    create: Créer un mode de transport
+    edit: Edition de mode de transport
+    create: Création de mode de transport
     created: Mode de transport sauvegardé
 
 poi_type:
@@ -130,8 +130,8 @@ poi_type:
         columns:
             name: Nom
         title: Types de POI
-    edit: Editer un type de POI
-    create: Créer un type de POI
+    edit: Edition de type de POI
+    create: Création de type de POI
     created: Type de POI sauvegardé
 
 network:
@@ -171,8 +171,8 @@ stop:
         headers:
             stop_history: Propriétés du point d'arrêt
             edit_form: Edition du point d'arrêt
-    create: Créer un point d'arrêt
-    edit: Editer un point d'arrêt
+    create: Création de point d'arrêt
+    edit: Edition de point d'arrêt
     validate: Valider
     see: Voir
     add_inaccessibility: Ajout d'inaccessibilité
@@ -186,9 +186,13 @@ stop_area:
         headers:
             edit_form: Edition de la zone d'arrêt
             stop_point: Liste des points d'arrêts 
-    create: Créer une zone d'arrêt
-    edit: Editer une zone d'arrêt
+    create: Création de zone d'arrêt
+    edit: Edition de zone d'arrêt
+    internal_transfert: Transferts intra-zone
+    external_transfert: Transferts extra-zone
     alias: Alias
+    geometries: Géométries
+    show_closed_stops: Afficher les points d'arrêts clôturés
     transfer: Transferts de la zone d'arrêt
     no_stop_area_selected: Vous n'avez pas sélectionné de zone d'arrêt valide.
 
@@ -210,8 +214,8 @@ line_version:
         route_list: Routes
 
 route:
-     create: Créer une route
-     edit: Editer une route
+     create: Création de route
+     edit: Edition de route
      duplicate: Dupliquer une route
      list:
         line: Liste des routes de la ligne %number% (version %version%)
@@ -221,14 +225,35 @@ route:
             lastStop: Arrivée
             comment: Commentaire
             way: Sens
+        headers:
+            route_stops: Itinéraire de la route
+            trip_patterns: Patrons de service
+
+route_stop:
+    list:
+        columns:
+            rank: Rang
+            city: Ville
+            name: Arrêt
+            code: Code
+            drop_off: Descente
+            pick_up: Montée
+            scheduled: Régulation
+            internal_service: Desserte interne
+    warning: L'arrêt %s n'a pas de route section attaché
 
 trip_calendar:
     list:
         title: Attribution de calendrier fiche horaire aux services
 
 trip:
-    create: Créer un service
+    create: Création de service
+    edit: Edition de service
     list:
+        headers:
+            trip: Service
+            stop_time: Horaires de passage
+            calendar: Calendrier de service
         no_data: aucun élément à afficher
         title: Liste des Services
         route:

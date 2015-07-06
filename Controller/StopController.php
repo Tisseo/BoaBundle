@@ -100,7 +100,7 @@ class StopController extends AbstractController
         }
 
         $form = $this->createForm(
-            new StopEditType($stopManager->getCurrentOrLatestStopHistory($stopId)),
+            new StopEditType($stop->getCurrentOrLatestStopHistory(new \Datetime())),
             $stop,
             array(
                 'action' => $this->generateUrl(
@@ -138,6 +138,26 @@ class StopController extends AbstractController
                 //'phantoms' => $phantoms,
                 //'accessibilities' => $accessibilities,
                 //'phantomAccessibilities' => $phantomAccessibilities
+            )
+        );
+    }
+
+    public function detachAction($stopId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
+
+        try {
+            $stopAreaId = $this->get('tisseo_endiv.stop_manager')->detach($stopId);
+            $this->get('session')->getFlashBag()->add('success', 'stop.detached');
+        } catch(\Exception $e) {
+            $stop = $this->get('tisseo_endiv.stop_manager')->find($stopId);
+            $stopAreaId = $stop->getStopArea()->getId();
+            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+        }
+        
+        return $this->redirect(
+            $this->generateUrl('tisseo_boa_stop_area_edit',
+                array('stopAreaId' => $stopAreaId)
             )
         );
     }

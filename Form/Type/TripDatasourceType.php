@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class StopAreaDatasourceType extends AbstractType
+class TripDatasourceType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -30,7 +30,7 @@ class StopAreaDatasourceType extends AbstractType
                 'text',
                 array(
                     'label' => 'datasource.labels.code',
-                    'required' => false
+                    'required' => true
                 )
             )
             ->setAction($options['action'])
@@ -44,7 +44,7 @@ class StopAreaDatasourceType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\StopAreaDatasource'
+                'data_class' => 'Tisseo\EndivBundle\Entity\TripDatasource'
             )
         );
     }
@@ -54,6 +54,6 @@ class StopAreaDatasourceType extends AbstractType
      */
     public function getName()
     {
-        return 'boa_stop_area_datasource';
+        return 'boa_trip_datasource';
     }
 }
