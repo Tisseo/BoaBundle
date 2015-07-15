@@ -69,7 +69,13 @@
     <a id="trip-patterns" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ 'route.list.headers.trip_patterns'|trans({}, 'default') }}
     </a>
-    {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
+    {% if route.routeStops is not empty %}
+        {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
+    {% else %}
+    <div class="panel col-md-12"> 
+        {{ 'route.no_route_stops'|trans }}
+    </div>
+    {% endif %}
 
 {% endblock %}
 
