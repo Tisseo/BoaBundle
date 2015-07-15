@@ -225,6 +225,7 @@ route:
         delete: Supprimer
     created: Route créée
     edited: Route éditée
+    no_route_stops: La création de patrons de service nécessite au préalable la création d'un itinéraire de route.
 
 route_datasource:
     labels:

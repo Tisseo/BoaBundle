@@ -92,8 +92,12 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
         $('#route-stops').parent().find('div.alert').remove();
         var check = true;
         
+        if (routeStops.length === 0)
+            return check;
+
         var error = "<div class='alert alert-danger alert-dismissable danger'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
- 
+
+
         if ($(routeStops[0]).find('input.dropOff').is(':checked')) {
             error += Translator.trans('route_stop.error.first_stop_dropoff', {}, 'messages')+"<br>";
             check = false;
