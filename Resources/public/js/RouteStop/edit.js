@@ -49,6 +49,7 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
         if (!$('#route-stops-list #boa_route_stop_waypoint').val())
         {
             $('#route-stops-list #stop-search').parent().addClass('has-error');
+            $(this).removeAttr('disabled');
             $('#route-stops-list #stop-search').focus();
             return false;
         }

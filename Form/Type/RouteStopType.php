@@ -77,7 +77,8 @@ class RouteStopType extends AbstractType
                 'scheduledStop',
                 'checkbox',
                 array(
-                    'required' => false
+                    'required' => false,
+                    'data' => true
                 )
             )
             ->setAction($options['action'])
