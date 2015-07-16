@@ -2,125 +2,114 @@
 {% set bundle = 'TisseoBoaBundle' %}
 {% set datatable = true %}
 
-{% import "TisseoBoaBundle::macros.html.twig" as render %}
+{% import "TisseoCoreBundle::macros.html.twig" as render %}
 
 {% block main_content %}
-    <h1>
-        {{ 'trip_calendar.list.title'|trans({}, 'default') }}
-    </h1>
+    <form method="post" action="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
 
-    <div style="overflow: auto">
-
-    <form method="post">
-        <div style="display: table-cell;float: right;">
-            <button type="submit" class="btn btn-success">
-                <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
-            </button>
+    <div class="head-info col-md-12">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>
+                    {{ 'trip_calendar.list.title'|trans({}, 'default') }} -
+                    <button type="submit" class="btn btn-success submit-trip-calendars">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+                    </button>
+                </h1>
+            </div>
+            <div class="col-md-4">
+                <div class="head-number">
+                    {{ render.line_number(lineVersion, 'lineVersion', 'big') }}
+                    <br>
+                    <div>{{ lineVersion.name }}</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <hr style="clear: both;"/>
-
-    {% set calendarIndex = 0 %}
-    {% for way, values in calendars %}
-        <h4><b>{{ 'calendar_fh.way'|trans }} "{{ way }}"</b></h4>
-
-        <table class="table datatable table-hover dataTable no-footer grid-calendar">
-            <thead>
-                <th>{{ 'calendar_fh.grid.columns.day'|trans }}</th>
-                <th>{{ 'calendar_fh.grid.columns.period'|trans }}</th>
-                <th>{{ 'calendar_fh.grid.columns.nb_trips'|trans }}</th>
-                <th>{{ 'calendar_fh.grid.columns.calendar_type'|trans }}</th>
-                <th>{{ 'calendar_fh.grid.columns.calendar_period'|trans }}</th>
-                <th>{{ 'calendar_fh.grid.columns.circulation_days'|trans }}</th>
-            </thead>
-            <tbody>
-            {% for calendar_names, datas in values %}
-                {% set array = calendar_names|split('#') %}
-                <tr name="grid_{{ way }}_{{ grid_index }}" class="grid-item">
-                    <td>
-                        <input type='hidden' name="grid[{{ grid_index }}][calendar_day]" value = "{{ datas['calendars']['day'].id }}">
-                        <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': datas['calendars']['day'].id}) }}">
-                            {{ array[0] }}
-                        </a>
-                    </td>
-                    <td>
-                        <input type='hidden' name="grid[{{ grid_index }}][calendar_period]" value = "{{ datas['calendars']['period'].id }}">
-                        <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': datas['calendars']['period'].id}) }}">
-                            {{ array[1] }}
-                        </a>
-                    </td>
-                    <td>
-                        <div>
-                            <div style="display: table-cell; width: 20px;">
-                                {{ datas['trips'] | length }}
-                            </div>
-                            <div style="display: table-cell">
-                                <a style="margin-left: 5px;" class="btn btn-default show-trips">{{ 'calendar_fh.details'|trans }}</a>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        {% if datas['objects']['grid_mask_type'] is not empty %}
-                            <input type='hidden' name="grid[{{ grid_index }}][grid_calendar]" value = "{{ datas['objects']['grid_mask_type'].id }}">
-                            <label>{{ datas['objects']['grid_mask_type'].calendarType }}</label>
-                        {% else %}
-                            {{ render.select(calendarTypes, "grid[" ~ grid_index ~ "][grid_calendar_type]", "grid_calendar_type") }}
-                        {% endif %}
-
-                    </td>
-                    <td>
-                        {% if datas['objects']['grid_mask_type'] is not empty %}
-                            <label>{{ datas['objects']['grid_mask_type'].calendarPeriod }}</label>
-                        {% else %}
-                            {{ render.select(calendarPeriods, "grid[" ~ grid_index ~ "][grid_calendar_period]", "grid_calendar_period") }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if datas['objects']['trip_calendar'] is not empty %}
-                            <input type='hidden' name="grid[{{ grid_index }}][trip_calendar]" value = "{{ datas['objects']['trip_calendar'].id }}">
-                            {{ render.TripCalendarInputs(grid_index, datas['objects']['trip_calendar']) }}
-                        {% else %}
-                            {{ render.TripCalendarInputs(grid_index) }}
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr name="trips_{{ way }}_{{ grid_index }}" class='hide'>
-                    <td colspan=6>
-                        {{ render.tableTrip(datas['trips']) }}
-                    </td>
-                </tr>
-                {% set grid_index = grid_index + 1 %}
-            {% endfor %}
-            </tbody>
-        </table>
+    {% for way, calendar in calendars %}
+        <a id="way-{{ loop.index }}" class="header-ribbon">
+            <span class="glyphicon glyphicon-list"></span> {{ 'trip_calendar.way'|trans({'%way%':way}, 'messages') }}
+        </a>
+        <div class="panel col-md-12">
+            <table class="table datatable table-hover route-calendar">
+                <thead>
+                    <th class="col-md-2">{{ 'trip_calendar.grid.columns.day'|trans }}</th>
+                    <th class="col-md-2">{{ 'trip_calendar.grid.columns.period'|trans }}</th>
+                    <th class="col-md-2">{{ 'trip_calendar.grid.columns.nb_trips'|trans }}</th>
+                    <th class="col-md-2 no-sort no-search">{{ 'trip_calendar.grid.columns.calendar_type'|trans }}</th>
+                    <th class="col-md-2 no-sort no-search">{{ 'trip_calendar.grid.columns.calendar_period'|trans }}</th>
+                    <th class="col-md-2 no-sort no-search">{{ 'trip_calendar.grid.columns.week_pattern'|trans }}</th>
+                </thead>
+                <tbody>
+                {% for data in calendar %}
+                    <tr>
+                        <td>
+                            <input type="hidden" name="route[{{ loop.index }}][route]" value="{{ data.route }}">
+                            <input type="hidden" name="route[{{ loop.index }}][dayCalendar]" value="{{ data.dayCalendar.id }}">
+                            <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': data.dayCalendar.id}) }}">{{ data.dayCalendar.name }}</a>
+                        </td>
+                        <td>
+                            <input type="hidden" name="route[{{ loop.index }}][periodCalendar]" value="{{ data.periodCalendar.id }}">
+                            <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': data.periodCalendar.id}) }}">{{ data.periodCalendar.name }}</a>
+                        </td>
+                        <td>
+                            {% for trip in data.trips %}
+                                <input type="hidden" name="route[{{ loop.parent.loop.index }}][trips][{{ loop.index }}]" value="{{ trip.id }}">
+                            {% endfor %}
+                            <a class="btn show-trips">{{ data.trips|length }} <span class='caret'></span></a>
+                        </td>
+                        <td>
+                            <select class="form-control" name="route[{{ loop.index }}][calendarType]" required="required">
+                                <option></option>
+                                {% for calendarType in calendarTypes %}
+                                    <option value="{{ calendarType }}" {% if data.tripCalendar is not empty and data.tripCalendar.gridMaskType.calendarType == calendarType %}selected{% endif %}>{{ calendarType }}</option>
+                                {% endfor %} 
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control" name="route[{{ loop.index }}][calendarPeriod]" required="required">
+                                <option></option>
+                                {% for calendarPeriod in calendarPeriods %}
+                                    <option value="{{ calendarPeriod }}" {% if data.tripCalendar is not empty and data.tripCalendar.gridMaskType.calendarPeriod == calendarPeriod %}selected{% endif %}>{{ calendarPeriod }}</option>
+                                {% endfor %} 
+                            </select>
+                        </td>
+                        <td>
+                            <input type="hidden" name="route[{{ loop.index }}][tripCalendar]" value="{{ data.tripCalendar.id }}">
+                            {% if data.tripCalendar %}
+                                {% for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] %}
+                                    <input type="hidden" value="0" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]">
+                                    <input type="checkbox" value="1" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]"{% if attribute(data.tripCalendar, day) %} checked{% endif %}>
+                                {% endfor %}
+                            {% else %}
+                                {% for i in 0..6 %}
+                                    <input type="hidden" value="0" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]">
+                                    <input type="checkbox" value="1" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]">
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endfor %}
-
-    <div style="display: table-cell;float: right;">
-        <button type="submit" class="btn btn-success">
-            <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
-        </button>
-    </div>
-
     </form>
-
 {% endblock %}
 
 {% block javascripts %}
     <script>
         require(['core/datatables'], function() {
-            datatable(false);
+            datatable(false, '10');
         });
     </script>
     <script>
-        require(['boa/route/utils'], function(utils) {
+        require(['jquery'], function($) {
             $(document).ready(function() {
-                $('.show-trips').on('click', function(event) {
-                    utils.calFHTripButtonClic(this, "{{ 'calendar_fh.details'|trans }}", "{{ 'calendar_fh.hide'|trans }}");
-                });
-
-                $('form').submit(function(e) {
-                    return utils.calFHFormSubmit("{{ 'calendar_fh.error'|trans }}");
+                $('.show-trips').on('click', function() {
+                    var tr = $(this).closest('tr');
+                    var row = datatables[0].row(tr);
                 });
             });
         });

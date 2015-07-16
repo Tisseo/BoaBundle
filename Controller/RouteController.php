@@ -154,24 +154,34 @@ class RouteController extends AbstractController
         );
     }
 
-    public function tripCalendarAction($lineVersionId)
+    public function tripCalendarAction(Request $request, $lineVersionId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
-        $request = $this->getRequest();
-        $routeManager = $this->get('tisseo_endiv.route_manager');
 
-        if ($request->getMethod() == 'POST') {
+        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+
+        if ($request->getMethod() === 'POST') {
+            $datas = $request->request->get('route');
             try {
-                $grids = $request->request->get('grid');
-                $routeManager->saveFHCalendars($grids);
+                $routeManager->linkTripCalendars($datas);
+                $this->get('session')->getFlashBag()->add('success', 'trip_calendar.edited');
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
+            
+            return $this->redirect(
+                $this->generateUrl(
+                    'tisseo_boa_route_trip_calendar',
+                    array('lineVersionId' => $lineVersionId)
+                )
+            );
         }
 
         return $this->render("TisseoBoaBundle:Route:tripCalendar.html.twig",
             array(
                 'pageTitle' => 'menu.route_manage',
+                'lineVersion' => $lineVersion,
                 'calendars' => $routeManager->getTimetableCalendars($lineVersionId),
                 'calendarTypes' => $routeManager->getSortedTypesOfGridMaskType(),
                 'calendarPeriods' => $routeManager->getSortedPeriodsOfGridMaskType()

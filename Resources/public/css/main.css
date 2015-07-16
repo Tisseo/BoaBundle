@@ -59,6 +59,19 @@
   padding-left:5px;
   display:table-cell
 }
+/* TODO: This belongs to CoreBundle */
+.head-number {
+    display:inline-block;
+}
+.head-number {
+    float:right;
+}
+.head-number div {
+    display:inline-block;
+}
+.head-number .line-big {
+    float:right;
+}
 /* stop views */
 tr.closed-stop {
     display:none;
