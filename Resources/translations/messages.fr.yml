@@ -276,24 +276,17 @@ trip_datasource:
         datasource: Datasource
         code: Code
 
-calendar_fh:
+trip_calendar:
     error: Les champs "Type", "Période" et "Jours de circulation ne sont pas correctement remplis."
-    way: Sens
+    way: Sens "%way%"
     details: Voir
     hide: Cacher
     grid:
         columns:
-            day: Jour
-            period: Période
-            nb_trips: Nb Services
+            day: Calendrier Jour
+            period: Calendrier Période
+            nb_trips: Services
             calendar_type: Type
             calendar_period: Période
-            circulation_days: Jours de circulation (LMMJVSD)
-    trip:
-        columns:
-            name: Nom Service
-            start: Départ
-            service_type: Service Type
-            route: Route
-            start_end: Départ / Terminus
-
+            week_pattern: Jours de circulation (LMMJVSD)
+    edited: Grilles horaires éditées
