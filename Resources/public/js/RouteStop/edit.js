@@ -32,14 +32,24 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
 
     $(document).ready(function() {
         init_autocomplete();
+        $('#route-stops-list #stop-search').focus();
+    });
+
+    $(document).on('keypress', '#route-stops-list #stop-search', function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            $('#route-stops-list #apply-route-stop-form').trigger('click');
+        }
     });
 
 
     $(document).on('click', '#route-stops-list #apply-route-stop-form', function(event) {
         event.preventDefault();
+        $(this).attr('disabled', 'disabled');
         if (!$('#route-stops-list #boa_route_stop_waypoint').val())
         {
             $('#route-stops-list #stop-search').parent().addClass('has-error');
+            $('#route-stops-list #stop-search').focus();
             return false;
         }
         else {
@@ -63,7 +73,11 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
                 if (data.content)
                 {
                     if ($(data.content).is('form'))
+                    {
                         $('#route-stops-list .new-route-stop').html(data.content);
+                        $(this).removeAttr('disabled');
+                        $('#route-stops-list #stop-search').focus();
+                    }
                     else if ($(data.content).is('tr'))
                     {
                         getForm = true;
@@ -81,8 +95,10 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
                     success: function(data) {
                         $('#route-stops-list .new-route-stop').html(data);
                         init_autocomplete();
+                        $('#route-stops-list #stop-search').focus();
                     }
                 });
+                $(this).removeAttr('disabled');
             }
         });
     });
