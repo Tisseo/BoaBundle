@@ -25,25 +25,10 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
         });
     });
 
-    function isNormalInteger(number, sup)
+    function isNormalInteger(number)
     {
-        if (sup === 0)
-            return ($.isNumeric(number) && parseInt(number) >= 0);
-
-        return ($.isNumeric(number) && parseInt(number) > 0);
+        return ($.isNumeric(number) && parseInt(number) >= 0);
     }
-
-    /**
-    function formatTime(time)
-    {
-        while (time.length < 5)
-        {
-            if (time.length === 2)
-                time 
-
-        }
-    }
-    */
 
     function validateForm(tripPatterns)
     {
@@ -57,7 +42,7 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
             if (!pattern.name)
                 patternNameError = true;
             $.each(pattern.stopTimes, function(key, stopTime) {
-                if (!isNormalInteger(stopTime.time, key))
+                if (!isNormalInteger(stopTime.time))
                     patternTimeError = true;
             });
         }); 
@@ -76,13 +61,6 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
 
         return !(patternNameError || patternTimeError);
     }
-
-    /**
-    $(document).on('change', ".time", function() {
-        console.log('CHANGE');
-        $(this).next().html(formatTime(this.value));
-    });
-    */
 
     $(document).on('click', '#submit-trip-patterns', function() {
         var routeId = $('#trip-patterns-list #route-id').val();
