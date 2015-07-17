@@ -43,24 +43,25 @@
                 </thead>
                 <tbody>
                 {% for data in calendar %}
+                    {% set routeIndex = loop.parent.loop.index ~ "_" ~ loop.index %}
                     <tr>
                         <td>
-                            <input type="hidden" name="route[{{ loop.index }}][route]" value="{{ data.route }}">
-                            <input type="hidden" name="route[{{ loop.index }}][dayCalendar]" value="{{ data.dayCalendar.id }}">
+                            <input type="hidden" name="route[{{ routeIndex }}][route]" value="{{ data.route }}">
+                            <input type="hidden" name="route[{{ routeIndex }}][dayCalendar]" value="{{ data.dayCalendar.id }}">
                             <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': data.dayCalendar.id}) }}">{{ data.dayCalendar.name }}</a>
                         </td>
                         <td>
-                            <input type="hidden" name="route[{{ loop.index }}][periodCalendar]" value="{{ data.periodCalendar.id }}">
+                            <input type="hidden" name="route[{{ routeIndex }}][periodCalendar]" value="{{ data.periodCalendar.id }}">
                             <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': data.periodCalendar.id}) }}">{{ data.periodCalendar.name }}</a>
                         </td>
                         <td>
                             {% for trip in data.trips %}
-                                <input type="hidden" name="route[{{ loop.parent.loop.index }}][trips][{{ loop.index }}]" value="{{ trip.id }}">
+                                <input type="hidden" name="route[{{ routeIndex }}][trips][{{ loop.index }}]" value="{{ trip.id }}">
                             {% endfor %}
                             <a class="btn show-trips">{{ data.trips|length }} <span class='caret'></span></a>
                         </td>
                         <td>
-                            <select class="form-control" name="route[{{ loop.index }}][calendarType]" required="required">
+                            <select class="form-control" name="route[{{ routeIndex }}][calendarType]" required="required">
                                 <option></option>
                                 {% for calendarType in calendarTypes %}
                                     <option value="{{ calendarType }}" {% if data.tripCalendar is not empty and data.tripCalendar.gridMaskType.calendarType == calendarType %}selected{% endif %}>{{ calendarType }}</option>
@@ -68,7 +69,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-control" name="route[{{ loop.index }}][calendarPeriod]" required="required">
+                            <select class="form-control" name="route[{{ routeIndex }}][calendarPeriod]" required="required">
                                 <option></option>
                                 {% for calendarPeriod in calendarPeriods %}
                                     <option value="{{ calendarPeriod }}" {% if data.tripCalendar is not empty and data.tripCalendar.gridMaskType.calendarPeriod == calendarPeriod %}selected{% endif %}>{{ calendarPeriod }}</option>
@@ -76,16 +77,16 @@
                             </select>
                         </td>
                         <td>
-                            <input type="hidden" name="route[{{ loop.index }}][tripCalendar]" value="{{ data.tripCalendar.id }}">
+                            <input type="hidden" name="route[{{ routeIndex }}][tripCalendar]" value="{{ data.tripCalendar.id }}">
                             {% if data.tripCalendar %}
                                 {% for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] %}
-                                    <input type="hidden" value="0" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]">
-                                    <input type="checkbox" value="1" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]"{% if attribute(data.tripCalendar, day) %} checked{% endif %}>
+                                    <input type="hidden" value="0" name="route[{{ routeIndex }}][days][{{ loop.index }}]">
+                                    <input type="checkbox" value="1" name="route[{{ routeIndex }}][days][{{ loop.index }}]"{% if attribute(data.tripCalendar, day) %} checked{% endif %}>
                                 {% endfor %}
                             {% else %}
                                 {% for i in 0..6 %}
-                                    <input type="hidden" value="0" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]">
-                                    <input type="checkbox" value="1" name="route[{{ loop.parent.loop.index }}][days][{{ loop.index }}]">
+                                    <input type="hidden" value="0" name="route[{{ routeIndex }}][days][{{ loop.index }}]">
+                                    <input type="checkbox" value="1" name="route[{{ routeIndex }}][days][{{ loop.index }}]">
                                 {% endfor %}
                             {% endif %}
                         </td>

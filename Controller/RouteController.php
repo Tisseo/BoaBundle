@@ -161,15 +161,17 @@ class RouteController extends AbstractController
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
 
-        if ($request->getMethod() === 'POST') {
+        if ($request->getMethod() === 'POST')
+        {
             $datas = $request->request->get('route');
+
             try {
                 $routeManager->linkTripCalendars($datas);
                 $this->get('session')->getFlashBag()->add('success', 'trip_calendar.edited');
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
-            
+
             return $this->redirect(
                 $this->generateUrl(
                     'tisseo_boa_route_trip_calendar',
