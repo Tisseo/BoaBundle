@@ -151,6 +151,11 @@
         });
     </script>
     <script>
+        require(['core/textfill'], function() {
+            textfill(2, 15, '.line-small');  
+        });
+    </script>
+    <script>
         require(['boa/stop_area/edit'], function() {
             init_autocomplete("#city", "#boa_stop_area_city", null);
             $("#city").val($("#boa_stop_area_city option:selected").text());
