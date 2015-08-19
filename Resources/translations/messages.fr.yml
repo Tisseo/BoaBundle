@@ -252,6 +252,7 @@ stop_time:
         schedule: Horaire
 
 trip:
+    created: Service créé
     labels:
         name: Nom du service
         pattern: Patron de service

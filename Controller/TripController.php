@@ -150,7 +150,6 @@ class TripController extends AbstractController
                 $this->get('tisseo_endiv.trip_manager')->createTripAndStopTimes($newTrip, $stopTimes);
                 $this->get('session')->getFlashBag()->add('success', 'trip.created');
             } catch(\Exception $e) {
-                throw new \Exception($e->getMessage());
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
             
