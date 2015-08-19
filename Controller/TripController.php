@@ -146,7 +146,7 @@ class TripController extends AbstractController
         if ($form->isValid()) {
             try {
                 $newTrip = $form->getData();
-                $stopTimes = $request->request->get('stop_times');
+                $stopTimes = $request->request->get('stopTimes');
                 $this->get('tisseo_endiv.trip_manager')->createTripAndStopTimes($newTrip, $stopTimes);
                 $this->get('session')->getFlashBag()->add('success', 'trip.created');
             } catch(\Exception $e) {
@@ -154,9 +154,7 @@ class TripController extends AbstractController
             }
 
             return $this->redirect(
-                $this->generateUrl(
-                    $request->headers->get('referer')
-                )
+                $request->headers->get('referer')
             );
         }
 
