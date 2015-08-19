@@ -18,7 +18,7 @@
             <div class="col-md-2" >
                 {{ form_row(calendarForm.calendarType, { 'attr': {'class': 'select-type'}}) }}
             </div>
-            {% if calendarForm.calendarType.vars.value == 'mixte' or calendarForm.calendarType.vars.value== 'periode' %}
+            {% if calendarForm.calendarType.vars.value in ['mixte', 'periode'] %}
                 <div id='div-line' class="col-md-3">
             {% else %}
                 <div id='div-line' class="hide col-md-3">
@@ -28,14 +28,14 @@
         </div>
 
         <div id="divRemoveElement"
-                style="display: none;"
-                data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:remove_form.html.twig' with { 'form': calendarForm.remove_element.vars.prototype } %}{% endfilter %}"
+                style="display:none;"
+                data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:remove_form.html.twig' with { 'form': calendarForm.removeElement.vars.prototype } %}{% endfilter %}"
         >
         </div>
 
         <table id='calendar_elements'
                 class="table table-hover dataTable no-footer"
-                data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendar_element.vars.prototype } %} {% endfilter %}"
+                data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendarElement.vars.prototype } %} {% endfilter %}"
         >
         <thead>
             <th>{{ 'calendar_element.labels.rank' | trans }}</th>
@@ -51,18 +51,14 @@
         {% for calendar_element in calendarElements %}
             {% set line_counter = line_counter+1 %}
             <tr>
-                <input type="hidden" id="id_{{ line_counter }}" value="{{  calendar_element.id }}">
-                <td> {{  calendar_element.rank }} </td>
-                <td> {{  calendar_element.startDate|date("d/m/Y") }} </td>
-                <td> {{  calendar_element.endDate|date("d/m/Y") }} </td>
-                {% set includedCalendar = "" %}
-                {% if calendar_element.includedCalendar is not null %}
-                    {% set includedCalendar = calendar_element.includedCalendar.getName() %}
-                {% endif %}
-                <td> {{ includedCalendar }} </td>
-                <td> {{  calendar_element.operator }} </td>
-                <td> {{  calendar_element.interval }} </td>
-                <td> <input type="checkbox"  class="remove_checkbox"></td>
+                <input type="hidden" id="id_{{ line_counter }}" value="{{ calendar_element.id }}">
+                <td>{{ calendar_element.rank }}</td>
+                <td>{{ calendar_element.startDate|date("d/m/Y") }}</td>
+                <td>{{ calendar_element.endDate|date("d/m/Y") }}</td>
+                <td>{{ calendar_element.includedCalendar.Name }}</td>
+                <td>{{ calendar_element.operator }}</td>
+                <td>{{ calendar_element.interval }}</td>
+                <td><input type="checkbox"  class="remove_checkbox"></td>
             </tr>
         {% endfor %}
         </tbody></table>
@@ -73,7 +69,7 @@
             </div>
 
             <div class="col-md-1">
-                <a class="btn btn-default"  id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.empty'|trans({}, 'messages')}}</a>
+                <a class="btn btn-default" id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.empty'|trans({}, 'messages')}}</a>
             </div>
         </div>
 
@@ -90,7 +86,7 @@
                     <input type="text" id='start_date_picker' name="start_date" class='input-date calendar_date'>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" id='end_date_picker'  name="end_date" class='input-date calendar_date'>
+                    <input type="text" id='end_date_picker' name="end_date" class='input-date calendar_date'>
                 </div>
                 <div class="col-md-2">
                     <button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
@@ -214,7 +210,7 @@
             var $removeCollectionHolder = $('#divRemoveElement');
 
             $('#empty_elements').click(function(event) {
-                if(!confirm("{{'calendar.empty_elements'|trans({}, 'default')}}") )
+                if (!confirm("{{'calendar.empty_elements'|trans({}, 'default')}}"))
                     return false;
 
                 $('#calendar_elements > tbody  > tr').each(function() {
@@ -229,7 +225,7 @@
                 });
             });
 
-            $( ".remove_checkbox" ).on( "click", function() {
+            $('.remove_checkbox').on('click', function() {
                 var $index = $(this).closest('tr').index() + 1;
                 if(this.checked) {
                     var $IdClass = '#id_' + $index;
@@ -238,9 +234,9 @@
                     var $newInput = $prototype.replace(/__name__/g, $index).replace("%id_value%", $IdValue).replace(/%remove_class%/g, "class_remove_" + $index);
                     $(this).closest('td').append($newInput);
                 } else {
-                    var $name = "#boa_calendar_element_remove_element_" + $index + "_id";
+                    var $name = "#boa_calendar_element_removeElement_" + $index + "_id";
                     $($name).remove();
-                    $name = "#boa_calendar_element_remove_element_" + $index + "_remove";
+                    $name = "#boa_calendar_element_removeElement_" + $index + "_remove";
                     $($name).remove();
                 }
             });
@@ -249,7 +245,7 @@
                 utils.addCalendarElement('#calendar_elements', 'input[data-id=calendar]');
             });
 
-            $('#calendar_elements').on('click',  "a", function(event) {
+            $('#calendar_elements').on('click', "a", function(event) {
                 event.preventDefault();
                 if ($(this).text() === "{{'global.delete'|trans({}, 'messages')}}") {
                     $(this).closest("tr").remove();
@@ -265,7 +261,9 @@
                 }
             });
 
-            if( calendarID != '' )  { $("#refresh_button").click(); }
+            if (calendarID != '') {
+                $("#refresh_button").click();
+            }
          });
     </script>
 {% endblock %}

@@ -24,7 +24,7 @@ class TripController extends AbstractController
 
         $tripManager = $this->get('tisseo_endiv.trip_manager');
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        
+
         $route = $routeManager->find($routeId);
         $tripBounds = $tripManager->getDateBounds($route);
         $yesterday = new \Datetime('-1 day');
@@ -152,11 +152,10 @@ class TripController extends AbstractController
             } catch(\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
-            
+
             return $this->redirect(
                 $this->generateUrl(
-                    'tisseo_boa_trip_list',
-                    array('routeId' => $routeId)
+                    $request->headers->get('referer')
                 )
             );
         }
