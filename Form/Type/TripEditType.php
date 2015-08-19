@@ -25,11 +25,10 @@ class TripEditType extends AbstractType
             )
             ->add(
                 'dayCalendar',
-                'entity',
+                'text',
                 array(
                     'label' => 'trip.labels.day_calendar',
-                    'class' => 'Tisseo\EndivBundle\Entity\Calendar',
-                    'property' => 'name',
+                    'data_class' => 'Tisseo\EndivBundle\Entity\Calendar',
                     'read_only' => true,
                     'required' => false,
                     'disabled' => true
@@ -37,11 +36,10 @@ class TripEditType extends AbstractType
             )
             ->add(
                 'periodCalendar',
-                'entity',
+                'text',
                 array(
                     'label' => 'trip.labels.period_calendar',
-                    'class' => 'Tisseo\EndivBundle\Entity\Calendar',
-                    'property' => 'name',
+                    'data_class' => 'Tisseo\EndivBundle\Entity\Calendar',
                     'read_only' => true,
                     'required' => false,
                     'disabled' => true
@@ -49,11 +47,10 @@ class TripEditType extends AbstractType
             )
             ->add(
                 'pattern',
-                'entity',
+                'text',
                 array(
                     'label' => 'trip.labels.pattern',
-                    'class' => 'Tisseo\EndivBundle\Entity\Trip',
-                    'property' => 'name',
+                    'data_class' => 'Tisseo\EndivBundle\Entity\Trip',
                     'read_only' => true,
                     'required' => false,
                     'disabled' => true
