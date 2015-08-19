@@ -58,12 +58,12 @@
         require(['jquery'], function($) {
             $(document).ready(function () {
                 $(".way-select").change(function() {
-                    var select_value = $(this).val();
+                    var way = $(this).val();
 
-                    if (select_value === "Aller")
-                        $(".direction-input").val("{{ route.lineVersion.forwardDirection }}");
-                    if (select_value === "Retour")
-                        $(".direction-input").val("{{ route.lineVersion.backwardDirection }}");
+                    if (way === "Aller")
+                        $(".direction-input").val("{{ route.lineVersion.forwardDirection|raw }}");
+                    else if (way === "Retour")
+                        $(".direction-input").val("{{ route.lineVersion.backwardDirection|raw }}");
                 });
             });
         });

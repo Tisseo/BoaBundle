@@ -43,7 +43,7 @@
                 {{ 'global.no_items'|trans }}
             </div>
         {% endfor %}
-        
+
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">
@@ -70,9 +70,12 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'route.list.headers.trip_patterns'|trans({}, 'default') }}
     </a>
     {% if route.routeStops is not empty %}
+        <a href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'trip.create'|trans({}, 'default') }}
+        </a>
         {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
     {% else %}
-    <div class="panel col-md-12"> 
+    <div class="panel col-md-12">
         {{ 'route.no_route_stops'|trans }}
     </div>
     {% endif %}
