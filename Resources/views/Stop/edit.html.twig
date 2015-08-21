@@ -5,6 +5,14 @@
 
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('tisseo_boa_stop_search') }}">
+            {{ 'menu.stop_search'|trans({}, 'messages') }}
+        </a>
+    </li>
+{% endblock %}
+
 {% block main_content %}
     <h1>{{ 'stop.edit'|trans({}, 'default') }}</h1>
     <br>

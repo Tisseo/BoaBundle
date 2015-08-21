@@ -1,6 +1,14 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('tisseo_boa_line_version_list') }}">
+            {{ 'menu.offer_list'|trans({}, 'messages') }}
+        </a>
+    </li>
+{% endblock %}
+
 {% block list_title -%}
     {{ 'route.list.line'|trans({'%number%': lineVersion.line.number, '%version%': lineVersion.version}, 'default') }}
     {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}

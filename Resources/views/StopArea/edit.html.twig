@@ -6,6 +6,14 @@
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('tisseo_boa_stop_area_search') }}">
+            {{ 'menu.stop_area_search'|trans({}, 'messages') }}
+        </a>
+    </li>
+{% endblock %}
+
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>
     <br>

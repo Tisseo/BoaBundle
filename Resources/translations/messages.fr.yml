@@ -59,7 +59,10 @@ menu:
     color: Couleurs
     log: Logs
     route_manage: Gestion des routes
+    route_list: Liste des routes
+    offer_list: Liste des offres
     property: Propriétés
+    calendar_list: Liste des calendriers %type%
     calendar_manage: Gestion des calendriers
     calendar_day: Jour
     calendar_period: Période
@@ -69,6 +72,8 @@ menu:
     stop_manage: Gestion des arrêts
     stop_point: Point d'arrêt
     stop_area: Zone d'arrêt
+    stop_search: Recherche de points d'arrêt
+    stop_area_search: Recherche de zones d'arrêt
 
 accessibility_mode:
     labels:

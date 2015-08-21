@@ -4,6 +4,13 @@
 
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
 
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('tisseo_boa_line_version_list') }}">
+            {{ 'menu.offer_list'|trans({}, 'messages') }}
+        </a>
+    </li>
+{% endblock %}
 {% block main_content %}
     <form method="post" action="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
 
