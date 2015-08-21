@@ -42,7 +42,6 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
         }
     });
 
-
     $(document).on('click', '#route-stops-list #apply-route-stop-form', function(event) {
         event.preventDefault();
         $(this).attr('disabled', 'disabled');
@@ -175,6 +174,7 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
     });
 
     $(document).on('click', '#route-stops-list .delete-route-stop', function() {
+        $(this).attr('disabled', 'disabled');
         var routeStop = $(this).closest('tr');
         var routeStopId = routeStop.find('.route-stop-id').val();
         var routeStopRank = routeStop.find('input.route-stop-rank').val();
