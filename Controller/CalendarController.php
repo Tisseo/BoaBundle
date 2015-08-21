@@ -72,7 +72,7 @@ class CalendarController extends AbstractController
         }
 
         return $this->render(
-            'TisseoBoaBundle:Calendar:form.html.twig',
+            'TisseoBoaBundle:Calendar:edit.html.twig',
             array(
                 'calendarForm' => $calendarForm->createView(),
                 'calendarElements' => $calendarElements,
@@ -96,7 +96,7 @@ class CalendarController extends AbstractController
         return $this->render(
             'TisseoBoaBundle:Calendar:list.html.twig',
             array(
-                'pageTitle' => 'menu.calendar',
+                'pageTitle' => 'menu.calendar_manage',
                 'calendars' => ($calendarType ? $calendarManager->findbyType($calendarType) : $calendarManager->findAll()),
                 'calendarType' => $calendarType
             )

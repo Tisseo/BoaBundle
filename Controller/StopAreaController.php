@@ -86,7 +86,7 @@ class StopAreaController extends AbstractController
         }
 
         return $this->render(
-            'TisseoBoaBundle:StopArea:form.html.twig',
+            'TisseoBoaBundle:StopArea:edit.html.twig',
             array(
                 'form' => $form->createView(),
                 'pageTitle' => 'menu.stop_area',

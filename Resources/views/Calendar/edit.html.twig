@@ -1,8 +1,15 @@
 {% extends "TisseoCoreBundle::container.html.twig" %}
-
 {% set bundle = 'TisseoBoaBundle' %}
 
 {% form_theme calendarForm 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('tisseo_boa_calendar_list', {'calendarType': calendarForm.vars.value.calendarType}) }}">
+            {{ 'menu.calendar_list'|trans({'%type%': calendarForm.vars.value.calendarType}, 'messages') }}
+        </a>
+    </li>
+{% endblock %}
 
 {% block main_content %}
     <h1>{{ title|trans({}, 'default') }}</h1>

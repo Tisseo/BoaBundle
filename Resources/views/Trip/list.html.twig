@@ -6,6 +6,18 @@
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('tisseo_boa_line_version_list') }}">
+            {{ 'menu.offer_list'|trans({}, 'messages') }}
+        </a>
+        /
+        <a href="{{ path('tisseo_boa_route_list', { 'lineVersionId': route.lineVersion.id }) }}">
+            {{ 'menu.route_list'|trans({}, 'messages') }}
+        </a>
+    </li>
+{% endblock %}
+
 {% block main_content %}
     <h1>
         {{'trip.list.title'|trans({}, 'default')}}
