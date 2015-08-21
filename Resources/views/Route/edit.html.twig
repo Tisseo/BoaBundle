@@ -73,6 +73,9 @@
         <a href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal">
             <span class="glyphicon glyphicon-plus"></span> {{ 'trip.create'|trans({}, 'default') }}
         </a>
+        <a href="{{ path('tisseo_boa_trip_list', {'routeId': route.id}) }}">
+            <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.title'|trans({}, 'default') }}
+        </a>
         {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
     {% else %}
     <div class="panel col-md-12">
