@@ -293,6 +293,11 @@ tisseo_boa_trip_delete:
     defaults: { _controller: TisseoBoaBundle:Trip:delete }
     requirements:
         tripId: \d+
+tisseo_boa_trip_delete_all:
+    pattern: /trip/delete/all/{routeId}
+    defaults: { _controller: TisseoBoaBundle:Trip:deleteAll }
+    requirements:
+        routeId: \d+
 tisseo_boa_trip_edit_pattern:
     pattern: /route{routeId}/trip/editpattern
     defaults: { _controller: TisseoBoaBundle:Trip:editPattern }

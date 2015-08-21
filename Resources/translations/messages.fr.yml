@@ -7,6 +7,7 @@ global:
     close: Fermer
     closure: Clôturer
     delete: Supprimer
+    delete_all: Tout supprimer
     duplicate: Dupliquer
     cancel: Annuler
     status: Statut
@@ -253,6 +254,7 @@ stop_time:
 
 trip:
     created: Service créé
+    all_deleted: Les service ont tous été supprimés
     labels:
         name: Nom du service
         pattern: Patron de service
@@ -265,6 +267,8 @@ trip:
         period_calendar: Le calendrier "période" est obligatoire (ou sa valeur est incorrecte)
         pattern_name_empty: Renseignez le/les nom(s) de patron de service.
         pattern_time_invalid: Au moins une horaire est invalide.
+    confirm:
+        delete_all: Vous allez supprimer tous les services de cette route qui ne sont pas des patrons de service. Êtes-vous sûr de vouloir accomplir cette action ?
     pattern:
         edited: Patrons de service édités
         labels:

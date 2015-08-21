@@ -14,6 +14,11 @@
             <a href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
                 <span class="glyphicon glyphicon-plus"></span> {{ 'trip.create'|trans({}, 'default') }}
             </a>
+            {% if route.TripsNotPattern is not empty %}
+            <a id="delete-all" href="{{ path('tisseo_boa_trip_delete_all', {'routeId': route.id}) }}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span> {{ 'global.delete_all'|trans }}
+            </a>
+            {% endif %}
         {% endif %}
     </h1>
     <hr/>
@@ -72,6 +77,16 @@
     <script>
         require(['jquery', 'core/datatables'], function($) {
             datatable(true);
+        });
+        require(['bootbox'], function(bootbox) {
+            $('#delete-all').on('click', function(event) {
+                event.preventDefault();
+                var self = this;
+                bootbox.confirm("{{ 'trip.confirm.delete_all'|trans }}", function(result) {
+                    if (result)
+                        window.location = self.href;
+                });
+            });
         });
     </script>
 {% endblock %}

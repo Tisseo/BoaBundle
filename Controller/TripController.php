@@ -108,11 +108,31 @@ class TripController extends AbstractController
         return $this->redirect(
             $this->generateUrl(
                 'tisseo_boa_trip_list',
-                array("routeId" => $trip->getRoute()->getId())
+                array('routeId' => $trip->getRoute()->getId())
             )
         );
     }
 
+    public function deleteAllAction($routeId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+
+        try {
+            $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
+            $this->get('session')->getFlashBag()->add('success', 'trip.all_deleted');
+        } catch(\Exception $e) {
+            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+        }
+
+        return $this->redirect(
+            $this->generateUrl(
+                'tisseo_boa_trip_list',
+                array('routeId' => $routeId)
+            )
+        );
+    }
 
     public function createAction(Request $request, $routeId)
     {
