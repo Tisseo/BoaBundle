@@ -76,14 +76,14 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        require(['jquery'], function($) {
-            $(document).ready(function() {
-                $('#datatable').on('click', ".delete-action", function(event) {
-                    // TODO: change this or use translator at least
-                    if (!confirm("Confirmez-vous la suppression de cette route ?")) {
-                        event.preventDefault();
-                    }
-                })
+        require(['bootbox'], function(bootbox) {
+            $('.delete-action').on('click', function(event) {
+                event.preventDefault();
+                var self = this;
+                bootbox.confirm("{{ 'route.confirm.delete'|trans }}", function(result) {
+                    if (result)
+                        window.location = self.href;
+                });
             });
         });
     </script>
