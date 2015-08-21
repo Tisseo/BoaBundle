@@ -6,8 +6,8 @@
             <th class="col-md-3">{{ 'route_stop.list.columns.name'|trans({}, 'default') }}</th>
             {% for pattern in route.TripsPattern %}
             <th id="{{ loop.index }}" class="col-md-1 text-center pattern-column name {{ loop.index }}">
-                <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}"{% if route.IsPatternLocked(pattern) %}readonly{% endif %}>
-                <input type="hidden" class="pattern-id" value="{{ pattern.id }}">              
+                <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}">
+                <input type="hidden" class="pattern-id" value="{{ pattern.id }}">
             </th>
             {% endfor %}
             <th class="col-md-1 text-center add-pattern name"></th>
