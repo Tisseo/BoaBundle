@@ -8,7 +8,9 @@
             <th class="col-md-1">{{ 'route_stop.list.columns.pick_up'|trans({}, 'default') }}</th>
             <th class="col-md-1">{{ 'route_stop.list.columns.drop_off'|trans({}, 'default') }}</th>
             <th class="col-md-1">{{ 'route_stop.list.columns.scheduled'|trans({}, 'default') }}</th>
+            {% if route.way == 'Zonal' %}
             <th class="col-md-2">{{ 'route_stop.list.columns.internal_service'|trans({}, 'default') }}</th>
+            {% endif %}
         </thead>
         <tbody>
         {% for routeStop in route.routeStops %}
@@ -24,7 +26,9 @@
                 <td><input type='checkbox' class="pickup" name="pickup" {% if routeStop.pickup %}checked="checked"{% endif %} disabled="disabled"></td>
                 <td><input type='checkbox' class="dropOff" name="dropOff" {% if routeStop.dropOff %}checked="checked"{% endif %} disabled="disabled"></td>
                 <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if routeStop.scheduledStop %}checked="checked"{% endif %} disabled="disabled"></td>
+                {% if route.way == 'Zonal' %}
                 <td></td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
