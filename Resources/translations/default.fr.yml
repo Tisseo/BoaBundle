@@ -107,6 +107,7 @@ exception_type:
 log:
     list:
         columns:
+            id: Id
             datetime: Date
             table: Table
             action: Action

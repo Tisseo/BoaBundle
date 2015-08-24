@@ -6,17 +6,19 @@
 {% endblock %}
 
 {% block table_head -%}
-    <th>{{ 'log.list.columns.datetime'|trans({}, 'default') }}</th>
-    <th>{{ 'log.list.columns.table'|trans({}, 'default') }}</th>
-    <th>{{ 'log.list.columns.action'|trans({}, 'default') }}</th>
-    <th>{{ 'log.list.columns.previousData'|trans({}, 'default') }}</th>
-    <th>{{ 'log.list.columns.insertedData'|trans({}, 'default') }}</th>
-    <th>{{ 'log.list.columns.user'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'log.list.columns.id'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'log.list.columns.datetime'|trans({}, 'default') }}</th>
+    <th class="col-sm-2">{{ 'log.list.columns.table'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'log.list.columns.action'|trans({}, 'default') }}</th>
+    <th class="col-sm-3">{{ 'log.list.columns.previousData'|trans({}, 'default') }}</th>
+    <th class="col-sm-3">{{ 'log.list.columns.insertedData'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'log.list.columns.user'|trans({}, 'default') }}</th>
 {% endblock %}
 
 {% block table_body -%}
     {% for log in logs %}
         <tr>
+            <td>{{ log.id }} </td>
             <td>{{ log.datetime | date("d/m/Y H:i:s") }}</td>
             <td>{{ log.table }}</td>
             <td>{{ log.action }}</td>
@@ -25,4 +27,15 @@
             <td>{{ log.user }}</td>
         </tr>
     {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['core/datatables'], function() {
+            $(document).ready(function () {
+                datatables[0].order([0, 'desc']).draw();
+            });
+        });
+    </script>
 {% endblock %}
