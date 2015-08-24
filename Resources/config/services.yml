@@ -21,9 +21,3 @@ services:
         arguments: ["@doctrine.orm.endiv_entity_manager"]
         tags:
             - { name: form.type, alias: calendar_selector }
-
-    boa_log_subscriber:
-        class:  Tisseo\BoaBundle\Event\BoaLogSubscriber
-        arguments: ["@service_container"]
-        tags:
-            - { name: doctrine.event_subscriber }
