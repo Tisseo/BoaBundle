@@ -2,33 +2,33 @@
 {% set bundle = 'TisseoBoaBundle' %}
 {% set paginate = 'true' %}
 
-{% block list_title -%}
-    {{ 'calendar.list.title'|trans({}, 'default') ~ ' ' ~ calendarType }}
+{% block list_title %}
+    {{ parent() }}
     {% if is_granted('BUSINESS_MANAGE_CALENDARS') %}
         -
         <a href="{{ path('tisseo_boa_calendar_edit') }}" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'calendar.create'|trans({}, 'default') }}
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.calendar.action.create'|trans }}
         </a>
     {% endif %}
 {% endblock %}
 
-{% block table_head -%}
-    <th class="col-sm-3">{{ 'calendar.list.columns.name'|trans({}, 'default') }}</th>
-    {% if calendarType == 'mixte' or calendarType == 'periode' %}
-        <th class="col-sm-2">{{ 'calendar.list.columns.line'|trans({}, 'default') }}</th>
+{% block table_head %}
+    <th class="col-sm-3">{{ 'tisseo.boa.calendar.label.name'|trans }}</th>
+    {% if calendarType in [constant('Tisseo\\EndivBundle\\Entity\\Calendar::CALENDAR_TYPE_HYBRID'), constant('Tisseo\\EndivBundle\\Entity\\Calendar::CALENDAR_TYPE_PERIOD')] %}
+        <th class="col-sm-2">{{ 'tisseo.boa.calendar.label.line'|trans }}</th>
     {% endif %}
-    <th class="col-sm-2">{{ 'calendar.list.columns.startDate'|trans({}, 'default') }}</th>
-    <th class="col-sm-2">{{ 'calendar.list.columns.endDate'|trans({}, 'default') }}</th>
-    <th class="col-sm-3 no-search no-sort">{{ 'global.actions'|trans }}</th>
+    <th class="col-sm-2">{{ 'tisseo.boa.calendar.label.start_date'|trans }}</th>
+    <th class="col-sm-2">{{ 'tisseo.boa.calendar.label.end_date'|trans }}</th>
+    <th class="col-sm-3 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
-{% block table_body -%}
+{% block table_body %}
     {% for calendar in calendars %}
         <tr>
             <td>
                 {{ calendar.calendar.name }}
             </td>
-            {% if calendarType == 'mixte' or calendarType == 'periode' %}
+            {% if calendarType in [constant('Tisseo\\EndivBundle\\Entity\\Calendar::CALENDAR_TYPE_HYBRID'), constant('Tisseo\\EndivBundle\\Entity\\Calendar::CALENDAR_TYPE_PERIOD')] %}
             <td>
                 {% if calendar.calendar.lineVersion is not null %}
                     {{ calendar.calendar.lineVersion.line.number ~ '_' ~  calendar.calendar.lineVersion.version }}
@@ -47,8 +47,8 @@
             </td>
             <td>
                 {% if is_granted('BUSINESS_MANAGE_CALENDARS') %}
-                    <a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': calendar.calendar.id}) }}">
-                        <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': calendar.calendar.id }) }}">
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
                     </a>
                     {% if not((calendar.calendar.periodTrips is not empty)  or
                         (calendar.calendar.dayTrips is not empty) or
@@ -57,7 +57,7 @@
                         <a class="btn btn-default"
                         {% set calendarType = app.request.get('calendarType') %}
                             href="{{ path('tisseo_boa_calendar_delete', {'calendarId': calendar.calendar.id, 'calendarType': calendarType }) }}">
-                            <span class="glyphicon glyphicon-remove"></span> {{ 'global.delete'|trans }}
+                            <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
                         </a>
                     {% endif %}
                 {% endif %}

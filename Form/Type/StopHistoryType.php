@@ -22,7 +22,7 @@ class StopHistoryType extends AbstractType
                 'shortName',
                 'text',
                 array(
-                    'label' => 'stop_history.labels.short_name',
+                    'label' => 'tisseo.boa.stop_history.label.short_name',
                     'required' => true
                 )
             )
@@ -30,7 +30,7 @@ class StopHistoryType extends AbstractType
                 'longName',
                 'text',
                 array(
-                    'label' => 'stop_history.labels.long_name',
+                    'label' => 'tisseo.boa.stop_history.label.long_name',
                     'required' => false
                 )
             )
@@ -38,7 +38,7 @@ class StopHistoryType extends AbstractType
                 'startDate',
                 'tisseo_datepicker',
                 array(
-                    'label' => 'stop_history.labels.start_date',
+                    'label' => 'tisseo.boa.stop_history.label.start_date',
                     'attr' => array(
                         'data-to-date' => true
                     )
@@ -48,7 +48,7 @@ class StopHistoryType extends AbstractType
                 'x',
                 'text',
                 array(
-                    'label' => 'stop_history.labels.x',
+                    'label' => 'tisseo.boa.stop_history.label.x',
                     'mapped' => false,
                     'required' => true
                 )
@@ -57,7 +57,7 @@ class StopHistoryType extends AbstractType
                 'y',
                 'text',
                 array(
-                    'label' => 'stop_history.labels.y',
+                    'label' => 'tisseo.boa.stop_history.label.y',
                     'mapped' => false,
                     'required' => true
                 )
@@ -66,7 +66,7 @@ class StopHistoryType extends AbstractType
                 'srid',
                 'text',
                 array(
-                    'label' => 'stop_history.labels.srid',
+                    'label' => 'tisseo.boa.stop_history.label.srid',
                     'mapped' => false,
                     'data' => '3943',
                     'read_only' => true,

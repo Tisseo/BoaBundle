@@ -3,11 +3,17 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\PoiType;
 use Tisseo\BoaBundle\Form\Type\PoiTypeType;
 
-class PoiTypeController extends AbstractController
+class PoiTypeController extends CoreController
 {
+    /**
+     * List
+     *
+     * Listing all PoiTypes
+     */
     public function listAction()
     {
         $this->isGranted(
@@ -17,70 +23,65 @@ class PoiTypeController extends AbstractController
             )
         );
 
-        $PoiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
         return $this->render(
             'TisseoBoaBundle:PoiType:list.html.twig',
             array(
-                'pageTitle' => 'menu.poi_type',
-                'poiTypes' => $PoiTypeManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.poi_type.title.list',
+                'poiTypes' => $this->get('tisseo_endiv.poi_type_manager')->findAll()
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $poiTypeId
+     *
+     * Creating/editing PoiType
+     */
     public function editAction(Request $request, $poiTypeId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $PoiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
-        $form = $this->buildForm($poiTypeId, $PoiTypeManager);
-        $render = $this->processForm($request, $form);
-        if (!$render) {
-            return $this->render(
-                'TisseoBoaBundle:PoiType:form.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'title' => ($poiTypeId ? 'poi_type.edit' : 'poi_type.create')
-                )
-            );
-        }
-        return ($render);
-    }
+        $poiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
+        $poiType = $poiTypeManager->find($poiTypeId);
 
-    private function buildForm($poiTypeId, $PoiTypeManager)
-    {
-        $poi_type = $PoiTypeManager->find($poiTypeId);
-        if (empty($poi_type)) {
-            $poi_type = new PoiType();
-        }
+        if (empty($poiType))
+            $poiType = new PoiType();
 
-        $form = $this->createForm( new PoiTypeType(), $poi_type,
+        $form = $this->createForm(
+            new PoiTypeType(),
+            $poiType,
             array(
-                'action' => $this->generateUrl('tisseo_boa_poi_type_edit',
-                                            array('poiTypeId' => $poiTypeId)
+                'action' => $this->generateUrl(
+                    'tisseo_boa_poi_type_edit',
+                    array('poiTypeId' => $poiTypeId)
                 )
             )
         );
 
-        return ($form);
-    }
-
-    private function processForm(Request $request, $form)
-    {
         $form->handleRequest($request);
-        $PoiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
-        if ($form->isValid()) {
-            $PoiTypeManager->save($form->getData());
-            $this->get('session')->getFlashBag()->add('success',
-                $this->get('translator')->trans(
-                    'poi_type.created',
-                    array(),
-                    'default'
-                )
-            );
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_poi_type_list')
-            );
+        if ($form->isValid())
+        {
+            try
+            {
+                $poiTypeManager->save($form->getData());
+                $this->addFlash('success', ($poiTypeId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
+            }
+            catch (\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+            }
+
+            return $this->redirectToRoute('tisseo_boa_poi_type_list');
         }
-        return (null);
+
+        return $this->render(
+            'TisseoBoaBundle:PoiType:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'title' => ($poiTypeId ? 'tisseo.boa.poi_type.title.edit' : 'tisseo.boa.poi_type.title.create')
+            )
+        );
     }
 }

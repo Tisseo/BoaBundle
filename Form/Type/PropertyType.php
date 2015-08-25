@@ -14,14 +14,24 @@ class PropertyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('label' => 'property.labels.name'))
-        ->add('default', 'checkbox',
-            array(
-                'label' => 'property.labels.default',
-                'required' => false
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.property.label.name'
+                )
             )
-        )
-        ->setAction($options['action']);
+            ->add(
+                'default',
+                'checkbox',
+                array(
+                    'label' => 'tisseo.boa.property.label.default',
+                    'required' => false
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**

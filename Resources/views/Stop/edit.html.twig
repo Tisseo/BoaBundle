@@ -1,24 +1,19 @@
-{% extends "TisseoCoreBundle::container.html.twig" %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 {% set smoothness = true %}
-{% set datatable = true %}
+{% set margin = '10' %}
 
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block breadcrumb %}
-    <li>
-        <a href="{{ path('tisseo_boa_stop_search') }}">
-            {{ 'menu.stop_search'|trans({}, 'messages') }}
-        </a>
-    </li>
+    <a href="{{ path('tisseo_boa_stop_search') }}">
+        {{ 'tisseo.boa.stop_point.title.search'|trans }}
+    </a>
 {% endblock %}
 
-{% block main_content %}
-    <h1>{{ 'stop.edit'|trans({}, 'default') }}</h1>
-    <br>
-
+{% block content %}
     <a id="stop-history" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'stop.list.headers.edit_form'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.edit_form'|trans }}
     </a>
     <div class="panel col-md-12">
         {{ form_start(form) }}
@@ -40,7 +35,7 @@
                     </div>
                     <div class="col-md-2">
                         <a id="stop-area-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': form.stopArea.vars.data.id}) }}">
-                            <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+                            <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
                         </a>
                     </div>
                 </div>
@@ -67,10 +62,10 @@
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
                 </button>
                 <a href="" class="btn btn-default">
-                    <span class="glyphicon glyphicon-repeat"></span> {{ 'global.cancel'|trans }}
+                    <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
                 </a>
             </div>
         </div>
@@ -78,17 +73,17 @@
     </div>
 
     <a id="stop-history" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'stop.list.headers.stop_history'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_history'|trans }}
     </a>
     <div class="panel col-md-12">
         <table id="stop-history" class="table datatable table-hover">
             <thead>
-                <th class="col-md-2">{{ 'stop_history.list.columns.short_name'|trans({}, 'default') }}</th>
-                <th class="col-md-2">{{ 'stop_history.list.columns.long_name'|trans({}, 'default') }}</th>
-                <th class="col-md-2">{{ 'stop_history.list.columns.start_date'|trans({}, 'default') }}</th>
-                <th class="col-md-2">{{ 'stop_history.list.columns.end_date'|trans({}, 'default') }}</th>
-                <th class="col-md-2">{{ 'stop_history.list.columns.x'|trans({}, 'default') }}</th>
-                <th class="col-md-2">{{ 'stop_history.list.columns.y'|trans({}, 'default') }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.short_name'|trans }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.long_name'|trans }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.start_date'|trans }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.end_date'|trans }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.x'|trans }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.y'|trans }}</th>
             </thead>
             <tbody>
             {% for stopHistory in stopHistories %}
@@ -104,11 +99,11 @@
             </tbody>
         </table>
         <a href="{{ path('tisseo_boa_stop_history_create', {'stopId': stop.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-default">
-            <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+            <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
         </a>
         {% if stop.Closable %}
         <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal">
-            <span class="glyphicon glyphicon-lock"></span> {{ 'global.closure'|trans }}
+            <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.closure'|trans }}
         </a>
         {% endif %}
     </div>
@@ -142,7 +137,7 @@
 {#    <div>
         {% if form.masterStop.vars.value is empty %}
             <div class="stop_table_header">
-                {{ 'stop.accessibility.header' | trans }}
+                {{ 'tisseo.boa.stop_point.accessibility.header' | trans }}
             </div>
         {% else %}
             <div class="stop_table_header" style="7background-color: #666666">
@@ -201,7 +196,7 @@
                                 <td>
                                 <a class="btn btn-default"
                                     href="{{ path('tisseo_boa_stop_accessibility_delete', {'stopId': stop.id, 'StopAccessibilityId': sa.id }) }}">
-                                    <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans({}, 'messages')}}
+                                    <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans}}
                                 </a>
                                 </td>
                             {% endif %}
@@ -226,11 +221,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        require(['core/datatables'], function() {
-            datatable(false, '10');
-        });
-    </script>
+    {{ parent() }}
     <script>
         require(['boa/stop/edit'], function() {
             init_autocomplete("#stop_area", "#boa_stop_edit_stopArea", "#stop-edit");

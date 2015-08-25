@@ -19,7 +19,7 @@ class StopDatasourceType extends AbstractType
                 'datasource',
                 'entity',
                 array(
-                    'label' => 'datasource.labels.datasource',
+                    'label' => 'tisseo.boa.datasource.label.datasource',
                     'class' => 'TisseoEndivBundle:Datasource',
                     'property' => 'name',
                     'required' => true
@@ -29,7 +29,7 @@ class StopDatasourceType extends AbstractType
                 'code',
                 'text',
                 array(
-                    'label' => 'datasource.labels.code'
+                    'label' => 'tisseo.boa.datasource.label.code'
                 )
             )
             ->setAction($options['action'])

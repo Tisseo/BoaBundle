@@ -4,21 +4,21 @@
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
 
 {% block list_title -%}
-    {{ 'exception_type.list.title'|trans({}, 'default') }}
+    {{ parent() }}
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
         -
         <a href="{{ path('tisseo_boa_exception_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'exception_type.create'|trans({}, 'default') }}
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.exception_type.action.create'|trans }}
         </a>
     {% endif %}
 {% endblock %}
 
 {% block table_head -%}
-    <th class="col-md-2">{{ 'exception_type.list.columns.label'|trans({}, 'default') }}</th>
-    <th class="col-md-4">{{ 'exception_type.list.columns.exceptionText'|trans({}, 'default') }}</th>
-    <th class="col-md-2 no-sort no-search">{{ 'exception_type.list.columns.gridCalendarPattern'|trans({}, 'default') }}</th>
-    <th class="col-md-2 no-sort no-search">{{ 'exception_type.list.columns.tripCalendarPattern'|trans({}, 'default') }}</th>
-    <th class="col-md-2 no-sort no-search">{{ 'global.actions'|trans }}</th>
+    <th class="col-md-2">{{ 'tisseo.boa.exception_type.label.label'|trans }}</th>
+    <th class="col-md-4">{{ 'tisseo.boa.exception_type.label.exception_text'|trans }}</th>
+    <th class="col-md-2 no-sort no-search">{{ 'tisseo.boa.exception_type.label.grid_calendar_pattern'|trans }}</th>
+    <th class="col-md-2 no-sort no-search">{{ 'tisseo.boa.exception_type.label.trip_calendar_pattern'|trans }}</th>
+    <th class="col-md-2 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
@@ -30,8 +30,8 @@
             <td>{{ render.pattern(exceptionType.tripCalendarPattern|split('')) }}</td>
             <td>
             {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-                <a class="btn btn-default" href="{{ path('tisseo_boa_exception_type_edit', {'exceptionTypeId': exceptionType.id}) }}" data-toggle="modal" data-target="#base-modal">
-                    <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+                <a class="btn btn-default" href="{{ path('tisseo_boa_exception_type_edit', { 'exceptionTypeId': exceptionType.id }) }}" data-toggle="modal" data-target="#base-modal">
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
                 </a>
             {% endif %}
             </td>

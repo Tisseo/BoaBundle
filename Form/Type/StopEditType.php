@@ -32,7 +32,7 @@ class StopEditType extends AbstractType
                 'stopArea',
                 'entity',
                 array(
-                    'label' => 'stop.labels.stop_area',
+                    'label' => 'tisseo.boa.stop_point.label.stop_area',
                     'class' => 'TisseoEndivBundle:StopArea',
                     'property' => 'nameLabel',
                     'empty_data' => '',
@@ -43,7 +43,7 @@ class StopEditType extends AbstractType
                 'stopDatasources',
                 'collection',
                 array(
-                    'label' => 'stop.labels.datasource',
+                    'label' => 'tisseo.boa.stop_point.label.datasource',
                     'type' => new StopDatasourceType(),
                     'by_reference' => false,
                 )
@@ -52,7 +52,7 @@ class StopEditType extends AbstractType
                 'shortName',
                 'text',
                 array(
-                    'label' => 'stop.labels.short_name',
+                    'label' => 'tisseo.boa.stop_point.label.short_name',
                     'data' => $this->stopHistory->getShortName(),
                     'mapped' => false,
                     'required' => false,
@@ -64,7 +64,7 @@ class StopEditType extends AbstractType
                 'longName',
                 'text',
                 array(
-                    'label' => 'stop.labels.long_name',
+                    'label' => 'tisseo.boa.stop_point.label.long_name',
                     'data' => $this->stopHistory->getLongName(),
                     'mapped' => false,
                     'required' => false,
@@ -81,7 +81,7 @@ class StopEditType extends AbstractType
                         'masterStop',
                         'entity',
                         array(
-                            'label' => 'stop.labels.master_stop',
+                            'label' => 'tisseo.boa.stop_point.label.master_stop',
                             'required' => false,
                             'empty_value' => '',
                             'empty_data' => null,

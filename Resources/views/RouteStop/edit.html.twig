@@ -2,17 +2,19 @@
     <input type="hidden" id="route-id" value="{{ route.id }}"></input>
     <table id="table-route-stops" class="table table-hover">
         <thead>
-            <th class="col-md-1">{{ 'route_stop.list.columns.rank'|trans({}, 'default') }}</th>
-            <th class="col-md-2">{{ 'route_stop.list.columns.city'|trans({}, 'default') }}</th>
-            <th class="col-md-2">{{ 'route_stop.list.columns.name'|trans({}, 'default') }}</th>
-            <th class="col-md-1">{{ 'route_stop.list.columns.code'|trans({}, 'default') }}</th>
-            <th class="col-md-1">{{ 'route_stop.list.columns.pick_up'|trans({}, 'default') }}</th>
-            <th class="col-md-1">{{ 'route_stop.list.columns.drop_off'|trans({}, 'default') }}</th>
-            <th class="col-md-1">{{ 'route_stop.list.columns.scheduled'|trans({}, 'default') }}</th>
-            {% if route.way == 'Zonal' %}
-            <th class="col-md-2">{{ 'route_stop.list.columns.internal_service'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.route_stop.label.rank'|trans }}</th>
+            <th class="col-md-2">{{ 'tisseo.boa.route_stop.label.city'|trans }}</th>
+            <th class="col-md-2">{{ 'tisseo.boa.route_stop.label.stop'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.datasource.label.code'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.route_stop.label.pick_up'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.route_stop.label.drop_off'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.route_stop.label.scheduled'|trans }}</th>
+            {% if route.way == constant('WAY_AREA', route) %}
+            <th class="col-md-2">{{ 'tisseo.boa.route_stop.label.internal_service'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.global.actions'|trans }}</th>
+            {% else %}
+            <th class="col-md-3">{{ 'tisseo.global.actions'|trans }}</th>
             {% endif %}
-            <th class="col-md-1">{{ 'global.actions'|trans }}</th>
         </thead>
         <tbody>
         {% set rank = 1 %}
@@ -30,7 +32,7 @@
                 <td><input type='checkbox' class="pickup" name="pickup" {% if routeStop.pickup %}checked="checked"{% endif %}></td>
                 <td><input type='checkbox' class="dropOff" name="dropOff" {% if routeStop.dropOff %}checked="checked"{% endif %}></td>
                 <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if routeStop.scheduledStop %}checked="checked"{% endif %}></td>
-                {% if route.way == 'Zonal' %}
+                {% if route.way == constant('WAY_AREA', route) %}
                 <td></td>
                 {% endif %}
                 <td>
@@ -52,6 +54,6 @@
     </table>
     <br>
     <button id="submit-route-stops" type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
     </button>
 </div>

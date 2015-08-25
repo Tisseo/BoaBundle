@@ -4,13 +4,14 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\LineVersion;
+use Tisseo\CoreBundle\Controller\CoreController;
 
-class LineVersionController extends AbstractController
+class LineVersionController extends CoreController
 {
     /**
      * List
      *
-     * Display the list view of all LineVersion.
+     * Listing all LineVersions
      */
     public function listAction()
     {
@@ -21,16 +22,15 @@ class LineVersionController extends AbstractController
             )
         );
 
-        $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
-        $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
         $now = new \Datetime();
 
         return $this->render(
             'TisseoBoaBundle:LineVersion:list.html.twig',
             array(
-                'pageTitle' => 'menu.route_manage',
-                'lineVersions' => $lineVersionManager->findActiveLineVersions($now),
-                'datasources' => $datasourceManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.route',
+                'pageTitle' => 'tisseo.boa.line_version.title.list',
+                'lineVersions' => $this->get('tisseo_endiv.line_version_manager')->findActiveLineVersions($now),
+                'datasources' => $this->get('tisseo_endiv.datasource_manager')->findAll()
             )
         );
     }

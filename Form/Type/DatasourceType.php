@@ -14,16 +14,25 @@ class DatasourceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'datasource.labels.name'));
-        $builder->add('agency', 'entity',
-            array(
-                'class' => 'TisseoEndivBundle:Agency',
-                'property' => 'name',
-                'label' => 'datasource.labels.agency'
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.datasource.label.name'
+                )
             )
-        );
-
-        $builder->setAction($options['action']);
+            ->add(
+                'agency',
+                'entity',
+                array(
+                    'class' => 'TisseoEndivBundle:Agency',
+                    'property' => 'name',
+                    'label' => 'tisseo.boa.datasource.label.agency'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**

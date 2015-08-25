@@ -14,12 +14,45 @@ class AgencyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'agency.labels.name'));
-        $builder->add('url', 'text',  array('label' => 'agency.labels.url'));
-        $builder->add('timezone', 'text',  array('label' => 'agency.labels.timezone'));
-        $builder->add('lang', 'text',  array('label' => 'agency.labels.lang'));
-        $builder->add('phone', 'text',  array('label' => 'agency.labels.phone','required' => false));
-        $builder->setAction($options['action']);
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.agency.label.name'
+                )
+            )
+            ->add(
+                'url',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.agency.label.url'
+                )
+            )
+            ->add(
+                'timezone',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.agency.label.timezone'
+                )
+            )
+            ->add(
+                'lang',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.agency.label.lang'
+                )
+            )
+            ->add(
+                'phone',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.agency.label.phone',
+                    'required' => false
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -33,7 +66,6 @@ class AgencyType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

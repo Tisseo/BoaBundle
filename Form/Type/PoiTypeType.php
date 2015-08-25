@@ -14,8 +14,16 @@ class PoiTypeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'poi_type.labels.name'));
-        $builder->setAction($options['action']);
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.poi_type.label.name'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**

@@ -4,8 +4,9 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Tisseo\CoreBundle\Controller\CoreController;
 
-class JsonController extends AbstractController
+class JsonController extends CoreController
 {
     private function sendJsonResponse($data)
     {

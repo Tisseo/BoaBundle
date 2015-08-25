@@ -2,18 +2,18 @@
 {% set bundle = 'TisseoBoaBundle' %}
 
 {% block list_title -%}
-    {{ 'poi_type.list.title'|trans({}, 'default') }}
+    {{ parent() }}
     {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
         -
         <a href="{{ path('tisseo_boa_poi_type_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'poi_type.create'|trans({}, 'default') }}
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.poi_type.action.create'|trans }}
         </a>
     {% endif %}
 {% endblock %}
 
 {% block table_head -%}
-    <th class="col-sm-10">{{ 'poi_type.list.columns.name'|trans({}, 'default') }}</th>
-    <th class="col-sm-2 no-search no-sort">{{ 'global.actions'|trans }}</th>
+    <th class="col-sm-10">{{ 'tisseo.boa.poi_type.label.name'|trans }}</th>
+    <th class="col-sm-2 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
@@ -22,8 +22,8 @@
             <td>{{ poiType.name }}</td>
             <td>
             {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
-                <a class="btn btn-default" href="{{ path('tisseo_boa_poi_type_edit', {'poiTypeId': poiType.id}) }}" data-toggle="modal" data-target="#base-modal">
-                    <span class="glyphicon glyphicon-edit"></span> {{ 'global.edit'|trans }}
+                <a class="btn btn-default" href="{{ path('tisseo_boa_poi_type_edit', { 'poiTypeId': poiType.id }) }}" data-toggle="modal" data-target="#base-modal">
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
                 </a>
             {% endif %}
             </td>

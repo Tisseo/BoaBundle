@@ -3,11 +3,17 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\ExceptionType;
 use Tisseo\BoaBundle\Form\Type\ExceptionTypeType;
 
-class ExceptionTypeController extends AbstractController
+class ExceptionTypeController extends CoreController
 {
+    /**
+     * List
+     *
+     * Listing all ExceptionTypes
+     */
     public function listAction()
     {
         $this->isGranted(
@@ -17,71 +23,65 @@ class ExceptionTypeController extends AbstractController
             )
         );
 
-        $ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
         return $this->render(
             'TisseoBoaBundle:ExceptionType:list.html.twig',
             array(
-                'pageTitle' => 'menu.exception_type',
-                'exceptionTypes' => $ExceptionTypeManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.exception_type.title.list',
+                'exceptionTypes' => $this->get('tisseo_endiv.exception_type_manager')->findAll()
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $exceptionTypeId
+     *
+     * Creating/editing ExceptionType
+     */
     public function editAction(Request $request, $exceptionTypeId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
-        $form = $this->buildForm($exceptionTypeId, $ExceptionTypeManager);
-        $render = $this->processForm($request, $form);
-        if (!$render) {
-            return $this->render(
-                'TisseoBoaBundle:ExceptionType:form.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'title' => ($exceptionTypeId ? 'exception_type.edit' : 'exception_type.create')
-                )
-            );
-        }
-        return ($render);
-    }
+        $exceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
+        $exceptionType = $exceptionTypeManager->find($exceptionTypeId);
 
-    private function buildForm($exceptionTypeId, $ExceptionTypeManager)
-    {
-        $exception_type = $ExceptionTypeManager->find($exceptionTypeId);
-        if (empty($exception_type)) {
-            $exception_type = new ExceptionType();
-        }
+        if (empty($exceptionType))
+            $exceptionType = new ExceptionType();
 
-        $form = $this->createForm( new ExceptionTypeType(), $exception_type,
+        $form = $this->createForm(
+            new ExceptionTypeType(),
+            $exceptionType,
             array(
-                'action' => $this->generateUrl('tisseo_boa_exception_type_edit',
-                                            array('exceptionTypeId' => $exceptionTypeId)
+                'action' => $this->generateUrl(
+                    'tisseo_boa_exception_type_edit',
+                    array('exceptionTypeId' => $exceptionTypeId)
                 )
             )
         );
 
-        return ($form);
-    }
-
-    private function processForm(Request $request, $form)
-    {
         $form->handleRequest($request);
-        $ExceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
-        if ($form->isValid()) {
-            $ExceptionTypeManager->save($form->getData());
-            $this->get('session')->getFlashBag()->add('success',
-                $this->get('translator')->trans(
-                    'exception_type.created',
-                    array(),
-                    'default'
-                )
-            );
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_exception_type_list')
-            );
-        }
-        return (null);
-    }
+        if ($form->isValid())
+        {
+            try
+            {
+                $exceptionTypeManager->save($form->getData());
+                $this->addFlash('success', ($exceptionTypeId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
+            }
+            catch (\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+            }
 
+            return $this->redirectToRoute('tisseo_boa_exception_type_list');
+        }
+
+        return $this->render(
+            'TisseoBoaBundle:ExceptionType:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'title' => ($exceptionTypeId ? 'tisseo.boa.exception_type.title.edit' : 'tisseo.boa.exception_type.title.create')
+            )
+        );
+    }
 }

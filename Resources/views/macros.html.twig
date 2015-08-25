@@ -1,24 +1,24 @@
 {% macro stop_select(stops, select_id, select_class, all_label, all_value, select_name) %}
     <select id='{{ select_id }}' name='{{ select_name }}' class='{{ select_class }}'>
         <option value='{{ all_value }}'>{{ all_label }}</option>
-    {% for Stop in stops %}
-        {% if Stop.masterStop is empty %}
-        <option value='{{ Stop.id }}'>{{ Stop.getStopLabel }}</option>
+    {% for stop in stops %}
+        {% if stop.masterStop is empty %}
+        <option value='{{ stop.id }}'>{{ stop.StopLabel }}</option>
         {% endif %}
     {% endfor %}
     </select>
 {% endmacro %}
 
 {% macro route_header(route) %}
-    {{ 'trip.list.route.network'|trans({}, 'default') }} : 
+    {{ 'tisseo.boa.datasource.label.agency'|trans }} : 
     {% for datasource in route.lineVersion.line.lineDatasources %}
         {{ datasource.datasource.agency.name }} -
     {% endfor %}
-    {{ 'trip.list.route.line'|trans({}, 'default') }} : 
+    {{ 'tisseo.boa.line.label.number'|trans }} : 
     {{ route.lineVersion.line.number }} -
-    {{ 'trip.list.route.version'|trans({}, 'default') }} : 
+    {{ 'tisseo.boa.line_version.label.version'|trans }} : 
     {{ route.lineVersion.version }} - 
-    {{ 'trip.list.route.name'|trans({}, 'default') }} : 
+    {{ 'tisseo.boa.route.label.name'|trans }} : 
     {{ route.name }} ({{ route.way }})
 {% endmacro %}
 

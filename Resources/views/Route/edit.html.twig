@@ -9,19 +9,16 @@
 {% block breadcrumb %}
     <li>
         <a href="{{ path('tisseo_boa_line_version_list') }}">
-            {{ 'menu.offer_list'|trans({}, 'messages') }}
+            {{ 'tisseo.boa.line_version.title.list'|trans }}
         </a>
         /
         <a href="{{ path('tisseo_boa_route_list', { 'lineVersionId': route.lineVersion.id }) }}">
-            {{ 'menu.route_list'|trans({}, 'messages') }}
+            {{ 'tisseo.boa.route.title.list'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
         </a>
     </li>
 {% endblock %}
 
 {% block main_content -%}
-    <h1>{{ title|trans({}, 'default') }}</h1>
-    <br>
-
     <a id="route" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ render.route_header(route) }}
     </a>
@@ -52,17 +49,17 @@
         </div>
         {% else %}
             <div class="row">
-                {{ 'global.no_items'|trans }}
+                {{ 'tisseo.global.no_items'|trans }}
             </div>
         {% endfor %}
 
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
                 </button>
                 <a href="" class="btn btn-default">
-                    <span class="glyphicon glyphicon-repeat"></span> {{ 'global.cancel'|trans }}
+                    <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
                 </a>
             </div>
         </div>
@@ -70,7 +67,7 @@
     </div>
 
     <a id="route-stops" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'route.list.headers.route_stops'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.route_stop.title.list'|trans }}
     </a>
     {% if route.hasTripsNotPattern %}
         {{ render(controller('TisseoBoaBundle:RouteStop:list', {'routeId': route.id })) }}
@@ -79,20 +76,20 @@
     {% endif %}
 
     <a id="trip-patterns" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'route.list.headers.trip_patterns'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip_pattern.title.list'|trans }}
     </a>
     {% if route.routeStops is not empty %}
         <a href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'trip.create'|trans({}, 'default') }}
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.trip.action.create'|trans }}
         </a>
         <a href="{{ path('tisseo_boa_trip_list', {'routeId': route.id}) }}">
-            <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.title'|trans({}, 'default') }}
+            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.action.list'|trans }}
         </a>
         {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
     {% else %}
-    <div class="panel col-md-12">
-        {{ 'route.no_route_stops'|trans }}
-    </div>
+        <div class="panel col-md-12">
+            {{ 'tisseo.boa.route.message.no_route_stops'|trans }}
+        </div>
     {% endif %}
 
 {% endblock %}

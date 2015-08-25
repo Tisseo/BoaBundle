@@ -3,19 +3,49 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\AccessibilityMode;
 use Tisseo\BoaBundle\Form\Type\AccessibilityModeType;
 
-class AccessibilityModeController extends AbstractController
+class AccessibilityModeController extends CoreController
 {
     /**
-     * BuildForm
-     * @param AccessibilityMode $accessibilityMode
+     * List
      *
-     * Building a new form for AccessibilityMode object.
+     * Listing all AccessibilityModes
      */
-    private function buildForm($accessibilityMode)
+    public function listAction()
     {
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CONFIGURATION',
+                'BUSINESS_VIEW_CONFIGURATION'
+            )
+        );
+
+        return $this->render(
+            'TisseoBoaBundle:AccessibilityMode:list.html.twig',
+            array(
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.accessibility_mode.title.list',
+                'accessibilityModes' => $this->get('tisseo_endiv.accessibility_mode_manager')->findAll()
+            )
+        );
+    }
+
+    /**
+     * Edit
+     * @param integer $accessibilityModeId
+     *
+     * Creating/editing AccessibilityMode
+     */
+    public function editAction(Request $request, $accessibilityModeId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+
+        $accessModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
+        $accessibilityMode = $accessModeManager->find($accessibilityModeId);
+
         if (empty($accessibilityMode))
             $accessibilityMode = new AccessibilityMode();
 
@@ -30,88 +60,28 @@ class AccessibilityModeController extends AbstractController
             )
         );
 
-        return ($form);
-    }
-
-    /**
-     * ProcessForm
-     * @param Form $form
-     * @param AccessibilityModeManager $accessibilityModeManager
-     *
-     * Processing form validation.
-     */
-    private function processForm($form, $accessibilityModeManager)
-    {
-        if ($form->isValid()) {
-            $accessibilityModeManager->save($form->getData());
-            $this->get('session')->getFlashBag()->add(
-                'success',
-                $this->get('translator')->trans(
-                    'accessibility_mode.created',
-                    array(),
-                    'default'
-                )
-            );
-
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_accessibility_mode_list')
-            );
-        }
-
-        return (null);
-    }
-
-    /**
-     * List
-     *
-     * Listing all accessibility modes.
-     */
-    public function listAction()
-    {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_CONFIGURATION',
-                'BUSINESS_VIEW_CONFIGURATION'
-            )
-        );
-
-        $accessibilityModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
-        return $this->render(
-            'TisseoBoaBundle:AccessibilityMode:list.html.twig',
-            array(
-                'pageTitle' => 'menu.accessibility_mode',
-                'accessibilityModes' => $accessibilityModeManager->findAll()
-            )
-        );
-    }
-
-    /**
-     * Edit
-     * @param integer $accessibilityModeId
-     *
-     * Editing or creating a new AccessibilityMode.
-     */
-    public function editAction($accessibilityModeId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
-        $request = $this->getRequest();
-
-        $accessibilityModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
-        $accessibilityMode = $accessibilityModeManager->find($accessibilityModeId);
-
-        $form = $this->buildForm($accessibilityMode);
         $form->handleRequest($request);
-        $render = $this->processForm($form, $accessibilityModeManager);
+        if ($form->isValid())
+        {
+            try
+            {
+                $accessModeManager->save($form->getData());
+                $this->addFlash('success', ($accessibilityModeId ? 'tisseo.flash.success.edit' : 'tisseo.flash.success.create'));
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+            }
 
-        if (!$render) {
-            return $this->render(
-                'TisseoBoaBundle:AccessibilityMode:form.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'title' => ($accessibilityModeId ? 'accessibility_mode.edit' : 'accessibility_mode.create')
-                )
-            );
+            return $this->redirectToRoute('tisseo_boa_accessibility_mode_list');
         }
-        return ($render);
+
+        return $this->render(
+            'TisseoBoaBundle:AccessibilityMode:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'title' => ($accessibilityModeId ? 'tisseo.boa.accessibility_mode.title.edit' : 'tisseo.boa.accessibility_mode.title.create')
+            )
+        );
     }
 }

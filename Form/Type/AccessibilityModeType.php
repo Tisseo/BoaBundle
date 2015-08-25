@@ -14,8 +14,16 @@ class AccessibilityModeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'accessibility_mode.labels.name'));
-        $builder->setAction($options['action']);
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.accessibility_mode.label.name'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**

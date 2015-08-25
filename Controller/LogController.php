@@ -2,12 +2,15 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Tisseo\EndivBundle\Entity\Log;
-use Tisseo\BoaBundle\Form\Type\LogType;
+use Tisseo\CoreBundle\Controller\CoreController;
 
-class LogController extends AbstractController
+class LogController extends CoreController
 {
+    /**
+     * List
+     *
+     * Listing all Logs
+     */
     public function listAction()
     {
         $this->isGranted(
@@ -17,12 +20,12 @@ class LogController extends AbstractController
             )
         );
 
-        $LogManager = $this->get('tisseo_endiv.log_manager');
         return $this->render(
             'TisseoBoaBundle:Log:list.html.twig',
             array(
-                'pageTitle' => 'menu.log',
-                'logs' => $LogManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.log.title.list',
+                'logs' => $this->get('tisseo_endiv.log_manager')->findAll()
             )
         );
     }

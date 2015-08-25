@@ -19,7 +19,7 @@ class StopCreateType extends AbstractType
                 'stopArea',
                 'entity',
                 array(
-                    'label' => 'stop.labels.stop_area',
+                    'label' => 'tisseo.boa.stop_point.label.stop_area',
                     'class' => 'TisseoEndivBundle:StopArea',
                     'property' => 'nameLabel',
                     'required' => true
@@ -30,7 +30,6 @@ class StopCreateType extends AbstractType
                 'collection',
                 array(
                     'type' => new StopHistoryType(),
-                    'label' => 'stop.labels.stop_history',
                     'by_reference' => false
                 )
             )
@@ -39,7 +38,6 @@ class StopCreateType extends AbstractType
                 'collection',
                 array(
                     'type' => new StopDatasourceType(),
-                    'label' => 'stop.labels.stop_datasource',
                     'by_reference' => false
                 )
             )

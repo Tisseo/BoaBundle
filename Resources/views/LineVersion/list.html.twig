@@ -1,36 +1,33 @@
-{% extends "TisseoCoreBundle::container.html.twig" %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
-{% set datatable = true %}
 
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
 
-{% block main_content %}
-    <h1>
-        {{ 'line_version.list.title'|trans({}, 'default') }}
-    </h1>
-
+{% block header_content %}
     {# TODO: datatables provides this functionality : https://datatables.net/examples/api/multi_filter_select.html #}
     {% if lineVersions is not empty %}
     <div id="filter" class="form-inline list-unstyled" style="margin-bottom:20px;">
             <select id="datasource" class="form-control" name="datasource">
-                <option value="" selected style="color:grey;">{{ 'line_version.list.filter.datasource'|trans({}, 'default') }}</option>
+                <option value="" selected style="color:grey;">{{ 'tisseo.boa.line_version.label.datasource'|trans }}</option>
                 {% for d in datasources %}
                     <option value="{{ d.name }}">{{ d.name }}</option>
                 {% endfor %}
             </select>
-            <input type="text" id="date" class="form-control" name="date" placeHolder="{{ 'line_version.list.filter.date'|trans({}, 'default') }}">
+            <input type="text" id="date" class="form-control" name="date" placeHolder="{{ 'tisseo.boa.line_version.label.date'|trans }}">
     </div>
     {% endif %}
+{% endblock %}
 
+{% block content %}
     <table id="datatable" class="table datatable" role="grid" aria-describedby="datatable_info">
         <thead>
-            <th class="col-md-1">{{ 'line_version.list.columns.number'|trans({}, 'default') }}</th>
-            <th class="col-md-1">{{ 'line_version.list.columns.mode'|trans({}, 'default') }}</th>
-            <th class="col-md-1">{{ 'line_version.list.columns.version'|trans({}, 'default') }}</th>
-            <th class="col-md-2 no-sort">{{ 'line_version.list.columns.datasource'|trans({}, 'default') }}</th>
-            <th class="col-md-2 no-sort">{{ 'line_version.list.columns.startDate'|trans({}, 'default') }}</th>
-            <th class="col-md-2 no-sort">{{ 'line_version.list.columns.endDate'|trans({}, 'default') }}</th>
-            <th class="col-md-3 no-sort no-search">{{ 'global.actions'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.line_version.label.number'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.line_version.label.mode'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.line_version.label.version'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.line_version.label.datasource'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.line_version.label.start_date'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.line_version.label.end_date'|trans }}</th>
+            <th class="col-md-3 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
         </thead>
         <tbody>
         {% for lineVersion in lineVersions %}
@@ -55,11 +52,11 @@
                     {% if (is_granted(['BUSINESS_MANAGE_ROUTES', 'BUSINESS_VIEW_ROUTES'])) %}
                         {% if timecardViewAvailable %}
                         <a class="btn btn-default" href="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
-                            <span class="glyphicon glyphicon-calendar"></span> {{ 'line_version.actions.calendar'|trans({}, 'default') }}
+                            <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.boa.line_version.action.calendar'|trans }}
                         </a>
                         {% endif %}
                         <a class="btn btn-default" href="{{ path('tisseo_boa_route_list', {'lineVersionId': lineVersion.id}) }}">
-                            <span class="glyphicon glyphicon-list"></span> {{ 'line_version.actions.route_list'|trans({}, 'default') }}
+                            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.line_version.action.route'|trans }}
                         </a>
                     {% endif %}
                 </td>
@@ -70,11 +67,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        require(['core/datatables'], function() {
-            datatable(false);   
-        });
-    </script>
+    {{ parent() }}
     {# TODO: JS SCRIPT  + EMPTY DATE VALUE UPDATE + FILTER #}
     <script>
         require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr', 'core/datatables'], function($) {

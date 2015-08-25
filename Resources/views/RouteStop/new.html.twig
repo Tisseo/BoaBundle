@@ -11,7 +11,9 @@
     <td><input type='checkbox' class="pickup" name="pickup" {% if routeStop.pickup %}checked="checked"{% endif %}></td>
     <td><input type='checkbox' class="dropOff"  name="dropOff" {% if routeStop.dropOff %}checked="checked"{% endif %}></td>
     <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if routeStop.scheduledStop %}checked="checked"{% endif %}></td>
+    {% if wayArea %}
     <td></td>
+    {% endif %}
     <td>
         <button class="btn btn-xs btn-danger small-button delete-route-stop"><span class="glyphicon glyphicon-minus"></span></button>
         <input type='hidden' name="waypoint" value="{{ routeStop.waypoint.id }}">

@@ -2,12 +2,18 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Tisseo\CoreBundle\Controller\CoreController;
 
-class DefaultController extends AbstractController
+class DefaultController extends CoreController
 {
-    public function indexAction($externalNetworkId = null)
+    public function indexAction()
     {
-        return $this->render('TisseoBoaBundle:Default:index.html.twig');
+        return $this->render(
+            'TisseoCoreBundle::container.html.twig',
+            array(
+                'pageTitle' => 'tisseo.boa.welcome',
+                'bundle' => 'TisseoBoaBundle'
+            )
+        );
     }
 }

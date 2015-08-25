@@ -1,30 +1,25 @@
-{% extends "TisseoCoreBundle::container.html.twig" %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
-{% set datatable = true %}
+{% set margin = '10' %}
 
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
 
 {% block breadcrumb %}
-    <li>
-        <a href="{{ path('tisseo_boa_line_version_list') }}">
-            {{ 'menu.offer_list'|trans({}, 'messages') }}
-        </a>
-    </li>
+    <a href="{{ path('tisseo_boa_line_version_list') }}">
+        {{ 'tisseo.boa.line_version.title.list'|trans }}
+    </a>
 {% endblock %}
-{% block main_content %}
-    <form method="post" action="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
 
+{% block content %}
+    <form method="post" action="{{ path('tisseo_boa_route_trip_calendar', { 'lineVersionId': lineVersion.id }) }}">
     <div class="head-info col-md-12">
         <div class="row">
-            <div class="col-md-8">
-                <h1>
-                    {{ 'trip_calendar.list.title'|trans({}, 'default') }} -
-                    <button type="submit" class="btn btn-success submit-trip-calendars">
-                        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
-                    </button>
-                </h1>
-            </div>
-            <div class="col-md-4">
+            {% if calendars is not empty %}
+                <button type="submit" class="btn btn-success submit-trip-calendars">
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                </button>
+            {% endif %}
+            <div class="col-md-12">
                 <div class="head-number">
                     {{ render.line_number(lineVersion, 'lineVersion', 'big') }}
                     <br>
@@ -36,17 +31,17 @@
 
     {% for way, calendar in calendars %}
         <a id="way-{{ loop.index }}" class="header-ribbon">
-            <span class="glyphicon glyphicon-list"></span> {{ 'trip_calendar.way'|trans({'%way%':way}, 'messages') }}
+            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.route.header.way'|trans({ '%way%': way }) }}
         </a>
         <div class="panel col-md-12">
             <table class="table datatable table-hover route-calendar">
                 <thead>
-                    <th class="col-md-2">{{ 'trip_calendar.grid.columns.day'|trans }}</th>
-                    <th class="col-md-2">{{ 'trip_calendar.grid.columns.period'|trans }}</th>
-                    <th class="col-md-2">{{ 'trip_calendar.grid.columns.nb_trips'|trans }}</th>
-                    <th class="col-md-2 no-sort no-search">{{ 'trip_calendar.grid.columns.calendar_type'|trans }}</th>
-                    <th class="col-md-2 no-sort no-search">{{ 'trip_calendar.grid.columns.calendar_period'|trans }}</th>
-                    <th class="col-md-2 no-sort no-search">{{ 'trip_calendar.grid.columns.week_pattern'|trans }}</th>
+                    <th class="col-md-2">{{ 'tisseo.boa.trip.label.day_calendar'|trans }}</th>
+                    <th class="col-md-2">{{ 'tisseo.boa.trip.label.period_calendar'|trans }}</th>
+                    <th class="col-md-2">{{ 'tisseo.boa.route.label.services'|trans }}</th>
+                    <th class="col-md-2 no-sort no-search">{{ 'tisseo.boa.grid_mask_type.label.calendar_type'|trans }}</th>
+                    <th class="col-md-2 no-sort no-search">{{ 'tisseo.boa.grid_mask_type.label.calendar_period'|trans }}</th>
+                    <th class="col-md-2 no-sort no-search">{{ 'tisseo.boa.trip_calendar.label.week_pattern'|trans }}</th>
                 </thead>
                 <tbody>
                 {% for data in calendar %}
@@ -102,19 +97,20 @@
                 </tbody>
             </table>
         </div>
+    {% else %}
+        {{ 'tisseo.boa.line_version.message.no_route'|trans }}
     {% endfor %}
+    
+    {% if calendars is not empty %}
     <button type="submit" class="btn btn-success submit-trip-calendars">
-        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
     </button>
+    {% endif %}
     </form>
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        require(['core/datatables'], function() {
-            datatable(false, '10');
-        });
-    </script>
+    {{ parent() }}
     <script>
         require(['jquery'], function($) {
             $(document).ready(function() {

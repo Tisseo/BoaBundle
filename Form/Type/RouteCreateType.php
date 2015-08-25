@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
 use Tisseo\BoaBundle\Form\Type\RouteDatasource;
+use Tisseo\EndivBundle\Entity\Route;
 
 class RouteCreateType extends AbstractType
 {
@@ -29,14 +30,14 @@ class RouteCreateType extends AbstractType
                 'name',
                 'text',
                 array(
-                    'label' => 'route.labels.name'
+                    'label' => 'tisseo.boa.route.label.name'
                 )
             )
             ->add(
                 'direction',
                 'text',
                 array(
-                    'label' => 'route.labels.direction',
+                    'label' => 'tisseo.boa.route.label.direction',
                     'attr' => array(
                         'class' => 'direction-input'
                     )
@@ -46,17 +47,17 @@ class RouteCreateType extends AbstractType
                 'way',
                 'choice',
                 array(
-                    'label' => 'route.labels.way',
+                    'label' => 'tisseo.boa.route.label.way',
                     'choices' => array(
-                        'Aller' => 'Aller',
-                        'Retour' => 'Retour',
-                        'Zonal' => 'Zonal',
-                        'Boucle' => 'Boucle'
+                        Route::WAY_FORWARD => 'tisseo.boa.route.label.ways.forward',
+                        Route::WAY_BACKWARD => 'tisseo.boa.route.label.ways.backward',
+                        Route::WAY_LOOP => 'tisseo.boa.route.label.ways.loop',
+                        Route::WAY_AREA => 'tisseo.boa.route.label.ways.area'
                     ),
                     'required' => false,
                     'attr' => array(
                         'class' => 'way-select'
-                    ) 
+                    )
                 )
             )
             ->add(
@@ -64,7 +65,6 @@ class RouteCreateType extends AbstractType
                 'collection',
                 array(
                     'type' => new RouteDatasourceType(),
-                    'label' => 'route.labels.route_datasource',
                     'by_reference' => false
                 )
             )

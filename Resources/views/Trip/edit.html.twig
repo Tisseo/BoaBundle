@@ -1,16 +1,27 @@
-{% extends "TisseoCoreBundle::container.html.twig" %}
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
-{% set datatable = true %}
+{% set margin = '10' %}
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
-{% block main_content -%}
-    <h1>{{ title|trans({}, 'default') }}</h1>
-    <br>
+{% block breadcrumb %}
+    <a href="{{ path('tisseo_boa_line_version_list') }}">
+        {{ 'tisseo.boa.line_version.title.list'|trans }}
+    </a>
+    /
+    <a href="{{ path('tisseo_boa_route_list', { 'lineVersionId': trip.route.lineVersion.id }) }}">
+        {{ 'tisseo.boa.route.title.list'|trans({ '%number%': trip.route.lineVersion.line.number, '%version%': trip.route.lineVersion.version }) }}
+    </a>
+    /
+    <a href="{{ path('tisseo_boa_trip_list', { 'routeId': trip.route.id }) }}">
+        {{ 'tisseo.boa.trip.title.list'|trans }}
+    </a>
+{% endblock %}
 
+{% block content %}
     <a id="trip" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.headers.trip'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.header.trip'|trans }}
     </a>
     <div class="col-md-12 panel">
         {{ form_start(form) }}
@@ -49,7 +60,7 @@
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
                 </button>
             </div>
         </div>
@@ -57,7 +68,7 @@
     </div>
  
     <a id="calendar" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.headers.calendar'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.header.calendar'|trans }}
     </a>
     <div id="calendar-panel" class="col-md-12 panel">
         <div class="row">
@@ -69,7 +80,7 @@
             </div>
             <div class="col-md-2">
                 <button type="button" id='refresh-button' class="calendar-button btn btn-default" data-url="{{ path('tisseo_boa_json_service_calendar_bitmask') }}">
-                    <span class="glyphicon glyphicon-refresh"></span> {{ 'global.refresh'|trans }}
+                    <span class="glyphicon glyphicon-refresh"></span> {{ 'tisseo.global.refresh'|trans }}
                 </button>
             </div>
         </div>
@@ -78,19 +89,19 @@
     </div>
    
     <a id="stop-times" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'trip.list.headers.stop_time'|trans({}, 'default') }}
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.header.stop_time'|trans }}
     </a>
     <div class="col-md-12 panel">
         <table class="table table-hover datatable">
             <thead>
-                <th>{{ 'stop_time.labels.rank'|trans }}</th>
-                <th>{{ 'stop_time.labels.city'|trans }}</th>
-                <th>{{ 'stop_time.labels.name'|trans }}</th>
-                <th>{{ 'stop_time.labels.code'|trans }}</th>
-                <th>{{ 'stop_time.labels.pick_up'|trans }}</th>
-                <th>{{ 'stop_time.labels.drop_off'|trans }}</th>
-                <th>{{ 'stop_time.labels.scheduled'|trans }}</th>
-                <th>{{ 'stop_time.labels.schedule'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.rank'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.city'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.name'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.code'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.pick_up'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.drop_off'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.scheduled'|trans }}</th>
+                <th>{{ 'tisseo.boa.stop_time.label.schedule'|trans }}</th>
             </thead>
             <tbody>
             {% for stopTime in trip.stopTimes %}
@@ -116,11 +127,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        require(['core/datatables'], function() {
-            datatable(false, '10');
-        });
-    </script>
+    {{ parent() }}
     <script>
         require(['bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function() {
             $(document).ready(function() {

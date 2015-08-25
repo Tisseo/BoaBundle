@@ -5,12 +5,12 @@ namespace Tisseo\BoaBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\RouteStopType;
 use Tisseo\EndivBundle\Entity\RouteStop;
 use Tisseo\EndivBundle\Entity\Route;
 
-class RouteStopController extends AbstractController
+class RouteStopController extends CoreController
 {
     /*
      * Build Form
@@ -38,38 +38,6 @@ class RouteStopController extends AbstractController
     }
 
     /*
-     * Process Form
-     * @param Form $form
-     * @param integer $routeId
-     *
-     * If form is valid, return a new RouteStop rendered in a specific view
-     * (as html table for view integration).
-     * Else, return the actual form view with errors.
-     */
-    private function processForm(Request $request, $form)
-    {
-        $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            $routeStop = $form->getData();
-
-            return $this->render(
-                'TisseoBoaBundle:RouteStop:new.html.twig',
-                array(
-                    'routeStop' => $routeStop
-                )
-            );
-        }
-
-        return $this->render(
-            'TisseoBoaBundle:RouteStop:form.html.twig',
-            array(
-                'form' => $form->createView()
-            )
-        );
-    }
-
-    /*
      * Render Form
      * @param integer $routeId
      * @param integer $rank
@@ -90,7 +58,8 @@ class RouteStopController extends AbstractController
             'TisseoBoaBundle:RouteStop:form.html.twig',
             array(
                 'form' => $form->createView(),
-                'rank' => $rank
+                'rank' => $rank,
+                'wayArea' => ($route->getWay() == Route::WAY_AREA)
             )
         );
     }
@@ -134,20 +103,19 @@ class RouteStopController extends AbstractController
         if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
         {
             $routeStops = json_decode($request->getContent(), true);
+
             try {
                 $this->get('tisseo_endiv.routestop_manager')->updateRouteStops($routeStops, $route);
-                $this->get('session')->getFlashBag()->add('success', 'route_stop.edited');
+                $this->addFlash('success', 'tisseo.flash.success.edited');
                 $code = 302;
             } catch (\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+                $this->addFlashException($e->getMessage());
                 $code = 500;
             }
 
-            $response = $this->redirect(
-                $this->generateUrl(
-                    'tisseo_boa_route_edit',
-                    array('routeId' => $routeId)
-                )
+            $response = $this->redirectToRoute(
+                'tisseo_boa_route_edit',
+                array('routeId' => $routeId)
             );
             $response->setStatusCode($code);
 
@@ -175,7 +143,27 @@ class RouteStopController extends AbstractController
         $this->isPostAjax($request);
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
-        
-        return $this->processForm($request, $this->buildForm($route));
+
+        $form = $this->buildForm($route);
+        $form->handleRequest($request);
+        if ($form->isValid())
+        {
+            $routeStop = $form->getData();
+
+            return $this->render(
+                'TisseoBoaBundle:RouteStop:new.html.twig',
+                array(
+                    'routeStop' => $routeStop,
+                    'wayArea' => ($route->getWay() == Route::WAY_AREA)
+                )
+            );
+        }
+
+        return $this->render(
+            'TisseoBoaBundle:RouteStop:form.html.twig',
+            array(
+                'form' => $form->createView()
+            )
+        );
     }
 }
