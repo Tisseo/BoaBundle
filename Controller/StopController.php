@@ -4,14 +4,20 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Stop;
 use Tisseo\EndivBundle\Entity\StopHistory;
 use Tisseo\EndivBundle\Entity\StopDatasource;
 use Tisseo\BoaBundle\Form\Type\StopCreateType;
 use Tisseo\BoaBundle\Form\Type\StopEditType;
 
-class StopController extends AbstractController
+class StopController extends CoreController
 {
+    /**
+     * Search
+     *
+     * Searching for Stops
+     */
     public function searchAction()
     {
         $this->isGranted(array(
@@ -23,18 +29,26 @@ class StopController extends AbstractController
         return $this->render(
             'TisseoBoaBundle:Stop:search.html.twig',
             array(
-                'pageTitle' => 'menu.stop_point'
+                'navTitle' => 'tisseo.boa.menu.stop.manage',
+                'pageTitle' => 'tisseo.boa.menu.stop.point'
             )
         );
     }
 
+    /**
+     * Create
+     *
+     * Creating Stop
+     */
     public function createAction(Request $request)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
 
         $stop = new Stop();
         $stop->addStopHistory(new StopHistory());
-        $stop->addStopDatasources(new StopDatasource());
+        $stopDatasource = new StopDatasource();
+        $this->buildDefaultDatasource($stopDatasource);
+        $stop->addStopDatasources($stopDatasource);
 
         $form = $this->createForm(
             new StopCreateType(),
@@ -49,28 +63,38 @@ class StopController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid())
         {
-            $stopManager = $this->get('tisseo_endiv.stop_manager');
-            try {
+            try
+            {
                 foreach($form->get('stopHistories') as $stopHistory)
-                    $stopHistory->getData()->setTheGeom(new Point($stopHistory->get('x')->getData(), $stopHistory->get('y')->getData(), $stopHistory->get('srid')->getData()));
+                {
+                    $stopHistory->getData()->setTheGeom(
+                        new Point(
+                            $stopHistory->get('x')->getData(),
+                            $stopHistory->get('y')->getData(),
+                            $stopHistory->get('srid')->getData()
+                        )
+                    );
+                }
 
-                $stopId = $stopManager->create($form->getData());
-                $this->get('session')->getFlashBag()->add('success', 'stop.created');
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+                $stopId = $this->get('tisseo_endiv.stop_manager')->create($form->getData());
+                $this->addFlash('success', 'tisseo.flash.success.create');
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+                $stopId = null;
             }
 
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
             );
         }
 
         return $this->render(
             'TisseoBoaBundle:Stop:create.html.twig',
             array(
-                'title' => 'stop.create',
+                'title' => 'tisseo.boa.stop_point.title.create',
                 'form' => $form->createView()
             )
         );
@@ -113,24 +137,26 @@ class StopController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid())
         {
-            try {
+            try
+            {
                 $stopManager->save($form->getData());
-                $this->get('session')->getFlashBag()->add('success', 'stop.edited');
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+                $this->addFlash('success', 'tisseo.flash.success.edited');
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
             }
         
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
             );
         }
 
         return $this->render(
             'TisseoBoaBundle:Stop:edit.html.twig',
             array(
-                'pageTitle' => 'menu.stop_point',
+                'pageTitle' => 'tisseo.boa.stop_point.title.edit',
                 'form' => $form->createView(),
                 'stop' => $stop,
                 'masterStopLabel' => $masterStopLabel,
@@ -142,23 +168,31 @@ class StopController extends AbstractController
         );
     }
 
+    /**
+     * Detach
+     * @param integer $stopId
+     *
+     * Detaching a Stop from its StopArea
+     */
     public function detachAction($stopId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
 
-        try {
+        try
+        {
             $stopAreaId = $this->get('tisseo_endiv.stop_manager')->detach($stopId);
-            $this->get('session')->getFlashBag()->add('success', 'stop.detached');
-        } catch(\Exception $e) {
+            $this->addFlash('success', 'tisseo.flash.success.detached');
+        }
+        catch(\Exception $e)
+        {
             $stop = $this->get('tisseo_endiv.stop_manager')->find($stopId);
             $stopAreaId = $stop->getStopArea()->getId();
-            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            $this->addFlashException($e->getMessage());
         }
         
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_stop_area_edit',
-                array('stopAreaId' => $stopAreaId)
-            )
+        return $this->redirectToRoute(
+            'tisseo_boa_stop_area_edit',
+            array('stopAreaId' => $stopAreaId)
         );
     }
 }

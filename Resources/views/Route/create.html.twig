@@ -3,7 +3,7 @@
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block modal_title %}
-    {{ title|trans({}, 'default') }}
+    {{ title|trans }}
 {% endblock %}
 
 {% block open_form %}
@@ -50,7 +50,7 @@
 
 {% block modal_actions %}
     <button type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
     </button>
     {{ form_end(form) }}
 
@@ -60,9 +60,9 @@
                 $(".way-select").change(function() {
                     var way = $(this).val();
 
-                    if (way === "Aller")
+                    if (way === "{{ constant('Tisseo\\EndivBundle\\Entity\\Route::WAY_FORWARD') }}")
                         $(".direction-input").val("{{ route.lineVersion.forwardDirection|raw }}");
-                    else if (way === "Retour")
+                    else if (way === "{{ constant('Tisseo\\EndivBundle\\Entity\\Route::WAY_BACKWARD') }}")
                         $(".direction-input").val("{{ route.lineVersion.backwardDirection|raw }}");
                 });
             });

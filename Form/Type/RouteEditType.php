@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Tisseo\EndivBundle\Entity\Route;
 
 class RouteEditType extends AbstractType
 {
@@ -21,26 +22,26 @@ class RouteEditType extends AbstractType
                 'name',
                 'text',
                 array(
-                    'label' => 'route.labels.name',
+                    'label' => 'tisseo.boa.route.label.name',
                 )
             )
             ->add(
                 'direction',
                 'text',
                 array(
-                    'label' => 'route.labels.direction',
+                    'label' => 'tisseo.boa.route.label.direction',
                 )
             )
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $form = $event->getForm();
                 $trip = $event->getData();
-                if ($trip->getWay() == 'Zonal')
+                if ($trip->getWay() == Route::WAY_AREA)
                 {
                     $form->add(
                         'way',
                         'text',
                         array(
-                            'label' => 'route.labels.way',
+                            'label' => 'tisseo.boa.route.label.way',
                             'read_only' => true
                         )
                     );
@@ -51,11 +52,11 @@ class RouteEditType extends AbstractType
                         'way',
                         'choice',
                         array(
-                            'label' => 'route.labels.way',
+                            'label' => 'tisseo.boa.route.label.way',
                             'choices' => array(
-                                'Aller' => 'Aller',
-                                'Retour' => 'Retour',
-                                'Boucle' => 'Boucle'
+                                Route::WAY_FORWARD => 'tisseo.boa.route.label.ways.forward',
+                                Route::WAY_BACKWARD => 'tisseo.boa.route.label.ways.backward',
+                                Route::WAY_LOOP => 'tisseo.boa.route.label.ways.loop'
                             )
                         )
                     );
@@ -65,7 +66,6 @@ class RouteEditType extends AbstractType
                 'routeDatasources',
                 'collection',
                 array(
-                    'label' => 'route.labels.datasource',
                     'type' => new RouteDatasourceType(),
                     'by_reference' => false
                 )

@@ -107,7 +107,7 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
     {
         $('#route-stops').parent().find('div.alert').remove();
         var check = true;
-        
+
         if (routeStops.length === 0)
             return check;
 
@@ -115,19 +115,19 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
 
 
         if ($(routeStops[0]).find('input.dropOff').is(':checked')) {
-            error += Translator.trans('route_stop.error.first_stop_dropoff', {}, 'messages')+"<br>";
+            error += Translator.trans('tisseo.boa.route_stop.validation.first_stop_dropoff')+"<br>";
             check = false;
         }
         if (!($(routeStops[0]).find('input.scheduledStop').is(':checked'))) {
-            error += Translator.trans('route_stop.error.first_stop_regulated', {}, 'messages')+"<br>";
+            error += Translator.trans('tisseo.boa.route_stop.validation.first_stop_regulated')+"<br>";
             check = false;
         }
         if ($(routeStops[routeStops.length - 1]).find('input.pickup').is(':checked')) {
-            error += Translator.trans('route_stop.error.last_stop_pickup', {}, 'messages')+"<br>";
+            error += Translator.trans('tisseo.boa.route_stop.validation.last_stop_pickup')+"<br>";
             check = false;
         }
         if (!($(routeStops[routeStops.length - 1]).find('input.scheduledStop').is(':checked'))) {
-            error += Translator.trans('route_stop.error.last_stop_regulated', {}, 'messages')+"<br>";
+            error += Translator.trans('tisseo.boa.route_stop.validation.last_stop_regulated')+"<br>";
             check = false;
         }
 
@@ -187,7 +187,7 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
         });
         formRank = $(document).find('#route-stops-list tr.new-route-stop #boa_route_stop_rank');
         formRank.val(formRank.val()-1);
-        
+
         routeStop.fadeOut(300, function() {
             $(this).remove();
         });

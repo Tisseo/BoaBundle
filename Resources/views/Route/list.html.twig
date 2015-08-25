@@ -2,30 +2,28 @@
 {% set bundle = 'TisseoBoaBundle' %}
 
 {% block breadcrumb %}
-    <li>
-        <a href="{{ path('tisseo_boa_line_version_list') }}">
-            {{ 'menu.offer_list'|trans({}, 'messages') }}
-        </a>
-    </li>
+    <a href="{{ path('tisseo_boa_line_version_list') }}">
+        {{ 'tisseo.boa.line_version.title.list'|trans }}
+    </a>
 {% endblock %}
 
 {% block list_title -%}
-    {{ 'route.list.line'|trans({'%number%': lineVersion.line.number, '%version%': lineVersion.version}, 'default') }}
+    {{ pageTitle|trans({'%number%': lineVersion.line.number, '%version%': lineVersion.version}) }}
     {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
         -
-        <a href="{{ path('tisseo_boa_route_create', {'lineVersionId':lineVersion.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'route.create'|trans({}, 'default') }}
+        <a href="{{ path('tisseo_boa_route_create', { 'lineVersionId':lineVersion.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.route.action.create'|trans }}
         </a>
     {% endif %}
 {% endblock %}
 
 {% block table_head -%}
-    <th class="col-md-4">{{ 'route.list.columns.name'|trans({}, 'default') }}</th>
-    <th class="col-md-1">{{ 'route.list.columns.firstStop'|trans({}, 'default') }}</th>
-    <th class="col-md-1">{{ 'route.list.columns.lastStop'|trans({}, 'default') }}</th>
-    <th class="col-md-2">{{ 'route.list.columns.comment'|trans({}, 'default') }}</th>
-    <th class="col-md-1">{{ 'route.list.columns.way'|trans({}, 'default') }}</th>
-    <th class="col-md-3 no-sort no-search">{{ 'global.actions'|trans }}</th>
+    <th class="col-md-4">{{ 'tisseo.boa.route.label.name'|trans }}</th>
+    <th class="col-md-1">{{ 'tisseo.boa.route.label.first_stop'|trans }}</th>
+    <th class="col-md-1">{{ 'tisseo.boa.route.label.last_stop'|trans }}</th>
+    <th class="col-md-2">{{ 'tisseo.boa.route.label.comment'|trans }}</th>
+    <th class="col-md-1">{{ 'tisseo.boa.route.label.way'|trans }}</th>
+    <th class="col-md-3 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
@@ -49,27 +47,27 @@
             <td>{{ route.comment }}</td>
             <td>{{ route.way }}</td>
             <td>
-                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_trip_list', {routeId: route.id}) }}">
-                    <span class="glyphicon glyphicon-list"></span> {{ 'route.actions.services'|trans }}
+                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_trip_list', { 'routeId': route.id }) }}">
+                    <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.route.action.services'|trans }}
                 </a>
                 {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
                 <div class="btn-group">
-                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">{{ 'route.actions.actions'|trans }} <span class="caret"></span></button>
+                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">{{ 'tisseo.global.actions'|trans }} <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate', {routeId: route.id}) }}" data-toggle="modal" data-target="#base-modal">
-                                {{ 'route.actions.copy'|trans }}
+                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate', { 'routeId': route.id }) }}" data-toggle="modal" data-target="#base-modal">
+                                {{ 'tisseo.boa.route.action.copy'|trans }}
                             </a>
                         </li>
                         <li>
-                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_edit', {routeId: route.id}) }}">
-                                {{ 'route.actions.edit'|trans }}
+                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_edit', { 'routeId': route.id }) }}">
+                                {{ 'tisseo.boa.route.action.edit'|trans }}
                             </a>
                         </li>
                         {% if not route.hasTripsNotPattern %}
                         <li>
-                            <a class="btn delete-action" role="button" href="{{ path('tisseo_boa_route_delete', {routeId: route.id}) }}">
-                                {{ 'route.actions.delete'|trans }}
+                            <a class="btn delete-action" role="button" href="{{ path('tisseo_boa_route_delete', { 'routeId': route.id }) }}">
+                                {{ 'tisseo.boa.route.action.delete'|trans }}
                             </a>
                         </li>
                         {% endif %}
@@ -88,7 +86,7 @@
             $('.delete-action').on('click', function(event) {
                 event.preventDefault();
                 var self = this;
-                bootbox.confirm("{{ 'route.confirm.delete'|trans }}", function(result) {
+                bootbox.confirm("{{ 'tisseo.boa.route.confirm.delete'|trans }}", function(result) {
                     if (result)
                         window.location = self.href;
                 });

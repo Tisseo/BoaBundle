@@ -41,7 +41,7 @@ class TripCreateType extends AbstractType
                 'name',
                 'text',
                 array(
-                    'label' => 'trip.labels.name'
+                    'label' => 'tisseo.boa.trip.label.name'
                 )
             )
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -52,7 +52,7 @@ class TripCreateType extends AbstractType
                     'pattern',
                     'entity',
                     array(
-                        'label' => 'trip.labels.pattern',
+                        'label' => 'tisseo.boa.trip.label.pattern',
                         'required' => true,
                         'class' => 'TisseoEndivBundle:Trip',
                         'property' => 'name',

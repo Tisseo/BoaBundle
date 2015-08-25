@@ -3,11 +3,17 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Color;
 use Tisseo\BoaBundle\Form\Type\ColorType;
 
-class ColorController extends AbstractController
+class ColorController extends CoreController
 {
+    /**
+     * List
+     *
+     * Listing all Colors
+     */
     public function listAction()
     {
         $this->isGranted(
@@ -17,70 +23,65 @@ class ColorController extends AbstractController
             )
         );
 
-        $ColorManager = $this->get('tisseo_endiv.color_manager');
         return $this->render(
             'TisseoBoaBundle:Color:list.html.twig',
             array(
-                'pageTitle' => 'menu.color',
-                'colors' => $ColorManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.color.title.list',
+                'colors' => $this->get('tisseo_endiv.color_manager')->findAll()
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $colorId
+     *
+     * Creating/editing Color
+     */
     public function editAction(Request $request, $colorId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $ColorManager = $this->get('tisseo_endiv.color_manager');
-        $form = $this->buildForm($colorId, $ColorManager);
-        $render = $this->processForm($request, $form);
-        if (!$render) {
-            return $this->render(
-                'TisseoBoaBundle:Color:form.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'title' => ($colorId ? 'color.edit' : 'color.create')
-                )
-            );
-        }
-        return ($render);
-    }
+        $colorManager = $this->get('tisseo_endiv.color_manager');
+        $color = $colorManager->find($colorId);
 
-    private function buildForm($colorId, $ColorManager)
-    {
-        $color = $ColorManager->find($colorId);
-        if (empty($color)) {
+        if (empty($color))
             $color = new Color();
-        }
 
-        $form = $this->createForm(new ColorType(), $color,
+        $form = $this->createForm(
+            new ColorType(),
+            $color,
             array(
-                'action' => $this->generateUrl('tisseo_boa_color_edit',
-                                            array('colorId' => $colorId)
+                'action' => $this->generateUrl(
+                    'tisseo_boa_color_edit',
+                    array('colorId' => $colorId)
                 )
             )
         );
 
-        return ($form);
-    }
-
-    private function processForm(Request $request, $form)
-    {
         $form->handleRequest($request);
-        $ColorManager = $this->get('tisseo_endiv.color_manager');
-        if ($form->isValid()) {
-            $ColorManager->save($form->getData());
-            $this->get('session')->getFlashBag()->add('success',
-                $this->get('translator')->trans(
-                    'color.created',
-                    array(),
-                    'default'
-                )
-            );
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_color_list')
-            );
+        if ($form->isValid())
+        {
+            try
+            {
+                $colorManager->save($form->getData());
+                $this->addFlash('success', ($colorId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
+            }
+            catch (\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+            }
+
+            return $this->redirectToRoute('tisseo_boa_color_list');
         }
-        return (null);
+
+        return $this->render(
+            'TisseoBoaBundle:Color:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'title' => ($colorId ? 'tisseo.boa.color.title.edit' : 'tisseo.boa.color.title.create')
+            )
+        );
     }
 }

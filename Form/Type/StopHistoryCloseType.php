@@ -22,7 +22,7 @@ class StopHistoryCloseType extends AbstractType
                 'startDate',
                 'date',
                 array(
-                    'label' => 'stop_history.labels.start_date',
+                    'label' => 'tisseo.boa.stop_history.label.start_date',
                     'read_only' => true,
                     'widget' => 'single_text',
                     'format' => 'dd/MM/yyyy'
@@ -32,7 +32,7 @@ class StopHistoryCloseType extends AbstractType
                 'endDate',
                 'tisseo_datepicker',
                 array(
-                    'label' => 'stop_history.labels.end_date',
+                    'label' => 'tisseo.boa.stop_history.label.end_date',
                     'attr' => array(
                         'data-to-date' => true
                     )

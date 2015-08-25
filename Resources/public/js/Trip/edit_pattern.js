@@ -48,10 +48,10 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
         }); 
 
         if (patternNameError)
-            error += Translator.trans('trip.error.pattern_name_empty', {}, 'messages')+"<br>";
+            error += Translator.trans('tisseo.boa.trip.validation.pattern_name_empty')+"<br>";
 
         if (patternTimeError)
-            error += Translator.trans('trip.error.pattern_time_invalid', {}, 'messages')+"<br>";
+            error += Translator.trans('tisseo.boa.trip.validation.pattern_time_invalid')+"<br>";
 
         error += "</div>";
 

@@ -14,22 +14,87 @@ class ColorType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('label' => 'color.labels.name'));
-        $builder->add('html', 'text', array('label' => 'color.labels.html'));
-        $builder->add('pantoneOc', 'text', array('label' => 'color.labels.pantoneOc'));
-        $builder->add('hoxis', 'text',
-            array(
-                'label' => 'color.labels.hoxis',
-                'required' => false
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.name'
+                )
             )
-        );
-        $builder->add('cmykCyan', 'text', array('label' => 'color.labels.cmykCyan'));
-        $builder->add('cmykMagenta', 'text', array('label' => 'color.labels.cmykMagenta'));
-        $builder->add('cmykYellow', 'text', array('label' => 'color.labels.cmykYellow'));
-        $builder->add('cmykBlack', 'text', array('label' => 'color.labels.cmykBlack'));
-        $builder->add('rgbRed', 'text', array('label' => 'color.labels.rgbRed'));
-        $builder->add('rgbGreen', 'text', array('label' => 'color.labels.rgbGreen'));
-        $builder->add('rgbBlue', 'text', array('label' => 'color.labels.rgbBlue'));
+            ->add(
+                'html',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.html'
+                )
+            )
+            ->add(
+                'pantoneOc',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.pantone'
+                )
+            )
+            ->add(
+                'hoxis',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.hoxis',
+                    'required' => false
+                )
+            )
+            ->add(
+                'cmykCyan',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.cmyk_cyan'
+                )
+            )
+            ->add(
+                'cmykMagenta',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.cmyk_magenta'
+                )
+            )
+            ->add(
+                'cmykYellow',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.cmyk_yellow'
+                )
+            )
+            ->add(
+                'cmykBlack',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.cmyk_black'
+                )
+            )
+            ->add(
+                'rgbRed',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.rgb_red'
+                )
+            )
+            ->add(
+                'rgbGreen',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.rgb_green'
+                )
+            )
+            ->add(
+                'rgbBlue',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.color.label.rgb_blue'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -43,7 +108,6 @@ class ColorType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

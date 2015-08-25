@@ -4,15 +4,21 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Route;
 use Tisseo\EndivBundle\Entity\Trip;
 use Tisseo\EndivBundle\Entity\TripDatasource;
 use Tisseo\BoaBundle\Form\Type\TripCreateType;
 use Tisseo\BoaBundle\Form\Type\TripEditType;
 
-class TripController extends AbstractController
+class TripController extends CoreController
 {
+    /**
+     * List
+     * @param integer $routeId
+     *
+     * Listing all Trips of a specific Route
+     */
     public function listAction($routeId)
     {
         $this->isGranted(
@@ -22,17 +28,14 @@ class TripController extends AbstractController
             )
         );
 
-        $tripManager = $this->get('tisseo_endiv.trip_manager');
-        $routeManager = $this->get('tisseo_endiv.route_manager');
-
-        $route = $routeManager->find($routeId);
-        $tripBounds = $tripManager->getDateBounds($route);
+        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $tripBounds = $this->get('tisseo_endiv.trip_manager')->getDateBounds($route);
         $yesterday = new \Datetime('-1 day');
 
         return $this->render(
             'TisseoBoaBundle:Trip:list.html.twig',
             array(
-                'pageTitle' => 'menu.route_manage',
+                'pageTitle' => 'tisseo.boa.trip.title.list',
                 'route' => $route,
                 'tripBounds' => $tripBounds,
                 'yesterday' => $yesterday
@@ -40,100 +43,12 @@ class TripController extends AbstractController
         );
     }
 
-    public function editAction(Request $request, $tripId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-
-        $tripManager = $this->get('tisseo_endiv.trip_manager');
-        $trip = $tripManager->find($tripId);
-
-        $form = $this->createForm(
-            new TripEditType(),
-            $trip,
-            array(
-                "action"=>$this->generateUrl(
-                    'tisseo_boa_trip_edit',
-                    array("tripId" => $tripId)
-                )
-            )
-        );
-
-        $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            $trip = $form->getData();
-
-            try {
-                $tripManager->save($trip);
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-            }
-
-            return $this->redirect(
-                $this->generateUrl(
-                    'tisseo_boa_trip_list',
-                    array("routeId" => $trip->getRoute()->getId())
-                )
-            );
-        }
-
-        $startDate = new \Datetime('first day of last month');
-        $endDate = new \Datetime('last day of next month');
-
-        return $this->render(
-            'TisseoBoaBundle:Trip:edit.html.twig',
-            array(
-                'pageTitle' => 'menu.route_manage',
-                'title' => 'trip.edit',
-                'form' => $form->createView(),
-                'trip' => $trip,
-                'startDate' => $startDate,
-                'endDate' => $endDate
-            )
-        );
-    }
-
-    public function deleteAction($tripId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-
-        $tripManager = $this->get('tisseo_endiv.trip_manager');
-        $trip = $tripManager->find($tripId);
-        try {
-            $tripManager->remove($trip);
-        } catch(\Exception $e) {
-            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-        }
-
-        return $this->redirect(
-            $this->generateUrl(
-                'tisseo_boa_trip_list',
-                array('routeId' => $trip->getRoute()->getId())
-            )
-        );
-    }
-
-    public function deleteAllAction($routeId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
-
-        try {
-            $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
-            $this->get('session')->getFlashBag()->add('success', 'trip.all_deleted');
-        } catch(\Exception $e) {
-            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-        }
-
-        return $this->redirect(
-            $this->generateUrl(
-                'tisseo_boa_trip_list',
-                array('routeId' => $routeId)
-            )
-        );
-    }
-
+    /**
+     * Create
+     * @param integer $routeId
+     *
+     * Creating Trip in a specific Route
+     */
     public function createAction(Request $request, $routeId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
@@ -153,7 +68,7 @@ class TripController extends AbstractController
             new TripCreateType(),
             $trip,
             array(
-                "action"=>$this->generateUrl(
+                "action" => $this->generateUrl(
                     'tisseo_boa_trip_create',
                     array("routeId" => $routeId)
                 ),
@@ -162,15 +77,18 @@ class TripController extends AbstractController
         );
 
         $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            try {
+        if ($form->isValid())
+        {
+            try
+            {
                 $newTrip = $form->getData();
                 $stopTimes = $request->request->get('stopTimes');
                 $this->get('tisseo_endiv.trip_manager')->createTripAndStopTimes($newTrip, $stopTimes);
-                $this->get('session')->getFlashBag()->add('success', 'trip.created');
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+                $this->addFlash('success', 'tisseo.flash.success.created');
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
             }
 
             return $this->redirect(
@@ -181,19 +99,141 @@ class TripController extends AbstractController
         return $this->render(
             'TisseoBoaBundle:Trip:create.html.twig',
             array(
-                'title' => 'trip.create',
+                'title' => 'tisseo.boa.trip.title.create',
                 'form' => $form->createView(),
                 'trip' => $trip
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $tripId
+     *
+     * Editing Trip
+     */
+    public function editAction(Request $request, $tripId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $tripManager = $this->get('tisseo_endiv.trip_manager');
+        $trip = $tripManager->find($tripId);
+
+        $form = $this->createForm(
+            new TripEditType(),
+            $trip,
+            array(
+                "action" => $this->generateUrl(
+                    'tisseo_boa_trip_edit',
+                    array("tripId" => $tripId)
+                )
+            )
+        );
+
+        $form->handleRequest($request);
+        if ($form->isValid())
+        {
+            $trip = $form->getData();
+
+            try
+            {
+                $tripManager->save($trip);
+                $this->addFlash('success', 'tisseo.flash.success.edited');
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+            }
+
+            return $this->redirectToRoute(
+                'tisseo_boa_trip_list',
+                array('routeId' => $trip->getRoute()->getId())
+            );
+        }
+
+        $startDate = new \Datetime('first day of last month');
+        $endDate = new \Datetime('last day of next month');
+
+        return $this->render(
+            'TisseoBoaBundle:Trip:edit.html.twig',
+            array(
+                'pageTitle' => 'tisseo.boa.trip.title.edit',
+                'form' => $form->createView(),
+                'trip' => $trip,
+                'startDate' => $startDate,
+                'endDate' => $endDate
+            )
+        );
+    }
+
+    /**
+     * Delete
+     * @param $tripId
+     *
+     * Deleting Trip
+     */
+    public function deleteAction($tripId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $tripManager = $this->get('tisseo_endiv.trip_manager');
+        $trip = $tripManager->find($tripId);
+
+        try
+        {
+            $tripManager->remove($trip);
+            $this->addFlash('success', 'tisseo.flash.success.deleted');
+        }
+        catch(\Exception $e)
+        {
+            $this->addFlashException($e->getMessage());
+        }
+
+        return $this->redirectToRoute(
+            'tisseo_boa_trip_list',
+            array('routeId' => $trip->getRoute()->getId())
+        );
+    }
+
+    /**
+     * Delete all
+     * @param integer $routeId
+     *
+     * Deleting all Trips from a Route
+     */
+    public function deleteAllAction($routeId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+
+        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+
+        try
+        {
+            $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
+            $this->addFlash('success', 'tisseo.boa.trip.message.all_deleted');
+        }
+        catch(\Exception $e)
+        {
+            $this->addFlashException($e->getMessage());
+        }
+
+        return $this->redirectToRoute(
+            'tisseo_boa_trip_list',
+            array('routeId' => $routeId)
+        );
+    }
+
+    /**
+     * Edit pattern
+     * @param integer $routeId
+     *
+     * Editing Trip 'pattern' in a Route
+     */
     public function editPatternAction(Request $request, $routeId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
-        $routeManager = $this->get('tisseo_endiv.route_manager');
-        $route = $routeManager->find($routeId);
+        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
         {
@@ -201,16 +241,18 @@ class TripController extends AbstractController
             $tripDatasource = new TripDatasource();
             $this->buildDefaultDatasource($tripDatasource);
 
-            try {
+            try
+            {
                 $this->get('tisseo_endiv.trip_manager')->updateTripPatterns($tripPatterns, $route, $tripDatasource);
-                $this->get('session')->getFlashBag()->add('success', 'trip.pattern.edited');
-                return $this->redirect(
-                    $this->generateUrl(
-                        'tisseo_boa_route_edit',
-                        array('routeId' => $routeId)
-                    )
+                $this->addFlash('success', 'tisseo.flash.success.edited');
+                
+                return $this->redirectToRoute(
+                    'tisseo_boa_route_edit',
+                    array('routeId' => $routeId)
                 );
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e)
+            {
                 return new Response($e->getMessage());
             }
         }

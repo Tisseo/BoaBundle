@@ -3,10 +3,11 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\StopAccessibility;
 use Tisseo\BoaBundle\Form\Type\StopAccessibilityType;
 
-class StopAccessibilityController extends AbstractController
+class StopAccessibilityController extends CoreController
 {
     public function createAction(Request $request, $stopId)
     {

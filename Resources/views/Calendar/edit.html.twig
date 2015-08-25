@@ -1,89 +1,88 @@
-{% extends "TisseoCoreBundle::container.html.twig" %}
+{% extends "TisseoCoreBundle::generic_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 
 {% form_theme calendarForm 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block breadcrumb %}
-    <li>
-        <a href="{{ path('tisseo_boa_calendar_list', {'calendarType': calendarForm.vars.value.calendarType}) }}">
-            {{ 'menu.calendar_list'|trans({'%type%': calendarForm.vars.value.calendarType}, 'messages') }}
-        </a>
-    </li>
+    {% if calendarForm.vars.value.calendarType %}
+    <a href="{{ path('tisseo_boa_calendar_list', {'calendarType': calendarForm.vars.value.calendarType}) }}">
+        {{ 'tisseo.boa.calendar.title.list'|trans({ '%type%': calendarForm.vars.value.calendarType }) }}
+    </a>
+    {% else %}
+        {{ 'tisseo.boa.menu.calendar.manage'|trans }}
+    {% endif %}
 {% endblock %}
 
-{% block main_content %}
-    <h1>{{ title|trans({}, 'default') }}</h1>
-    <hr/>
-
+{% block content %}
     {{ form_start(calendarForm) }}
-        {{ form_errors(calendarForm) }}
-        {{ form_widget(calendarForm._token) }}
-        <div id='calendar-fields' class="form form-edit col-md-12">
-            <div class="col-md-4">
-                {{ form_row(calendarForm.name) }}
+    {{ form_errors(calendarForm) }}
+    {{ form_widget(calendarForm._token) }}
+    <div id='calendar-fields' class="form form-edit col-md-12">
+        <div class="col-md-4">
+            {{ form_row(calendarForm.name) }}
+        </div>
+        <div class="col-md-2" >
+            {{ form_row(calendarForm.calendarType, { 'attr': {'class': 'select-type'}}) }}
+        </div>
+        {% if calendarForm.calendarType.vars.value in ['mixte', 'periode'] %}
+            <div id='div-line' class="col-md-3">
+        {% else %}
+            <div id='div-line' class="hide col-md-3">
+        {% endif %}
+                {{ form_row(calendarForm.lineVersion, { 'attr': {'class': 'select-line-version'}}) }}
             </div>
-            <div class="col-md-2" >
-                {{ form_row(calendarForm.calendarType, { 'attr': {'class': 'select-type'}}) }}
-            </div>
-            {% if calendarForm.calendarType.vars.value in ['mixte', 'periode'] %}
-                <div id='div-line' class="col-md-3">
-            {% else %}
-                <div id='div-line' class="hide col-md-3">
-            {% endif %}
-                    {{ form_row(calendarForm.lineVersion, { 'attr': {'class': 'select-line-version'}}) }}
-                </div>
+    </div>
+
+    <div id="divRemoveElement"
+            style="display:none;"
+            data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:remove_form.html.twig' with { 'form': calendarForm.removeElement.vars.prototype } %}{% endfilter %}"
+    >
+    </div>
+
+    <table id='calendar_elements'
+            class="table table-hover dataTable no-footer"
+            data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendarElement.vars.prototype } %} {% endfilter %}"
+    >
+    <thead>
+        <th>{{ 'tisseo.boa.calendar_element.label.rank' | trans }}</th>
+        <th>{{ 'tisseo.boa.calendar_element.label.start_date' | trans }}</th>
+        <th>{{ 'tisseo.boa.calendar_element.label.end_date' | trans }}</th>
+        <th>{{ 'tisseo.boa.calendar_element.label.included_calendar' | trans }}</th>
+        <th>{{ 'tisseo.boa.calendar_element.label.positive' | trans }}</th>
+        <th>{{ 'tisseo.boa.calendar_element.label.interval' | trans }}</th>
+        <th>{{ 'tisseo.global.delete' | trans }}</th>
+    </thead>
+    <tbody>
+    {% set line_counter = 0 %}
+    {% for calendar_element in calendarElements %}
+        {% set line_counter = line_counter+1 %}
+        <tr>
+            <input type="hidden" id="id_{{ line_counter }}" value="{{ calendar_element.id }}">
+            <td>{{ calendar_element.rank }}</td>
+            <td>{{ calendar_element.startDate|date("d/m/Y") }}</td>
+            <td>{{ calendar_element.endDate|date("d/m/Y") }}</td>
+            <td>{{ calendar_element.includedCalendar.Name }}</td>
+            <td>{{ calendar_element.operator }}</td>
+            <td>{{ calendar_element.interval }}</td>
+            <td><input type="checkbox"  class="remove_checkbox"></td>
+        </tr>
+    {% endfor %}
+    </tbody></table>
+
+    <div class="row">
+        <div class="col-md-11">
+            <a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans}}</a>
         </div>
 
-        <div id="divRemoveElement"
-                style="display:none;"
-                data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:remove_form.html.twig' with { 'form': calendarForm.removeElement.vars.prototype } %}{% endfilter %}"
-        >
+        <div class="col-md-1">
+            <a class="btn btn-default" id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{ 'tisseo.global.empty'|trans}}</a>
         </div>
+    </div>
 
-        <table id='calendar_elements'
-                class="table table-hover dataTable no-footer"
-                data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendarElement.vars.prototype } %} {% endfilter %}"
-        >
-        <thead>
-            <th>{{ 'calendar_element.labels.rank' | trans }}</th>
-            <th>{{ 'calendar_element.labels.startDate' | trans }}</th>
-            <th>{{ 'calendar_element.labels.endDate' | trans }}</th>
-            <th>{{ 'calendar_element.labels.includedCalendar' | trans }}</th>
-            <th>{{ 'calendar_element.labels.positive' | trans }}</th>
-            <th>{{ 'calendar_element.labels.interval' | trans }}</th>
-            <th>{{ 'global.delete' | trans }}</th>
-        </thead>
-        <tbody>
-        {% set line_counter = 0 %}
-        {% for calendar_element in calendarElements %}
-            {% set line_counter = line_counter+1 %}
-            <tr>
-                <input type="hidden" id="id_{{ line_counter }}" value="{{ calendar_element.id }}">
-                <td>{{ calendar_element.rank }}</td>
-                <td>{{ calendar_element.startDate|date("d/m/Y") }}</td>
-                <td>{{ calendar_element.endDate|date("d/m/Y") }}</td>
-                <td>{{ calendar_element.includedCalendar.Name }}</td>
-                <td>{{ calendar_element.operator }}</td>
-                <td>{{ calendar_element.interval }}</td>
-                <td><input type="checkbox"  class="remove_checkbox"></td>
-            </tr>
-        {% endfor %}
-        </tbody></table>
-
-        <div class="row">
-            <div class="col-md-11">
-                <a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans({}, 'messages')}}</a>
-            </div>
-
-            <div class="col-md-1">
-                <a class="btn btn-default" id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.empty'|trans({}, 'messages')}}</a>
-            </div>
-        </div>
-
-        <hr>
-        <button type="submit" id="save-form" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
-             {{'global.save'|trans}}
-        </button>
+    <hr>
+    <button type="submit" id="save-form" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
+         {{'global.save'|trans}}
+    </button>
     {{ form_end(calendarForm, {'render_rest': false}) }}
 
     <div class="calendar_div">
@@ -98,7 +97,7 @@
                 <div class="col-md-2">
                     <button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
                         <span class="glyphicon glyphicon-refresh"></span>
-                        {{ 'global.refresh'|trans({}, 'messages') }}
+                        {{ 'tisseo.global.refresh'|trans }}
                     </button>
                 </div>
             </div>
@@ -217,7 +216,7 @@
             var $removeCollectionHolder = $('#divRemoveElement');
 
             $('#empty_elements').click(function(event) {
-                if (!confirm("{{'calendar.empty_elements'|trans({}, 'default')}}"))
+                if (!confirm("{{'calendar.empty_elements'|trans}}"))
                     return false;
 
                 $('#calendar_elements > tbody  > tr').each(function() {
@@ -254,7 +253,7 @@
 
             $('#calendar_elements').on('click', "a", function(event) {
                 event.preventDefault();
-                if ($(this).text() === "{{'global.delete'|trans({}, 'messages')}}") {
+                if ($(this).text() === "{{'global.delete'|trans}}") {
                     $(this).closest("tr").remove();
                 }
             });

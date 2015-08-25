@@ -3,11 +3,17 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Property;
 use Tisseo\BoaBundle\Form\Type\PropertyType;
 
-class PropertyController extends AbstractController
+class PropertyController extends CoreController
 {
+    /**
+     * List
+     *
+     * Listing all Properties
+     */
     public function listAction()
     {
         $this->isGranted(
@@ -17,24 +23,35 @@ class PropertyController extends AbstractController
             )
         );
 
-        $PropertyManager = $this->get('tisseo_endiv.property_manager');
         return $this->render(
             'TisseoBoaBundle:Property:list.html.twig',
             array(
-                'pageTitle' => 'menu.property',
-                'properties' => $PropertyManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.property.title.list',
+                'properties' => $this->get('tisseo_endiv.property_manager')->findAll()
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $propertyId
+     *
+     * Creating/editing Property
+     */
     public function editAction(Request $request, $propertyId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $PropertyManager = $this->get('tisseo_endiv.property_manager');
-        $property = $PropertyManager->find($propertyId);
-        if (empty($property)) { $property = new Property(); }
-        $form = $this->createForm( new PropertyType(), $property,
+        $propertyManager = $this->get('tisseo_endiv.property_manager');
+        $property = $propertyManager->find($propertyId);
+
+        if (empty($property))
+            $property = new Property();
+
+        $form = $this->createForm(
+            new PropertyType(),
+            $property,
             array(
                 'action' => $this->generateUrl(
                     'tisseo_boa_property_edit',
@@ -44,31 +61,26 @@ class PropertyController extends AbstractController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
-            try {
-                $PropertyManager->save($form->getData());
-
-                $this->get('session')->getFlashBag()->add('success',
-                    $this->get('translator')->trans(
-                        'property.created',
-                        array(),
-                        'default'
-                    )
-                );
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+        if ($form->isValid())
+        {
+            try
+            {
+                $propertyManager->save($form->getData());
+                $this->addFlash('success', ($propertyId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
+            }
+            catch (\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
             }
 
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_property_list')
-            );
+            return $this->redirectToRoute('tisseo_boa_property_list');
         }
 
         return $this->render(
             'TisseoBoaBundle:Property:form.html.twig',
             array(
                 'form' => $form->createView(),
-                'title' => ($propertyId ? 'property.edit' : 'property.create')
+                'title' => ($propertyId ? 'tisseo.boa.property.title.edit' : 'tisseo.boa.property.title.create')
             )
         );
     }

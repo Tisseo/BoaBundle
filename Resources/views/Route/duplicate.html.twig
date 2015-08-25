@@ -1,7 +1,7 @@
 {% extends "::modal.html.twig" %}
 
 {% block modal_title %}
-    {{ title|trans({}, 'default') }}
+    {{ title|trans }}
 {% endblock %}
 
 {% block open_form %}
@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block modal_body %}
+    {# TODO: Translator ? #}
     Selectionnez la version de ligne sur laquelle dupliquer la route:
     <select name="line_version" {{ class_attribute }}>
     {% for lv in activeLineVersions %}
@@ -19,7 +20,7 @@
 
 {% block modal_actions %}
     <button type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span>{{ 'global.save'|trans }}
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'tisseo.global.save'|trans }}
     </button>
     {{ form_end(form) }}
 {% endblock %}

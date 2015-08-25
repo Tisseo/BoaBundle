@@ -13,31 +13,29 @@
     {% include 'TisseoBoaBundle::config.js.html.twig' %}
 {% endblock %}
 
-{% block title -%}
+{% block title %}
 {{ parent() }}
-- {{ 'boa_app_name'|trans({}, 'default') }}
+- {{ 'tisseo.boa.application'|trans }}
     {% if pageTitle %}
-    - {{ pageTitle|trans }}
+        - 
+        {% if titleParameters %}
+            {{ pageTitle|trans(titleParameters) }}
+        {% else %}
+            {{ pageTitle|trans }}
+        {% endif %}
     {% endif %}
 {% endblock %}
 
 {% block navbar_brand %}
-    <a href="{% if externalNetworkId %}{{ path('tisseo_boa_homepage', {'externalNetworkId':externalNetworkId }) }}{% else %}{{ path('tisseo_boa_homepage') }}{% endif %}">Boa</a>
+    <a href="{{ path('tisseo_boa_homepage') }}">{{ 'tisseo.boa.application'|trans }}</a>
 {% endblock %}
 
 {% block root_breadcrumb %}
     <ol class="breadcrumb">
-        {% if currentNetwork %}
-            <li>
-                <a href="{{ path('tisseo_boa_homepage', {'externalNetworkId':currentNetwork.externalId }) }}">
-                    {{ currentNetwork.name }}
-                </a>
-            </li>
-        {% endif %}
+        <li>
         {% block breadcrumb %}
-            {% if pageTitle %}
-                <li>{{ pageTitle|trans }}</li>
-            {% endif %}
+            {% if navTitle %}{{ navTitle|trans }}{% endif %}
         {% endblock %}
+        </li>
     </ol>
 {% endblock %}

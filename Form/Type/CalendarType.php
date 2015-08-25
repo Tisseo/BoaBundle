@@ -5,15 +5,11 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-
 use Tisseo\EndivBundle\Entity\Calendar;
-
 use Tisseo\BoaBundle\Form\Type\CalendarElementType;
 use Tisseo\BoaBundle\Form\Type\RemoveElementType;
-
 
 class CalendarType extends AbstractType
 {
@@ -28,14 +24,14 @@ class CalendarType extends AbstractType
                 'name',
                 'text',
                 array(
-                    'label' => 'calendar.labels.name'
+                    'label' => 'tisseo.boa.calendar.label.name'
                 )
             )
             ->add(
                 'calendarType',
                 'choice',
                 array(
-                    'label' => 'calendar.labels.type',
+                    'label' => 'tisseo.boa.calendar.label.type',
                     'choices' => Calendar::getCalendarTypes()
                 )
             )
@@ -45,7 +41,7 @@ class CalendarType extends AbstractType
                 array(
                     'class' => 'TisseoEndivBundle:LineVersion',
                     'property' => 'FormattedLineVersion',
-                    'label' => 'calendar.labels.lineVersion',
+                    'label' => 'tisseo.boa.calendar.label.lineVersion',
                     'required' => false,
                 )
             )
@@ -53,14 +49,14 @@ class CalendarType extends AbstractType
                 'computedStartDate',
                 'datetime',
                 array(
-                    'label' => 'calendar.labels.computedStartDate'
+                    'label' => 'tisseo.boa.calendar.label.computedStartDate'
                 )
             )
             ->add(
                 'computedEndDate',
                 'datetime',
                 array(
-                    'label' => 'calendar.labels.computedEndDate'
+                    'label' => 'tisseo.boa.calendar.label.computedEndDate'
                 )
             )
             //new calendar_elements container
@@ -100,7 +96,6 @@ class CalendarType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

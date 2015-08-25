@@ -1,18 +1,14 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 
-{% block list_title -%}
-    {{ 'log.list.title'|trans({}, 'default') }}
-{% endblock %}
-
 {% block table_head -%}
-    <th class="col-sm-1">{{ 'log.list.columns.id'|trans({}, 'default') }}</th>
-    <th class="col-sm-1">{{ 'log.list.columns.datetime'|trans({}, 'default') }}</th>
-    <th class="col-sm-2">{{ 'log.list.columns.table'|trans({}, 'default') }}</th>
-    <th class="col-sm-1">{{ 'log.list.columns.action'|trans({}, 'default') }}</th>
-    <th class="col-sm-3">{{ 'log.list.columns.previousData'|trans({}, 'default') }}</th>
-    <th class="col-sm-3">{{ 'log.list.columns.insertedData'|trans({}, 'default') }}</th>
-    <th class="col-sm-1">{{ 'log.list.columns.user'|trans({}, 'default') }}</th>
+    <th class="col-sm-1">{{ 'tisseo.boa.log.label.id'|trans }}</th>
+    <th class="col-sm-1">{{ 'tisseo.boa.log.label.datetime'|trans }}</th>
+    <th class="col-sm-2">{{ 'tisseo.boa.log.label.table'|trans }}</th>
+    <th class="col-sm-1">{{ 'tisseo.boa.log.label.action'|trans }}</th>
+    <th class="col-sm-3">{{ 'tisseo.boa.log.label.previous_data'|trans }}</th>
+    <th class="col-sm-3">{{ 'tisseo.boa.log.label.inserted_data'|trans }}</th>
+    <th class="col-sm-1">{{ 'tisseo.boa.log.label.user'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}

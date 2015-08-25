@@ -4,17 +4,21 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Doctrine\Common\Collections\ArrayCollection;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\StopArea;
 use Tisseo\EndivBundle\Entity\StopAreaDatasource;
 use Tisseo\BoaBundle\Form\Type\StopAreaType;
 use Tisseo\BoaBundle\Form\Type\AliasType;
 use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
-class StopAreaController extends AbstractController
+class StopAreaController extends CoreController
 {
+    /**
+     * Search
+     *
+     * Searching for StopAreas
+     */
     public function searchAction()
     {
         $this->isGranted(array(
@@ -26,22 +30,30 @@ class StopAreaController extends AbstractController
         return $this->render(
             'TisseoBoaBundle:StopArea:search.html.twig',
             array(
-                'pageTitle' => 'menu.stop_area'
+                'navTitle' => 'tisseo.boa.menu.stop.manage',
+                'pageTitle' => 'tisseo.boa.menu.stop.area'
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $stopAreaId
+     *
+     * Creating/editing StopArea
+     */
     public function editAction(Request $request, $stopAreaId = null)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
 
-        $StopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-        $stopArea = $StopAreaManager->find($stopAreaId);
+        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopArea = $stopAreaManager->find($stopAreaId);
 
         if (empty($stopArea))
         {
             $stopArea = new StopArea();
             $stopAreaDatasource = new StopAreaDatasource();
+            $this->buildDefaultDatasource($stopAreaDatasource);
             $stopArea->addStopAreaDatasources($stopAreaDatasource);
             $lineVersions = null;
             $mainStopArea = false;
@@ -49,9 +61,9 @@ class StopAreaController extends AbstractController
         }
         else
         {
-            $lineVersions = $StopAreaManager->getLineVersions($stopAreaId);
+            $lineVersions = $stopAreaManager->getLineVersions($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
-            $stops = $StopAreaManager->getCurrentStops($stopArea);
+            $stops = $stopAreaManager->getCurrentStops($stopArea);
         }
 
         $form = $this->createForm(
@@ -69,28 +81,29 @@ class StopAreaController extends AbstractController
         if ($form->isValid())
         {
             $stopArea = $form->getData();
-            try {
-                $stopAreaId = $StopAreaManager->save($stopArea);
-                $this->get('session')->getFlashBag()->add('success', 'stop_area.edited');
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            
+            try
+            {
+                $stopAreaId = $stopAreaManager->save($stopArea);
+                $this->addFlash('success', 'tisseo.flash.success.edited');
+            }
+            catch(\Exception $e)
+            {
                 $stopAreaId = null;
+                $this->addFlashException($e->getMessage());
             }
 
-            return $this->redirect(
-                $this->generateUrl(
-                    'tisseo_boa_stop_area_edit',
-                    array('stopAreaId' => $stopAreaId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_area_edit',
+                array('stopAreaId' => $stopAreaId)
             );
         }
 
         return $this->render(
             'TisseoBoaBundle:StopArea:edit.html.twig',
             array(
+                'pageTitle' => 'tisseo.boa.stop_area.title.edit',
                 'form' => $form->createView(),
-                'pageTitle' => 'menu.stop_area',
-                'title' => ($stopAreaId ? 'stop_area.edit' : 'stop_area.create'),
                 'stopArea' => $stopArea,
                 'stops' => $stops,
                 'lineVersions' => $lineVersions,
@@ -99,7 +112,8 @@ class StopAreaController extends AbstractController
         );
     }
 
-    public function internalTransferAction(Request $request, $stopAreaId)
+    // TODO: check this
+    public function internalTransferAction($stopAreaId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
 
@@ -159,7 +173,8 @@ class StopAreaController extends AbstractController
         return new JsonResponse( $response );
     }
 
-    public function externalTransferAction(Request $request, $stopAreaId)
+    // TODO: check this
+    public function externalTransferAction($stopAreaId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
 
@@ -191,6 +206,7 @@ class StopAreaController extends AbstractController
         );
     }
 
+    // TODO: check this
     public function saveExternalTransferAction(Request $request, $stopAreaId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
@@ -218,7 +234,7 @@ class StopAreaController extends AbstractController
         return new JsonResponse( $response );
     }
 
-
+    // TODO: check this
     public function aliasAction(Request $request, $stopAreaId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');

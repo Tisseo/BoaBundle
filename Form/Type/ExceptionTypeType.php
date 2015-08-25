@@ -14,10 +14,39 @@ class ExceptionTypeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('label', 'text',  array('label' => 'exception_type.labels.label'));
-        $builder->add('exceptionText', 'text',  array('label' => 'exception_type.labels.exceptionText'));
-        $builder->add('gridCalendarPattern', 'text',  array('label' => 'exception_type.labels.gridCalendarPattern', 'max_length' => 7));
-        $builder->add('tripCalendarPattern', 'text',  array('label' => 'exception_type.labels.tripCalendarPattern', 'max_length' => 7));
+        $builder
+            ->add(
+                'label',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.exception_type.label.label'
+                )
+            )
+            ->add(
+                'exceptionText',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.exception_type.label.exception_text'
+                )
+            )
+            ->add(
+                'gridCalendarPattern',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.exception_type.label.grid_calendar_pattern',
+                    'max_length' => 7
+                )
+            )
+            ->add(
+                'tripCalendarPattern',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.exception_type.label.trip_calendar_pattern',
+                    'max_length' => 7
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -31,7 +60,6 @@ class ExceptionTypeType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

@@ -2,8 +2,8 @@
     <input type="hidden" id="route-id" value="{{ route.id }}"></input>
     <table id="table-trip-patterns" class="table table-hover">
         <thead>
-            <th class="col-md-1">{{ 'route_stop.list.columns.rank'|trans({}, 'default') }}</th>
-            <th class="col-md-3">{{ 'route_stop.list.columns.name'|trans({}, 'default') }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.route_stop.label.rank'|trans }}</th>
+            <th class="col-md-3">{{ 'tisseo.boa.route_stop.label.stop'|trans }}</th>
             {% for pattern in route.TripsPattern %}
             <th id="{{ loop.index }}" class="col-md-1 text-center pattern-column name {{ loop.index }}">
                 <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}">
@@ -21,13 +21,13 @@
                 <th id="{{ loop.index }}" class="text-center {{ loop.index }}"></th>
                 {% else %}
                 <th id="{{ loop.index }}" class="text-center {{ loop.index }}">
-                    <button title="{{ 'global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
-                    <button title="{{ 'global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
+                    <button title="{{ 'tisseo.global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
+                    <button title="{{ 'tisseo.global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
                 </th>
                 {% endif %}
             {% endfor %}
             <th class="text-center add-pattern action">
-                <button title="{{ 'global.add'|trans }}" id="add-pattern" class="btn btn-xs btn-success small-button"><span class="glyphicon glyphicon-plus"></span></button>
+                <button title="{{ 'tisseo.global.add'|trans }}" id="add-pattern" class="btn btn-xs btn-success small-button"><span class="glyphicon glyphicon-plus"></span></button>
             </th>
             <th></th>
         </thead>
@@ -66,7 +66,7 @@
     </table>
     <br>
     <button id="submit-trip-patterns" type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span> {{ 'global.save'|trans }}
+        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
     </button>
 </div>
 
@@ -80,8 +80,8 @@
         </thead>
         <thead>
             <th class="text-center new-pattern action" style="display:none;">
-                <button title="{{ 'global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
-                <button title="{{ 'global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
+                <button title="{{ 'tisseo.global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
+                <button title="{{ 'tisseo.global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
             </th>
         </thead>
         <tbody>

@@ -4,12 +4,19 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\StopHistory;
 use Tisseo\BoaBundle\Form\Type\StopHistoryType;
 use Tisseo\BoaBundle\Form\Type\StopHistoryCloseType;
 
-class StopHistoryController extends AbstractController
+class StopHistoryController extends CoreController
 {
+    /**
+     * Create
+     * @param integer $stopid
+     *
+     * Creating StopHistory
+     */
     public function createAction(Request $request, $stopId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
@@ -50,25 +57,34 @@ class StopHistoryController extends AbstractController
         if ($form->isValid())
         {
             $stopHistory = $form->getData();
-            $stopHistory->setTheGeom(new Point($form->get('x')->getData(), $form->get('y')->getData(), $form->get('srid')->getData()));
+            $stopHistory->setTheGeom(
+                new Point(
+                    $form->get('x')->getData(),
+                    $form->get('y')->getData(),
+                    $form->get('srid')->getData()
+                )
+            );
             
-            try {
+            try
+            {
                 $stopManager->createStopHistory($stopHistory, $latestStopHistory);
-                $this->get('session')->getFlashBag()->add('success', 'stop_history.created');
-            } catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+                $this->addFlash('success', 'tisseo.flash.success.created');
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
             }
             
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
             );
         }
 
         return $this->render(
             'TisseoBoaBundle:StopHistory:form.html.twig',
             array(
+                'title' => 'tisseo.boa.stop_history.title.create',
                 'form' => $form->createView(),
                 'theGeom' => $stopHistory->getTheGeom(),
                 'startDate' => $startDate
@@ -76,6 +92,12 @@ class StopHistoryController extends AbstractController
         );
     }
 
+    /**
+     * Close
+     * @param integer $stopId
+     *
+     * Closing Stop properties
+     */
     public function closeAction(Request $request, $stopId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
@@ -85,20 +107,11 @@ class StopHistoryController extends AbstractController
 
         if (!$stop->closable())
         {
-            $this->get('session')->getFlashBag()->add(
-                'warning',
-                $this->get('translator')->trans(
-                    'stop.errors.unclosable',
-                    array(),
-                    'messages'
-                )
-            );
+            $this->addFlash('warning', 'tisseo.boa.stop_point.message.unclosable');
 
-            return $this->redirect(
-                $this->generateUrl(
-                    'tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
             );
         }
 
@@ -118,24 +131,25 @@ class StopHistoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid())
         {
-            try {
+            try
+            {
                 $stopManager->closeStopHistory($stopHistory);
-                $this->get('session')->getFlashBag()->add('success', 'stop_history.closed');
+                $this->addFlash('success', 'tisseo.flash.success.closed');
             }
-            catch(\Exception $e) {
-                $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
             }
 
-            return $this->redirect(
-                $this->generateUrl(
-                    'tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
             );
         }
 
         return $this->render('TisseoBoaBundle:StopHistory:close.html.twig',
             array(
+                'title' => 'tisseo.boa.stop_history.title.close',
                 'form' => $form->createView()
             )
         );

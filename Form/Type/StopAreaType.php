@@ -20,7 +20,7 @@ class StopAreaType extends AbstractType
                 'shortName',
                 'text',
                 array(
-                    'label' => 'stop_area.labels.shortName',
+                    'label' => 'tisseo.boa.stop_area.label.short_name',
                     'required' => false
                 )
             )
@@ -28,7 +28,7 @@ class StopAreaType extends AbstractType
                 'longName',
                 'text',
                 array(
-                    'label' => 'stop_area.labels.longName',
+                    'label' => 'tisseo.boa.stop_area.label.long_name',
                     'required' => false
                 )
             )
@@ -36,7 +36,7 @@ class StopAreaType extends AbstractType
                 'city',
                 'entity',
                 array(
-                    'label' => 'stop_area.labels.city',
+                    'label' => 'tisseo.boa.stop_area.label.city',
                     'class' => 'TisseoEndivBundle:City',
                     'property' => 'nameLabel',
                     'required' => false
@@ -46,7 +46,7 @@ class StopAreaType extends AbstractType
                 'stopAreaDatasources',
                 'collection',
                 array(
-                    'label' => 'stop_area.labels.datasource',
+                    'label' => 'tisseo.boa.stop_area.label.datasource',
                     'type' => new StopAreaDatasourceType(),
                     'by_reference' => false,
                     'allow_add' => true

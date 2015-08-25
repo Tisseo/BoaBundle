@@ -14,9 +14,23 @@ class PhysicalModeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'physical_mode.labels.name'));
-        $builder->add('type', 'text',  array('label' => 'physical_mode.labels.type'));
-        $builder->setAction($options['action']);
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.physical_mode.label.name'
+                )
+            )
+            ->add(
+                'type',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.physical_mode.label.type'
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**

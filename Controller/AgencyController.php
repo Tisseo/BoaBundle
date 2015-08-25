@@ -3,11 +3,17 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Agency;
 use Tisseo\BoaBundle\Form\Type\AgencyType;
 
-class AgencyController extends AbstractController
+class AgencyController extends CoreController
 {
+    /**
+     * List
+     *
+     * Listing all Agencies
+     */
     public function listAction()
     {
         $this->isGranted(
@@ -17,71 +23,65 @@ class AgencyController extends AbstractController
             )
         );
 
-        $AgencyManager = $this->get('tisseo_endiv.agency_manager');
         return $this->render(
             'TisseoBoaBundle:Agency:list.html.twig',
             array(
-                'pageTitle' => 'menu.agency',
-                'agencies' => $AgencyManager->findAll()
+                'navTitle' => 'tisseo.boa.menu.configuration',
+                'pageTitle' => 'tisseo.boa.agency.title.list',
+                'agencies' => $this->get('tisseo_endiv.agency_manager')->findAll()
             )
         );
     }
 
+    /**
+     * Edit
+     * @param integer $agencyId
+     *
+     * Creating/editing Agency
+     */
     public function editAction(Request $request, $agencyId)
     {
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $AgencyManager = $this->get('tisseo_endiv.agency_manager');
-        $form = $this->buildForm($agencyId, $AgencyManager);
-        $render = $this->processForm($request, $form);
-        if (!$render) {
-            return $this->render(
-                'TisseoBoaBundle:Agency:form.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'title' => ($agencyId ? 'agency.edit' : 'agency.create')
-                )
-            );
-        }
-        return ($render);
-    }
+        $agencyManager = $this->get('tisseo_endiv.agency_manager');
+        $agency = $agencyManager->find($agencyId);
 
-    private function buildForm($agencyId, $AgencyManager)
-    {
-        $agency = $AgencyManager->find($agencyId);
-        if (empty($agency)) {
+        if (empty($agency))
             $agency = new Agency();
-        }
 
-        $form = $this->createForm( new AgencyType(), $agency,
+        $form = $this->createForm(
+            new AgencyType(),
+            $agency,
             array(
-                'action' => $this->generateUrl('tisseo_boa_agency_edit',
-                                            array('agencyId' => $agencyId)
+                'action' => $this->generateUrl(
+                    'tisseo_boa_agency_edit',
+                    array('agencyId' => $agencyId)
                 )
             )
         );
 
-        return ($form);
-    }
-
-    private function processForm(Request $request, $form)
-    {
         $form->handleRequest($request);
-        $AgencyManager = $this->get('tisseo_endiv.agency_manager');
-        if ($form->isValid()) {
-            $AgencyManager->save($form->getData());
-            $this->get('session')->getFlashBag()->add('success',
-                $this->get('translator')->trans(
-                    'agency.created',
-                    array(),
-                    'default'
-                )
-            );
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_agency_list')
-            );
-        }
-        return (null);
-    }
+        if ($form->isValid())
+        {
+            try
+            {
+                $agencyManager->save($form->getData());
+                $this->addFlash('success', ($agencyId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
+            }
+            catch (\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
+            }
 
+            return $this->redirectToRoute('tisseo_boa_agency_list');
+        }
+
+        return $this->render(
+            'TisseoBoaBundle:Agency:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'title' => ($agencyId ? 'tisseo.boa.agency.title.edit' : 'tisseo.boa.agency.title.create')
+            )
+        );
+    }
 }
