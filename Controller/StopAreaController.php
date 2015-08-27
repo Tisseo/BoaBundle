@@ -53,7 +53,7 @@ class StopAreaController extends CoreController
         {
             $stopArea = new StopArea();
             $stopAreaDatasource = new StopAreaDatasource();
-            $this->buildDefaultDatasource($stopAreaDatasource);
+            $this->addBoaDatasource($stopAreaDatasource);
             $stopArea->addStopAreaDatasources($stopAreaDatasource);
             $lineVersions = null;
             $mainStopArea = false;

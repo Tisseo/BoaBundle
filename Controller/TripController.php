@@ -58,7 +58,7 @@ class TripController extends CoreController
 
         $trip = new Trip();
         $tripDatasource = new TripDatasource();
-        $this->buildDefaultDatasource($tripDatasource);
+        $this->addBoaDatasource($tripDatasource);
 
         $trip->setRoute($route);
         $trip->setName($lineVersion->getLine()->getNumber()."_".$lineVersion->getVersion()."_".$route->getWay()[0]);
@@ -239,7 +239,7 @@ class TripController extends CoreController
         {
             $tripPatterns = json_decode($request->getContent(), true);
             $tripDatasource = new TripDatasource();
-            $this->buildDefaultDatasource($tripDatasource);
+            $this->addBoaDatasource($tripDatasource);
 
             try
             {
