@@ -55,7 +55,7 @@ class RouteController extends CoreController
         $route = new Route();
         $route->setLineVersion($lineVersion);
         $routeDatasource = new RouteDatasource();
-        $this->buildDefaultDatasource($routeDatasource);
+        $this->addBoaDatasource($routeDatasource);
         $route->addRouteDatasource($routeDatasource);
 
         $form = $this->createForm(

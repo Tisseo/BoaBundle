@@ -47,7 +47,7 @@ class StopController extends CoreController
         $stop = new Stop();
         $stop->addStopHistory(new StopHistory());
         $stopDatasource = new StopDatasource();
-        $this->buildDefaultDatasource($stopDatasource);
+        $this->addBoaDatasource($stopDatasource);
         $stop->addStopDatasources($stopDatasource);
 
         $form = $this->createForm(
