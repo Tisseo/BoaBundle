@@ -30,16 +30,39 @@ tisseo_boa_calendar_delete:
     defaults: { _controller: TisseoBoaBundle:Calendar:delete }
     requirements:
         calendarId: \d+
-
+tisseo_boa_calendar_bitmask:
+    pattern: /calendar/bitmask
+    defaults: { _controller: TisseoBoaBundle:Calendar:bitmask }
+    options:
+        expose: true
+tisseo_boa_calendar_intersection:
+    pattern: /calendar/intersection
+    defaults: { _controller: TisseoBoaBundle:Calendar:calendarsIntersection }
+    options:
+        expose: true
 # CalendarElement routes
-tisseo_boa_calendar_element_list:
-    pattern: /calendar/{calendarId}/calendarelement/list
-    defaults: { _controller: TisseoBoaBundle:CalendarElement:list }
+tisseo_boa_calendar_element_create:
+    pattern: /calendar/{calendarId}/calendar_element/create
+    defaults: { _controller: TisseoBoaBundle:CalendarElement:create }
     requirements:
         calendarId: \d+
+    options:
+        expose: true
 tisseo_boa_calendar_element_edit:
-    pattern: /calendarelement/edit/{calendarElementId}
-    defaults: { _controller: TisseoBoaBundle:CalendarElement:edit, calendarElementId: null }
+    pattern: /calendar/{calendarId}/calendar_element/edit
+    defaults: { _controller: TisseoBoaBundle:CalendarElement:edit }
+    requirements:
+        calendarId: \d+
+    options:
+        expose: true
+tisseo_boa_calendar_element_form:
+    pattern: /calendar/{calendarId}/calendar_element/form/{rank}
+    defaults: { _controller: TisseoBoaBundle:CalendarElement:renderForm }
+    requirements:
+        calendarId: \d+
+        rank: \d+
+    options:
+        expose: true
 
 # Color routes
 tisseo_boa_color_list:
@@ -101,12 +124,6 @@ tisseo_boa_poi_type_edit:
 tisseo_boa_json_calendars:
     pattern: /json/calendars/{calendarType}
     defaults: { _controller: TisseoBoaBundle:Json:calendars, calendarType: null }
-tisseo_boa_json_bitmask:
-    pattern: /json/bitmask
-    defaults: { _controller: TisseoBoaBundle:Json:bitmask }
-tisseo_boa_json_service_calendar_bitmask:
-    pattern: /json/service/calendar/bitmask
-    defaults: { _controller: TisseoBoaBundle:Json:ServiceCalendarBitmask }
 tisseo_boa_json_stop:
     pattern: /json/stop
     defaults: { _controller: TisseoBoaBundle:Json:stop }

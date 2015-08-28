@@ -1,12 +1,19 @@
 {% extends "TisseoCoreBundle::generic_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
 
-{% form_theme calendarForm 'TisseoCoreBundle:Form:fields.html.twig' %}
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% set calendarTypes = [
+        constant('Tisseo\\EndivBundle\\Entity\\Calendar::CALENDAR_TYPE_PERIOD'),
+        constant('Tisseo\\EndivBundle\\Entity\\Calendar::CALENDAR_TYPE_HYBRID')
+    ]
+%}
 
 {% block breadcrumb %}
-    {% if calendarForm.vars.value.calendarType %}
-    <a href="{{ path('tisseo_boa_calendar_list', {'calendarType': calendarForm.vars.value.calendarType}) }}">
-        {{ 'tisseo.boa.calendar.title.list'|trans({ '%type%': calendarForm.vars.value.calendarType }) }}
+    {% if form.vars.value.calendarType %}
+    <a href="{{ path('tisseo_boa_calendar_list', {'calendarType': form.vars.value.calendarType}) }}">
+        {{ 'tisseo.boa.calendar.title.list'|trans({ '%type%': form.vars.value.calendarType }) }}
     </a>
     {% else %}
         {{ 'tisseo.boa.menu.calendar.manage'|trans }}
@@ -14,262 +21,67 @@
 {% endblock %}
 
 {% block content %}
-    {{ form_start(calendarForm) }}
-    {{ form_errors(calendarForm) }}
-    {{ form_widget(calendarForm._token) }}
-    <div id='calendar-fields' class="form form-edit col-md-12">
-        <div class="col-md-4">
-            {{ form_row(calendarForm.name) }}
-        </div>
-        <div class="col-md-2" >
-            {{ form_row(calendarForm.calendarType, { 'attr': {'class': 'select-type'}}) }}
-        </div>
-        {% if calendarForm.calendarType.vars.value in ['mixte', 'periode'] %}
-            <div id='div-line' class="col-md-3">
-        {% else %}
-            <div id='div-line' class="hide col-md-3">
-        {% endif %}
-                {{ form_row(calendarForm.lineVersion, { 'attr': {'class': 'select-line-version'}}) }}
+    <a id="calendar" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.calendar.header.edit'|trans }}
+    </a>
+    <div class="calendar-form panel col-md-12">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.calendarType, {'attr': { 'data-types': calendarTypes|json_encode() }}) }}
+                </div>
+                {% if form.calendarType.vars.value in calendarTypes %}
+                <div class="col-md-2 line-version">
+                    {{ form_row(form.lineVersion) }}
+                </div>
+                {% else %}
+                <div class="col-md-2 line-version hidden">
+                    {{ form_row(form.lineVersion) }}
+                </div>
+                {% endif %}
             </div>
-    </div>
-
-    <div id="divRemoveElement"
-            style="display:none;"
-            data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:remove_form.html.twig' with { 'form': calendarForm.removeElement.vars.prototype } %}{% endfilter %}"
-    >
-    </div>
-
-    <table id='calendar_elements'
-            class="table table-hover dataTable no-footer"
-            data-prototype="{% filter escape %}{% include 'TisseoBoaBundle:CalendarElement:form.html.twig' with { 'form': calendarForm.calendarElement.vars.prototype } %} {% endfilter %}"
-    >
-    <thead>
-        <th>{{ 'tisseo.boa.calendar_element.label.rank' | trans }}</th>
-        <th>{{ 'tisseo.boa.calendar_element.label.start_date' | trans }}</th>
-        <th>{{ 'tisseo.boa.calendar_element.label.end_date' | trans }}</th>
-        <th>{{ 'tisseo.boa.calendar_element.label.included_calendar' | trans }}</th>
-        <th>{{ 'tisseo.boa.calendar_element.label.positive' | trans }}</th>
-        <th>{{ 'tisseo.boa.calendar_element.label.interval' | trans }}</th>
-        <th>{{ 'tisseo.global.delete' | trans }}</th>
-    </thead>
-    <tbody>
-    {% set line_counter = 0 %}
-    {% for calendar_element in calendarElements %}
-        {% set line_counter = line_counter+1 %}
-        <tr>
-            <input type="hidden" id="id_{{ line_counter }}" value="{{ calendar_element.id }}">
-            <td>{{ calendar_element.rank }}</td>
-            <td>{{ calendar_element.startDate|date("d/m/Y") }}</td>
-            <td>{{ calendar_element.endDate|date("d/m/Y") }}</td>
-            <td>{{ calendar_element.includedCalendar.Name }}</td>
-            <td>{{ calendar_element.operator }}</td>
-            <td>{{ calendar_element.interval }}</td>
-            <td><input type="checkbox"  class="remove_checkbox"></td>
-        </tr>
-    {% endfor %}
-    </tbody></table>
-
-    <div class="row">
-        <div class="col-md-11">
-            <a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans}}</a>
-        </div>
-
-        <div class="col-md-1">
-            <a class="btn btn-default" id="empty_elements" href="#"><span class="glyphicon glyphicon-remove"></span>{{ 'tisseo.global.empty'|trans}}</a>
-        </div>
-    </div>
-
-    <hr>
-    <button type="submit" id="save-form" class="btn btn-success"> <span class="glyphicon glyphicon-pencil"></span>
-         {{'global.save'|trans}}
-    </button>
-    {{ form_end(calendarForm, {'render_rest': false}) }}
-
-    <div class="calendar_div">
-        <form id="calendarDisplayForm">
+            {% if calendar.id %}
             <div class="row">
                 <div class="col-md-2">
-                    <input type="text" id='start_date_picker' name="start_date" class='input-date calendar_date'>
+                    {{ form_row(form.computedStartDate) }}
                 </div>
                 <div class="col-md-2">
-                    <input type="text" id='end_date_picker' name="end_date" class='input-date calendar_date'>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" id='refresh_button' class="calendar_button btn" data-url="{{ path('tisseo_boa_json_bitmask') }}">
-                        <span class="glyphicon glyphicon-refresh"></span>
-                        {{ 'tisseo.global.refresh'|trans }}
-                    </button>
+                    {{ form_row(form.computedEndDate) }}
                 </div>
             </div>
-        </form>
-        <div id='calendar_view' class="calendar_view">
+            {% endif %}
         </div>
+        <div class="col-md-3">
+            <div id="calendar-view" data-url="{{ path('tisseo_boa_calendar_bitmask') }}"></div>
+        </div>
+        <div class="col-md-12 row">
+        <button type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+        </button>
+        </div>
+        {{ form_end(form) }}
     </div>
+
+    {% if calendar.id %}
+    <a id="calendar-elements" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.calendar.header.calendar_elements'|trans }}
+    </a>
+    {{ render(controller('TisseoBoaBundle:CalendarElement:edit', {'calendarId': calendar.id })) }}
+    {% endif %}
+
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        {# TODO: inspect JS and maybe create isolated file #}
-        require(['boa/calendar/utils'], function(utils) {
-
-            function display_dates_save() {
-                if( calendarID != '' )  {
-                    sessionStorage.setItem(calendarID, $("#start_date_picker").val() + '##' + $("#end_date_picker").val());
-                }
-            }
-
-            function display_dates_validation() {
-                var startDate=$("#start_date_picker").val().split('/');
-                var formattedStart=startDate[2] + startDate[1] + startDate[0];
-                var endDate=$("#end_date_picker").val().split('/');
-                var formattedEnd=endDate[2] + endDate[1] + endDate[0];
-
-                if(formattedStart > formattedEnd) {
-                    alert("{{ 'calendar.error.displayDates' | trans }}");
-                    return false;
-                }
-
-                return true;
-            }
-
-            var previousDate;
-            $('.input-date').datepicker({
-                language: '{{ app.request.locale }}',
-                todayHighlight: true,
-                autoclose: true
-            })
-            // Save date picked
-            .on('show', function () {
-                previousDate = $(this).val();
-            })
-            // Replace with previous date if no date is picked or if same date is picked to avoid toggle error
-            .on('hide', function () {
-                if ($(this).val() === '' || $(this).val() === null) {
-                    $(this).val(previousDate).datepicker('update');
-                }
-            })
-            .on('changeDate', function(e) {
-                if (!($(this).val() === '' || $(this).val() === null)) {
-                    $(e.target.name).datepicker('update');
-                }
-            });
-
-            var calendarID="{{ calendarId }}";
-            var data_stored = null;
-
-            if( calendarID != '' )  {
-                data_stored = sessionStorage.getItem(calendarID);
-                if( data_stored != null )  {
-                    var res = data_stored.split("##");
-                    $('#start_date_picker').val(res[0]);
-                    $('#start_date_picker').datepicker('update');
-                    $('#end_date_picker').val(res[1]);
-                    $('#end_date_picker').datepicker('update');
-                }
-            }
-            if( data_stored == null )  {
-                var today = new Date();
-                var firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                var lastDate = new Date(today.getFullYear(), today.getMonth()+2, 0);
-
-                var month = (firstDate.getMonth()<10 ? "0" + firstDate.getMonth() : firstDate.getMonth());
-                var sFirstDate = '01/' + month + '/' + firstDate.getFullYear();
-                $('#start_date_picker').val(sFirstDate);
-                $('#start_date_picker').datepicker('update');
-
-                month = (lastDate.getMonth()<10 ? "0" + (lastDate.getMonth()+1) : (lastDate.getMonth()+1));
-                var sLastDate = lastDate.getDate() + '/' + month + '/' + firstDate.getFullYear();
-                $('#end_date_picker').val(sLastDate);
-                $('#end_date_picker').datepicker('update');
-            }
-
-            $('#refresh_button').click(function(event) {
-                if( calendarID == '' ) {
-                    alert("{{ 'calendar.alert.save' | trans }}");
-                    return false;
-                }
-
-                if(!display_dates_validation($(this))) {
-                    return false;
-                }
-                display_dates_save();
-
-                var url = $(this).attr('data-url');
-                var start_array = $('#start_date_picker').val().split("/");
-                var start_date  =  start_array[2] + '-' + start_array[1] + '-' + start_array[0];
-                var end_array = $('#end_date_picker').val().split("/");
-                var end_date  =  end_array[2] + '-' + end_array[1] + '-' + end_array[0];
-
-                var objData = {
-                    id: parseInt(calendarID),
-                    startDate: start_date,
-                    endDate: end_date
-                };
-
-                $.ajax({ url: url, data : objData, type: 'POST',
-                    success : function(data){
-                        utils.displayCalendar('#calendar_view', start_date, end_date, data.content);
-                    }
-                });
-            });
-
-            var $removeCollectionHolder = $('#divRemoveElement');
-
-            $('#empty_elements').click(function(event) {
-                if (!confirm("{{'calendar.empty_elements'|trans}}"))
-                    return false;
-
-                $('#calendar_elements > tbody  > tr').each(function() {
-                    var checkbox = $(this).find("input.remove_checkbox[type=checkbox]");
-                    if( checkbox.length ){
-                        checkbox.prop('checked', true);
-                        checkbox.triggerHandler( "click" );
-                    } else {
-                        $(this).remove();
-                    }
-                    $('#save-form').click();
-                });
-            });
-
-            $('.remove_checkbox').on('click', function() {
-                var $index = $(this).closest('tr').index() + 1;
-                if(this.checked) {
-                    var $IdClass = '#id_' + $index;
-                    var $IdValue = $($IdClass).val();
-                    var $prototype = $removeCollectionHolder.attr('data-prototype');
-                    var $newInput = $prototype.replace(/__name__/g, $index).replace("%id_value%", $IdValue).replace(/%remove_class%/g, "class_remove_" + $index);
-                    $(this).closest('td').append($newInput);
-                } else {
-                    var $name = "#boa_calendar_element_removeElement_" + $index + "_id";
-                    $($name).remove();
-                    $name = "#boa_calendar_element_removeElement_" + $index + "_remove";
-                    $($name).remove();
-                }
-            });
-
-            $('#add_element').click(function(event) {
-                utils.addCalendarElement('#calendar_elements', 'input[data-id=calendar]');
-            });
-
-            $('#calendar_elements').on('click', "a", function(event) {
-                event.preventDefault();
-                if ($(this).text() === "{{'global.delete'|trans}}") {
-                    $(this).closest("tr").remove();
-                }
-            });
-
-            $('.select-type').change(function() {
-                if( $(this).val() == 'mixte' || $(this).val() == 'periode' ) {
-                    $('#div-line').removeClass('hide');
-                } else {
-                    $('#div-line').addClass('hide');
-                    $('.select-line-version').val("");
-                }
-            });
-
-            if (calendarID != '') {
-                $("#refresh_button").click();
-            }
-         });
+        global = {
+            locale: '{{ app.request.locale }}'
+        };
+        require(['boa/calendar_element/edit']);
     </script>
 {% endblock %}

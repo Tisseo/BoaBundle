@@ -36,46 +36,6 @@ class JsonController extends CoreController
         return $this->sendJsonResponse($data);
     }
 
-    public function BitmaskAction(Request $request)
-    {
-        $this->isGranted(
-            array(
-                'BUSINESS_VIEW_CALENDARS',
-                'BUSINESS_MANAGE_CALENDARS'
-            )
-        );
-
-        $this->isPostAjax($request);
-
-        $calendarId = $request->request->get('id');
-        $startDate = $request->request->get('startDate');
-        $endDate = $request->request->get('endDate');
-        $data = $this->get('tisseo_endiv.calendar_manager')->getCalendarsBitmask($calendarId, $startDate, $endDate);
-
-        return $this->sendJsonResponse($data);
-    }
-
-    public function ServiceCalendarBitmaskAction(Request $request)
-    {
-        $this->isGranted(
-            array(
-                'BUSINESS_VIEW_CALENDARS',
-                'BUSINESS_MANAGE_CALENDARS'
-            )
-        );
-
-        $this->isPostAjax($request);
-            
-        $id1 = $request->request->get('id1');
-        $id2 = $request->request->get('id2');
-        $startDate = $request->request->get('startDate');
-        $endDate = $request->request->get('endDate');
-        $data = $this->get('tisseo_endiv.calendar_manager')->getServiceCalendarsBitmask($id1, $id2, $startDate, $endDate);
-
-        return $this->sendJsonResponse($data);
-    }
-
-
     public function StopAction(Request $request)
     {
         $this->isGranted(

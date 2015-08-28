@@ -18,7 +18,7 @@
     </li>
 {% endblock %}
 
-{% block main_content -%}
+{% block content %}
     <a id="route" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ render.route_header(route) }}
     </a>
@@ -91,21 +91,21 @@
             {{ 'tisseo.boa.route.message.no_route_stops'|trans }}
         </div>
     {% endif %}
-
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        require(['boa/route_stop/edit']);
-    </script>
-    <script>
         require(['boa/trip/edit_pattern']);
     </script>
-    {% if not route.hasTripsNotPattern %}
-    <script>
-        require(['core/datatables'], function() {
-            datatable(false, '10');
-        });
-    </script>
+    {% if route.hasTripsNotPattern %}
+        <script>
+            require(['core/datatables'], function() {
+                datatable(false, '10');
+            });
+        </script>
+    {% else %}
+        <script>
+            require(['boa/route_stop/edit']);
+        </script>
     {% endif %}
 {% endblock %}

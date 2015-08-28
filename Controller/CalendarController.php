@@ -3,13 +3,11 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Calendar;
-use Tisseo\EndivBundle\Entity\CalendarElement;
+use Tisseo\EndivBundle\Entity\CalendarDatasource;
 use Tisseo\BoaBundle\Form\Type\CalendarType;
-use Tisseo\BoaBundle\Form\Type\CalendarElementType;
-use Tisseo\BoaBundle\Form\Type\RemoveElementType;
-
 
 class CalendarController extends CoreController
 {
@@ -34,7 +32,7 @@ class CalendarController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.calendar.manage',
                 'pageTitle' => 'tisseo.boa.calendar.title.list',
-                'calendars' => ($calendarType ? $calendarManager->findbyType($calendarType) : $calendarManager->findAll()),
+                'calendars' => ($calendarType ? $calendarManager->findBy(array('calendarType' => $calendarType)) : $calendarManager->findAll()),
                 'calendarType' => $calendarType
             )
         );
@@ -51,18 +49,12 @@ class CalendarController extends CoreController
         $this->isGranted('BUSINESS_MANAGE_CALENDARS');
 
         $calendarManager = $this->get('tisseo_endiv.calendar_manager');
-        $calendarEmtManager = $this->get('tisseo_endiv.calendar_element_manager');
         $calendar = $calendarManager->find($calendarId);
 
         if (empty($calendar))
-        {
             $calendar = new Calendar();
-            $calendarElements = new CalendarElement();
-        }
-        else
-            $calendarElements = $calendarEmtManager->findbyCalendar($calendarId);
 
-        $calendarForm = $this->createForm(
+        $form = $this->createForm(
             new CalendarType(),
             $calendar,
             array(
@@ -73,35 +65,24 @@ class CalendarController extends CoreController
             )
         );
 
-        if ($request->request->has('boa_calendar'))
+        $form->handleRequest($request);
+        if ($form->isValid())
         {
-            $calendarForm->handleRequest($request);
-            if ($calendarForm->isValid())
+            $calendar = $form->getData();
+
+            try
             {
-                $datas = $calendarForm->getData();
-                
-                try
-                {
-                    $calendarManager->save($datas);
-                    $calendarId = $datas->getId();
-
-                    $newDatas = $calendarForm->get('calendarElement')->getData();
-                    $removeDatas = $calendarForm->get('removeElement')->getData();
-
-                    foreach ($newDatas as $calendarElement)
-                        $calendarEmtManager->save($calendarId, $calendarElement);
-
-                    for (end($removeDatas); key($removeDatas) !== null; prev($removeDatas))
-                    {
-                        $removeElement = current($removeDatas);
-                        $calendarEmtManager->delete($removeElement["id"]);
-                    }
-                    $this->addFlash('success', ($calendarId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-                }
-                catch(\Exception $e)
-                {
-                    $this->addFlashException($e->getMessage());
-                }
+                $calendarDatasource = new CalendarDatasource();
+                $this->addBoaDatasource($calendarDatasource);
+                $calendarDatasource->setCalendar($calendar);
+                $calendar->addCalendarDatasource($calendarDatasource);
+                $calendarManager->save($calendar);
+                $this->addFlash('success', ($calendarId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
+                $calendarId = $calendar->getId();
+            }
+            catch(\Exception $e)
+            {
+                $this->addFlashException($e->getMessage());
             }
 
             return $this->redirectToRoute(
@@ -114,9 +95,8 @@ class CalendarController extends CoreController
             'TisseoBoaBundle:Calendar:edit.html.twig',
             array(
                 'pageTitle' => ($calendarId ? 'tisseo.boa.calendar.title.edit' : 'tisseo.boa.calendar.title.create'),
-                'calendarForm' => $calendarForm->createView(),
-                'calendarElements' => $calendarElements,
-                'calendarId' => $calendarId
+                'form' => $form->createView(),
+                'calendar' => $calendar
             )
         );
     }
@@ -126,7 +106,7 @@ class CalendarController extends CoreController
         $this->isGranted('BUSINESS_MANAGE_CALENDARS');
 
         try {
-            $this->get('tisseo_endiv.calendar_manager')->delete($calendarId);
+            $this->get('tisseo_endiv.calendar_manager')->remove($calendarId);
         } catch(\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
@@ -134,5 +114,70 @@ class CalendarController extends CoreController
         return $this->redirect(
             $this->generateUrl('tisseo_boa_calendar_list', array('calendarType' => $calendarType))
         );
+    }
+
+    public function bitmaskAction(Request $request)
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_CALENDARS',
+                'BUSINESS_MANAGE_CALENDARS'
+            )
+        );
+
+        $this->isPostAjax($request);
+
+        $calendarId = $request->request->get('calendarId');
+        $startDate = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->request->get('startDate'));
+        $endDate = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->request->get('endDate'));
+        $bitmask = $this->get('tisseo_endiv.calendar_manager')->getCalendarBitmask($calendarId, $startDate, $endDate);
+
+        $data = array();
+        $strlen = strlen($bitmask);
+        for ($i = 0; $i < $strlen; $i++)
+        {
+            $bit = substr($bitmask, $i, 1);
+            $data[$startDate->format('Ymd')] = $bit;
+            $startDate->modify('+1 day');
+        }
+
+        $response = new JsonResponse();
+        $response->setData($data);
+
+        return $response;
+    }
+
+    public function calendarsIntersectionAction(Request $request)
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_CALENDARS',
+                'BUSINESS_MANAGE_CALENDARS'
+            )
+        );
+
+        $this->isPostAjax($request);
+
+        $dayCalendarId = $request->request->get('dayCalendarId');
+        $periodCalendarId = $request->request->get('periodCalendarId');
+
+        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $periodCalendar = $calendarManager->find($periodCalendarId);
+
+        $bitmask = $calendarManager->getCalendarsIntersectionBitmask(
+            $dayCalendarId,
+            $periodCalendarId,
+            $periodCalendar->getComputedStartDate(),
+            $periodCalendar->getComputedEndDate()
+        );
+
+        $response = new JsonResponse();
+
+        if (strpos($bitmask, '1') === false)
+            $response->setData(false);
+        else
+            $response->setData(true);
+
+        return $response;
     }
 }

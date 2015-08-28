@@ -1,25 +1,17 @@
+{% form_theme form 'TisseoCoreBundle:Form:noErrorMessagesFields.html.twig' %}
+
+{{ form_start(form) }}
+{{ form_errors(form) }}
+<td>{{ form_widget(form.rank) }}</td>
+<td>{{ form_widget(form.startDate) }}</td>
+<td>{{ form_widget(form.endDate) }}</td>
+<td><input type="text" id="calendar-search" class="form-control input-sm" data-url="{{ path('tisseo_boa_json_calendars') }}"></td>
+<td>{{ form_widget(form.operator) }}</td>
+<td>{{ form_widget(form.interval) }}</td>
 <td>
-    {{ form_widget(form.rank, {'attr': {"readonly":true}}) }}
+    <button id="apply-calendar-element-form" type="submit" class="btn btn-success small-button">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+    {{ form_widget(form.calendar) }}
 </td>
-<td>
-    {{ form_widget(form.startDate, { 'attr': {'class': 'element-date'} }) }}
-</td>
-<td>
-    {{ form_widget(form.endDate, { 'attr': {'class': 'element-date'} }) }}
-</td>
-<td>
-    {{ form_widget(form.includedCalendar, { 'attr': {'class': 'hide'} }) }}
-    {{ form_widget(form.calendarName, {
-                'attr': {
-                    'data-id' : 'calendar',
-                    'data-url' : path('tisseo_boa_json_calendars'),
-                    'mapped': false
-                }} )
-    }}
-</td>
-<td>
-    {{ form_widget(form.operator) }}
-</td>
-<td>
-    {{ form_widget(form.interval) }}
-</td>
+{{ form_end(form) }}
