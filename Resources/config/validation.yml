@@ -4,6 +4,7 @@ Tisseo\EndivBundle\Entity\AccessibilityMode:
             - NotBlank: ~
             - Length:
                 max: 30
+
 Tisseo\EndivBundle\Entity\Agency:
     properties:
         name:
@@ -23,10 +24,7 @@ Tisseo\EndivBundle\Entity\Agency:
         phone:
             - Length:
                 max: 20
-Tisseo\EndivBundle\Entity\Calendar:
-    properties:
-        calendarType:
-            - Choice: { callback: getcalendarTypes }
+
 Tisseo\EndivBundle\Entity\Color:
     properties:
         name:
@@ -48,12 +46,14 @@ Tisseo\EndivBundle\Entity\Color:
             - NotBlank: ~
         rgbBlue:
             - NotBlank: ~
+
 Tisseo\EndivBundle\Entity\Datasource:
     properties:
         name:
             - NotBlank: ~
             - Length:
                 max: 30
+
 Tisseo\EndivBundle\Entity\ExceptionType:
     properties:
         label:
@@ -63,6 +63,7 @@ Tisseo\EndivBundle\Entity\ExceptionType:
             - Tisseo\BoaBundle\Validator\Constraints\CalendarPattern: ~
         tripCalendarPattern:
             - Tisseo\BoaBundle\Validator\Constraints\CalendarPattern: ~
+
 Tisseo\EndivBundle\Entity\PhysicalMode:
     properties:
         name:
@@ -73,12 +74,14 @@ Tisseo\EndivBundle\Entity\PhysicalMode:
             - NotBlank: ~
             - Length:
                 max: 30
+
 Tisseo\EndivBundle\Entity\PoiType:
     properties:
         name:
             - NotBlank: ~
             - Length:
                 max: 50
+
 Tisseo\EndivBundle\Entity\StopHistory:
     properties:
         endDate:
@@ -90,3 +93,10 @@ Tisseo\EndivBundle\Entity\StopHistory:
         - Callback: 
             methods: [minStartDate]
             groups: [edit]
+
+Tisseo\EndivBundle\Entity\CalendarElement:
+    properties:
+        startDate:
+            - DateTime: ~
+        endDate:
+            - DateTime: ~

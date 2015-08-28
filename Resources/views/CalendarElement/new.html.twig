@@ -1,0 +1,24 @@
+<tr class="calendar-element">
+    <input type='hidden' class="calendar-element-id" name="id" value="">
+    <td class="calendar-element-rank">{{ calendarElement.rank }}</td>
+    <td>{% if calendarElement.startDate %}{{ calendarElement.startDate|date('d/m/Y') }}{% endif %}</td>
+    <td>{% if calendarElement.endDate %}{{ calendarElement.endDate|date('d/m/Y') }}{% endif %}</td>
+    <td>
+        {% if calendarElement.includedCalendar %}
+            <a href="{{ path('tisseo_boa_calendar_edit', {'calendarId': calendarElement.includedCalendar.id}) }}">{{ calendarElement.includedCalendar.name }}</a>
+        {% endif %}
+    </td>
+    <td>{{ calendarElement.operator }}</td>
+    <td>{{ calendarElement.interval }}</td>
+    <td>
+        <button class="btn btn-xs btn-danger small-button delete-calendar-element"><span class="glyphicon glyphicon-minus"></span></button>
+        {% if calendarElement.startDate %}<input type="hidden" name="startDate" value="{{ calendarElement.startDate|date("Y-m-d\\TH:i:sO") }}">{% endif %}
+        {% if calendarElement.endDate %}<input type="hidden" name="endDate" value="{{ calendarElement.endDate|date("Y-m-d\\TH:i:sO") }}">{% endif %}
+        <input type="hidden" name="operator" value="{{ calendarElement.operator }}">
+        <input type="hidden" name="interval" value="{{ calendarElement.interval }}">
+        {% if calendarElement.includedCalendar %}
+            <input type='hidden' name="includedCalendar" value="{{ calendarElement.includedCalendar.id }}">
+        {% endif %}
+        <input type='hidden' name="calendar" value="{{ calendarElement.calendar.id }}">
+    </td>
+</tr>

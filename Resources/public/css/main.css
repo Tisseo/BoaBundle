@@ -18,32 +18,6 @@
     margin-right:40px;
     margin-bottom:30px;
 }
-.calendar-div {
-    padding-top:20px;
-}
-.last-week-of-month {
-    border-bottom:thin solid white;
-}
-.first-day-of-month {
-    border-left:thin solid white;
-}
-.first-week-of-month {
-    border-top:thin solid white;
-}
-.calendar-table {
-    color:white;
-    font-weight:bold;
-    background-color:gray;
-    width:400px;
-}
-.calendar-cell {
-    color:black;
-    font-weight:normal;
-    vertical-align:middle;
-}
-.month-cell {
-    vertical-align:middle;
-}
 .inaccessible {
     background-color:silver;
 }
@@ -76,6 +50,12 @@
 tr.closed-stop {
     display:none;
 }
+/* route-stop view */
 table.sort tbody tr.route-stop {
     cursor:pointer;
+}
+/* calendar */
+td.day.green {
+    background-color:green;
+    border-radius:0;
 }

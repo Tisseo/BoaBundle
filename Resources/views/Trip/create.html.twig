@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block modal_body %}
-    <div id="error_alert"></div>
     {{ form_errors(form) }}
 
     {{ render.route_header(trip.route) }}
@@ -98,87 +97,8 @@
     {{ form_end(form) }}
 
     <script>
-        require(['jquery_ui_autocomplete'], function() {
-            $(document).ready(function () {
-                $('#day-calendar').autocomplete({
-                    source: function (request, response) {
-                        $.ajax({
-                            url: $(this.element).data('url'),
-                            dataType: 'json',
-                            data : { term: request.term },
-                            type: 'POST',
-                            success: function (data) {
-                                response($.map(data, function(item) {
-                                    return {
-                                        label: item.name,
-                                        id: item.id
-                                    };
-                                }));
-                            },
-                        });
-                    },
-                    select: function (event, ui) {
-                        $('#boa_trip_create_dayCalendar').val(ui.item.id);
-                    },
-                    minLength: 1,
-                    delay: 300
-                });
-
-                $('#period-calendar').autocomplete({
-                    source: function (request, response) {
-                        $.ajax({
-                            url: $(this.element).data('url'),
-                            dataType: 'json',
-                            data : { term: request.term },
-                            type: 'POST',
-                            success: function (data) {
-                                response($.map(data, function(item) {
-                                    return {
-                                        label: item.name,
-                                        id: item.id
-                                    };
-                                }));
-                            },
-                        });
-                    },
-                    select: function (event, ui) {
-                        $('#boa_trip_create_periodCalendar').val(ui.item.id);
-                    },
-                    minLength: 1,
-                    delay: 300
-                });
-
-                $('#add-stop-time-block').click(function(event) {
-                    event.preventDefault();
-                    var index = $('#stop-times').children().length;
-
-                    $('#stop-times').append($('#stop-time-container').children().clone());
-                    $('#stop-times').find('input#begin').last().attr('name', 'stopTimes['+index+'][begin]');
-                    $('#stop-times').find('input#frequency').last().attr('name', 'stopTimes['+index+'][frequency]');
-                    $('#stop-times').find('input#end').last().attr('name', 'stopTimes['+index+'][end]');
-                });
-
-                var index = $('#stop-times').children().length;
-                $('#stop-times').append($('#stop-time-container').children().clone());
-                $('#stop-times').find('input#begin').last().attr('name', 'stopTimes['+index+'][begin]');
-                $('#stop-times').find('input#frequency').last().attr('name', 'stopTimes['+index+'][frequency]');
-                $('#stop-times').find('input#end').last().attr('name', 'stopTimes['+index+'][end]');
-
-                /*
-                $('form[name="boa_trip_create"]').submit(function(e) {
-                    $('#stop_times').find('div.stop-time-block').each(function() {
-                        var frequency = $(this).find('input#frequency').val();
-                        var stop = $(this).find('input#stop').val();
-
-                        if ((frequency && !stop) || (!frequency && stop)) {
-                            utils.displayAlert("{{ 'trip.error.stop_time'|trans }}");
-                            return false;
-                        }
-                    });
-
-                    return true;
-                });*/
-            });
+        require(['boa/trip/create'], function() {
+            initialize();
         });
     </script>
 {% endblock %}

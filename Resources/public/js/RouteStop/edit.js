@@ -1,27 +1,5 @@
 define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting', 'translations/messages'], function($) {
-    init_autocomplete = function() {
-
-        var fixHelperModified = function(e, tr) {
-            var $originals = tr.children();
-            var $helper = tr.clone();
-            $helper.children().each(function(index) {
-                $(this).width($originals.eq(index).width());
-            });
-
-            return $helper;
-        };
-
-        var updateIndex = function(e, ui) {
-            $('td.route-stop-rank', ui.item.parent()).each(function (i) {
-                $(this).html(i + 1);
-            });
-        };
-
-        $("#route-stops-list table.sort tbody:first").sortable({
-            helper: fixHelperModified,
-            stop: updateIndex
-        }).disableSelection();
-
+    var init_autocomplete = function() {
         $('#route-stops-list #stop-search').autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -54,6 +32,28 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
 
     $(document).ready(function() {
         init_autocomplete();
+
+        var fixHelperModified = function(e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function(index) {
+                $(this).width($originals.eq(index).width());
+            });
+
+            return $helper;
+        };
+
+        var updateIndex = function(e, ui) {
+            $('td.route-stop-rank', ui.item.parent()).each(function (i) {
+                $(this).html(i + 1);
+            });
+        };
+
+        $("#route-stops-list table.sort tbody:first").sortable({
+            helper: fixHelperModified,
+            stop: updateIndex
+        }).disableSelection();
+
         $('#route-stops-list #stop-search').focus();
     });
 
@@ -135,7 +135,6 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
 
         var error = "<div class='alert alert-danger alert-dismissable danger'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
 
-
         if ($(routeStops[0]).find('input.dropOff').is(':checked')) {
             error += Translator.trans('tisseo.boa.route_stop.validation.first_stop_dropoff')+"<br>";
             check = false;
@@ -181,6 +180,7 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
                 else
                     routeStop[this.name] = $(this).val();
             });
+            routeStop.rank = $(this).find('td.route-stop-rank').html();
             data.push(routeStop);
         });
         $.ajax({

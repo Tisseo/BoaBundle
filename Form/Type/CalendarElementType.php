@@ -5,69 +5,91 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
+use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
 use Tisseo\EndivBundle\Entity\CalendarElement;
 
 class CalendarElementType extends AbstractType
 {
+    private $calendarTransformer = null;
+
+    private function buildTransformers($em)
+    {
+        $this->calendarTransformer = new EntityToIntTransformer($em);
+        $this->calendarTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Calendar");
+        $this->calendarTransformer->setEntityRepository("TisseoEndivBundle:Calendar");
+        $this->calendarTransformer->setEntityType("Calendar");
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('rank', 'integer',
+        $this->buildTransformers($options['em']);
+
+        $builder
+            ->add(
+                'rank',
+                'integer',
                 array(
-                    'label' => 'calendar_element.labels.rank',
-                    'required' => false
+                    'label' => 'tisseo.boa.calendar_element.label.rank',
+                    'read_only' => true
                 )
-        );
-       $builder->add('startDate', 'date',
-                array(
-                    'label' => 'calendar_element.labels.startDate',
-                    'widget' => 'single_text',
-                    'format' => 'dd/MM/yyyy',
-                    'required' => false
-                )
-        );
-        $builder->add('endDate', 'date',
-                array(
-                    'label' => 'calendar_element.labels.endDate',
-                    'widget' => 'single_text',
-                    'format' => 'dd/MM/yyyy',
-                    'required' => false
-                )
-        );
-        $builder->add('operator', 'choice',
-            array(
-                'label' => 'calendar_element.labels.operator',
-                'choices'    => CalendarElement::getOperatorValues()
             )
-        );
-        $builder->add('interval', 'text',
+            ->add(
+                'startDate',
+                'tisseo_datepicker',
                 array(
-                    'label' => 'calendar_element.labels.interval',
+                    'label' => 'tisseo.boa.calendar_element.label.startDate',
+                    'required' => true,
+                    'attr' => array(
+                        'class' => 'input-date'
+                    )
+                )
+            )
+            ->add(
+                'endDate',
+                'tisseo_datepicker',
+                array(
+                    'label' => 'tisseo.boa.calendar_element.label.endDate',
+                    'required' => true,
+                    'attr' => array(
+                        'class' => 'input-date'
+                    )
+                )
+            )
+            ->add(
+                'operator',
+                'choice',
+                array(
+                    'label' => 'tisseo.boa.calendar_element.label.operator',
+                    'choices' => CalendarElement::$operators
+                )
+            )
+            ->add(
+                'interval',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.calendar_element.label.interval',
                     'data' => '1',
                     'required' => false
                 )
-        );
-
-        $builder->add('includedCalendar', 'calendar_selector',
-                array('required' => false));
-
-        $builder->add('calendarName', 'text',
-                array(
-                    'required' => false,
-                    'mapped' => false));
-
-        $builder->add('remove', 'checkbox',
-                array(
-                    'label' => 'global.delete',
-                    'required'  => false,
-                    'mapped' => false
-        ));
-
-        $builder->setAction($options['action']);
+            )
+            ->add(
+                $builder->create(
+                    'calendar',
+                    'hidden'
+                )->addModelTransformer($this->calendarTransformer)
+            )
+            ->add(
+                $builder->create(
+                    'includedCalendar',
+                    'hidden'
+                )->addModelTransformer($this->calendarTransformer)
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -80,36 +102,21 @@ class CalendarElementType extends AbstractType
                 'data_class' => 'Tisseo\EndivBundle\Entity\CalendarElement'
             )
         );
-    }
 
+        $resolver->setRequired(array(
+            'em'
+        ));
+
+        $resolver->setAllowedTypes(array(
+            'em' => 'Doctrine\Common\Persistence\ObjectManager',
+        ));
+    }
 
     /**
      * @return string
      */
     public function getName()
     {
-        return 'boa_calendar_elements';
-    }
-}
-
-class RemoveElementType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add('id', 'integer', array(
-            'label'     => 'element id to remove',
-            'required'  => false,
-        ));
-        $builder->add('remove', 'checkbox', array(
-            'label'     => 'remove if true',
-            'required'  => false,
-            'attr'     => array('checked'   => 'checked')
-        ));
-        $builder->setAction($options['action']);
-    }
-
-    public function getName()
-    {
-        return 'boa_remove_elements';
+        return 'boa_calendar_element';
     }
 }

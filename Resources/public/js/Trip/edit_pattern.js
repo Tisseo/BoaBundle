@@ -1,30 +1,4 @@
 define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
-    $(document).on('click', '#trip-patterns-list #add-pattern', function() {
-        var newRank = parseInt($(this).parent().prev().attr('id')) + 1;
-        if (isNaN(newRank))
-            newRank = 1;
-
-        $('#trip-patterns-list .add-pattern').fadeOut().promise().then(function() {
-            $('#trip-patterns-list .add-pattern.name').before($('#new-pattern-container .new-pattern.name').clone().removeClass('new-pattern').addClass('pattern-column').addClass('new'));
-            $('#trip-patterns-list .add-pattern.action').before($('#new-pattern-container .new-pattern.action').clone().removeClass('new-pattern').addClass('new'));
-            $('#trip-patterns-list .add-pattern.time').before($('#new-pattern-container .new-pattern.time').clone().removeClass('new-pattern').addClass('new'));
-            $('#trip-patterns-list .time.new').first().children().first().attr('readonly', true);
-            $('#trip-patterns-list .new').each(function() {
-                $(this).attr('id', newRank).addClass(''+newRank).removeClass('new').fadeIn();
-            }); 
-            $('#trip-patterns-list .add-pattern').fadeIn();
-        }); 
-    });
-
-    $(document).on('click', '#trip-patterns-list .delete-pattern', function() {
-        var deleteRank = $(this).parent().attr('id');
-        $('#trip-patterns-list #add-pattern').fadeOut();
-        $('#trip-patterns-list .'+deleteRank).fadeOut().promise().then(function() {
-            $(this).remove();
-            $('#trip-patterns-list #add-pattern').fadeIn();
-        });
-    });
-
     function isNormalInteger(number)
     {
         return ($.isNumeric(number) && parseInt(number) >= 0);
@@ -35,7 +9,7 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
         $('#trip-patterns').parent().find('div.alert').remove();
 
         var error = "<div class='alert alert-danger alert-dismissable danger'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
-       
+
         var patternNameError = false;
         var patternTimeError = false;
         $.each(tripPatterns, function(key, pattern) {
@@ -45,7 +19,7 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
                 if (!isNormalInteger(stopTime.time))
                     patternTimeError = true;
             });
-        }); 
+        });
 
         if (patternNameError)
             error += Translator.trans('tisseo.boa.trip.validation.pattern_name_empty')+"<br>";
@@ -61,6 +35,32 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
 
         return !(patternNameError || patternTimeError);
     }
+
+    $(document).on('click', '#trip-patterns-list #add-pattern', function() {
+        var newRank = parseInt($(this).parent().prev().attr('id')) + 1;
+        if (isNaN(newRank))
+            newRank = 1;
+
+        $('#trip-patterns-list .add-pattern').fadeOut().promise().then(function() {
+            $('#trip-patterns-list .add-pattern.name').before($('#new-pattern-container .new-pattern.name').clone().removeClass('new-pattern').addClass('pattern-column').addClass('new'));
+            $('#trip-patterns-list .add-pattern.action').before($('#new-pattern-container .new-pattern.action').clone().removeClass('new-pattern').addClass('new'));
+            $('#trip-patterns-list .add-pattern.time').before($('#new-pattern-container .new-pattern.time').clone().removeClass('new-pattern').addClass('new'));
+            $('#trip-patterns-list .time.new').first().children().first().attr('readonly', true);
+            $('#trip-patterns-list .new').each(function() {
+                $(this).attr('id', newRank).addClass(''+newRank).removeClass('new').fadeIn();
+            });
+            $('#trip-patterns-list .add-pattern').fadeIn();
+        });
+    });
+
+    $(document).on('click', '#trip-patterns-list .delete-pattern', function() {
+        var deleteRank = $(this).parent().attr('id');
+        $('#trip-patterns-list #add-pattern').fadeOut();
+        $('#trip-patterns-list .'+deleteRank).fadeOut().promise().then(function() {
+            $(this).remove();
+            $('#trip-patterns-list #add-pattern').fadeIn();
+        });
+    });
 
     $(document).on('click', '#submit-trip-patterns', function() {
         var routeId = $('#trip-patterns-list #route-id').val();

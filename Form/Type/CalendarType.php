@@ -5,14 +5,30 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Extension\Core\View\ChoiceView;
 use Tisseo\EndivBundle\Entity\Calendar;
 use Tisseo\BoaBundle\Form\Type\CalendarElementType;
-use Tisseo\BoaBundle\Form\Type\RemoveElementType;
 
 class CalendarType extends AbstractType
 {
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        usort($view->children['lineVersion']->vars['choices'], function(ChoiceView $choice1, ChoiceView $choice2) {
+            $lineVersion1 = $choice1->data;
+            $lineVersion2 = $choice2->data;
+            if ($lineVersion1->getLine()->getPriority() == $lineVersion2->getLine()->getPriority())
+                return strnatcmp($lineVersion1->getLine()->getNumber(), $lineVersion2->getLine()->getNumber());
+            if ($lineVersion1->getLine()->getPriority() > $lineVersion2->getLine()->getPriority())
+                return 1;
+            if ($lineVersion1->getLine()->getPriority() < $lineVersion2->getLine()->getPriority())
+                return -1;
+        });
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -32,56 +48,54 @@ class CalendarType extends AbstractType
                 'choice',
                 array(
                     'label' => 'tisseo.boa.calendar.label.type',
-                    'choices' => Calendar::getCalendarTypes()
+                    'choices' => Calendar::$calendarTypes,
+                    'attr' => array(
+                        'class' => 'calendar-type'
+                    )
                 )
             )
             ->add(
                 'lineVersion',
                 'entity',
                 array(
+                    'label' => 'tisseo.boa.calendar.label.line_version',
                     'class' => 'TisseoEndivBundle:LineVersion',
-                    'property' => 'FormattedLineVersion',
-                    'label' => 'tisseo.boa.calendar.label.lineVersion',
-                    'required' => false,
-                )
-            )
-            ->add(
-                'computedStartDate',
-                'datetime',
-                array(
-                    'label' => 'tisseo.boa.calendar.label.computedStartDate'
-                )
-            )
-            ->add(
-                'computedEndDate',
-                'datetime',
-                array(
-                    'label' => 'tisseo.boa.calendar.label.computedEndDate'
-                )
-            )
-            //new calendar_elements container
-            ->add(
-                'calendarElement',
-                'collection',
-                array(
-                    'type' => new CalendarElementType(),
-                    'allow_add' => true,
-                    'by_reference' => false,
-                    'mapped' => false
-                )
-            )
-            //calendar_elements to remove
-            ->add(
-                'removeElement',
-                'collection',
-                array(
-                    'type' => new RemoveElementType(),
-                    'allow_add' => true,
-                    'by_reference' => false,
-                    'mapped' => false
+                    'property' => 'numberAndVersion',
+                    'empty_value' => '',
+                    'required' => false
                 )
             )
             ->setAction($options['action'])
+            ->addEventListener(FormEvents::PRE_SET_DATA,
+                function (FormEvent $event) use ($options) {
+                    $form = $event->getForm();
+                    $calendar = $event->getData();
+
+                    if ($calendar->getId() !== null)
+                    {
+                        $form
+                            ->add(
+                                'computedStartDate',
+                                'tisseo_datepicker',
+                                array(
+                                    'label' => 'tisseo.boa.calendar.label.computed_start_date',
+                                    'read_only' => true,
+                                    'required' => false
+                                )
+                            )
+                            ->add(
+                                'computedEndDate',
+                                'tisseo_datepicker',
+                                array(
+                                    'label' => 'tisseo.boa.calendar.label.computed_end_date',
+                                    'read_only' => true,
+                                    'required' => false
+                                )
+                            )
+                        ;
+                    }
+                }
+            )
         ;
     }
 
