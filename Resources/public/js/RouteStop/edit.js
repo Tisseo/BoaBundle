@@ -1,5 +1,27 @@
-define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting', 'translations/messages'], function($) {
+define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting', 'translations/messages'], function($) {
     init_autocomplete = function() {
+
+        var fixHelperModified = function(e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function(index) {
+                $(this).width($originals.eq(index).width());
+            });
+
+            return $helper;
+        };
+
+        var updateIndex = function(e, ui) {
+            $('td.route-stop-rank', ui.item.parent()).each(function (i) {
+                $(this).html(i + 1);
+            });
+        };
+
+        $("#route-stops-list table.sort tbody:first").sortable({
+            helper: fixHelperModified,
+            stop: updateIndex
+        }).disableSelection();
+
         $('#route-stops-list #stop-search').autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -175,20 +197,16 @@ define(['jquery', 'jquery_ui_droppable', 'jquery_ui_autocomplete', 'fosjsrouting
 
     $(document).on('click', '#route-stops-list .delete-route-stop', function() {
         $(this).attr('disabled', 'disabled');
-        var routeStop = $(this).closest('tr');
-        var routeStopId = routeStop.find('.route-stop-id').val();
-        var routeStopRank = routeStop.find('input.route-stop-rank').val();
-        $(document).find('#route-stops-list tr.route-stop').each(function() {
-            currentRank = $(this).find('input.route-stop-rank').val();
-            if (currentRank > routeStopRank) {
-                $(this).find('td.route-stop-rank').html(currentRank-1);
-                $(this).find('input.route-stop-rank').val(currentRank-1);
-            }
+        var row = $(this).parent().parent();
+
+        $(row).nextAll().find('td.route-stop-rank').each(function() {
+            $(this).html($(this).html() - 1);
         });
+
         formRank = $(document).find('#route-stops-list tr.new-route-stop #boa_route_stop_rank');
         formRank.val(formRank.val()-1);
 
-        routeStop.fadeOut(300, function() {
+        $(row).fadeOut(300, function() {
             $(this).remove();
         });
     });
