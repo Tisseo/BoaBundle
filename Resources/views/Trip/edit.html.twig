@@ -4,6 +4,7 @@
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+{% set hasCalendars = (trip.dayCalendar and trip.periodCalendar) %}
 
 {% block breadcrumb %}
     <a href="{{ path('tisseo_boa_line_version_list') }}">
@@ -27,67 +28,57 @@
         {{ form_start(form) }}
         {{ form_errors(form) }}
 
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(form.name) }}
+        <div class="{% if hasCalendars %}col-md-8{% else %}col-md-12{% endif %}">
+            <div class="row">
+                <div class="col-md-5">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-md-5">
+                    {{ form_row(form.pattern) }}
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form_row(form.pattern) }}
+        
+            <div class="row">
+                <div class="col-md-5">
+                    {{ form_row(form.dayCalendar) }}
+                </div>
+                <div class="col-md-5">
+                    {{ form_row(form.periodCalendar) }}
+                </div>
             </div>
+
+            {% for datasource in form.tripDatasources %}
+            <div class="row">
+                <div class="col-md-5">
+                    {{ form_row(datasource.datasource) }}
+                </div>
+                <div class="col-md-5">
+                    {{ form_row(datasource.code) }}
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
-        {% for datasource in form.tripDatasources %}
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(datasource.datasource) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(datasource.code) }}
-            </div>
+        {% if hasCalendars %}
+        <div class="col-md-4">
+            <div
+                id="calendar-view"
+                data-start-date="{{ trip.periodCalendar.computedStartDate|date('Ymd') }}"
+                data-day-calendar-id="{{ trip.dayCalendar.id }}"
+                data-period-calendar-id="{{ trip.periodCalendar.id }}"
+                data-url="{{ path('tisseo_boa_calendar_intersection') }}"
+            ></div>
         </div>
-        {% endfor %}
-    
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(form.dayCalendar) }}
-            </div>
-            <div class="col-md-3">
-                {{ form_row(form.periodCalendar) }}
-            </div>
-        </div>
+        {% endif %}
 
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                </button>
-            </div>
+        <div class="col-md-12 row">
+            <button type="submit" class="btn btn-success">
+                <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+            </button>
         </div>
         {{ form_end(form) }}
     </div>
- 
-    <a id="calendar" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.header.calendar'|trans }}
-    </a>
-    <div id="calendar-panel" class="col-md-12 panel">
-        <div class="row">
-            <div class="col-md-2 input-range">
-                <input type="text" id='start-date' name="start-date" class="form-control">
-            </div>
-            <div class="col-md-2 input-range">
-                <input type="text" id='end-date'  name="end-date" class="form-control">
-            </div>
-            <div class="col-md-2">
-                <button type="button" id='refresh-button' class="calendar-button btn btn-default" data-url="{{ path('tisseo_boa_json_service_calendar_bitmask') }}">
-                    <span class="glyphicon glyphicon-refresh"></span> {{ 'tisseo.global.refresh'|trans }}
-                </button>
-            </div>
-        </div>
-        <div id='calendar-view'>
-        </div>
-    </div>
-   
+    
     <a id="stop-times" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.header.stop_time'|trans }}
     </a>
@@ -128,18 +119,12 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {% if hasCalendars %}
     <script>
-        require(['bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function() {
-            $(document).ready(function() {
-                $('#calendar-panel .input-range input').datepicker({
-                    language: '{{ app.request.locale }}',
-                    todayHighlight: true,
-                    autoclose: true,
-                });
-
-                $('#calendar-panel input#start-date').datepicker("update", "{{ startDate|date('d/m/Y') }}");
-                $('#calendar-panel input#end-date').datepicker("update", "{{ endDate|date('d/m/Y') }}");
-            });
-        });
+        global = {
+            locale: 'fr'
+        };
+        require(['boa/trip/edit']);
     </script>
+    {% endif %}
 {% endblock %}

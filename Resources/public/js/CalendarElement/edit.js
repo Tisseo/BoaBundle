@@ -1,5 +1,5 @@
 define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale, 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting', 'translations/messages'], function($) {
-    var init_autocomplete = function() {
+    var initAutocomplete = function() {
         $('#calendar-elements-list #calendar-search').autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -30,7 +30,7 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
         });
     };
 
-    var init_bootstrap_datepicker = function() {
+    var initBootstrap_datepicker = function() {
         $('.input-date').datepicker({
             language: global.locale,
             startView: 1,
@@ -38,7 +38,7 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
         });
     };
 
-    var init_calendar = function(startDate, endDate) {
+    var initCalendar = function(startDate, endDate) {
         var calendarId = $('#calendar-elements-list').data('calendar-id');
         $.ajax({
             url : $('#calendar-view').data('url'),
@@ -69,13 +69,13 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
 
     $(document).ready(function() {
         // autocomplete field on inlcuded_calendar text input
-        init_autocomplete();
-        init_bootstrap_datepicker();
+        initAutocomplete();
+        initBootstrapDatepicker();
 
         var startDate = new Date($('#boa_calendar_computedStartDate').val().split('/').reverse().join('-'));
         var endDate = new Date($('#boa_calendar_computedEndDate').val().split('/').reverse().join('-'));
 
-        init_calendar(startDate, endDate);
+        initCalendar(startDate, endDate);
 
         // adapting lineVersion field display/value looking at selected calendarType
         $('.calendar-form .calendar-type').on('change', function() {
@@ -109,8 +109,8 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
                         if ($(data.content).is('form'))
                         {
                             $('#calendar-elements-list .new-calendar-element').html(data.content);
-                            init_autocomplete();
-                            init_bootstrap_datepicker();
+                            initAutocomplete();
+                            initBootstrapDatepicker();
                             $(this).removeAttr('disabled');
                         }
                         else if ($(data.content).is('tr'))
@@ -133,8 +133,8 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
                         type: 'GET',
                         success: function(data) {
                             $('#calendar-elements-list .new-calendar-element').html(data);
-                            init_autocomplete();
-                            init_bootstrap_datepicker();
+                            initAutocomplete();
+                            initBootstrapDatepicker();
                         }
                     });
                     $(this).removeAttr('disabled');

@@ -8,7 +8,8 @@ requirejs.config({
         'boa/stop_area/edit':               'bundles/tisseoboa/js/StopArea/edit',
         'boa/route_stop/edit':              'bundles/tisseoboa/js/RouteStop/edit',
         'boa/trip/edit_pattern':            'bundles/tisseoboa/js/Trip/edit_pattern',
-        'boa/trip/create':                  'bundles/tisseoboa/js/Trip/create'
+        'boa/trip/create':                  'bundles/tisseoboa/js/Trip/create',
+        'boa/trip/edit':                    'bundles/tisseoboa/js/Trip/edit'
     },
     shim: {
         'boa/trip/create': {
@@ -22,6 +23,9 @@ requirejs.config({
         },
         'boa/calendar_element/edit': {
             deps: ['jquery_ui_sortable', 'jquery_ui_autocomplete', 'bootstrap/datepicker']
+        },
+        'boa/trip/edit': {
+            deps: ['bootstrap/datepicker']
         }
     },
     deps: ['utils', 'jquery', 'core/form']
