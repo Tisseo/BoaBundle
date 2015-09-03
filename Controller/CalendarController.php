@@ -132,17 +132,8 @@ class CalendarController extends CoreController
         $endDate = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->request->get('endDate'));
         $bitmask = $this->get('tisseo_endiv.calendar_manager')->getCalendarBitmask($calendarId, $startDate, $endDate);
 
-        $data = array();
-        $strlen = strlen($bitmask);
-        for ($i = 0; $i < $strlen; $i++)
-        {
-            $bit = substr($bitmask, $i, 1);
-            $data[$startDate->format('Ymd')] = $bit;
-            $startDate->modify('+1 day');
-        }
-
         $response = new JsonResponse();
-        $response->setData($data);
+        $response->setData($this->buildCalendarBitMask($startDate, $bitmask));
 
         return $response;
     }
@@ -173,11 +164,32 @@ class CalendarController extends CoreController
 
         $response = new JsonResponse();
 
-        if (strpos($bitmask, '1') === false)
-            $response->setData(false);
+        if ($request->request->get('bitmask'))
+        {
+            $response->setData($this->buildCalendarBitMask($periodCalendar->getComputedStartDate(), $bitmask));
+        }
         else
-            $response->setData(true);
+        {
+            if (strpos($bitmask, '1') === false)
+                $response->setData(false);
+            else
+                $response->setData(true);
+        }
 
         return $response;
+    }
+
+    private function buildCalendarBitMask(\Datetime $startDate, $bitmask)
+    {
+        $data = array();
+        $strlen = strlen($bitmask);
+        for ($i = 0; $i < $strlen; $i++)
+        {
+            $bit = substr($bitmask, $i, 1);
+            $data[$startDate->format('Ymd')] = $bit;
+            $startDate->modify('+1 day');
+        }
+
+        return $data;
     }
 }

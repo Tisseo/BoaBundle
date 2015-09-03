@@ -1,6 +1,5 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
-{% set paginate = 'true' %}
 
 {% block list_title %}
     {{ parent() }}
@@ -51,7 +50,7 @@
                         <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
                     </a>
                     {% if ((calendar.periodTrips is empty) and (calendar.dayTrips is empty) and (calendar.accessibilityTypes is empty)) %}
-                        <a class="btn btn-danger" href="{{ path('tisseo_boa_calendar_delete', {'calendarId': calendar.id, 'calendarType': calendarType }) }}">
+                        <a class="btn {% if calendar.calendarElements is empty %}btn-default{% else %}btn-danger{% endif %}" href="{{ path('tisseo_boa_calendar_delete', {'calendarId': calendar.id, 'calendarType': calendarType }) }}">
                             <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
                         </a>
                     {% endif %}
