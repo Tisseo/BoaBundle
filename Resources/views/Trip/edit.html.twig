@@ -63,7 +63,7 @@
         <div class="col-md-4">
             <div
                 id="calendar-view"
-                data-start-date="{{ trip.periodCalendar.computedStartDate|date('Ymd') }}"
+                data-start-date="{{ trip.periodCalendar.computedStartDate|date('Y-m-d') }}"
                 data-day-calendar-id="{{ trip.dayCalendar.id }}"
                 data-period-calendar-id="{{ trip.periodCalendar.id }}"
                 data-url="{{ path('tisseo_boa_calendar_intersection') }}"
