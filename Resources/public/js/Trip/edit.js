@@ -16,12 +16,11 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale]
                         var fixDate = date;
                         fixDate.setDate(fixDate.getDate()+1);
                         strDate = fixDate.toISOString().slice(0,10).replace(/-/g,"");
-
-                        if (data[strDate] == "1")
+                        if (data[strDate] === "1")
                             return "green";
                     }
                 });
-                $('#calendar-view').datepicker('setDate', $('#calendar-view').data('start-date'));
+                $('#calendar-view').datepicker('setDate', new Date($('#calendar-view').data('start-date')));
                 $('#calendar-view').datepicker('update');
             }
         });

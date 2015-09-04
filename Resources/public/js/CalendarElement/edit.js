@@ -30,7 +30,7 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
         });
     };
 
-    var initBootstrap_datepicker = function() {
+    var initBootstrapDatepicker = function() {
         $('.input-date').datepicker({
             language: global.locale,
             startView: 1,

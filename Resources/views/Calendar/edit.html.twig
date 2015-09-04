@@ -57,13 +57,15 @@
             </div>
             {% endif %}
         </div>
+
         <div class="col-md-3">
-            <div id="calendar-view" data-url="{{ path('tisseo_boa_calendar_intersection') }}"></div>
+            <div id="calendar-view" data-url="{{ path('tisseo_boa_calendar_bitmask') }}"></div>
         </div>
+
         <div class="col-md-12 row">
-        <button type="submit" class="btn btn-success">
-            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-        </button>
+            <button type="submit" class="btn btn-success">
+                <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+            </button>
         </div>
         {{ form_end(form) }}
     </div>
@@ -79,9 +81,14 @@
 
 {% block javascripts %}
     <script>
+        require(['boa/calendar/edit']);
+    </script>
+    {% if calendar.calendarElements is not empty %}
+    <script>
         global = {
             locale: '{{ app.request.locale }}'
         };
         require(['boa/calendar_element/edit']);
     </script>
+    {% endif %}
 {% endblock %}
