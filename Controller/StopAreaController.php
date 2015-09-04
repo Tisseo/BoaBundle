@@ -55,13 +55,13 @@ class StopAreaController extends CoreController
             $stopAreaDatasource = new StopAreaDatasource();
             $this->addBoaDatasource($stopAreaDatasource);
             $stopArea->addStopAreaDatasources($stopAreaDatasource);
-            $lineVersions = null;
+            $linesByStop = null;
             $mainStopArea = false;
             $stops = null;
         }
         else
         {
-            $lineVersions = $stopAreaManager->getLineVersions($stopAreaId);
+            $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
             $stops = $stopAreaManager->getCurrentStops($stopArea);
         }
@@ -106,7 +106,7 @@ class StopAreaController extends CoreController
                 'form' => $form->createView(),
                 'stopArea' => $stopArea,
                 'stops' => $stops,
-                'lineVersions' => $lineVersions,
+                'linesByStop' => $linesByStop,
                 'mainStopArea' => $mainStopArea
             )
         );

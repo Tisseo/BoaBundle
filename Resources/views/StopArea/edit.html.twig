@@ -44,7 +44,7 @@
             </div>
         </div>
         {% endfor %}
-    
+
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">
@@ -115,15 +115,21 @@
                     {% if stop.masterStop %}
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>
+                        {% if linesByStop[stop.id] is not empty %}
+                            {% for line in linesByStop[stop.id] %}
+                                {{ render.line_number(line, 'line', 'small') }}
+                            {% endfor %}
+                        {% endif %}
+                        </td>
                         <td><a href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id}) }}">{{ 'tisseo.boa.stop_history.label.mastered_by'|trans({ '%stop%': stop.masterStop.StopLabel }) }}</a></td>
                     {% else %}
                         <td>{{ stopHistory.theGeom.x }}</td>
                         <td>{{ stopHistory.theGeom.y }}</td>
-                        {% if lineVersions[stop.id] is not empty %} 
+                        {% if linesByStop[stop.id] is not empty %}
                             <td>
-                            {% for lineVersion in lineVersions[stop.id] %}
-                                {{ render.line_number(lineVersion, 'lineVersion', 'small') }}
+                            {% for line in linesByStop[stop.id] %}
+                                {{ render.line_number(line, 'line', 'small') }}
                             {% endfor %}
                             </td>
                             <td></td>
@@ -141,7 +147,7 @@
             </tbody>
         </table>
     </div>
-    
+
     <div class="panel col-md-12">
         {% if stopArea.id is not null %}
             <div class="row" style="padding:10px 0 0;">
@@ -173,7 +179,7 @@
     {{ parent() }}
     <script>
         require(['core/textfill'], function() {
-            textfill(2, 15, '.line-small');  
+            textfill(2, 15, '.line-small');
         });
     </script>
     <script>
