@@ -8,10 +8,12 @@ class LogController extends CoreController
 {
     /**
      * List
+     * @param integer offset
+     * @param integer limit
      *
      * Listing all Logs
      */
-    public function listAction()
+    public function listAction($offset = 0, $limit = 0)
     {
         $this->isGranted(
             array(
@@ -20,12 +22,15 @@ class LogController extends CoreController
             )
         );
 
+        $logManager = $this->get('tisseo_endiv.log_manager');
+
         return $this->render(
             'TisseoBoaBundle:Log:list.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.log.title.list',
-                'logs' => $this->get('tisseo_endiv.log_manager')->findAll()
+                'logs' => $logManager->findLogEntries($offset, $limit),
+                'max' => $logManager->count()
             )
         );
     }

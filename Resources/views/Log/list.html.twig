@@ -1,25 +1,51 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 
-{% block table_head -%}
-    <th class="col-sm-1">{{ 'tisseo.boa.log.label.id'|trans }}</th>
-    <th class="col-sm-1">{{ 'tisseo.boa.log.label.datetime'|trans }}</th>
-    <th class="col-sm-2">{{ 'tisseo.boa.log.label.table'|trans }}</th>
-    <th class="col-sm-1">{{ 'tisseo.boa.log.label.action'|trans }}</th>
-    <th class="col-sm-3">{{ 'tisseo.boa.log.label.previous_data'|trans }}</th>
-    <th class="col-sm-3">{{ 'tisseo.boa.log.label.inserted_data'|trans }}</th>
-    <th class="col-sm-1">{{ 'tisseo.boa.log.label.user'|trans }}</th>
+{% block list_title %}
+    {% set offset = app.request.get('offset') %}
+    {% set limit = app.request.get('limit') %}
+    {{ parent() }} -
+    {% if offset %}
+    <a class="offset" href="{{ path('tisseo_boa_log_list', { 'offset': offset - limit, 'limit': limit}) }}">
+            <span class="glyphicon glyphicon-backward"></span>
+    </a>
+    {% endif %}
+    {% if max - offset > limit %}
+    <a class="offset" href="{{ path('tisseo_boa_log_list', { 'offset': offset + limit, 'limit': limit}) }}">
+        <span class="glyphicon glyphicon-forward"></span>
+    </a>
+    {% endif %}
 {% endblock %}
 
-{% block table_body -%}
+{% block table_head %}
+    <th class="col-md-1">{{ 'tisseo.boa.log.label.id'|trans }}</th>
+    <th class="col-md-1">{{ 'tisseo.boa.log.label.datetime'|trans }}</th>
+    <th class="col-md-2">{{ 'tisseo.boa.log.label.table'|trans }}</th>
+    <th class="col-md-1">{{ 'tisseo.boa.log.label.action'|trans }}</th>
+    <th class="col-md-3">{{ 'tisseo.boa.log.label.previous_data'|trans }}</th>
+    <th class="col-md-3">{{ 'tisseo.boa.log.label.inserted_data'|trans }}</th>
+    <th class="col-md-1">{{ 'tisseo.boa.log.label.user'|trans }}</th>
+{% endblock %}
+
+{% block table_body %}
     {% for log in logs %}
         <tr>
             <td>{{ log.id }} </td>
             <td>{{ log.datetime | date("d/m/Y H:i:s") }}</td>
             <td>{{ log.table }}</td>
             <td>{{ log.action }}</td>
-            <td>{{ log.previousData }}</td>
-            <td>{{ log.insertedData }}</td>
+            {% set previousDatas = log.previousData|split('', 50) %}
+            <td>
+            {% for previousData in previousDatas %}
+                {{ previousData }}
+            {% endfor %}
+            </td>
+            {% set insertedDatas = log.insertedData|split('', 50) %}
+            <td>
+            {% for insertedData in insertedDatas %}
+                {{ insertedData }}
+            {% endfor %}
+            </td>
             <td>{{ log.user }}</td>
         </tr>
     {% endfor %}
