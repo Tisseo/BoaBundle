@@ -1,8 +1,10 @@
 {
     "name" : "tisseo/boa-bundle",
-    "description" : "A web interface providing public transport ENDIV database administration.",
     "type" : "symfony-bundle",
+    "description" : "Back office interface providing public transport 'TID' database administration.",
+    "keywords" : ["Tisseo boa bundle NMM"],
     "homepage": "https://github.com/Tisseo/BoaBundle",
+    "license": "AGPLv3",
     "authors" : [
         {
             "name" : "Vincent Passama",
@@ -17,10 +19,6 @@
             "email" : "pierre.cl@gmail.com"
         }
     ],
-    "keywords" : [
-        "tisseo boa bundle endiv symfony nmm"
-    ],
-    "license" : "AGPL-3.0",
     "require" : {
         "php": ">=5.4.3",
         "tisseo/endiv-bundle": "dev-master",

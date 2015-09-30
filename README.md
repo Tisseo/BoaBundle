@@ -1,70 +1,95 @@
-README
-======
+BOA
+===
 
 Description
 -----------
 
-BoaBundle for French acronym "Base Offre Affrêtée" is used in public transport
-ENDIV project (https://github.com/Tisseo/TID).
-This bundle is working with Symfony NMM application and use mapping information
-provided by EndivBundle (https://github.com/Tisseo/EndivBundle) in order to
-administrate ENDIV database and create new public transport commercial offers.
+BoaBundle for French acronym "Base Offre Affrêtée" is a back office application
+used in [TID project](https://github.com/Tisseo/TID) and is providing
+multiple functionalities in order to manage a
+[TID database](https://raw.githubusercontent.com/Tisseo/TID/master/Diagramme.jpg).
 
-BoaBundle is aimed to work in NMM application environment.
-(https://github.com/CanalTP/NmmPortalBundle)
+This bundle is only working with [CanalTP](https://github.com/CanalTP)
+[NMM](https://github.com/CanalTP/NmmPortalBundle) portal.
+
+The BoaBundle is linked to [BoaBridgeBundle](https://github.com/Tisseo/BoaBridgeBundle)
+in order to integrate the application in NMM portal.
 
 Requirements
 ------------
 
-- PHP 5.4.3
+- PHP 5.3+
+- Symfony 2.6.x
+- https://github.com/CanalTP/NmmPortalBundle
 - https://github.com/Tisseo/TID
 - https://github.com/Tisseo/EndivBundle
+- https://github.com/Tisseo/CoreBundle
 
 Installation
 ------------
 
-1. composer.json:
+This installation guide assumes that you already have installed a TID stack
+(postgresql database) and have a functional NMM portal.
 
-'''
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/Tisseo/BoaBundle.git"
-        },
-        //...
-    ],
-    "require": {
-        "tisseo/boa-bundle": "dev-master",
-        // ...
-    }
-'''
+1. composer.json
+
+You need to declare some repositories and requirements in the composer.json file.
+
+```
+"repositories": [
+    {
+        "type": "git",
+        "url": "https://github.com/Tisseo/EndivBundle.git"
+    },
+    {
+        "type": "git",
+        "url": "https://github.com/Tisseo/CoreBundle.git"
+    },
+    {
+        "type": "git",
+        "url": "https://github.com/Tisseo/BoaBundle.git"
+    },
+    {
+        "type": "git",
+        "url": "https://github.com/Tisseo/BoaBridgeBundle.git"
+    },
+    //...
+],
+"require": {
+    "tisseo/endiv-bundle": "dev-master",
+    "tisseo/core-bundle": "dev-master",
+    "tisseo/boa-bundle": "dev-master",
+    "tisseo/boa-bridge-bundle": "dev-master"
+    // ...
+}
+```
 
 2. AppKernel.php
 
-'''
-    $bundles = array(
-        new Tisseo\BoaBundle\TisseoBoaBundle(),
-        // ...
-    );
-'''
+```
+$bundles = array(
+    new Tisseo\EndivBundle\TisseoEndivBundle(),
+    new Tisseo\CoreBundle\TisseoCoreBundle(),
+    new Tisseo\BoaBridgeBundle\TisseoBoaBridgeBundle(),
+    new Tisseo\BoaBundle\TisseoBoaBundle(),
+    // ...
+);
+```
 
 Configuration
 -------------
 
-You don't need to do this if you're working with the main bundle NMM which
-provides all this configuration already.
-
-Coming soon...
+Check [EndivBundle](https://github.com/Tisseo/EndivBundle) configuration to provide a correct mapping
+with TID database and allow BoaBundle to manage it.
 
 Contributing
 ------------
 
-1. Vincent Passama - vincent.passama@gmail.com
-2. Rodolphe Duval - rdldvl@gmail.com
-3. Pierre-Yves Claitte - pierre.cl@gmail.com
+- Vincent Passama - vincent.passama@gmail.com
+- Rodolphe Duval - rdldvl@gmail.com
+- Pierre-Yves Claitte - pierre.cl@gmail.com
 
-TODO
+Todo
 ----
 
-- Add some information or a link to the whole ENDIV/NMM project documentation
-- Add some configuration details
+- Add functional documentation
