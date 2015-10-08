@@ -21,11 +21,16 @@
     ],
     "require" : {
         "php": ">=5.4.3",
-        "tisseo/endiv-bundle": "dev-master",
-        "tisseo/core-bundle": "dev-master"
+        "tisseo/endiv-bundle": "1.0.*",
+        "tisseo/core-bundle": "1.0.*"
     },
     "autoload" : {
         "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
     },
-    "target-dir" : "Tisseo/BoaBundle"
+    "target-dir" : "Tisseo/BoaBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
