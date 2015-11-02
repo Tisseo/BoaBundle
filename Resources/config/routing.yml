@@ -233,6 +233,21 @@ tisseo_boa_line_version_list:
     pattern: /offer/list
     defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 
+# Non concurrency routes
+tisseo_boa_non_concurrency_list:
+    pattern: /non_concurrency/list
+    defaults: { _controller: TisseoBoaBundle:NonConcurrency:list }
+tisseo_boa_non_concurrency_edit:
+    pattern: /non_concurrency/edit/{nonConcurrencyId}
+    defaults: { _controller: TisseoBoaBundle:NonConcurrency:edit, nonConcurrencyId:null }
+    requirements:
+        nonConcurrencyId: \d+/\d+
+tisseo_boa_non_concurrency_delete:
+    pattern: /non_concurrency/delete/{nonConcurrencyId}
+    defaults: { _controller: TisseoBoaBundle:NonConcurrency:delete }
+    requirements:
+        nonConcurrencyId: \d+/\d+
+
 # Route routes
 tisseo_boa_route_list:
     pattern: /offer/{lineVersionId}/route/list

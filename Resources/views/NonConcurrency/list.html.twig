@@ -1,0 +1,66 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+
+{% import "TisseoCoreBundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{ parent() }}
+    {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
+        -
+        <a href="{{ path('tisseo_boa_non_concurrency_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.non_concurrency.action.create'|trans }}
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block table_head -%}
+    <th class="col-md-2">{{ 'tisseo.boa.non_concurrency.label.number'|trans }}</th>
+    <th class="col-md-2 no-search">{{ 'tisseo.boa.non_concurrency.label.mode'|trans }}</th>
+    <th class="col-md-5 no-search">{{ 'tisseo.boa.non_concurrency.label.rule'|trans }}</th>
+    <th class="col-md-3 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% for line in lines %}
+        {% set priorityConcurrenciesArray = [] %}
+        {% set nonPriorityConcurrenciesArray = [] %}
+        {% for nonConcurrency in nonConcurrencies %}
+            {% if nonConcurrency.priorityLine == line %}
+                {% set priorityConcurrenciesArray = priorityConcurrenciesArray|merge([nonConcurrency]) %}
+            {% elseif nonConcurrency.nonPriorityLine == line %}
+                {% set nonPriorityConcurrenciesArray = nonPriorityConcurrenciesArray|merge([nonConcurrency]) %}
+            {% endif %}
+        {% endfor %}
+        {% for nonConcurrency in priorityConcurrenciesArray|merge(nonPriorityConcurrenciesArray) %}
+            <tr>
+                <td>
+                    {{ render.line_number(line, 'line', 'free') }}
+                </td>
+                <td>
+                    {{ line.physicalMode.name }}
+                </td>
+                <td>
+                    {% if nonConcurrency.priorityLine == line %}
+                        {{ 'tisseo.boa.non_concurrency.label.has_priority'|trans }}
+                        {{ render.line_number(nonConcurrency.nonPriorityLine, 'line', 'free') }}
+                        {{ 'tisseo.boa.non_concurrency.label.from'|trans }}
+                        <b>{{ 'tisseo.boa.non_concurrency.label.time'|trans({'%time%': nonConcurrency.time}) }}</b>
+                    {% elseif nonConcurrency.nonPriorityLine == line %}
+                        {{ 'tisseo.boa.non_concurrency.label.has_not_priority'|trans }}
+                        {{ render.line_number(nonConcurrency.priorityLine, 'line', 'free') }}
+                        {{ 'tisseo.boa.non_concurrency.label.from'|trans }}
+                        <b>{{ 'tisseo.boa.non_concurrency.label.time'|trans({'%time%': nonConcurrency.time}) }}</b>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_non_concurrency_edit', {'nonConcurrencyId': nonConcurrency.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
+                    </a>
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_non_concurrency_delete', {'nonConcurrencyId': nonConcurrency.id}) }}">
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.delete'|trans }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
