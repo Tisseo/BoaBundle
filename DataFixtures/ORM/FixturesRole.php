@@ -15,8 +15,8 @@ class FixturesRole extends AbstractFixture implements OrderedFixtureInterface
 
     private $roles = array(
         array(
-            'name'          => 'Consultant Boa',
-            'reference'     => 'consult-boa',
+            'name'          => 'Utilisateur Boa',
+            'reference'     => 'user-boa',
             'application'   => 'app-boa',
             'isEditable'    => true,
             'permissions'   => array(
