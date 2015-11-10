@@ -1,0 +1,43 @@
+{% extends "::modal.html.twig" %}
+
+{% if form %}
+    {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+{% endif %}
+
+{% block modal_title %}
+    {{ title|trans }}
+{% endblock %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.priorityLine) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.nonPriorityLine) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.time) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'tisseo.global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+{% endblock %}

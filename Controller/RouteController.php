@@ -30,7 +30,7 @@ class RouteController extends CoreController
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
         return $this->render('TisseoBoaBundle:Route:list.html.twig',
             array(
-                'navTitle' => 'tisseo.boa.menu.route',
+                'navTitle' => 'tisseo.boa.menu.transport.manage',
                 'pageTitle' => 'tisseo.boa.route.title.list',
                 'titleParameters' => array(
                     '%number%' => $lineVersion->getLine()->getNumber(),

@@ -27,7 +27,7 @@ class LineVersionController extends CoreController
         return $this->render(
             'TisseoBoaBundle:LineVersion:list.html.twig',
             array(
-                'navTitle' => 'tisseo.boa.menu.route',
+                'navTitle' => 'tisseo.boa.menu.transport.manage',
                 'pageTitle' => 'tisseo.boa.line_version.title.list',
                 'lineVersions' => $this->get('tisseo_endiv.line_version_manager')->findActiveLineVersions($now),
                 'datasources' => $this->get('tisseo_endiv.datasource_manager')->findAll()

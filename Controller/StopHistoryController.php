@@ -133,7 +133,7 @@ class StopHistoryController extends CoreController
         {
             try
             {
-                $stopManager->closeStopHistory($stopHistory);
+                $stopManager->saveStopHistory($stopHistory);
                 $this->addFlash('success', 'tisseo.flash.success.closed');
             }
             catch(\Exception $e)
