@@ -43,9 +43,11 @@
         {% endfor %}
         </tbody>
         <tbody>
-        <tr class="new-odt-stop">
-            {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
-        </tr>
+        {% if odtArea.id %}    
+            <tr class="new-odt-stop">
+                {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
+            </tr>
+        {% endif %}
     </tbody>
     </table>
     <br>
