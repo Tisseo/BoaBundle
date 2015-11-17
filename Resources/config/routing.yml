@@ -129,6 +129,11 @@ tisseo_boa_json_stop:
     defaults: { _controller: TisseoBoaBundle:Json:stop }
     options:
         expose: true
+tisseo_boa_json_stop_stop_area:
+    pattern: /json/stop/stoparea
+    defaults: { _controller: TisseoBoaBundle:Json:stopAndStopArea }
+    options:
+        expose: true
 tisseo_boa_json_stop_area:
     pattern: /json/stoparea
     defaults: { _controller: TisseoBoaBundle:Json:stopArea }
@@ -205,6 +210,51 @@ tisseo_boa_stop_area_alias:
     defaults: { _controller: TisseoBoaBundle:StopArea:alias }
     requirements:
         stopAreaId: \d+
+
+# OdtAreas routes
+tisseo_boa_odt_area_list:
+    pattern: /odtarea/list
+    defaults: { _controller: TisseoBoaBundle:OdtArea:list }
+tisseo_boa_odt_area_edit:
+    pattern: /odtarea/edit/{odtAreaId}
+    defaults: { _controller: TisseoBoaBundle:OdtArea:edit, odtAreaId:null }
+    requirements:
+        odtAreaId: \d+
+tisseo_boa_odt_area_delete:
+    pattern: /odtarea/delete/{odtAreaId}
+    defaults: { _controller: TisseoBoaBundle:OdtArea:delete }
+    requirements:
+        odtAreaId: \d+
+
+# OdtStops routes
+tisseo_boa_odt_stop_create:
+    pattern: /odt_area/{odtAreaId}/odtstop/create
+    defaults: { _controller: TisseoBoaBundle:OdtStop:create }
+    requirements:
+        odtAreaId: \d+
+    options:
+        expose: true
+tisseo_boa_odt_stop_create_group:
+    pattern: /odt_area/{odtAreaId}/odtstop/create_group
+    defaults: { _controller: TisseoBoaBundle:OdtStop:createGroup }
+    requirements:
+        odtAreaId: \d+
+    options:
+        expose: true
+tisseo_boa_odt_stop_edit:
+    pattern: /odt_area/{odtAreaId}/odtstop/edit
+    defaults: { _controller: TisseoBoaBundle:OdtStop:edit }
+    requirements:
+        odtAreaId: \d+
+    options:
+        expose: true
+tisseo_boa_odt_stop_form:
+    pattern: /odt_area/{odtAreaId}/odtstop/form
+    defaults: { _controller: TisseoBoaBundle:OdtStop:renderForm }
+    requirements:
+        odtAreaId: \d+
+    options:
+        expose: true
 
 # Transfer routes
 tisseo_boa_internal_transfer_edit:

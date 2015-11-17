@@ -50,6 +50,10 @@
 tr.closed-stop {
     display:none;
 }
+/* odt_area views */
+tr.closed-odt-stop {
+    display:none;
+}
 /* route-stop view */
 table.sort tbody tr.route-stop {
     cursor:pointer;

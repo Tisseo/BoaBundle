@@ -1,0 +1,67 @@
+<div id='odt-stops-list' class="panel col-md-12">
+    <input type="checkbox" id="show-closed-odt-stops"><label>&nbsp;{{ 'tisseo.boa.odt_area.action.toggle_closed_stops'|trans }}</label>
+    <input type="hidden" id="odt-area-id" value="{{ odtArea.id }}"></input>
+    <table id="table-odt-stops" class="table table-hover">
+        <thead>
+            <th class="col-md-1">{{ 'tisseo.boa.odt_stop.label.code'|trans }}</th>
+            <th class="col-md-2">{{ 'tisseo.boa.odt_stop.label.name'|trans }}</th>
+            <th class="col-md-2">{{ 'tisseo.boa.odt_stop.label.city'|trans }}</th>
+            <th class="col-md-1.5">{{ 'tisseo.boa.odt_stop.label.start_date'|trans }}</th>
+            <th class="col-md-1.5">{{ 'tisseo.boa.odt_stop.label.end_date'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.odt_stop.label.pickup'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.odt_stop.label.drop_off'|trans }}</th>
+            <th class="col-md-2 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
+        </thead>
+        <tbody>
+        {% set now = date('now') %}
+        {% for odtStop in odtArea.odtStops %}
+            {% set stopHistory = odtStop.stop.CurrentOrLatestStopHistory(now) %}
+            <tr
+                {% if odtStop.endDate and odtStop.endDate|date("d/m/Y") < now|date("d/m/Y") %} 
+                    class="odt-stop closed-odt-stop" style="background-color:#E4E4E4;"
+                {% else %}
+                    class="odt-stop"    
+                {% endif %}
+            >
+                <input type='hidden' class="odt-stop-id" name="id" value="{{ odtStop.id }}">
+                <td>{{ odtStop.stop.stopDatasources[0].code }}</td>
+                <td>{{ stopHistory.shortName }}</td>
+                <td>{{ odtStop.stop.stopArea.city.name }}</td>
+                <td>{{ odtStop.startDate|date("d/m/Y") }}</td>
+                <td>{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}</td>
+                <td><input type='checkbox' class="pickup" name="pickup" disabled="disabled" {% if odtStop.pickup %}checked="checked"{% endif %}></td>
+                <td><input type='checkbox' class="dropOff" name="dropOff" disabled="disabled" {% if odtStop.dropOff %}checked="checked"{% endif %}></td>
+                <td>
+                    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                        <button class="btn btn-xs btn-danger small-button delete-odt-stop"><span class="glyphicon glyphicon-minus"></span></button>
+                    {% endif %}    
+                    <input type='hidden' name="stop" value="{{ odtStop.stop.id }}">
+                    <input type='hidden' name="startDate" value="{{ odtStop.startDate|date("d/m/Y") }}">
+                    <input type='hidden' name="endDate" value="{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}">
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tbody>
+        <tr class="new-odt-stop">
+            {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
+        </tr>
+    </tbody>
+    </table>
+    <br>
+    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %} 
+        <button id="submit-odt-stops" type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+        </button>
+    {% endif %}
+</div>
+
+<script>
+    require(['bootstrap/datepicker', 'bootstrap/datepicker/{{ app.request.locale }}'], function() {
+        $('.input-date input').datepicker({
+            language: "fr",
+            todayHighlight: true,
+            autoclose: true
+        }); 
+    });
+</script>

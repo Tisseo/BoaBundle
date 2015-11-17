@@ -1,0 +1,20 @@
+{% form_theme form 'TisseoCoreBundle:Form:noErrorMessagesFields.html.twig' %}
+
+{{ form_start(form) }}
+{{ form_errors(form) }}
+<td></td>
+<td><input type="text" id="stop-search" class="form-control input-sm" data-url="{{ path('tisseo_boa_json_stop_stop_area') }}"></td>
+<td></td>
+<td class="input-date">{{ form_widget(form.startDate) }}</td>
+<td class="input-date">{{ form_widget(form.endDate) }}</td>
+<td>{{ form_widget(form.pickup) }}</td>
+<td>{{ form_widget(form.dropOff) }}</td>
+<td>
+    <button id="apply-odt-stop-form" type="submit" class="btn btn-success small-button">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+    {{ form_widget(form.odtArea) }}
+    {{ form_widget(form.stop) }}
+    <input type="hidden" id="new-odt-stop-stop-type" value="">
+</td>
+{{ form_end(form) }}

@@ -1,0 +1,86 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+
+{% import "TisseoCoreBundle::macros.html.twig" as render %}
+
+{% block list_title -%}
+    {{ parent() }}
+    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+        -
+        <a href="{{ path('tisseo_boa_odt_area_edit') }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.odt_area.action.create'|trans }}
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block table_head -%}
+    <th class="col-md-1.5 no-search">{{ 'tisseo.boa.odt_area.label.name'|trans }}</th>
+    <th class="col-md-2 no-search no-sort">{{ 'tisseo.boa.odt_area.label.comments'|trans }}</th>
+    <th class="col-md-3.5 no-search no-sort">{{ 'tisseo.boa.odt_area.label.stops'|trans }}</th>
+    <th class="col-md-2 no-search no-sort">{{ 'tisseo.boa.odt_area.label.lines'|trans }}</th>
+    <th class="col-md-3 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
+{% endblock %}
+{% block table_body -%}
+    {% for odtArea in odtAreas %}
+        <tr>
+            <td>
+                {{ odtArea.name }}
+            </td>
+            <td>
+                {{ odtArea.comment }}
+            </td>
+            <td>
+                {% for odtStop in odtArea.openedOdtStops %}
+                    {% if loop.index > 1 %}
+                        <br>
+                    {% endif %}
+                    <div style="position: relative; display: inline-block; width: 100%">
+                        <span class="description-popup">
+                                {{ 'tisseo.boa.odt_stop.description.start_date'|trans ~ ' ' ~ odtStop.startDate|date("d/m/Y") }} 
+                                {% if odtStop.endDate is not empty %}
+                                    {{ 'tisseo.boa.odt_stop.description.end_date'|trans ~ ' ' ~ odtStop.endDate|date("d/m/Y") }}
+                                {% endif %}
+                        </span>
+                        <span class="odt-stop-stop-label" style="z-index: 1;">
+                            {{ odtStop.stop.StopDisplayLabel }}
+                        </span>
+                    </div>
+                {% endfor %}
+            </td>
+            <td>
+                {% if linesByOdtArea[odtArea.id] is defined %}
+                    {% for line in linesByOdtArea[odtArea.id] %}
+                        {{ render.line_number(line, 'line', 'free') }}
+                    {% endfor %}
+                {% endif %}    
+            </td>
+            <td>
+                <a class="btn btn-default" href="{{ path('tisseo_boa_odt_area_edit', {'odtAreaId': odtArea.id}) }}">
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
+                </a>
+                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                    <a class="btn btn-default" href="{{ path('tisseo_boa_odt_area_delete', {'odtAreaId': odtArea.id}) }}">
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.delete'|trans }}
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        require(['jquery'], function() {
+            $('.odt-stop-stop-label').mouseover(function() {
+                $(this).css('text-decoration', 'underline');
+                $(this).parent().find(".description-popup").show();
+
+            });
+            $('.odt-stop-stop-label').mouseout(function() {
+                $(this).css('text-decoration', '');
+                $(this).parent().find(".description-popup").hide();
+
+            });
+        });
+    </script>
+{% endblock %}

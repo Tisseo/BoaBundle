@@ -66,7 +66,31 @@ class JsonController extends CoreController
 
         $term = $request->request->get('term');
         $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+        return $this->sendJsonResponse($data);
+    }
 
+    public function StopAndStopAreaAction(Request $request)
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
+
+        $this->isPostAjax($request);
+
+        $term = $request->request->get('term');
+        $stopData = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term);
+        foreach ($stopData as $key => $stopItem){
+            $stopData[$key]['type'] = 'sp';
+        }
+
+        $stopAreaData = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+        foreach ($stopAreaData as $key => $stopItem){
+            $stopAreaData[$key]['type'] = 'sa';
+        }
+        $data = array_merge($stopAreaData, $stopData);
         return $this->sendJsonResponse($data);
     }
 

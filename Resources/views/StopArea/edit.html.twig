@@ -190,13 +190,13 @@
     </script>
     <script>
         require(['jquery'], function() {
-        $('#show-closed-stops').change(function() {
-            if ($(this).is(":checked"))
-                $(".closed-stop").fadeIn();
-            else
-                $(".closed-stop").fadeOut();
+            $('#show-closed-stops').change(function() {
+                if ($(this).is(":checked"))
+                    $(".closed-stop").fadeIn();
+                else
+                    $(".closed-stop").fadeOut();
+            });
         });
-    });
     </script>
 {% endblock %}
 
