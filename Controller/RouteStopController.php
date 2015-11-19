@@ -149,7 +149,6 @@ class RouteStopController extends CoreController
         if ($form->isValid())
         {
             $routeStop = $form->getData();
-
             return $this->render(
                 'TisseoBoaBundle:RouteStop:new.html.twig',
                 array(

@@ -1,18 +1,27 @@
 <tr class="route-stop">
     <input type='hidden' class="route-stop-id" name="id" value="">
     <td class="route-stop-rank">{{ routeStop.rank }}</td>
-    <td>{{ routeStop.waypoint.stop.stopArea.city.name }}</td>
-    <td>{{ routeStop.waypoint.stop.stopArea.shortName }}</td>
+    <td>{% if not routeStop.isOdtAreaRouteStop %}{{ routeStop.waypoint.stop.stopArea.city.name }}{% endif %}</td>
+    <td>{% if routeStop.isOdtAreaRouteStop %}{{ routeStop.waypoint.odtArea.name }}{% else %}{{ routeStop.waypoint.stop.stopArea.shortName }}{% endif %}</td>
     <td>
-    {% for datasource in routeStop.waypoint.stop.stopDatasources %}
-        {{ datasource.code }}
-    {% endfor %}
+        {% if routeStop.isOdtAreaRouteStop %}
+            {{ 'tisseo.boa.route_stop.label.zone'|trans }}
+        {% else %}
+            {% for datasource in routeStop.waypoint.stop.stopDatasources %}
+                {{ datasource.code }}
+            {% endfor %}
+        {% endif %}
+    </td>
     </td>
     <td><input type='checkbox' class="pickup" name="pickup" {% if routeStop.pickup %}checked="checked"{% endif %}></td>
     <td><input type='checkbox' class="dropOff"  name="dropOff" {% if routeStop.dropOff %}checked="checked"{% endif %}></td>
     <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if routeStop.scheduledStop %}checked="checked"{% endif %}></td>
     {% if wayArea %}
-    <td></td>
+        {% if routeStop.isOdtAreaRouteStop %}
+            <td><input type='checkbox' class="internalService" name="internalService" {% if routeStop.internalService %}checked="checked"{% endif %}></td>
+        {% else %}
+            <td></td>
+        {% endif %}
     {% endif %}
     <td>
         <button class="btn btn-xs btn-danger small-button delete-route-stop"><span class="glyphicon glyphicon-minus"></span></button>

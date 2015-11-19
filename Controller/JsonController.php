@@ -94,6 +94,31 @@ class JsonController extends CoreController
         return $this->sendJsonResponse($data);
     }
 
+    public function StopAndOdtAreaAction(Request $request)
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_VIEW_STOPS',
+                'BUSINESS_MANAGE_STOPS'
+            )
+        );
+
+        $this->isPostAjax($request);
+
+        $term = $request->request->get('term');
+        $stops = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term);
+        foreach ($stops as $key => $item){
+            $stops[$key]['type'] = 'sp';
+        }
+
+        $odtAreas = $this->get('tisseo_endiv.odt_area_manager')->findOdtAreasLike($term);
+        foreach ($odtAreas as $key => $item){
+            $odtAreas[$key]['type'] = 'oa';
+        }
+        $data = array_merge($odtAreas, $stops);
+        return $this->sendJsonResponse($data);
+    }
+
     public function CityAction(Request $request)
     {
         $this->isGranted(

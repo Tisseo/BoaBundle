@@ -17,10 +17,10 @@
         {% for odtStop in odtArea.odtStops %}
             {% set stopHistory = odtStop.stop.CurrentOrLatestStopHistory(now) %}
             <tr
-                {% if odtStop.endDate and odtStop.endDate|date("d/m/Y") < now|date("d/m/Y") %} 
+                {% if odtStop.endDate and odtStop.endDate|date("d/m/Y") < now|date("d/m/Y") %}
                     class="odt-stop closed-odt-stop" style="background-color:#E4E4E4;"
                 {% else %}
-                    class="odt-stop"    
+                    class="odt-stop"
                 {% endif %}
             >
                 <input type='hidden' class="odt-stop-id" name="id" value="{{ odtStop.id }}">
@@ -34,7 +34,7 @@
                 <td>
                     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
                         <button class="btn btn-xs btn-danger small-button delete-odt-stop"><span class="glyphicon glyphicon-minus"></span></button>
-                    {% endif %}    
+                    {% endif %}
                     <input type='hidden' name="stop" value="{{ odtStop.stop.id }}">
                     <input type='hidden' name="startDate" value="{{ odtStop.startDate|date("d/m/Y") }}">
                     <input type='hidden' name="endDate" value="{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}">
@@ -43,13 +43,15 @@
         {% endfor %}
         </tbody>
         <tbody>
-        <tr class="new-odt-stop">
-            {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
-        </tr>
+        {% if odtArea.id %}
+            <tr class="new-odt-stop">
+                {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
+            </tr>
+        {% endif %}
     </tbody>
     </table>
     <br>
-    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %} 
+    {% if (is_granted('BUSINESS_MANAGE_STOPS')) and odtArea.id %}
         <button id="submit-odt-stops" type="submit" class="btn btn-success">
             <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
         </button>
@@ -62,6 +64,6 @@
             language: "fr",
             todayHighlight: true,
             autoclose: true
-        }); 
+        });
     });
 </script>

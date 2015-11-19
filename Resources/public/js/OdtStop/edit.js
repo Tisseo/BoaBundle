@@ -91,7 +91,7 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
         }
         else {
             routingName = 'tisseo_boa_odt_stop_create';
-        } 
+        }
         $.ajax({
             url : Routing.generate(routingName, {'odtAreaId': odtAreaId}),
             type: 'POST',
@@ -131,7 +131,7 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
                             language: 'fr',
                             todayHighlight: true,
                             autoclose: true
-                        }); 
+                        });
                         init_autocomplete();
                         $('#odt-stops-list #stop-search').focus();
                     }
@@ -192,7 +192,7 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
             error: function (data) {
                window.location.replace(data.getResponseHeader('Location'));
             }
-            
+
         });
     });
 

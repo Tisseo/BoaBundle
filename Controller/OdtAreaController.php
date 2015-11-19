@@ -80,7 +80,7 @@ class OdtAreaController extends CoreController
         if (empty($odtArea))
         {
             $odtArea = new OdtArea();
-            //$odtStops = null;  
+            //$odtStops = null;
         }
         /*else
         {
@@ -105,9 +105,9 @@ class OdtAreaController extends CoreController
             $odtArea = $form->getData();
             try
             {
-                $odtAreaId = $odtAreaManager->create($odtArea); 
+                $odtAreaId = $odtAreaManager->create($odtArea);
                 $odtAreaManager->save($odtArea);
-                
+
                 $this->addFlash('success', 'tisseo.flash.success.edited');
             }
             catch (\Exception $e)
@@ -121,13 +121,13 @@ class OdtAreaController extends CoreController
                 array('odtAreaId' => $odtAreaId)
             );
         }
-        
+
         return $this->render(
             'TisseoBoaBundle:OdtArea:edit.html.twig',
             array(
                 'form' => $form->createView(),
                 'pageTitle' => ($odtAreaId ? 'tisseo.boa.odt_area.title.edit' : 'tisseo.boa.odt_area.title.create'),
-                'odtArea' => $odtArea                
+                'odtArea' => $odtArea
             )
         );
     }
@@ -144,8 +144,8 @@ class OdtAreaController extends CoreController
 
         $odtStopManager = $this->get('tisseo_endiv.odt_stop_manager');
         $odtStop = new OdtStop();
-        $odtStop->setOdtArea($odtAreaId);        
-        
+        $odtStop->setOdtArea($odtAreaId);
+
         $form = $this->createForm(
             new OdtStopType(),
             $odtStop,
@@ -166,7 +166,7 @@ class OdtAreaController extends CoreController
             try
             {
                 $odtStopManager->save($odtStop);
-                
+
                 $this->addFlash('success', 'tisseo.flash.success.edited');
             }
             catch (\Exception $e)
@@ -179,13 +179,13 @@ class OdtAreaController extends CoreController
                 array('odtAreaId' => $odtAreaId)
             );
         }
-        
+
         return $this->render(
             'TisseoBoaBundle:OdtStop:create.html.twig',
             array(
                 'form' => $form->createView(),
                 'pageTitle' => ('tisseo.boa.odt_stop.title.create'),
-                'odtStop' => $odtStop                
+                'odtStop' => $odtStop
             )
         );
     }
@@ -215,6 +215,6 @@ class OdtAreaController extends CoreController
         return $this->redirectToRoute(
                 'tisseo_boa_odt_area_edit',
                 array('odtAreaId' => $odtAreaId)
-            ); 
+            );
     }
 }

@@ -73,7 +73,7 @@ class OdtStopController extends CoreController
     public function editAction(Request $request, $odtAreaId)
     {
         $this->isGranted('BUSINESS_MANAGE_STOPS');
-        
+
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
@@ -88,7 +88,7 @@ class OdtStopController extends CoreController
                 $this->addFlashException($e->getMessage());
                 $code = 500;
             }
-            
+
             $response = $this->redirectToRoute(
                 'tisseo_boa_odt_area_edit',
                 array('odtAreaId' => $odtAreaId)
@@ -162,7 +162,7 @@ class OdtStopController extends CoreController
         {
             try {
                 $data = json_decode($request->getContent(), true);
-                $odtStops = $this->get('tisseo_endiv.odt_stop_manager')->getGroupedOdtStops($data, $odtArea); 
+                $odtStops = $this->get('tisseo_endiv.odt_stop_manager')->getGroupedOdtStops($data, $odtArea);
             } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
                 $response = $this->redirectToRoute(
@@ -172,7 +172,7 @@ class OdtStopController extends CoreController
                 $response->setStatusCode(500);
                 return $response;
             }
-            return $this->render( 
+            return $this->render(
                 'TisseoBoaBundle:OdtStop:new.group.html.twig',
                 array(
                     'odtStops' => $odtStops,

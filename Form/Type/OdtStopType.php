@@ -18,7 +18,7 @@ class OdtStopType extends AbstractType
         $this->odtAreaTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\OdtArea");
         $this->odtAreaTransformer->setEntityRepository("TisseoEndivBundle:OdtArea");
         $this->odtAreaTransformer->setEntityType("OdtArea");
-        
+
         $this->stopTransformer = new EntityToIntTransformer($em);
         $this->stopTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Stop");
         $this->stopTransformer->setEntityRepository("TisseoEndivBundle:Stop");
@@ -31,7 +31,7 @@ class OdtStopType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->buildTransformers($options['em']);
-        
+
         $builder
             /*->add(
                 'stop',

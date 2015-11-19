@@ -81,6 +81,14 @@ class RouteStopType extends AbstractType
                     'data' => true
                 )
             )
+            ->add(
+                'internalService',
+                'checkbox',
+                array(
+                    'required' => false,
+                    'data' => true
+                )
+            )
             ->setAction($options['action'])
         ;
     }
