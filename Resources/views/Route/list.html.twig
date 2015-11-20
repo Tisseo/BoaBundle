@@ -31,17 +31,17 @@
         <tr>
             <td>{{ route.name }}</td>
             <td>
-                {% if route.routeStops.first.waypoint.stop is not empty %}
+                {% if not route.routeStops.first.isOdtAreaRouteStop %}
                     {{ route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
                 {% else %}
-                    {{ route.routeStops.first.waypoint.area.name }}
+                    {{ route.routeStops.first.waypoint.odtArea.name }}
                 {% endif %}
             </td>
             <td>
-                {% if route.routeStops.last.waypoint.stop is not empty %}
+                {% if not route.routeStops.last.isOdtAreaRouteStop %}
                     {{ route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
                 {% else %}
-                    {{ route.routeStops.last.waypoint.area.name }}
+                    Zone: {{ route.routeStops.last.waypoint.odtArea.name }}
                 {% endif %}
             </td>
             <td>{{ route.comment }}</td>

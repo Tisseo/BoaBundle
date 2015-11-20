@@ -56,7 +56,8 @@ class RouteEditType extends AbstractType
                             'choices' => array(
                                 Route::WAY_FORWARD => 'tisseo.boa.route.label.ways.forward',
                                 Route::WAY_BACKWARD => 'tisseo.boa.route.label.ways.backward',
-                                Route::WAY_LOOP => 'tisseo.boa.route.label.ways.loop'
+                                Route::WAY_LOOP => 'tisseo.boa.route.label.ways.loop',
+                                Route::WAY_AREA => 'tisseo.boa.route.label.ways.area'
                             )
                         )
                     );

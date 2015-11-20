@@ -83,12 +83,10 @@
     <script>
         require(['boa/calendar/edit']);
     </script>
-    {% if calendar.calendarElements is not empty %}
     <script>
         global = {
             locale: '{{ app.request.locale }}'
         };
         require(['boa/calendar_element/edit']);
     </script>
-    {% endif %}
 {% endblock %}

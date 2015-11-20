@@ -36,7 +36,7 @@
                     {% endif %}
                     <div style="position: relative; display: inline-block; width: 100%">
                         <span class="description-popup">
-                                {{ 'tisseo.boa.odt_stop.description.start_date'|trans ~ ' ' ~ odtStop.startDate|date("d/m/Y") }} 
+                                {{ 'tisseo.boa.odt_stop.description.start_date'|trans ~ ' ' ~ odtStop.startDate|date("d/m/Y") }}
                                 {% if odtStop.endDate is not empty %}
                                     {{ 'tisseo.boa.odt_stop.description.end_date'|trans ~ ' ' ~ odtStop.endDate|date("d/m/Y") }}
                                 {% endif %}
@@ -52,7 +52,7 @@
                     {% for line in linesByOdtArea[odtArea.id] %}
                         {{ render.line_number(line, 'line', 'free') }}
                     {% endfor %}
-                {% endif %}    
+                {% endif %}
             </td>
             <td>
                 <a class="btn btn-default" href="{{ path('tisseo_boa_odt_area_edit', {'odtAreaId': odtArea.id}) }}">

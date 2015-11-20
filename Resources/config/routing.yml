@@ -129,14 +129,19 @@ tisseo_boa_json_stop:
     defaults: { _controller: TisseoBoaBundle:Json:stop }
     options:
         expose: true
+tisseo_boa_json_stop_area:
+    pattern: /json/stoparea
+    defaults: { _controller: TisseoBoaBundle:Json:stopArea }
 tisseo_boa_json_stop_stop_area:
     pattern: /json/stop/stoparea
     defaults: { _controller: TisseoBoaBundle:Json:stopAndStopArea }
     options:
         expose: true
-tisseo_boa_json_stop_area:
-    pattern: /json/stoparea
-    defaults: { _controller: TisseoBoaBundle:Json:stopArea }
+tisseo_boa_json_stop_odt_area:
+    pattern: /json/stop/odtarea
+    defaults: { _controller: TisseoBoaBundle:Json:stopAndOdtArea }
+    options:
+        expose: true
 tisseo_boa_json_city:
     pattern: /json/city
     defaults: { _controller: TisseoBoaBundle:Json:city }
