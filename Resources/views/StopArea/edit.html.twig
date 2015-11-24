@@ -67,19 +67,19 @@
         <div class="row" style="padding:10px 0 0;">
             <div class = "col-md-12">
                 {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-                    <a href="{{ path('tisseo_boa_stop_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+                    <a href="{{ path('tisseo_boa_stop_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success stop-create">
                         <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.stop_point.action.create'|trans }}
                     </a>
-                    <a class="btn btn-default" href="{{ path('tisseo_boa_internal_transfer_edit', {'stopAreaId': stopArea.id}) }}" data-toggle="modal" data-target="#base-modal">
+                    <a class="btn btn-default internal-transfers-edit" href="{{ path('tisseo_boa_internal_transfer_edit', {'stopAreaId': stopArea.id}) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-resize-small"></span> {{ 'tisseo.boa.stop_area.action.internal_transfert'|trans }}
                     </a>
-                    <a class="btn btn-default" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
+                    <a class="btn btn-default external-transfers-edit" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-resize-full"></span> {{ 'tisseo.boa.stop_area.action.external_transfert'|trans }}
                     </a>
                     <a class="btn btn-default disabled" id="geometries" href="#">
                         <span class="glyphicon glyphicon-globe"></span> {{ 'tisseo.boa.stop_area.action.geometries'|trans }}
                     </a>
-                    <a class="btn btn-default" href="{{ path('tisseo_boa_stop_area_alias', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
+                    <a class="btn btn-default aliases-edit" href="{{ path('tisseo_boa_alias_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-tag"></span> {{ 'tisseo.boa.stop_area.action.alias'|trans }}
                     </a>
                 {% endif %}
@@ -153,19 +153,19 @@
             <div class="row" style="padding:10px 0 0;">
                 <div class = "col-md-12">
                     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-                        <a href="{{ path('tisseo_boa_stop_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+                        <a href="{{ path('tisseo_boa_stop_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success stop-create">
                             <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.stop_point.action.create'|trans }}
                         </a>
-                        <a class="btn btn-default" href="{{ path('tisseo_boa_internal_transfer_edit', {'stopAreaId': stopArea.id}) }}" data-toggle="modal" data-target="#base-modal">
+                        <a class="btn btn-default internal-transfers-edit" href="{{ path('tisseo_boa_internal_transfer_edit', {'stopAreaId': stopArea.id}) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-resize-small"></span> {{ 'tisseo.boa.stop_area.action.internal_transfert'|trans }}
                         </a>
-                        <a class="btn btn-default" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
+                        <a class="btn btn-default external-transfers-edit" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-resize-full"></span> {{ 'tisseo.boa.stop_area.action.external_transfert'|trans }}
                         </a>
                         <a class="btn btn-default disabled" id="geometries" href="#">
                             <span class="glyphicon glyphicon-globe"></span> {{ 'tisseo.boa.stop_area.action.geometries'|trans }}
                         </a>
-                        <a class="btn btn-default" href="{{ path('tisseo_boa_stop_area_alias', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
+                        <a class="btn btn-default aliases-edit" href="{{ path('tisseo_boa_alias_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-tag"></span> {{ 'tisseo.boa.stop_area.action.alias'|trans }}
                         </a>
                     {% endif %}
@@ -195,6 +195,26 @@
                     $(".closed-stop").fadeIn();
                 else
                     $(".closed-stop").fadeOut();
+            });
+            $('.internal-transfers-edit').click(function(){
+                $('.modal-dialog').css('width', '800px');
+            });
+            $('.external-transfers-edit').click(function(){
+                $('.modal-dialog').css('width', '1200px');
+                $('#base-modal').on('loaded.bs.modal', function () {
+                    require(['boa/transfer/external_transfer'], function(externalTransfer) {
+                        externalTransfer.initExternalTransfers();
+                    });
+                });
+            });
+            $('.aliases-edit').click(function(){
+                $('.modal-dialog').css('width', '600px');
+                $('#base-modal').on('loaded.bs.modal', function () {
+                    $('#aliases-list #new-alias-name').focus();
+                });
+            });
+            $('.stop-create').click(function(){
+                $('.modal-dialog').css('width', '600px');
             });
         });
     </script>

@@ -145,19 +145,11 @@ tisseo_boa_json_stop_odt_area:
 tisseo_boa_json_city:
     pattern: /json/city
     defaults: { _controller: TisseoBoaBundle:Json:city }
-tisseo_boa_json_internal_transfer:
-    pattern: /json/internaltransfer
-    defaults: { _controller: TisseoBoaBundle:Json:internalTransfer }
-    options:
-        expose: true
-tisseo_boa_json_external_transfer:
-    pattern: /json/externaltransfer
-    defaults: { _controller: TisseoBoaBundle:Json:externalTransfer }
-    options:
-        expose: true
-tisseo_boa_json_stop_transfer:
-    pattern: /json/stoptransfer
+tisseo_boa_json_transfer_stop:
+    pattern: /json/stoptransfer/{stopAreaId}
     defaults: { _controller: TisseoBoaBundle:Json:stopTransfer }
+    requirements:
+        stopAreaId: \d+
 tisseo_boa_json_trip_template:
     pattern: /json/triptemplate
     defaults: { _controller: TisseoBoaBundle:Json:TripTemplate }
@@ -210,11 +202,36 @@ tisseo_boa_stop_area_search:
 tisseo_boa_stop_area_edit:
     pattern: /stoparea/edit/{stopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:edit, stopAreaId: null }
-tisseo_boa_stop_area_alias:
-    pattern: /stoparea/alias/{stopAreaId}
-    defaults: { _controller: TisseoBoaBundle:StopArea:alias }
+tisseo_boa_alias_edit:
+    pattern: /stoparea/{stopAreaId}/alias/edit
+    defaults: { _controller: TisseoBoaBundle:StopArea:editAliases }
     requirements:
         stopAreaId: \d+
+    options:
+        expose: true
+
+# Transfer routes
+tisseo_boa_internal_transfer_edit:
+    pattern: /stop_area/{stopAreaId}/internal_transfer/edit
+    defaults: { _controller: TisseoBoaBundle:StopArea:internalTransfer }
+    requirements:
+        stopAreaId: \d+
+    options:
+        expose: true
+tisseo_boa_external_transfer_edit:
+    pattern: /stop_area/{stopAreaId}/external_transfer/edit
+    defaults: { _controller: TisseoBoaBundle:StopArea:externalTransfer }
+    requirements:
+        stopAreaId: \d+
+    options:
+        expose: true
+tisseo_boa_external_transfer_create:
+    pattern: /stop_area/{stopAreaId}/external_transfer/create
+    defaults: { _controller: TisseoBoaBundle:StopArea:createExternalTransfer }
+    requirements:
+        stopAreaId: \d+
+    options:
+        expose: true
 
 # OdtAreas routes
 tisseo_boa_odt_area_list:
@@ -260,28 +277,6 @@ tisseo_boa_odt_stop_form:
         odtAreaId: \d+
     options:
         expose: true
-
-# Transfer routes
-tisseo_boa_internal_transfer_edit:
-    pattern: /transfer/internal/edit/{stopAreaId}
-    defaults: { _controller: TisseoBoaBundle:StopArea:internalTransfer }
-    requirements:
-        stopAreaId: \d+
-tisseo_boa_internal_transfer_save:
-    pattern: /transfer/internal/save/{stopAreaId}
-    defaults: { _controller: TisseoBoaBundle:StopArea:saveInternalTransfer }
-    requirements:
-        stopAreaId: \d+
-tisseo_boa_external_transfer_edit:
-    pattern: /external_transfer/edit/{stopAreaId}
-    defaults: { _controller: TisseoBoaBundle:StopArea:externalTransfer }
-    requirements:
-        stopAreaId: \d+
-tisseo_boa_external_transfer_save:
-    pattern: /transfer/external/save/{stopAreaId}
-    defaults: { _controller: TisseoBoaBundle:StopArea:saveExternalTransfer }
-    requirements:
-        stopAreaId: \d+
 
 # LineVersion routes
 tisseo_boa_line_version_list:

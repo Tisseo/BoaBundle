@@ -190,9 +190,8 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
                 }
             },
             error: function (data) {
-               window.location.replace(data.getResponseHeader('Location'));
+                window.location.replace(data.getResponseHeader('Location'));
             }
-
         });
     });
 
