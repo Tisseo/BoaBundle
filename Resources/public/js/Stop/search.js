@@ -24,7 +24,7 @@ define(['jquery_ui_autocomplete'], function($) {
                     });
                 },
                 select: function(event, ui) {
-                    $(target).removeAttr('disabled').attr('data-stop', ui.item.id);
+                    $(target).removeAttr('disabled').attr('data-stop', ui.item.id).focus()  ;
                 },
                 minLength: 3,
                 delay: 300
