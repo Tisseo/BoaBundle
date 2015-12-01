@@ -1,0 +1,27 @@
+{% for transfer in transfers %}
+    <tr class="transfer">
+        <input type="hidden" class="transfer-id" name="id" value="{% if transfer.id %}{{ transfer.id }}{% endif %}">
+        <td>
+            {{ transfer.startStop.StopDisplayLabel }}
+            <input type="hidden" class="transfer-start-stop-id" name="startStopId" value="{{ transfer.startStop.id }}">
+        </td>
+        <td>
+            {{ transfer.endStop.StopDisplayLabel }}
+            <input type="hidden" class="transfer-end-stop-id" name="endStopId" value="{{ transfer.endStop.id }}">
+        </td>
+        <td>
+            <input type="number" class="form-control transfer-duration" name="duration" min="0" max="99" value="{% if transfer.duration %}{{ transfer.duration / 60 }}{% endif %}">
+        </td>
+        <td>
+            <input type="number" class="form-control transfer-distance" name="distance" min="0" value="{% if transfer.distance %}{{ transfer.distance }}{% endif %}">
+        </td>
+        <td>
+            <input type="text" class="form-control transfer-long-name" name="longName" value="{% if transfer.longName %}{{ transfer.longName }}{% endif %}">
+        </td>
+        <td>
+            {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                <button class="btn btn-xs btn-danger small-button delete-transfer"><span class="glyphicon glyphicon-minus"></span></button>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}

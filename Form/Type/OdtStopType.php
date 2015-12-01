@@ -33,16 +33,6 @@ class OdtStopType extends AbstractType
         $this->buildTransformers($options['em']);
 
         $builder
-            /*->add(
-                'stop',
-                'entity',
-                array(
-                    'label' => 'tisseo.boa.odt_stop.label.stop',
-                    'class' => 'TisseoEndivBundle:Stop',
-                    'property' => 'nameLabel',
-                    'required' => true
-                )
-            )*/
             ->add(
                 $builder->create(
                     'odtArea',

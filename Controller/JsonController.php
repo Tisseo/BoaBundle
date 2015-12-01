@@ -136,41 +136,7 @@ class JsonController extends CoreController
         return $this->sendJsonResponse($data);
     }
 
-    public function InternalTransferAction(Request $request)
-    {
-        $this->isGranted(
-            array(
-                'BUSINESS_VIEW_STOPS',
-                'BUSINESS_MANAGE_STOPS'
-            )
-        );
-
-        $this->isPostAjax($request);
-
-        $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($request->request->get('stopAreaId'));
-        $data = $this->get('tisseo_endiv.transfer_manager')->getInternalTransfer($stopArea);
-
-        return $this->sendJsonResponse($data);
-    }
-
-    public function ExternalTransferAction(Request $request)
-    {
-        $this->isGranted(
-            array(
-                'BUSINESS_VIEW_STOPS',
-                'BUSINESS_MANAGE_STOPS'
-            )
-        );
-
-        $this->isPostAjax($request);
-
-        $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($request->request->get('stopAreaId'));
-        $data = $this->get('tisseo_endiv.transfer_manager')->getExternalTransfer($stopArea);
-
-        return $this->sendJsonResponse($data);
-    }
-
-    public function StopTransferAction(Request $request)
+    public function StopTransferAction(Request $request, $stopAreaId)
     {
         $this->isGranted(
             array(
@@ -183,22 +149,22 @@ class JsonController extends CoreController
 
         $term = $request->request->get('term');
         $result = array();
-        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term);
+        $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term, $stopAreaId);
         foreach ($data as $item)
         {
             $result[] = array(
                 "id" => $item["id"],
                 "name" => $item["name"],
-                "category" => "stop"
+                "type" => "sa"
             );
         }
-        $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, $stopAreaId);
         foreach ($data as $item)
         {
             $result[] = array(
                 "id" => $item["id"],
                 "name" => $item["name"],
-                "category" => "stop_area"
+                "type" => "sp"
             );
         }
 

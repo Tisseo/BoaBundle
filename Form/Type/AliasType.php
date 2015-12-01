@@ -14,7 +14,14 @@ class AliasType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text',  array('label' => 'stop_area.alias.name'));
+        $builder->add(
+            'name',
+            'text',
+            array(
+                'label' => 'tisseo.boa.alias.label.name',
+                'required' => true,
+            )
+        );
         $builder->setAction($options['action']);
     }
 

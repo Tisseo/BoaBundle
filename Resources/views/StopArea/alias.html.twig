@@ -1,69 +1,60 @@
 {% extends "::modal.html.twig" %}
 
-{% form_theme form 'TisseoBoaBundle:Form:fields.html.twig' %}
-
 {% block modal_title %}
-    {{ title|trans({}, 'default') }}
-{% endblock %}
-
-{% block open_form %}
-    {{ form_start(form) }}
+    {{ title|trans ~ ' "' ~ stopArea.nameLabel ~ '"' }}
 {% endblock %}
 
 {% block modal_body %}
-    {{ form_errors(form) }}
-    {{ form_widget(form._token) }}
-
-    <div>
-        <div class="stop_table_header">Alias de la zone "{{ stopAreaLabel }}"</div>
-        <table
-            id='alias_table'
-            class="table table-hover dataTable no-footer"
-            data-prototype="{% filter escape %}{{ form_widget(form.alias.vars.prototype['name']) }} {% endfilter %}"
-        >
-        <thead>
-            <th>Nom</th>
-            <th>Action</th>
-        </thead>
-        <tbody>
-        {%  for alias in form.alias %}
-        <tr>
-            <td>
-                {{ form_widget(alias.name) }}
-            </td>
-            <td>
-                <a class="btn btn-default" href="#"><span class="glyphicon glyphicon-remove"></span>{{'global.delete'|trans({}, 'messages')}}</a>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
+    <div id="aliases-list">
+        <input type="hidden" id="stop-area-id" value="{{ stopArea.id }}"></input>
+        <table id="table-aliases" class="table table-hover">
+            <thead>
+                <th class="col-md-3">{{ 'tisseo.boa.alias.label.name'|trans }}</th>
+                <th class="col-md-2 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
+            </thead>
+            {% for alias in stopArea.aliases %}
+                <tr class="alias">
+                    <input type='hidden' class="alias-id" name="id" value="{{ alias.id }}">
+                    <td>{{ alias.name }}</td>
+                    <td>
+                        {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                            <button class="btn btn-xs btn-danger small-button delete-alias"><span class="glyphicon glyphicon-minus"></span></button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                <tr class="new-alias">
+                    <td><input type="text" id="new-alias-name" name="name" class="form-control"></td>
+                    <td>
+                        <button id="apply-alias-form" type="submit" class="btn btn-success small-button"><span class="glyphicon glyphicon-plus"></span></button>
+                    </td>
+                </tr>
+            {% endif %}
         </table>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <a class="btn btn-default" id="add_element" href="#"><span class="glyphicon glyphicon-plus"></span>{{'global.add'|trans({}, 'messages')}}</a>
-        </div>
+    <div id="new-alias-container" style="display:none">
+        <table>
+            <tr class="alias">
+                <input type='hidden' class="alias-id" name="id" value="">
+                <td></td>
+                <td>
+                    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                        <button class="btn btn-xs btn-danger small-button delete-alias"><span class="glyphicon glyphicon-minus"></span></button>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
     </div>
 {% endblock %}
 
 {% block modal_actions %}
-    <button type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span>{{ 'tisseo.global.save'|trans }}
-    </button>
-    {{ form_end(form, { 'render_rest': false}) }}
-    <script>
-           require(['boa/stop/utils'], function(utils) {
-            $('#add_element').click(function(event) {
-                utils.add_alias('#alias_table');
-            });
-        });
-
-        $('#alias_table').on('click', "a", function(event) {
-            event.preventDefault();
-            if ($(this).text() === "{{'global.delete'|trans({}, 'messages')}}") {
-                $(this).closest("tr").remove();
-            }
-        });
-
-    </script>
+    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+        <script>
+            require(['boa/alias/edit']);
+        </script>
+        <button id="submit-aliases" type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-pencil"></span>{{ 'tisseo.global.save'|trans }}
+        </button>
+    {% endif %}
 {% endblock %}
