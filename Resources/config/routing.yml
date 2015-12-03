@@ -22,6 +22,11 @@ tisseo_boa_agency_edit:
 tisseo_boa_calendar_list:
     pattern: /calendar/{calendarType}/list/
     defaults: { _controller: TisseoBoaBundle:Calendar:list }
+tisseo_boa_calendar_list_paginate:
+    pattern: /calendar/{calendarType}/list/paginate
+    defaults: { _controller: TisseoBoaBundle:Calendar:listPaginate }
+    options:
+        expose: true;
 tisseo_boa_calendar_edit:
     pattern: /calendar/edit/{calendarId}
     defaults: { _controller: TisseoBoaBundle:Calendar:edit, calendarId: null }

@@ -2,8 +2,11 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Acl\Exception\Exception;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Calendar;
 use Tisseo\EndivBundle\Entity\CalendarDatasource;
@@ -26,16 +29,146 @@ class CalendarController extends CoreController
             )
         );
 
-        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        //$calendarManager = $this->get('tisseo_endiv.calendar_manager');
+
         return $this->render(
             'TisseoBoaBundle:Calendar:list.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.calendar.manage',
                 'pageTitle' => 'tisseo.boa.calendar.title.list',
-                'calendars' => ($calendarType ? $calendarManager->findBy(array('calendarType' => $calendarType)) : $calendarManager->findAll()),
-                'calendarType' => $calendarType
+                //'calendars' => ($calendarType ? $calendarManager->findBy(array('calendarType' => $calendarType), 5) : $calendarManager->findAll()),
+                'calendarType' => $calendarType,
+                'paginate' => true,
+                'processing' => 'true',
+                'serverSide' => 'true',
+                'iDisplayLength' => 100,
+                'ajax' => $this->generateUrl('tisseo_boa_calendar_list_paginate', array(
+                    'calendarType' => $calendarType,
+                )),
             )
         );
+    }
+
+    /**
+     * @param $calendarType
+     * @param $limit integer max result per page
+     * @param $offset integer current offset
+     */
+    public function listPaginateAction(Request $request, $calendarType)
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_CALENDARS',
+                'BUSINESS_VIEW_CALENDARS'
+            )
+        );
+
+        $length = $request->get('length');
+        $length = $length && ($length!=-1)?$length:0;
+
+        $start = $request->get('start');
+        $start = $length?($start && ($start!=-1)?$start:0)/$length:0;
+
+        $order = $request->get('order');
+        $orderParam = null;
+        if (!is_null($order) && is_array($order)) {
+            if ($calendarType == Calendar::CALENDAR_TYPE_HYBRID || Calendar::CALENDAR_TYPE_PERIOD) {
+                $columnList = $this->container->getParameter('tisseo_boa.datatable_views')['calendar_mixte'];
+            } else {
+                $columnList = $this->container->getParameter('tisseo_boa.datatable_views')['default_view'];
+            }
+            foreach ($order as $key => $orderby) {
+                foreach($columnList as $index => $columnDef) {
+                    if ($columnDef['index'] == $orderby['column']) {
+                        $orderParam[] = [
+                            'columnName' => $columnDef['colDbName'],
+                            'orderDir' => $orderby['dir']
+                        ];
+                        break; // exit foreach
+                    }
+                }
+            }
+        }
+
+        $search = $request->get('search');
+        $filters = (empty($search['value']))?[]:['name' => $search['value']];
+        $filters = array_merge(array('calendarType' => $calendarType), $filters);
+
+        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $data = ($calendarType ? $calendarManager->advancedFindBy($filters, $orderParam, $length, $start) : $calendarManager->findAll());
+        $dataTotal = $calendarManager->findByCountResult($filters);
+
+        return $this->createJsonResponse($data, $dataTotal, $calendarType);
+    }
+
+    /**
+     * Prepare data for inject it into "datatable" js object
+     * @param $data array
+     * @param $dataTotal int
+     * @param $calendarType string
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    private function createJsonResponse($data, $dataTotal, $calendarType)
+    {
+        $listCalendarFormated = [
+            'data' => array(),
+            'recordsTotal' => $dataTotal,
+            'recordsFiltered' => $dataTotal,
+        ];
+
+        $trans = $this->get('translator');
+
+        foreach($data as $key => $calendar) {
+            $tabCalendar = array($calendar->getName());
+
+            $dateEnd = ($calendar->getComputedEndDate() instanceof \DateTime) ? $calendar->getComputedEndDate()->format('d-m-Y'):'';
+            $dateStart = ($calendar->getComputedStartDate() instanceof \DateTime) ? $calendar->getComputedStartDate()->format('d-m-Y'):'';
+
+            if ($calendarType == Calendar::CALENDAR_TYPE_HYBRID || $calendarType == Calendar::CALENDAR_TYPE_PERIOD) {
+                if (!is_null($calendar->getLineVersion())) {
+                    $version = $calendar->getLineVersion()->getLine()->getNumber() . ' - v' .
+                        $calendar->getLineVersion()->getVersion();
+                } else {
+                    $version = '';
+                }
+            }
+
+            if (isset($version)) {
+                array_push($tabCalendar, $version);
+                unset($version);
+            }
+
+            try {
+                $this->isGranted(array('BUSINESS_MANAGE_CALENDARS'));
+                $btnAction = $this->renderView('TisseoBoaBundle:Calendar:button.html.twig', [
+                    'calendar' => $calendar,
+                    'btnEdit' => [
+                        'url' =>  $this->generateUrl('tisseo_boa_calendar_edit', [
+                            'calendarId', $calendar->getId()
+                        ]),
+                        'label' => $trans->trans('tisseo.global.edit')
+                    ],
+                    'btnDelete' => [
+                        'url' => $this->generateUrl('tisseo_boa_calendar_delete', [
+                            'calendarId' => $calendar->getId(),
+                            'calendarType' => $calendarType
+                        ]),
+                        'label' => $trans->trans('tisseo.global.delete'),
+                    ],
+                ]);
+            } catch(\Exception $e) {
+                if (!$e instanceof AccessDeniedException) {
+                    throw new \Exception($e->getMessage());
+                }
+                $btnAction = '';
+            }
+
+            array_push($tabCalendar, $dateStart, $dateEnd, $btnAction);
+            $listCalendarFormated['data'][] = $tabCalendar;
+        }
+
+        return new JsonResponse($listCalendarFormated);
     }
 
     /**
