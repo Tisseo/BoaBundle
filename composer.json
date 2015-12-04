@@ -17,20 +17,18 @@
         {
             "name" : "Pierre-Yves Claitte",
             "email" : "pierre.cl@gmail.com"
+        },
+        {
+            "name" : "Jean Lavat",
+            "email" : "jean.lavat@gmail.com"
         }
     ],
     "require" : {
         "php": ">=5.4.3",
-        "tisseo/endiv-bundle": "~1.1.0",
-        "tisseo/core-bundle": "~1.1.0"
+        "tisseo/endiv-bundle": "~1.1.1",
+        "tisseo/core-bundle": "~1.1.1"
     },
     "autoload" : {
-        "psr-0" : { "Tisseo\\BoaBundle\\" : "" }
-    },
-    "target-dir" : "Tisseo/BoaBundle",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.1.x-dev"
-        }
+        "psr-4" : { "Tisseo\\BoaBundle\\" : "" }
     }
 }

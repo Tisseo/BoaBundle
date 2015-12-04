@@ -10,11 +10,16 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
                     success: function(data) {
                         if (data.length > 0) {
                             response($.map(data, function(item) {
-                                return {
+                                var result = {
                                     label: item.name,
                                     value: item.name,
-                                    id: item.id
+                                    id: item.id,
+                                    type: item.type
                                 };
+                                if (item.type == 'oa') {
+                                    result.label = "zone: " + result.label;
+                                }
+                                return result;
                             }));
                         } else {
                             $('#route-stops-list #boa_route_stop_waypoint').val('');
@@ -24,6 +29,14 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
             },
             select: function(event, ui) {
                 $('#route-stops-list #boa_route_stop_waypoint').val(ui.item.id);
+                if (ui.item.type) {
+                    if (ui.item.type == 'sp') {
+                        $('#boa_route_stop_internalService').attr('disabled', 'disabled').hide();
+                    }
+                    else {
+                        $('#boa_route_stop_internalService').removeAttr('disabled').show();
+                    }
+                }
             },
             minLength: 3,
             delay: 300
@@ -81,7 +94,7 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
         var $inputs = $('#route-stops-list .new-route-stop :input');
         var data = {};
         $inputs.each(function() {
-            if(!$(this).is(':checkbox') || $(this).is(':checked')) {
+            if((!$(this).is(':checkbox') || $(this).is(':checked')) && !$(this).is(':disabled')) {
                 data[this.name] = $(this).val();
             }
         });

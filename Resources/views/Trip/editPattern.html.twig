@@ -2,8 +2,9 @@
     <input type="hidden" id="route-id" value="{{ route.id }}"></input>
     <table id="table-trip-patterns" class="table table-hover">
         <thead>
-            <th class="col-md-1">{{ 'tisseo.boa.route_stop.label.rank'|trans }}</th>
-            <th class="col-md-3">{{ 'tisseo.boa.route_stop.label.stop'|trans }}</th>
+            <th class="col-md-0.5">{{ 'tisseo.boa.route_stop.label.rank'|trans }}</th>
+            <th class="col-md-2">{{ 'tisseo.boa.route_stop.label.stop'|trans }}</th>
+            <th class="col-md-1.5"></th>
             {% for pattern in route.TripsPattern %}
             <th id="{{ loop.index }}" class="col-md-1 text-center pattern-column name {{ loop.index }}">
                 <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}">
@@ -14,6 +15,7 @@
             <th class="container col-md-{{ 12 - route.TripsPattern|length - 5 }}"></th>
         </thead>
         <thead>
+            <th></th>
             <th></th>
             <th></th>
             {% for pattern in route.TripsPattern %}
@@ -37,8 +39,26 @@
                 <td class="route-stop-rank">
                     {{ routeStop.rank }}
                     <input type="hidden" class="route-stop-id" value="{{ routeStop.id }}">
+                    <input type="hidden" class="route-stop-type" value="{% if routeStop.isOdtAreaRouteStop %}oa{% else %}sp{% endif %}">
                 </td>
-                <td>{{ routeStop.waypoint.stop.stopArea.shortName }}</td>
+                <td>
+                    {% if routeStop.isOdtAreaRouteStop %}
+                        Zone: {{ routeStop.waypoint.odtArea.name }}
+                    {% else %}
+                        {{ routeStop.waypoint.stop.stopArea.shortName }}
+                    {% endif %}
+                </td>
+                <td style="vertical-align:top">
+                    <span class="stop-time-legend" style="font-size:85%; {% if route.TripsPattern|length < 1 %} display:none{% endif %}">
+                        <span style="padding-top:8px; display:inline-block">- {{ 'tisseo.boa.stop_time.label.section_time'|trans }}</span>
+                        <br>
+                        <span style="padding-top:8px; display:inline-block">- {{ 'tisseo.boa.stop_time.label.cumulative_time'|trans }}</span>
+                        {% if routeStop.isOdtAreaRouteStop %}
+                            <br>
+                            <span style="padding-top:10px; display:inline-block">- {{ 'tisseo.boa.stop_time.label.tad_time'|trans }}</span>
+                        {% endif %}
+                    </span>
+                </td>
                 {% for pattern in route.TripsPattern %}
                     {% set stopTime = pattern.stopTime(routeStop) %}
                     {% if rs > 0 %}
@@ -49,12 +69,18 @@
                             <input type="number" class="stop-time-departure form-control input-sm" min="0" value="{{ (stopTime.departureTime - prevStopTime.departureTime)/60 }}" {% if loop.parent.loop.first or route.IsPatternLocked(pattern) %}readonly{%endif%}>
                             <span>{{ stopTime.departureTime|date('H:i', false) }}</span>
                             <input type="hidden" class="stop-time-id" value="{{ stopTime.id }}">
+                            {% if routeStop.isOdtAreaRouteStop %}
+                                <input type="number" class="stop-time-departure form-control input-sm input-zone-time" value="{{ (stopTime.arrivalTime - stopTime.departureTime)/60 }}" {% if route.IsPatternLocked(pattern) %}readonly{%endif%}>
+                            {% endif %}
                         </td>
                     {% else %}
                         <td id="{{ loop.index }}" class="time text-center {{ loop.index }}">
                             <input type="number" class="stop-time-departure form-control input-sm" min="0" value="0" {% if loop.parent.loop.first or route.IsPatternLocked(pattern) %}readonly{%endif%}>
                             <span>00:00</span>
                             <input type="hidden" class="stop-time-id" value="">
+                            {% if routeStop.isOdtAreaRouteStop %}
+                                <input type="number" class="stop-time-departure form-control input-sm input-zone-time" value="0" {% if route.IsPatternLocked(pattern) %}readonly{%endif%}>
+                            {% endif %}
                         </td>
                     {% endif %}
                 {% endfor %}
@@ -89,6 +115,7 @@
                 <input type="number" class="stop-time-departure form-control input-sm" min="0" value="0">
                 <span>00:00</span>
                 <input type="hidden" class="stop-time-id" value="">
+                <input type="number" class="stop-time-departure form-control input-sm input-zone-time" value="0"}>
             </td>
         </tbody>
     </table>

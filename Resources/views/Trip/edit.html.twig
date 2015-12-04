@@ -93,22 +93,45 @@
                 <th>{{ 'tisseo.boa.stop_time.label.drop_off'|trans }}</th>
                 <th>{{ 'tisseo.boa.stop_time.label.scheduled'|trans }}</th>
                 <th>{{ 'tisseo.boa.stop_time.label.schedule'|trans }}</th>
+                {% if trip.route.way == constant('WAY_AREA', trip.route) %}
+                    <th>{{ 'tisseo.boa.stop_time.label.tad_time'|trans }}</th>
+                {% endif %}
             </thead>
             <tbody>
             {% for stopTime in trip.stopTimes %}
                 <tr>
                     <td>{{ stopTime.routeStop.rank }}</td>
-                    <td>{{ stopTime.routeStop.waypoint.stop.stopArea.city.name }}</td>
-                    <td>{{ stopTime.routeStop.waypoint.stop.stopArea.shortName }}</td>
                     <td>
-                        {% for datasource in stopTime.routeStop.waypoint.stop.stopDatasources %}
-                            {{ datasource.code }} 
-                        {% endfor %}
+                        {% if not stopTime.routeStop.isOdtAreaRouteStop %}
+                            {{ stopTime.routeStop.waypoint.stop.stopArea.city.name }}</td>
+                        {% endif %}
+                    <td>
+                        {% if stopTime.routeStop.isOdtAreaRouteStop %}
+                            {{ stopTime.routeStop.waypoint.odtArea.name }}
+                        {% else %}
+                            {{ stopTime.routeStop.waypoint.stop.stopArea.shortName }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if stopTime.routeStop.isOdtAreaRouteStop %}
+                            {{ 'tisseo.boa.route_stop.label.zone'|trans }}
+                        {% else %}
+                            {% for datasource in stopTime.routeStop.waypoint.stop.stopDatasources %}
+                                {{ datasource.code }}
+                            {% endfor %}
+                        {% endif %}
                     </td>
                     <td><input type='checkbox' class="pickup" name="pickup" {% if stopTime.routeStop.pickup %}checked="checked"{% endif %} disabled="disabled"></td>
                     <td><input type='checkbox' class="dropOff" name="dropOff" {% if stopTime.routeStop.dropOff %}checked="checked"{% endif %} disabled="disabled"></td>
                     <td><input type='checkbox' class="scheduledStop" name="scheduledStop" {% if stopTime.routeStop.scheduledStop %}checked="checked"{% endif %} disabled="disabled"></td>
-                    <td>{{ stopTime.arrivalTime|date('H:i', false) }}</td>
+                    <td>{{ stopTime.departureTime|date('H:i', false) }}</td>
+                    {% if trip.route.way == constant('WAY_AREA', trip.route) %}
+                        {% if stopTime.routeStop.isOdtAreaRouteStop %}
+                        <td>{{ (stopTime.arrivalTime - stopTime.departureTime)|date('H:i', false) }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

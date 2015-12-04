@@ -5,8 +5,9 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tisseo\EndivBundle\Entity\OdtArea;
 
-class AliasType extends AbstractType
+class OdtAreaType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -14,15 +15,25 @@ class AliasType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'name',
-            'text',
-            array(
-                'label' => 'tisseo.boa.alias.label.name',
-                'required' => true,
+        $builder
+            ->add(
+                'name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.odt_area.label.name',
+                    'required' => true
+                )
             )
-        );
-        $builder->setAction($options['action']);
+            ->add(
+                'comment',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.odt_area.label.comments',
+                    'required' => false
+                )
+            )
+            ->setAction($options['action'])
+        ;
     }
 
     /**
@@ -32,17 +43,16 @@ class AliasType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\Alias'
+                'data_class' => 'Tisseo\EndivBundle\Entity\OdtArea'
             )
         );
     }
-
 
     /**
      * @return string
      */
     public function getName()
     {
-        return 'boa_alias';
+        return 'boa_odt_area';
     }
 }

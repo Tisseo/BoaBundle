@@ -5,26 +5,25 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tisseo\EndivBundle\Entity\OdtStop;
 use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
 
-class RouteStopType extends AbstractType
+class OdtStopType extends AbstractType
 {
-    private $waypointTransformer = null;
-    private $routeTransformer = null;
+    private $odtAreaTransformer = null;
 
     private function buildTransformers($em)
     {
-        $this->waypointTransformer = new EntityToIntTransformer($em);
-        $this->waypointTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Waypoint");
-        $this->waypointTransformer->setEntityRepository("TisseoEndivBundle:Waypoint");
-        $this->waypointTransformer->setEntityType("Waypoint");
+        $this->odtAreaTransformer = new EntityToIntTransformer($em);
+        $this->odtAreaTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\OdtArea");
+        $this->odtAreaTransformer->setEntityRepository("TisseoEndivBundle:OdtArea");
+        $this->odtAreaTransformer->setEntityType("OdtArea");
 
-        $this->routeTransformer = new EntityToIntTransformer($em);
-        $this->routeTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Route");
-        $this->routeTransformer->setEntityRepository("TisseoEndivBundle:Route");
-        $this->routeTransformer->setEntityType("Route");
+        $this->stopTransformer = new EntityToIntTransformer($em);
+        $this->stopTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Stop");
+        $this->stopTransformer->setEntityRepository("TisseoEndivBundle:Stop");
+        $this->stopTransformer->setEntityType("Stop");
     }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -35,27 +34,38 @@ class RouteStopType extends AbstractType
 
         $builder
             ->add(
-                'rank',
-                'number',
+                $builder->create(
+                    'odtArea',
+                    'hidden'
+                )->addModelTransformer($this->odtAreaTransformer)
+            )
+            ->add(
+                $builder->create(
+                    'stop',
+                    'hidden'
+                )->addModelTransformer($this->stopTransformer)
+            )
+            ->add(
+                'startDate',
+                'tisseo_datepicker',
                 array(
+                    'label' => 'tisseo.boa.odt_stop.label.start_date',
                     'required' => true,
-                    'read_only' => true,
                     'attr' => array(
-                        'class' => 'input-sm'
+                        'data-to-date' => true
                     )
                 )
             )
             ->add(
-                $builder->create(
-                    'waypoint',
-                    'hidden'
-                )->addModelTransformer($this->waypointTransformer)
-            )
-            ->add(
-                $builder->create(
-                    'route',
-                    'hidden'
-                )->addModelTransformer($this->routeTransformer)
+                'endDate',
+                'tisseo_datepicker',
+                array(
+                    'label' => 'tisseo.boa.odt_stop.label.end_date',
+                    'required' => false,
+                    'attr' => array(
+                        'data-to-date' => true
+                    )
+                )
             )
             ->add(
                 'pickup',
@@ -73,22 +83,6 @@ class RouteStopType extends AbstractType
                     'data' => true
                 )
             )
-            ->add(
-                'scheduledStop',
-                'checkbox',
-                array(
-                    'required' => false,
-                    'data' => true
-                )
-            )
-            ->add(
-                'internalService',
-                'checkbox',
-                array(
-                    'required' => false,
-                    'data' => true
-                )
-            )
             ->setAction($options['action'])
         ;
     }
@@ -100,10 +94,9 @@ class RouteStopType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Tisseo\EndivBundle\Entity\RouteStop'
+                'data_class' => 'Tisseo\EndivBundle\Entity\OdtStop'
             )
         );
-
         $resolver->setRequired(array(
             'em'
         ));
@@ -113,8 +106,11 @@ class RouteStopType extends AbstractType
         ));
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
-        return 'boa_route_stop';
+        return 'boa_odt_stop';
     }
 }

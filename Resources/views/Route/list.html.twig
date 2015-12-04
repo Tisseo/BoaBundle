@@ -18,9 +18,9 @@
 {% endblock %}
 
 {% block table_head -%}
-    <th class="col-md-4">{{ 'tisseo.boa.route.label.name'|trans }}</th>
-    <th class="col-md-1">{{ 'tisseo.boa.route.label.first_stop'|trans }}</th>
-    <th class="col-md-1">{{ 'tisseo.boa.route.label.last_stop'|trans }}</th>
+    <th class="col-md-3">{{ 'tisseo.boa.route.label.name'|trans }}</th>
+    <th class="col-md-1.5">{{ 'tisseo.boa.route.label.first_stop'|trans }}</th>
+    <th class="col-md-1.5">{{ 'tisseo.boa.route.label.last_stop'|trans }}</th>
     <th class="col-md-2">{{ 'tisseo.boa.route.label.comment'|trans }}</th>
     <th class="col-md-1">{{ 'tisseo.boa.route.label.way'|trans }}</th>
     <th class="col-md-3 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
@@ -31,17 +31,17 @@
         <tr>
             <td>{{ route.name }}</td>
             <td>
-                {% if route.routeStops.first.waypoint.stop is not empty %}
+                {% if not route.routeStops.first.isOdtAreaRouteStop %}
                     {{ route.routeStops.first.waypoint.stop.stopArea.nameLabel }}
                 {% else %}
-                    {{ route.routeStops.first.waypoint.area.name }}
+                    {{ route.routeStops.first.waypoint.odtArea.name }}
                 {% endif %}
             </td>
             <td>
-                {% if route.routeStops.last.waypoint.stop is not empty %}
+                {% if not route.routeStops.last.isOdtAreaRouteStop %}
                     {{ route.routeStops.last.waypoint.stop.stopArea.nameLabel }}
                 {% else %}
-                    {{ route.routeStops.last.waypoint.area.name }}
+                    Zone: {{ route.routeStops.last.waypoint.odtArea.name }}
                 {% endif %}
             </td>
             <td>{{ route.comment }}</td>
@@ -51,17 +51,15 @@
                     <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.route.action.services'|trans }}
                 </a>
                 {% if (is_granted('BUSINESS_MANAGE_ROUTES')) %}
+                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_route_edit', { 'routeId': route.id }) }}">
+                    {{ 'tisseo.boa.route.action.edit'|trans }}
+                </a>
                 <div class="btn-group">
                     <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">{{ 'tisseo.global.actions'|trans }} <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <li>
                             <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate', { 'routeId': route.id }) }}" data-toggle="modal" data-target="#base-modal">
                                 {{ 'tisseo.boa.route.action.copy'|trans }}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="btn" role="button" href="{{ path('tisseo_boa_route_edit', { 'routeId': route.id }) }}">
-                                {{ 'tisseo.boa.route.action.edit'|trans }}
                             </a>
                         </li>
                         {% if not route.hasTripsNotPattern %}

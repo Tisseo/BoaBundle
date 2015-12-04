@@ -1,0 +1,16 @@
+<tr class="odt-stop">
+    <input type='hidden' class="odt-stop-id" name="id" value="">
+    <td>{{ odtStop.stop.stopDatasources[0].code }}</td>
+    <td>{{ odtStop.stop.stopArea.shortName }}</td>
+    <td>{{ odtStop.stop.stopArea.city.name }}</td>
+    <td>{{ odtStop.startDate|date("d/m/Y") }}</td>
+    <td>{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}</td>
+    <td><input type='checkbox' class="pickup" name="pickup" disabled="disabled" {% if odtStop.pickup %}checked="checked"{% endif %}></td>
+    <td><input type='checkbox' class="dropOff"  name="dropOff" disabled="disabled" {% if odtStop.dropOff %}checked="checked"{% endif %}></td>
+    <td>
+        <button class="btn btn-xs btn-danger small-button delete-odt-stop"><span class="glyphicon glyphicon-minus"></span></button>
+        <input type='hidden' name="startDate" value="{{ odtStop.startDate|date("d/m/Y") }}">
+        <input type='hidden' name="endDate" value="{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}">
+        <input type='hidden' name='stop' value="{{ odtStop.stop.id }}">
+    </td>
+</tr>

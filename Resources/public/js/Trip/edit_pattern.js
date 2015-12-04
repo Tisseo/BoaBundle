@@ -4,6 +4,11 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
         return ($.isNumeric(number) && parseInt(number) >= 0);
     }
 
+    function isNormalSignedInteger(number)
+    {
+        return ($.isNumeric(number));
+    }
+
     function validateForm(tripPatterns)
     {
         $('#trip-patterns').parent().find('div.alert').remove();
@@ -17,6 +22,8 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
                 patternNameError = true;
             $.each(pattern.stopTimes, function(key, stopTime) {
                 if (!isNormalInteger(stopTime.time))
+                    patternTimeError = true;
+                if (stopTime.zoneTime && !isNormalSignedInteger(stopTime.zoneTime))
                     patternTimeError = true;
             });
         });
@@ -49,8 +56,16 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
             $('#trip-patterns-list .new').each(function() {
                 $(this).attr('id', newRank).addClass(''+newRank).removeClass('new').fadeIn();
             });
+            $('#trip-patterns-list .add-pattern.time').each(function(){
+                if ($(this).parent().find('input.route-stop-type').val() == 'sp'){
+                    $(this).parent().find('.input-zone-time').remove();
+                }
+            });
+            $('th.container').attr('class', 'container col-md-' + (7 - $('.pattern-column').length));
             $('#trip-patterns-list .add-pattern').fadeIn();
+            $('.stop-time-legend').show();
         });
+
     });
 
     $(document).on('click', '#trip-patterns-list .delete-pattern', function() {
@@ -58,7 +73,10 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
         $('#trip-patterns-list #add-pattern').fadeOut();
         $('#trip-patterns-list .'+deleteRank).fadeOut().promise().then(function() {
             $(this).remove();
+            $('th.container').attr('class', 'container col-md-' + (7 - $('.pattern-column').length));
             $('#trip-patterns-list #add-pattern').fadeIn();
+            if ($('.pattern-column').length < 1)
+                $('.stop-time-legend').hide();
         });
     });
 
@@ -76,6 +94,9 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
                     'id': inputs[1].value,
                     'time': inputs[0].value
                 };
+                if (inputs.length > 2){
+                    stopTimes[index]['zoneTime'] = inputs[2].value;
+                }
             });
 
             var inputs = $(this).children();
