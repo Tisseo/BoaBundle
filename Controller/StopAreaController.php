@@ -48,7 +48,6 @@ class StopAreaController extends CoreController
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
-
         if (empty($stopArea))
         {
             $stopArea = new StopArea();
@@ -58,12 +57,21 @@ class StopAreaController extends CoreController
             $linesByStop = null;
             $mainStopArea = false;
             $stops = null;
+            $stopsJson = null;
         }
         else
         {
             $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
             $stops = $stopAreaManager->getCurrentStops($stopArea);
+            $stopsJson = $stopAreaManager->getStopsJson($stopArea);
+            foreach($stopsJson as $key => $stopJson) {
+                $stopsJson[$key]['route'] = $this->generateUrl(
+                    'tisseo_boa_stop_edit',
+                    array('stopId' => $stopJson['id'])
+                );
+            }
+            $stopsJson = json_encode($stopsJson);
         }
 
         $form = $this->createForm(
@@ -106,6 +114,7 @@ class StopAreaController extends CoreController
                 'form' => $form->createView(),
                 'stopArea' => $stopArea,
                 'stops' => $stops,
+                'stopsJson' => $stopsJson,
                 'linesByStop' => $linesByStop,
                 'mainStopArea' => $mainStopArea
             )
@@ -172,6 +181,7 @@ class StopAreaController extends CoreController
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $transferManager = $this->get('tisseo_endiv.transfer_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
+        $startStops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
         $transfers = $transferManager->getExternalTransfers($stopArea);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
@@ -201,6 +211,7 @@ class StopAreaController extends CoreController
             array(
                 'title' => 'tisseo.boa.transfer.title.list',
                 'stopArea' => $stopArea,
+                'startStops' => $startStops,
                 'transfers' => $transfers
             )
         );

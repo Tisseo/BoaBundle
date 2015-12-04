@@ -15,17 +15,27 @@
         <tbody>
         {% set now = date('now') %}
         {% for odtStop in odtArea.odtStops %}
-            {% set stopHistory = odtStop.stop.CurrentOrLatestStopHistory(now) %}
+            {% set stopId = ((odtStop.stop.masterStop is empty) ? odtStop.stop.id : odtStop.stop.masterStop.id) %}
             <tr
-                {% if odtStop.endDate and odtStop.endDate|date("d/m/Y") < now|date("d/m/Y") %}
+                {% if odtStop.endDate and (odtStop.endDate < now) %}
                     class="odt-stop closed-odt-stop" style="background-color:#E4E4E4;"
                 {% else %}
                     class="odt-stop"
                 {% endif %}
             >
                 <input type='hidden' class="odt-stop-id" name="id" value="{{ odtStop.id }}">
-                <td>{{ odtStop.stop.stopDatasources[0].code }}</td>
-                <td>{{ stopHistory.shortName }}</td>
+                <td>
+                    {% for datasource in odtStop.stop.stopDatasources %}
+                        <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stopId}) }}">
+                            {{ datasource.code }}
+                        </a>
+                    {% endfor %}
+                </td>
+                <td>
+                    <a target="_blank" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': odtStop.stop.stopArea.id}) }}">
+                        {{ odtStop.stop.stopArea.shortName }}
+                    </a>
+                </td>
                 <td>{{ odtStop.stop.stopArea.city.name }}</td>
                 <td>{{ odtStop.startDate|date("d/m/Y") }}</td>
                 <td>{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}</td>

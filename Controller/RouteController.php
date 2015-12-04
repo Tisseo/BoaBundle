@@ -115,6 +115,15 @@ class RouteController extends CoreController
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
+        $routeStopsJson = $routeManager->getRouteStopsJson($route);
+        foreach($routeStopsJson as $key => $routeStopJson) {
+            $stopId = empty($routeStopJson['master_stop_id']) ? $routeStopJson['id'] : $routeStopJson['master_stop_id'];
+            $routeStopsJson[$key]['route'] = $this->generateUrl(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
+            );
+        }
+        $routeStopsJson = json_encode($routeStopsJson);
 
         $form = $this->createForm(
             new RouteEditType(),
@@ -153,7 +162,8 @@ class RouteController extends CoreController
             array(
                 'pageTitle' => 'tisseo.boa.route.title.edit',
                 'form' => $form->createView(),
-                'route' => $route
+                'route' => $route,
+                'routeStopsJson' => $routeStopsJson
             )
         );
     }

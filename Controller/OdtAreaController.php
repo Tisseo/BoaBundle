@@ -76,16 +76,23 @@ class OdtAreaController extends CoreController
 
         $odtAreaManager = $this->get('tisseo_endiv.odt_area_manager');
         $odtArea = $odtAreaManager->find($odtAreaId);
-
         if (empty($odtArea))
         {
             $odtArea = new OdtArea();
-            //$odtStops = null;
+            $stopsJson = null;
         }
-        /*else
+        else
         {
-            $odtStops = odtAreaManager
-        }*/
+            $stopsJson = $odtAreaManager->getOdtStopsJson($odtArea);
+            foreach($stopsJson as $key => $stopJson) {
+                $stopId = empty($stopJson['master_stop_id']) ? $stopJson['id'] : $stopJson['master_stop_id'];
+                $stopsJson[$key]['route'] = $this->generateUrl(
+                    'tisseo_boa_stop_edit',
+                    array('stopId' => $stopId)
+                );
+            }
+            $stopsJson = json_encode($stopsJson);
+        }
         $form = $this->createForm(
             new OdtAreaType(),
             $odtArea,
@@ -127,94 +134,9 @@ class OdtAreaController extends CoreController
             array(
                 'form' => $form->createView(),
                 'pageTitle' => ($odtAreaId ? 'tisseo.boa.odt_area.title.edit' : 'tisseo.boa.odt_area.title.create'),
-                'odtArea' => $odtArea
+                'odtArea' => $odtArea,
+                'stopsJson' => $stopsJson
             )
         );
-    }
-
-    /**
-     * Create
-     * @param integer $odtAreaId
-     *
-     * Creating odtStop
-     */
-    public function createOdtStopAction(Request $request, $odtAreaId)
-    {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-
-        $odtStopManager = $this->get('tisseo_endiv.odt_stop_manager');
-        $odtStop = new OdtStop();
-        $odtStop->setOdtArea($odtAreaId);
-
-        $form = $this->createForm(
-            new OdtStopType(),
-            $odtStop,
-            array(
-                'action' => $this->generateUrl(
-                    'tisseo_boa_odt_area_edit',
-                    array(
-                        'odtAreaId' => $odtAreaId,
-                    )
-                )
-            )
-        );
-
-        $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            $odtStop = $form->getData();
-            try
-            {
-                $odtStopManager->save($odtStop);
-
-                $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch (\Exception $e)
-            {
-                $this->addFlashException($e->getMessage());
-            }
-
-            return $this->redirectToRoute(
-                'tisseo_boa_odt_area_edit',
-                array('odtAreaId' => $odtAreaId)
-            );
-        }
-
-        return $this->render(
-            'TisseoBoaBundle:OdtStop:create.html.twig',
-            array(
-                'form' => $form->createView(),
-                'pageTitle' => ('tisseo.boa.odt_stop.title.create'),
-                'odtStop' => $odtStop
-            )
-        );
-    }
-
-    /**
-     * delete odtStop
-     * @param integer $odtStopId
-     *
-     * Deleting odtStop
-     */
-    public function deleteOdtStopAction(Request $request, $odtStopId)
-    {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_STOPS'
-            )
-        );
-        $odtAreaId = explode("/",$odtStopId)[2];
-        try {
-            $odtStop = $this->get('tisseo_endiv.odt_stop_manager')->find($odtStopId);
-            if (!empty($odtStop))
-                $this->get('tisseo_endiv.odt_stop_manager')->delete($odtStop);
-        } catch(\Exception $e) {
-            $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
-        }
-
-        return $this->redirectToRoute(
-                'tisseo_boa_odt_area_edit',
-                array('odtAreaId' => $odtAreaId)
-            );
     }
 }
