@@ -26,6 +26,9 @@
             <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete_all'|trans }}
         </a>
         {% endif %}
+        <a id="delete-select" href="" class="btn btn-danger disabled">
+            <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete_select'|trans }}
+        </a>
     {% endif %}
 {% endblock %}
 
@@ -35,8 +38,13 @@
     </a>
     <table class="table table-hover datatable">
         <thead>
+            <th class="col-md-1 no-sort">
+                <label><input name="ckTripAll" class="ckTripAll" type="checkbox" value="1">
+                    {{ 'tisseo.boa.trip.label.select_all'|trans }}
+                </label>
+            </th>
             <th class="col-md-2">{{ 'tisseo.boa.trip.label.name'|trans }}</th>
-            <th class="col-md-2">{{ 'tisseo.boa.trip.label.start'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.trip.label.start'|trans }}</th>
             <th class="col-md-1">{{ 'tisseo.boa.trip.label.type'|trans }}</th>
             <th class="col-md-1">{{ 'tisseo.boa.trip.label.day_calendar'|trans }}</th>
             <th class="col-md-2">{{ 'tisseo.boa.trip.label.period_calendar'|trans }}</th>
@@ -48,6 +56,9 @@
                 {% set stopTime = trip.FirstStopTime %}
                 {% set bounds = tripBounds[trip.id] %}
                 <tr>
+                    <td>
+                        <input name="selectedTrip[]" class="ckTrip" type="checkbox" value="{{ trip.id }}">
+                    </td>
                     <td>{{ trip.name }}</td>
                     <td>{% if stopTime %}{{ stopTime.arrivalTime|date('H:i', false) }}{% endif %}</td>
                     <td>{% if trip.pattern %}{{ trip.pattern.name }}{% endif %}</td>
@@ -84,6 +95,7 @@
     {{ parent() }}
     <script>
         require(['bootbox'], function(bootbox) {
+
             $('#delete-all').on('click', function(event) {
                 event.preventDefault();
                 var self = this;
@@ -91,6 +103,13 @@
                     if (result)
                         window.location = self.href;
                 });
+            });
+
+
+        });
+        require(['boa/trip/delete'], function(cmp) {
+            cmp.init({
+                'routeId' : '{{ route.id }}'
             });
         });
     </script>

@@ -385,6 +385,9 @@ tisseo_boa_trip_delete_all:
     defaults: { _controller: TisseoBoaBundle:Trip:deleteAll }
     requirements:
         routeId: \d+
+    methods: [GET, POST]
+    options:
+        expose: true
 tisseo_boa_trip_edit_pattern:
     pattern: /route{routeId}/trip/editpattern
     defaults: { _controller: TisseoBoaBundle:Trip:editPattern }
