@@ -1,0 +1,37 @@
+{% extends "TisseoCoreBundle::generic_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+
+{% block list_title %}
+    {{ parent() }}
+    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+        -
+        <a href="{{ path('tisseo_boa_city_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.city.action.create'|trans }}
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-8">
+        <span>{{ 'tisseo.boa.city.title.search'|trans }}</span>
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" id="city-search" class="form-control" data-url="{{ path('tisseo_boa_json_city') }}">
+            </div>
+            <div class="col-md-2">
+                <a href="#" class="btn btn-default" id="city-edit" data-city="" disabled="disabled">
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        require(['boa/city/search'], function() {
+            init_autocomplete('#city-search', '#city-edit');
+        });
+    </script>
+{% endblock %}

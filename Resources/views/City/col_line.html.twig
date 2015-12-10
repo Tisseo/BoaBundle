@@ -1,0 +1,4 @@
+{% import "TisseoCoreBundle::macros.html.twig" as render %}
+{% for line in lines %}
+    {{ render.line_number(line, 'line', 'small') }}
+{% endfor %}
