@@ -17,13 +17,27 @@
                 <tr class="route-stop">
                     <td class="route-stop-rank">{{ routeStop.rank }}</td>
                     <td>{% if not routeStop.isOdtAreaRouteStop %}{{ routeStop.waypoint.stop.stopArea.city.name }}{% endif %}</td>
-                    <td>{% if routeStop.isOdtAreaRouteStop %}{{ routeStop.waypoint.odtArea.name }}{% else %}{{ routeStop.waypoint.stop.stopArea.shortName }}{% endif %}</td>
+                    <td>
+                        {% if routeStop.isOdtAreaRouteStop %}
+                            <a target="_blank" href="{{ path('tisseo_boa_odt_area_edit', {'odtAreaId': routeStop.waypoint.odtArea.id}) }}">
+                                {{ routeStop.waypoint.odtArea.name }}
+                            </a>
+                        {% else %}
+                            <a target="_blank" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': routeStop.waypoint.stop.stopArea.id}) }}">
+                                {{ routeStop.waypoint.stop.stopArea.shortName }}
+                            </a>
+                        {% endif %}
+                    </td>
                     <td>
                         {% if routeStop.isOdtAreaRouteStop %}
                             {{ 'tisseo.boa.route_stop.label.zone'|trans }}
                         {% else %}
-                            {% for datasource in routeStop.waypoint.stop.stopDatasources %}
-                                {{ datasource.code }}
+                            {% set stop = routeStop.waypoint.stop %}
+                            {% set stopId = ((stop.masterStop is empty) ? stop.id : stop.masterStop.id) %}
+                            {% for datasource in stop.stopDatasources %}
+                                <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stopId}) }}">
+                                    {{ datasource.code }}
+                                </a>
                             {% endfor %}
                         {% endif %}
                     </td>

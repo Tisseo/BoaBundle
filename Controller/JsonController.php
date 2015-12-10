@@ -81,7 +81,7 @@ class JsonController extends CoreController
         $this->isPostAjax($request);
 
         $term = $request->request->get('term');
-        $stopData = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term);
+        $stopData = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, null, true);
         foreach ($stopData as $key => $stopItem){
             $stopData[$key]['type'] = 'sp';
         }
@@ -158,7 +158,7 @@ class JsonController extends CoreController
                 "type" => "sa"
             );
         }
-        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, $stopAreaId);
+        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, $stopAreaId, true);
         foreach ($data as $item)
         {
             $result[] = array(

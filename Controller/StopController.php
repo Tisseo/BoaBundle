@@ -114,7 +114,9 @@ class StopController extends CoreController
         // wtf: refactor may be needed
         $masterStopLabel = "";
         $masterStop = $stop->getMasterStop();
-        
+
+        $stopsJson = json_encode($stopManager->getStopsJson(array($stop)));
+
         //$phantoms = $stop->getPhantoms();
         //$accessibilities = $stop->getStopAccessibilities();
         //$phantomAccessibilities = null;
@@ -146,7 +148,7 @@ class StopController extends CoreController
             {
                 $this->addFlashException($e->getMessage());
             }
-        
+
             return $this->redirectToRoute(
                 'tisseo_boa_stop_edit',
                 array('stopId' => $stopId)
@@ -160,7 +162,8 @@ class StopController extends CoreController
                 'form' => $form->createView(),
                 'stop' => $stop,
                 'masterStopLabel' => $masterStopLabel,
-                'stopHistories' => $stopManager->getOrderedStopHistories($stopId)
+                'stopHistories' => $stopManager->getOrderedStopHistories($stopId),
+                'stopsJson' => $stopsJson
                 //'phantoms' => $phantoms,
                 //'accessibilities' => $accessibilities,
                 //'phantomAccessibilities' => $phantomAccessibilities
@@ -189,7 +192,7 @@ class StopController extends CoreController
             $stopAreaId = $stop->getStopArea()->getId();
             $this->addFlashException($e->getMessage());
         }
-        
+
         return $this->redirectToRoute(
             'tisseo_boa_stop_area_edit',
             array('stopAreaId' => $stopAreaId)

@@ -2,6 +2,7 @@
 {% set bundle = 'TisseoBoaBundle' %}
 {% set smoothness = true %}
 {% set datatable = true %}
+{% set leaflet = true %}
 
 {% import "TisseoBoaBundle::macros.html.twig" as render %}
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
@@ -72,6 +73,10 @@
         {{ render(controller('TisseoBoaBundle:RouteStop:list', {'routeId': route.id })) }}
     {% endif %}
 
+    {% if route.routeStops is not empty %}
+        <div id="leaflet-map-container" style="width:850px; height:520px"></div>
+    {% endif %}
+
     <a id="trip-patterns" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip_pattern.title.list'|trans }}
     </a>
@@ -91,6 +96,13 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['core/leaflet_utils'], function() {
+            var displayRoutes = {% if route.way == constant('WAY_AREA', route) %} false {% else %} true {% endif %};
+            init_map_with_route_stops({{ routeStopsJson|raw }}, displayRoutes);
+        });
+    </script>
     <script>
         require(['boa/trip/edit_pattern']);
     </script>

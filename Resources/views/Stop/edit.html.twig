@@ -1,6 +1,7 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 {% set smoothness = true %}
+{% set leaflet = true %}
 {% set margin = '10' %}
 
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
@@ -16,60 +17,64 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.edit_form'|trans }}
     </a>
     <div class="panel col-md-12">
-        {{ form_start(form) }}
-        {{ form_errors(form) }}
+        <div class="col-md-5">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
 
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(form.shortName) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.shortName) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.longName) }}
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form_row(form.longName) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_label(form.stopArea) }}
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
-                        <input type="text" id="stop_area" class="form-control" data-url="{{ path('tisseo_boa_json_stop_area') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <a id="stop-area-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': form.stopArea.vars.data.id}) }}">
-                            <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
-                        </a>
+            <div class="row">
+                <div class="col-md-10">
+                    {{ form_label(form.stopArea) }}
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
+                            <input type="text" id="stop_area" class="form-control" style="margin-bottom:15px;" data-url="{{ path('tisseo_boa_json_stop_area') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <a id="stop-area-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': form.stopArea.vars.data.id}) }}">
+                                <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-8">
+                    {{ form_row(form.masterStop) }}
+                </div>
+            </div>
 
-        <div class="row">
-            <div class="col-md-4">
-                {{ form_row(form.masterStop) }}
+            {% for datasource in form.stopDatasources %}
+            <div class="row">
+                <div class="col-md-5">
+                    {{ form_row(datasource.datasource) }}
+                </div>
+                <div class="col-md-7">
+                    {{ form_row(datasource.code) }}
+                </div>
             </div>
-        </div>
+            {% endfor %}
 
-        {% for datasource in form.stopDatasources %}
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(datasource.datasource) }}
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                    </button>
+                    <a href="" class="btn btn-default">
+                        <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
+                    </a>
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form_row(datasource.code) }}
-            </div>
+            {{ form_end(form) }}
         </div>
-        {% endfor %}
-
-        <div class="row">
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                </button>
-                <a href="" class="btn btn-default">
-                    <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
-                </a>
-            </div>
-        </div>
-        {{ form_end(form) }}
+        <div class="col-md-7" id="leaflet-map-container"></div>
     </div>
 
     <a id="stop-history" class="header-ribbon">
@@ -222,6 +227,11 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        require(['core/leaflet_utils'], function() {
+            init_map_with_stops({{ stopsJson|raw }}, false);
+        });
+    </script>
     <script>
         require(['boa/stop/edit'], function() {
             init_autocomplete("#stop_area", "#boa_stop_edit_stopArea", "#stop-edit");
