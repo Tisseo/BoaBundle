@@ -31,7 +31,9 @@ class JsonController extends CoreController
             $calendarType = explode(',', $calendarType);
 
         $term = $request->request->get('term');
-        $data = $this->get('tisseo_endiv.calendar_manager')->findCalendarsLike($term, $calendarType);
+        $lineVersionId = $request->query->get('line_version_id');
+
+        $data = $this->get('tisseo_endiv.calendar_manager')->findCalendarsLike($term, $calendarType, 0, $lineVersionId);
 
         return $this->sendJsonResponse($data);
     }
