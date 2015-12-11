@@ -145,7 +145,7 @@ class CalendarController extends CoreController
                     'calendar' => $calendar,
                     'btnEdit' => [
                         'url' =>  $this->generateUrl('tisseo_boa_calendar_edit', [
-                            'calendarId', $calendar->getId()
+                            'calendarId' => $calendar->getId()
                         ]),
                         'label' => $trans->trans('tisseo.global.edit')
                     ],
