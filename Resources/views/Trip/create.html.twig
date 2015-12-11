@@ -39,7 +39,8 @@
                     <div class="form-group">
                         <label>{{ 'tisseo.boa.trip.label.period_calendar'|trans }}</label>
                         {{ form_row(form.periodCalendar) }}
-                        <input type="text" id="period-calendar" class="form-control" data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'periode,mixte' }) }}" required>
+                        <input type="text" id="period-calendar" class="form-control" data-url="{{ path('tisseo_boa_json_calendars',
+                            {'calendarType': 'periode,mixte', 'line_version_id': trip.route.lineVersion.id }) }}" required>
                     </div>
                 </div>
             </div>
