@@ -31,10 +31,20 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-10">
                     {{ form_label(form.city) }}
-                    {{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-                    <input type="text" id="city" class="form-control" style="margin-bottom:15px" data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
+                            <input type="text" id="city" class="form-control" style="margin-bottom:15px"
+                                data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
+                        </div>
+                        <div class="col-md-2">
+                            <a id="city-edit" class="btn btn-default" href="{{ path('tisseo_boa_city_edit', {'cityId': form.city.vars.data.id}) }}">
+                                <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% for datasource in form.stopAreaDatasources %}
