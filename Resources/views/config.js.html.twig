@@ -6,6 +6,7 @@ requirejs.config({
         'boa/calendar/edit':                'bundles/tisseoboa/js/Calendar/edit',
         'boa/stop/edit':                    'bundles/tisseoboa/js/Stop/edit',
         'boa/stop/search':                  'bundles/tisseoboa/js/Stop/search',
+        'boa/city/search':                  'bundles/tisseoboa/js/City/search',
         'boa/stop_area/edit':               'bundles/tisseoboa/js/StopArea/edit',
         'boa/route_stop/edit':              'bundles/tisseoboa/js/RouteStop/edit',
         'boa/odt_stop/edit':                'bundles/tisseoboa/js/OdtStop/edit',
@@ -25,6 +26,9 @@ requirejs.config({
             deps: ['jquery_ui_sortable', 'jquery_ui_autocomplete']
         },
         'boa/stop/search': {
+            deps: ['jquery_ui_autocomplete']
+        },
+        'boa/city/search': {
             deps: ['jquery_ui_autocomplete']
         },
         'boa/calendar_element/edit': {

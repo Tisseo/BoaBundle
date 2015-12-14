@@ -395,3 +395,26 @@ tisseo_boa_trip_edit_pattern:
         routeId: \d+
     options:
         expose: true
+
+# City Route
+tisseo_boa_city_search:
+    pattern: /city/search
+    defaults: { _controller: TisseoBoaBundle:City:search }
+tisseo_boa_city_create:
+    pattern: /city/create
+    defaults: { _controller: TisseoBoaBundle:City:create }
+tisseo_boa_city_edit:
+    pattern: /city/edit/{cityId}
+    defaults: { _controller: TisseoBoaBundle:City:edit }
+    options:
+        expose: true
+tisseo_boa_city_delete_stoparea:
+    pattern: /city/stopaera/delete/{stopAreaId}
+    defaults: { _controller: TisseoBoaBundle:City:deleteStopArea }
+    requirements:
+        stopAreaId: \d+
+tisseo_boa_city_stoparea_json:
+    pattern: /city/stoparea/json/{cityId}
+    defaults: { _controller: TisseoBoaBundle:City:listStopArea }
+    options:
+        expose: true
