@@ -115,6 +115,8 @@ class StopController extends CoreController
         $masterStopLabel = "";
         $masterStop = $stop->getMasterStop();
 
+        $accessibilityCalendar = $stopManager->getStopAccessibilityCalendar($stop);
+
         $stopsJson = json_encode($stopManager->getStopsJson(array($stop)));
 
         //$phantoms = $stop->getPhantoms();
@@ -163,10 +165,8 @@ class StopController extends CoreController
                 'stop' => $stop,
                 'masterStopLabel' => $masterStopLabel,
                 'stopHistories' => $stopManager->getOrderedStopHistories($stopId),
-                'stopsJson' => $stopsJson
-                //'phantoms' => $phantoms,
-                //'accessibilities' => $accessibilities,
-                //'phantomAccessibilities' => $phantomAccessibilities
+                'stopsJson' => $stopsJson,
+                'accessibilityCalendar' => $accessibilityCalendar
             )
         );
     }
