@@ -16,7 +16,13 @@
             {% for routeStop in route.routeStops %}
                 <tr class="route-stop">
                     <td class="route-stop-rank">{{ routeStop.rank }}</td>
-                    <td>{% if not routeStop.isOdtAreaRouteStop %}{{ routeStop.waypoint.stop.stopArea.city.name }}{% endif %}</td>
+                    <td>
+                        {% if not routeStop.isOdtAreaRouteStop %}
+                            <a target="_blank" href="{{ path('tisseo_boa_city_edit', {'cityId': routeStop.waypoint.stop.stopArea.city.id}) }}">
+                                {{ routeStop.waypoint.stop.stopArea.city.name }}
+                            </a>
+                        {% endif %}
+                    </td>
                     <td>
                         {% if routeStop.isOdtAreaRouteStop %}
                             <a target="_blank" href="{{ path('tisseo_boa_odt_area_edit', {'odtAreaId': routeStop.waypoint.odtArea.id}) }}">

@@ -14,7 +14,11 @@
                 {{ odtStop.stop.stopArea.shortName }}
             </a>
         </td>
-        <td>{{ odtStop.stop.stopArea.city.name }}</td>
+        <td>
+            <a target="_blank" href="{{ path('tisseo_boa_city_edit', {'cityId': odtStop.stop.stopArea.city.id}) }}">
+                {{ odtStop.stop.stopArea.city.name }}
+            </a>
+        </td>
         <td>{{ odtStop.startDate|date("d/m/Y") }}</td>
         <td>{% if odtStop.endDate is not empty %}{{ odtStop.endDate|date("d/m/Y") }}{% endif %}</td>
         <td><input type='checkbox' class="pickup" name="pickup" disabled="disabled" {% if odtStop.pickup %}checked="checked"{% endif %}></td>
