@@ -59,7 +59,16 @@ table.sort tbody tr.route-stop {
     cursor:pointer;
 }
 /* calendar */
-td.day.green {
+td.day.green, .legend.green {
     background-color:green;
     border-radius:0;
+}
+td.day.red, .legend.red {
+    background-color:#b91919;
+    border-radius:0;
+}
+div.legend {
+    display:inline-block;
+    width:15px;
+    height:15px;
 }

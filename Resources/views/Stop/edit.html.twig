@@ -113,116 +113,33 @@
         {% endif %}
     </div>
 
-    {# phantoms
-    {% if phantoms is not empty and form.masterStop is empty %}
-        <div>
-            <div class="stop_table_header">{{ 'stop.phantom.header' | trans }}</div>
-            <table class="table table-hover dataTable no-footer">
-            <thead>
-                <th>{{ 'stop.phantom.columns.agency' | trans }}</th>
-                <th>{{ 'stop.phantom.columns.stop' | trans }}</th>
-                <th>{{ 'stop.phantom.columns.code' | trans }}</th>
-            </thead>
-            <tbody>
-            {% for f in phantoms %}
-                <tr>
-                    <td>{{ f.stopDatasources[0].datasource.name }}</td>
-                    <td>{{ f.getShortLabel }}</td>
-                    <td>{{ f.stopDatasources[0].code }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-            </table>
+    <a id="stop-accessibility" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_accessibility'|trans }}
+    </a>
+
+    {% if not (accessibilityCalendar is empty) %}
+        <div class="panel col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <span style="display:inline-block; margin:8px 0" class="bold">{{ 'tisseo.boa.stop_point.label.accessibility_calendar'|trans }}</span>
+                    <br>
+                    <a target="_blank" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': accessibilityCalendar.id}) }}">
+                        {{ accessibilityCalendar.name }}
+                    </a>
+                    <div style="margin-top:30px">
+                        <div class="legend green"></div>
+                        <span>{{ 'tisseo.boa.stop_point.label.accessible'|trans }}</span>
+                        <br>
+                        <div class="legend red"></div>
+                        <span>{{ 'tisseo.boa.stop_point.label.not_accessible'|trans }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="calendar-view" data-url="{{ path('tisseo_boa_calendar_bitmask') }}"></div>
+                </div>
+            </div>
         </div>
     {% endif %}
-    #}
-
-    {# stop accessibility #}
-
-{#    <div>
-        {% if form.masterStop.vars.value is empty %}
-            <div class="stop_table_header">
-                {{ 'tisseo.boa.stop_point.accessibility.header' | trans }}
-            </div>
-        {% else %}
-            <div class="stop_table_header" style="7background-color: #666666">
-                {{ 'stop.accessibility.phantom_header' | trans  ~ " " ~ masterStopLabel }}
-            </div>
-        {% endif %}
-
-        <table class="table table-hover dataTable no-footer">
-        <thead>
-            <th>{{ 'stop.accessibility.columns.startTime' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.endTime' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.isRecursive' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.accessibilityMode' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.calendar' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.startDate' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.endDate' | trans }}</th>
-            <th>{{ 'stop.accessibility.columns.datasource' | trans }}</th>
-                <th>Action</th>
-        </thead>
-        <tbody>
-
-    {% if form.masterStop.vars.value is not empty %}
-        {% set list_accessibility = phantomAccessibilities %}
-    {% else %}
-        {% set list_accessibility = accessibilities %}
-    {% endif %}
-
-    {% if list_accessibility is not empty %}
-        {% for sa in list_accessibility %}
-            <tr>
-                <td>
-                {% if sa.accessibilityType.startTime is not empty %}
-                    {{ sa.accessibilityType.startTime|date("H:i") }}
-                {% endif %}
-                </td>
-                <td>
-                {% if sa.accessibilityType.endTime is not empty %}
-                    {{ sa.accessibilityType.endTime|date("H:i") }}
-                {% endif %}
-                </td>
-                <td>
-                    {% if sa.accessibilityType.isRecursive is not empty %}
-                        {% if sa.accessibilityType.isRecursive == 1 %}
-                            {{ 'stop.accessibility.isRecursive' | trans }}
-                        {% endif %}
-                    {% endif %}
-                </td>
-                <td>{{ sa.accessibilityType.accessibilityMode.name }}</td>
-                <td>{{ sa.accessibilityType.calendar.name }}</td>
-                <td>{{ sa.accessibilityType.calendar.computedStartDate.date|date("d/m/Y") }}</td>
-                <td>{{ sa.accessibilityType.calendar.computedEndDate.date|date("d/m/Y") }}</td>
-                <td>{{ sa.accessibilityType.calendar.calendarDatasources[0].datasource.name }}</td>
-                    {% if  phantomAccessibilities is empty %}
-                        {% if  sa.accessibilityType.calendar.computedStartDate.date|date("Ymd") > now|date("Ymd") %}
-                            {% if   sa.accessibilityType.calendar.calendarDatasources[0].datasource.name != "HASTUS" %}
-                                <td>
-                                <a class="btn btn-default"
-                                    href="{{ path('tisseo_boa_stop_accessibility_delete', {'stopId': stop.id, 'StopAccessibilityId': sa.id }) }}">
-                                    <span class="glyphicon glyphicon-remove"></span> {{'global.delete'|trans}}
-                                </a>
-                                </td>
-                            {% endif %}
-                        {% endif %}
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-            </tr>
-        {% endfor %}
-    {% endif %}
-        </tbody>
-        </table>
-    </div>
-        {% if form.masterStop.vars.value is empty %}
-            <div class = "col-md-2">
-                    <a href="{{ path('tisseo_boa_stop_accessibility_new', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal" class="btn btn-success" id="new_accessibility">
-                        <span class="glyphicon glyphicon-plus"></span>  {{ 'stop.modifyAccessibility' | trans }}
-                    </a>
-            </div>
-        {% endif %}
-    #}
 {% endblock %}
 
 {% block javascripts %}
@@ -233,9 +150,19 @@
         });
     </script>
     <script>
+        global = {
+                locale: '{{ app.request.locale }}'
+            };
+
         require(['boa/stop/edit'], function() {
             init_autocomplete("#stop_area", "#boa_stop_edit_stopArea", "#stop-edit");
             $("#stop_area").val($("#boa_stop_edit_stopArea option:selected").text());
+
+            //accessibility Calendar
+            var startDate = new Date("{{ accessibilityCalendar.computedStartDate|date("Y-m-d") }}");
+            var endDate = new Date("{{ accessibilityCalendar.computedEndDate|date("Y-m-d") }}");
+            var calendarId = {{ accessibilityCalendar.id }}
+            initCalendar(calendarId, startDate, endDate);
         });
     </script>
 {% endblock %}
