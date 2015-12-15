@@ -141,29 +141,11 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
         });
     });
 
-    function validateForm(odtStops)
-    {
-        $('#odt-stops').parent().find('div.alert').remove();
-        var check = true;
-
-        if (odtStops.length === 0)
-            return check;
-
-        var error = "<div class='alert alert-danger alert-dismissable danger'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
-        error += "</div>";
-
-        if (!check) {
-            $('#route-stops').after(error);
-        }
-
-        return check;
-    }
-
     $(document).on('click', '#odt-stops-list #submit-odt-stops', function() {
         var odtAreaId = $('#odt-stops-list #odt-area-id').val();
         var odtStops = $('#odt-stops-list tr.odt-stop');
 
-        if (!validateForm(odtStops))
+        if (odtStops.length < 1)
             return false;
 
         var data = [];
