@@ -166,7 +166,8 @@ class StopController extends CoreController
                 'masterStopLabel' => $masterStopLabel,
                 'stopHistories' => $stopManager->getOrderedStopHistories($stopId),
                 'stopsJson' => $stopsJson,
-                'accessibilityCalendar' => $accessibilityCalendar
+                'accessibilityCalendar' => $accessibilityCalendar,
+                'lines' => $stopManager->getLinesByStop($stopId)
             )
         );
     }
