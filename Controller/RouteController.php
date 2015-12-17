@@ -10,6 +10,10 @@ use Tisseo\BoaBundle\Form\Type\RouteDuplicateType;
 use Tisseo\EndivBundle\Entity\Route;
 use Tisseo\EndivBundle\Entity\RouteDatasource;
 
+/**
+ * Class RouteController
+ * @package Tisseo\BoaBundle\Controller
+ */
 class RouteController extends CoreController
 {
     /**
@@ -17,6 +21,8 @@ class RouteController extends CoreController
      * @param integer $lineVersionId
      *
      * Listing all Routes
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function listAction($lineVersionId)
     {
@@ -43,7 +49,10 @@ class RouteController extends CoreController
 
     /**
      * Create
+     * @param Request $request
      * @param integer $lineVersionId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request, $lineVersionId)
     {
@@ -105,9 +114,12 @@ class RouteController extends CoreController
 
     /**
      * Edit
+     * @param Request $request
      * @param integer $routeId
      *
      * Editing Route
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, $routeId)
     {
@@ -169,8 +181,11 @@ class RouteController extends CoreController
     }
 
     /**
-     * Delete
+     * Delete a route
+     *
      * @param integer $routeId
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteAction($routeId)
     {
@@ -180,7 +195,7 @@ class RouteController extends CoreController
         try
         {
             $lineVersionId = $routeManager->remove($routeId);
-            $this->addFlash('success', 'route.message.removed');
+            $this->addFlash('success', 'tisseo.boa.route.message.removed');
         }
         catch(\Exception $e)
         {
@@ -196,9 +211,12 @@ class RouteController extends CoreController
 
     /**
      * TripCalendar
+     * @param Request $request
      * @param integer $lineVersionId
      *
      * Editing Trips in order to link them to TripCalendar
+     *
+     * @return \Symfony\Component\HttpFoundation\Response A Response instance
      */
     public function tripCalendarAction(Request $request, $lineVersionId)
     {
@@ -241,6 +259,8 @@ class RouteController extends CoreController
     /**
      * Duplicate
      * @param integer $routeId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response A response instance
      */
     public function duplicateAction(Request $request, $routeId)
     {
@@ -270,7 +290,7 @@ class RouteController extends CoreController
                 $lineVersionId = $request->request->get('line_version');
                 $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
                 $routeManager->duplicate($route, $lineVersion, $userName);
-                $this->addFlash('success', 'route.message.duplicated');
+                $this->addFlash('success', 'tisseo.boa.route.message.duplicated');
             }
             catch(\Exception $e)
             {
@@ -285,9 +305,9 @@ class RouteController extends CoreController
 
         return $this->render('TisseoBoaBundle:Route:duplicate.html.twig',
             array(
-                'title' => 'route.duplicate',
+                'title' => 'tisseo.boa.route.title.duplicate',
                 'form' => $form->createView(),
-                'activeLineVersions' => $route->getLineVersion()->getLine()->getActiveLineVersions()
+                'activeLineVersions' => $route->getLineVersion()->getLine()->getActiveLineVersions(new \DateTime('now'))
             )
         );
     }
