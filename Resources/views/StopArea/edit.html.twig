@@ -1,6 +1,7 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 {% set smoothness = true %}
+{% set leaflet = true %}
 {% set margin = '10' %}
 
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
@@ -17,45 +18,61 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_area.header.edit_form'|trans }}
     </a>
     <div class="panel col-md-12">
-        {{ form_start(form) }}
-        {{ form_errors(form) }}
+        <div class="col-md-5">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
 
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(form.shortName) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.shortName) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.longName) }}
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form_row(form.longName) }}
+            <div class="row">
+                <div class="col-md-10">
+                    {{ form_label(form.city) }}
+                    <div class="row">
+                        <div class="col-md-10">
+                            {{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
+                            <input type="text" id="city" class="form-control" style="margin-bottom:15px"
+                                data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
+                        </div>
+                        <div class="col-md-2">
+                            <a id="city-edit" class="btn btn-default" href="{{ path('tisseo_boa_city_edit', {'cityId': form.city.vars.data.id}) }}">
+                                <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form_label(form.city) }}
-                {{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-                <input type="text" id="city" class="form-control" data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
+            {% for datasource in form.stopAreaDatasources %}
+            <div class="row">
+                <div class="col-md-5">
+                    {{ form_row(datasource.datasource) }}
+                </div>
+                <div class="col-md-7">
+                    {{ form_row(datasource.code) }}
+                </div>
             </div>
-        </div>
+            {% endfor %}
 
-        {% for datasource in form.stopAreaDatasources %}
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(datasource.datasource) }}
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                    </button>
+                    <a href="" class="btn btn-default">
+                        <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
+                    </a>
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form_row(datasource.code) }}
-            </div>
+            {{ form_end(form) }}
         </div>
-        {% endfor %}
-
-        <div class="row">
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                </button>
-                <a href="" class="btn btn-default">
-                    <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
-                </a>
-            </div>
-        </div>
-        {{ form_end(form) }}
+        {% if stopArea.id %}
+            <div class="col-md-7" id="leaflet-map-container" style="float:right"></div>
+        {% endif %}
     </div>
 
     <a id="stop-history" class="header-ribbon">
@@ -110,8 +127,8 @@
                 {% endif %}
                 <tr{% if stopHistory.endDate and stopHistory.endDate < now %} class="closed-stop" style="background-color:#E4E4E4;"{% endif %}>
                     <td>{{ stop.stopDatasources[0].datasource.agency.name }}</td>
-                    <td>{{ stop.stopDatasources[0].code }}</td>
-                    <td><a href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stopHistory.shortName }}</a></td>
+                    <td><a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stop.stopDatasources[0].code }}</a></td>
+                    <td>{{ stopHistory.shortName }}</td>
                     {% if stop.masterStop %}
                         <td></td>
                         <td></td>
@@ -189,6 +206,11 @@
         });
     </script>
     <script>
+        require(['core/leaflet_utils'], function() {
+            init_map_with_stops({{ stopsJson|raw }}, true);
+        });
+    </script>
+    <script>
         require(['jquery'], function() {
             $('#show-closed-stops').change(function() {
                 if ($(this).is(":checked"))
@@ -196,9 +218,11 @@
                 else
                     $(".closed-stop").fadeOut();
             });
+
             $('.internal-transfers-edit').click(function(){
                 $('.modal-dialog').css('width', '800px');
             });
+
             $('.external-transfers-edit').click(function(){
                 $('.modal-dialog').css('width', '1200px');
                 $('#base-modal').on('loaded.bs.modal', function () {

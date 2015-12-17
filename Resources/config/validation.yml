@@ -47,6 +47,16 @@ Tisseo\EndivBundle\Entity\Color:
         rgbBlue:
             - NotBlank: ~
 
+Tisseo\EndivBundle\Entity\City:
+    properties:
+        name:
+            - NotBlank: ~
+        insee:
+            - NotBlank: ~
+            - Length:
+                max: 5
+                maxMessage: 'tisseo.validation.string_too_long'
+
 Tisseo\EndivBundle\Entity\Datasource:
     properties:
         name:

@@ -1,4 +1,4 @@
-define(['jquery_ui_autocomplete'], function($) {
+define(['jquery_ui_autocomplete', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale], function($) {
     init_autocomplete = function(input, target, button) {
         $(document).ready(function() {
             $(input).autocomplete({
@@ -34,4 +34,35 @@ define(['jquery_ui_autocomplete'], function($) {
             });
         });
     };
+
+    initCalendar = function(calendarId, startDate, endDate) {
+        $.ajax({
+            url : $('#calendar-view').data('url'),
+            data: {
+                'calendarId': calendarId,
+                'startDate': startDate,
+                'endDate': endDate
+            },
+            type: 'POST',
+            success: function(data) {
+                $('#calendar-view').datepicker({
+                    language: global.locale,
+                    beforeShowDay: function (date) {
+                        // bootstrap fr bug (offset day of the week)
+                        var fixDate = date;
+                        fixDate.setDate(fixDate.getDate()+1);
+                        strDate = fixDate.toISOString().slice(0,10).replace(/-/g,"");
+
+                        if (data[strDate] == "1")
+                            return "red";
+                        else
+                            return "green";
+                    }
+                });
+                $('#calendar-view').datepicker('setDate', startDate);
+                $('#calendar-view').datepicker('update');
+            }
+        });
+    };
+
 });

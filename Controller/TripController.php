@@ -199,9 +199,9 @@ class TripController extends CoreController
      * Delete all
      * @param integer $routeId
      *
-     * Deleting all Trips from a Route
+     * Deleting all or selected Trips from a Route
      */
-    public function deleteAllAction($routeId)
+    public function deleteAllAction(Request $request, $routeId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
 
@@ -209,8 +209,14 @@ class TripController extends CoreController
 
         try
         {
-            $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
-            $this->addFlash('success', 'tisseo.boa.trip.message.all_deleted');
+            if ($request->getMethod() == 'POST') {
+                $idTrips = json_decode($request->getContent(), true);
+                $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route, $idTrips);
+                $this->addFlash('success', 'tisseo.boa.trip.message.select_deleted');
+            } else {
+                $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
+                $this->addFlash('success', 'tisseo.boa.trip.message.all_deleted');
+            }
         }
         catch(\Exception $e)
         {

@@ -6,21 +6,21 @@
     {{ parent() }}
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
         -
-        <a href="{{ path('tisseo_boa_stop_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.stop_point.action.create'|trans }}
+        <a href="{{ path('tisseo_boa_city_create') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.city.action.create'|trans }}
         </a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="col-md-8">
-        <span>{{ 'tisseo.boa.stop_point.title.search'|trans }}</span>
+        <span>{{ 'tisseo.boa.city.title.search'|trans }}</span>
         <div class="row">
             <div class="col-md-6">
-                <input type="text" id="stop-search" class="form-control" data-url="{{ path('tisseo_boa_json_stop') }}">
+                <input type="text" id="city-search" class="form-control" data-url="{{ path('tisseo_boa_json_city') }}">
             </div>
             <div class="col-md-2">
-                <a href="{{ path('tisseo_boa_stop_edit') }}" class="btn btn-default" id="stop-edit" data-stop="" disabled="disabled">
+                <a href="#" class="btn btn-default" id="city-edit" data-city="" disabled="disabled">
                     <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
                 </a>
             </div>
@@ -30,8 +30,8 @@
 
 {% block javascripts %}
     <script>
-        require(['boa/stop/search'], function() {
-            init_autocomplete('#stop-search', '#stop-edit');
+        require(['boa/city/search'], function() {
+            init_autocomplete('#city-search', '#city-edit');
         });
     </script>
 {% endblock %}

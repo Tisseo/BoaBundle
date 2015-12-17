@@ -1,0 +1,68 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+{% set margin = '10' %}
+
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% block breadcrumb %}
+    <a href="{{ path('tisseo_boa_city_search') }}">
+        {{ 'tisseo.boa.city.title.search'|trans }}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <a id="stop-history" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.city.header.edit_form'|trans }}
+    </a>
+    <div class="panel col-md-12">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_row(form.name) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.insee) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.mainStopArea) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                </button>
+                <a href="" class="btn btn-default">
+                    <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
+                </a>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+    <a id="stop-history" class="header-ribbon">
+        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.city.header.stop_area'|trans }}
+    </a>
+    <div class="panel col-md-12">
+        <table id="stop-history" class="table datatable table-hover">
+            <thead>
+            <th class="col-md-2">{{ 'tisseo.boa.city.label.stop_area'|trans }}</th>
+            <th class="col-md-2">{{ 'tisseo.boa.city.label.name'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.city.label.number_stop'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.city.label.line'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.city.label.delete'|trans }}</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        /*require(['boa/stop/edit'], function() {
+            init_autocomplete("#stop_area", "#boa_stop_edit_stopArea", "#stop-edit");
+            $("#stop_area").val($("#boa_stop_edit_stopArea option:selected").text());
+        });*/
+    </script>
+{% endblock %}

@@ -63,10 +63,8 @@
                             <select class="form-control" id="start-stop-select" value="">
                                 <option disabled selected value="" type=""></option>
                                 <option value="{{ stopArea.id }}" type="sa">{{ 'tisseo.boa.stop_area.label.all_stops'|trans }}</option>
-                                {% for stop in stopArea.stops %}
-                                    {% if stop.CurrentOrLatestStopHistory(now) %}
-                                        <option value="{{ stop.id }}" type="sp">{{ stop.StopDisplayLabel }}</option>
-                                    {% endif %}
+                                {% for stop in startStops %}
+                                    <option value="{{ stop.id }}" type="sp">{{ stop.StopDisplayLabel }}</option>
                                 {% endfor %}
                             </select>
                         </td>

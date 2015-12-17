@@ -59,13 +59,13 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a class="btn" role="button" href="{{ path('tisseo_boa_route_duplicate', { 'routeId': route.id }) }}" data-toggle="modal" data-target="#base-modal">
-                                {{ 'tisseo.boa.route.action.copy'|trans }}
+                                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> {{ 'tisseo.boa.route.action.copy'|trans }}
                             </a>
                         </li>
                         {% if not route.hasTripsNotPattern %}
                         <li>
                             <a class="btn delete-action" role="button" href="{{ path('tisseo_boa_route_delete', { 'routeId': route.id }) }}">
-                                {{ 'tisseo.boa.route.action.delete'|trans }}
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> {{ 'tisseo.boa.route.action.delete'|trans }}
                             </a>
                         </li>
                         {% endif %}

@@ -1,6 +1,7 @@
 {% extends "TisseoCoreBundle::datatable_list.html.twig" %}
 {% set bundle = 'TisseoBoaBundle' %}
 {% set smoothness = true %}
+{% set leaflet = true %}
 {% set margin = '10' %}
 
 {% import "TisseoCoreBundle::macros.html.twig" as render %}
@@ -17,30 +18,37 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.odt_area.header.edit_form'|trans }}
     </a>
     <div class="panel col-md-12">
-        {{ form_start(form) }}
-        {{ form_errors(form) }}
+        <div class="col-md-5">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
 
-        <div class="row">
-            <div class="col-md-3">
-                {{ form_row(form.name) }}
+            <div class="row">
+                <div class="col-md-8">
+                    {{ form_row(form.name) }}
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-5">
-                {{ form_row(form.comment) }}
+            <div class="row">
+                <div class="col-md-10">
+                    {{ form_row(form.comment) }}
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
-                    <button type="submit" class="btn btn-success">
-                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                    </button>
-                {% endif %}
+            <div class="row">
+                <div class="col-md-6">
+                    {% if (is_granted('BUSINESS_MANAGE_STOPS')) %}
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                        </button>
+                    {% endif %}
+                </div>
             </div>
+            {{ form_end(form) }}
         </div>
-        {{ form_end(form) }}
+        {% if odtArea.id %}
+            <div class="col-md-7">
+                <div class="col-md-7" id="leaflet-map-container" style="float:right"></div>
+            </div>
+        {% endif %}
     </div>
     <a id="stop-history" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.odt_area.header.stops_list'|trans }}
@@ -50,6 +58,12 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['core/leaflet_utils'], function() {
+            init_map_with_stops({{ stopsJson|raw }}, true);
+        });
+    </script>
     <script>
         require(['boa/odt_stop/edit']);
     </script>
