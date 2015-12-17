@@ -303,11 +303,14 @@ class RouteController extends CoreController
             );
         }
 
+        $activeLineVersions = $this->get('tisseo_endiv.line_version_manager')->findActiveLineVersions(new \DateTime('now'));
+
         return $this->render('TisseoBoaBundle:Route:duplicate.html.twig',
             array(
                 'title' => 'tisseo.boa.route.title.duplicate',
                 'form' => $form->createView(),
-                'activeLineVersions' => $route->getLineVersion()->getLine()->getActiveLineVersions(new \DateTime('now'))
+                //'activeLineVersions' => $route->getLineVersion()->getLine()->getActiveLineVersions(new \DateTime('now'))
+                'activeLineVersions' => $activeLineVersions
             )
         );
     }
