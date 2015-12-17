@@ -135,7 +135,9 @@
                         <td>
                         {% if linesByStop[stop.id] is not empty %}
                             {% for line in linesByStop[stop.id] %}
-                                {{ render.line_number(line, 'line', 'small') }}
+                            <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id }) }}">
+                                {{ render.line_number(line, 'line', 'free') }}
+                            </a>
                             {% endfor %}
                         {% endif %}
                         </td>
@@ -146,7 +148,9 @@
                         {% if linesByStop[stop.id] is not empty %}
                             <td>
                             {% for line in linesByStop[stop.id] %}
-                                {{ render.line_number(line, 'line', 'small') }}
+                                <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id }) }}">
+                                    {{ render.line_number(line, 'line', 'free') }}
+                                </a>
                             {% endfor %}
                             </td>
                             <td></td>
