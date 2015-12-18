@@ -1,0 +1,115 @@
+{% extends "TisseoCoreBundle::generic_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+
+{% block list_title -%}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div id="search-form">
+        <div class="panel col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <div style="margin-bottom:6px" class="bold">{{ 'tisseo.boa.monitoring.accessibility.label.line_version'|trans }}</div>
+                </div>
+                <div class="col-md-2">
+                    <div style="margin-bottom:6px" class="bold">{{ 'tisseo.boa.monitoring.accessibility.label.start_date'|trans }}</div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:5px">
+                <div class="col-md-2">
+                    <select class="form-control" id="line-version-select" value="">
+                        <option disabled {% if lineVersion is empty %}selected{% endif %} value=""></option>
+                        {% for lv in lineVersionOptions %}
+                            <option value="{{ lv.id }}" date="{{ lv.startDate|date('d/m/Y') }}"
+                            {% if (lineVersion is not empty) and (lineVersion.id == lv.id) %} selected {% endif %}
+                            >
+                                {{ lv.line.number }} - {{ lv.version }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" id="start-date" class="form-control input-date"
+                        {% if startDate is not empty %}
+                            value="{{ startDate|date('d/m/Y') }}"
+                        {% endif %}
+                    >
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-default" id="consult-button">
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% if lineVersion is not empty %}
+        <div id="routes-list" class="col-md-12">
+            {% set ways = lineVersion.RouteWays %}
+            {% set columnWidth = (ways|length < 2) ? 6 : (12 / (ways|length)) %}
+            <table id="table-routes" class="table table-hover">
+            <thead >
+                {% if 'WAY_FORWARD' in ways %}
+                    <th class="col-md-{{ columnWidth }}">{{ 'tisseo.boa.route.label.ways.forward'|trans }}</th>
+                {% endif %}
+                {% if 'WAY_BACKWARD' in ways %}
+                    <th class="col-md-{{ columnWidth }}">{{ 'tisseo.boa.route.label.ways.backward'|trans }}</th>
+                {% endif %}
+                {% if 'WAY_LOOP' in ways %}
+                    <th class="col-md-{{ columnWidth }}">{{ 'tisseo.boa.route.label.ways.loop'|trans }}</th>
+                {% endif %}
+                {% if 'WAY_AREA' in ways %}
+                    <th class="col-md-{{ columnWidth }}">{{ 'tisseo.boa.route.label.ways.area'|trans }}</th>
+                {% endif %}
+            </thead>
+            <tbody>
+                <tr>
+                    {% for way in ways %}
+                        <td style="vertical-align:top">
+                            {% for route in lineVersion.routes %}
+                                {% if route.way == constant(way, route) and (route.routeStops is not empty) %}
+                                    <div class="stop-monitoring-container">
+                                        <b>{{ route.firstRouteStop.stopLabel ~ ' ' ~ 'tisseo.boa.monitoring.accessibility.label.to'|trans ~ ' ' ~ route.lastRouteStop.stopLabel }} : </b>
+                                        <br>
+                                        {% if route.id not in stopAccessibilitiesByRoute|keys %}
+                                            <div style="margin-top:8px; text-align:center">
+                                                {{ 'tisseo.boa.monitoring.accessibility.message.no_change'|trans }}
+                                            </div>
+                                        {% else %}
+                                            <ul style="margin-top:5px">
+                                            {% for item in stopAccessibilitiesByRoute[route.id] %}
+                                                <li>
+                                                {{ item['stop'].StopDisplayLabel }}
+                                                {% if not item['accessible'] %}
+                                                    <b>{{ 'tisseo.boa.monitoring.accessibility.message.not_accessible'|trans }}</b>
+                                                {% else %}
+                                                    <b>{{ 'tisseo.boa.monitoring.accessibility.message.accessible'|trans }}</b>
+                                                {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <br>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        global = {
+            locale: '{{ app.request.locale }}'
+        };
+        require(['boa/monitoring/accessibility/search']);
+    </script>
+{% endblock %}

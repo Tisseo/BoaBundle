@@ -37,7 +37,7 @@
                     {{ form_row(form.pattern) }}
                 </div>
             </div>
-        
+
             <div class="row">
                 <div class="col-md-5">
                     {{ form_row(form.dayCalendar) }}
@@ -78,7 +78,7 @@
         </div>
         {{ form_end(form) }}
     </div>
-    
+
     <a id="stop-times" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.header.stop_time'|trans }}
     </a>
@@ -103,21 +103,32 @@
                     <td>{{ stopTime.routeStop.rank }}</td>
                     <td>
                         {% if not stopTime.routeStop.isOdtAreaRouteStop %}
-                            {{ stopTime.routeStop.waypoint.stop.stopArea.city.name }}</td>
+                            <a target="_blank" href="{{ path('tisseo_boa_city_edit', {'cityId': stopTime.routeStop.waypoint.stop.stopArea.city.id}) }}">
+                                {{ stopTime.routeStop.waypoint.stop.stopArea.city.name }}
+                            </a>
                         {% endif %}
+                    </td>
                     <td>
                         {% if stopTime.routeStop.isOdtAreaRouteStop %}
-                            {{ stopTime.routeStop.waypoint.odtArea.name }}
+                            <a target="_blank" href="{{ path('tisseo_boa_odt_area_edit', {'odtAreaId': stopTime.routeStop.waypoint.odtArea.id}) }}">
+                                {{ stopTime.routeStop.waypoint.odtArea.name }}
+                            </a>
                         {% else %}
-                            {{ stopTime.routeStop.waypoint.stop.stopArea.shortName }}
+                            <a target="_blank" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': stopTime.routeStop.waypoint.stop.stopArea.id}) }}">
+                                {{ stopTime.routeStop.waypoint.stop.stopArea.shortName }}
+                            </a>
                         {% endif %}
                     </td>
                     <td>
                         {% if stopTime.routeStop.isOdtAreaRouteStop %}
                             {{ 'tisseo.boa.route_stop.label.zone'|trans }}
                         {% else %}
-                            {% for datasource in stopTime.routeStop.waypoint.stop.stopDatasources %}
-                                {{ datasource.code }}
+                            {% set stop = stopTime.routeStop.waypoint.stop %}
+                            {% set stopId = ((stop.masterStop is empty) ? stop.id : stop.masterStop.id) %}
+                            {% for datasource in stop.stopDatasources %}
+                                <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stopId}) }}">
+                                    {{ datasource.code }}
+                                </a>
                             {% endfor %}
                         {% endif %}
                     </td>
