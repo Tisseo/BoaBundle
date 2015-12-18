@@ -62,7 +62,7 @@
                 {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
             </tr>
         {% endif %}
-    </tbody>
+        </tbody>
     </table>
     <br>
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) and odtArea.id %}

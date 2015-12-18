@@ -418,3 +418,15 @@ tisseo_boa_city_stoparea_json:
     defaults: { _controller: TisseoBoaBundle:City:listStopArea }
     options:
         expose: true
+
+# Monitoring Routes
+tisseo_boa_monitoring_accessibility_search:
+    pattern: /monitoring/accessibility/search/{startDate}/{lineVersionId}
+    defaults: { _controller: TisseoBoaBundle:AccessibilityMonitoring:search, startDate:0, lineVersionId:null }
+    requirements:
+        lineVersionId: \d+
+    options:
+        expose: true
+tisseo_boa_monitoring_poi:
+    pattern: /monitoring/poi
+    defaults: { _controller: TisseoBoaBundle:Monitoring:poi }

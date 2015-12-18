@@ -85,7 +85,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-7" id="leaflet-map-container"></div>
+        <div class="col-md-7">
+            <div id="leaflet-map-container" style="float:right"></div>
+        </div>
     </div>
 
     <a id="stop-history" class="header-ribbon">
@@ -128,14 +130,18 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_accessibility'|trans }}
     </a>
 
-    {% if not (accessibilityCalendar is empty) %}
+    {% if (stop.accessibilityCalendar is empty) %}
+        <div style="text-align:center; margin: 10px 0">
+            <b>{{ 'tisseo.boa.stop_point.message.no_accessibility_calendar'|trans }}</b>
+        </div>
+    {% else %}
         <div class="panel col-md-12">
             <div class="row">
                 <div class="col-md-2">
                     <span style="display:inline-block; margin:8px 0" class="bold">{{ 'tisseo.boa.stop_point.label.accessibility_calendar'|trans }}</span>
                     <br>
-                    <a target="_blank" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': accessibilityCalendar.id}) }}">
-                        {{ accessibilityCalendar.name }}
+                    <a target="_blank" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': stop.accessibilityCalendar.id}) }}">
+                        {{ stop.accessibilityCalendar.name }}
                     </a>
                     <div style="margin-top:30px">
                         <div class="legend green"></div>
@@ -170,10 +176,12 @@
             $("#stop_area").val($("#boa_stop_edit_stopArea option:selected").text());
 
             //accessibility Calendar
-            var startDate = new Date("{{ accessibilityCalendar.computedStartDate|date("Y-m-d") }}");
-            var endDate = new Date("{{ accessibilityCalendar.computedEndDate|date("Y-m-d") }}");
-            var calendarId = {{ accessibilityCalendar.id }}
-            initCalendar(calendarId, startDate, endDate);
+            {% if not (stop.accessibilityCalendar is empty) %}
+                var startDate = new Date("{{ stop.accessibilityCalendar.computedStartDate|date("Y-m-d") }}");
+                var endDate = new Date("{{ stop.accessibilityCalendar.computedEndDate|date("Y-m-d") }}");
+                var calendarId = {{ stop.accessibilityCalendar.id }}
+                initCalendar(calendarId, startDate, endDate);
+            {% endif %}
         });
     </script>
 {% endblock %}
