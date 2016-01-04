@@ -67,6 +67,15 @@ td.day.red, .legend.red {
     background-color:#cf0000;
     border-radius:0;
 }
+/* accessibility monitoring view */
+span.monitoring.accessible {
+    color:green;
+    background-color:transparent;
+}
+span.monitoring.inaccessible {
+    color:#cf0000;
+    background-color:transparent;
+}
 div.legend {
     display:inline-block;
     width:15px;
