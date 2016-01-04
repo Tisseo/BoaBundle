@@ -83,11 +83,14 @@
                                             {% for item in stopAccessibilitiesByRoute[route.id] %}
                                                 <li>
                                                 {{ item['stop'].StopDisplayLabel }}
+                                                <b>
+                                                {{ 'tisseo.boa.monitoring.accessibility.message.gets'|trans }}
                                                 {% if not item['accessible'] %}
-                                                    <b>{{ 'tisseo.boa.monitoring.accessibility.message.not_accessible'|trans }}</b>
+                                                    <span class="monitoring inaccessible">{{ 'tisseo.boa.monitoring.accessibility.message.not_accessible'|trans }}</span>
                                                 {% else %}
-                                                    <b>{{ 'tisseo.boa.monitoring.accessibility.message.accessible'|trans }}</b>
+                                                    <span class="monitoring accessible">{{ 'tisseo.boa.monitoring.accessibility.message.accessible'|trans }}</span>
                                                 {% endif %}
+                                                </b>
                                                 </li>
                                             {% endfor %}
                                             </ul>
