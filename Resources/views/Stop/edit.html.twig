@@ -64,7 +64,7 @@
             {% endfor %}
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <button type="submit" class="btn btn-success">
                         <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
                     </button>
@@ -76,12 +76,18 @@
             {{ form_end(form) }}
             <div class="row">
                 <div class="col-md-12">
-                   <h4>{{ 'tisseo.boa.stop_point.label.lines'|trans }}</h4>
-                    {% for line in lines %}
-                        <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id}) }}">
-                            {{ render.line_number(line, 'line', 'free') }}
-                        </a>
-                    {% endfor %}
+                    <label style="margin-top:15px; margin-left:5px">{{ 'tisseo.boa.stop_point.label.lines'|trans }}</label>
+                    <br>
+                    <div style="display:inline-block">
+                        <div style="height:1px; background-color:black; margin-bottom:5px"></div>
+                        <div style="margin:0 5px">
+                            {% for line in lines %}
+                                <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id}) }}">
+                                    {{ render.line_number(line, 'line', 'free') }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
