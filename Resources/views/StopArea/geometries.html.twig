@@ -1,0 +1,38 @@
+{% extends "::modal.html.twig" %}
+
+{% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
+
+{% block open_form %}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block modal_title %}
+    {{ title|trans }}
+{% endblock %}
+
+{% block modal_body %}
+    {{ form_errors(form) }}
+
+    <div class="form form-edit">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.x, {'attr': {'value': theGeom.x }}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.y, {'attr': {'value': theGeom.y }}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.srid) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-pencil"></span>{{ 'tisseo.global.save'|trans }}
+    </button>
+    {{ form_end(form) }}
+{% endblock %}

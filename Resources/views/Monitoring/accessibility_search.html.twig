@@ -50,8 +50,8 @@
         <div id="routes-list" class="col-md-12">
             {% set ways = lineVersion.RouteWays %}
             {% set columnWidth = (ways|length < 2) ? 6 : (12 / (ways|length)) %}
-            <table id="table-routes" class="table table-hover">
-            <thead >
+            <table id="table-routes" class="table">
+            <thead>
                 {% if 'WAY_FORWARD' in ways %}
                     <th class="col-md-{{ columnWidth }}">{{ 'tisseo.boa.route.label.ways.forward'|trans }}</th>
                 {% endif %}

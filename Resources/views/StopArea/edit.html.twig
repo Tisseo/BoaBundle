@@ -95,7 +95,7 @@
                     <a class="btn btn-default external-transfers-edit" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-resize-full"></span> {{ 'tisseo.boa.stop_area.action.external_transfert'|trans }}
                     </a>
-                    <a class="btn btn-default disabled" id="geometries" href="#">
+                    <a class="btn btn-default geometries-edit" href="{{ path('tisseo_boa_stop_area_geometries_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-globe"></span> {{ 'tisseo.boa.stop_area.action.geometries'|trans }}
                     </a>
                     <a class="btn btn-default aliases-edit" href="{{ path('tisseo_boa_alias_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
@@ -185,7 +185,7 @@
                         <a class="btn btn-default external-transfers-edit" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-resize-full"></span> {{ 'tisseo.boa.stop_area.action.external_transfert'|trans }}
                         </a>
-                        <a class="btn btn-default disabled" id="geometries" href="#">
+                        <a class="btn btn-default geometries-edit" href="{{ path('tisseo_boa_stop_area_geometries_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-globe"></span> {{ 'tisseo.boa.stop_area.action.geometries'|trans }}
                         </a>
                         <a class="btn btn-default aliases-edit" href="{{ path('tisseo_boa_alias_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
@@ -241,6 +241,12 @@
                 $('.modal-dialog').css('width', '600px');
                 $('#base-modal').on('loaded.bs.modal', function () {
                     $('#aliases-list #new-alias-name').focus();
+                });
+            });
+            $('.geometries-edit').click(function(){
+                $('.modal-dialog').css('width', '600px');
+                $('#base-modal').on('loaded.bs.modal', function () {
+                    $('#form_x').focus();
                 });
             });
             $('.stop-create').click(function(){

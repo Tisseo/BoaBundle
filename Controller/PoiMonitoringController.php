@@ -5,14 +5,14 @@ namespace Tisseo\BoaBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\CoreBundle\Controller\CoreController;
 
-class AccessibilityMonitoringController extends CoreController
+class PoiMonitoringController extends CoreController
 {
     /**
-     * Accessibility
+     * Poi
      *
-     * monitoring the accessibility of a lineVersion
+     * monitoring the POIs associated to the stops of a lineVersion
      */
-    public function searchAction($lineVersionId, $startDate)
+    public function searchAction($lineVersionId)
     {
         $this->isGranted(
             array(
@@ -22,19 +22,18 @@ class AccessibilityMonitoringController extends CoreController
         $lineVersionOptions = $this->get('tisseo_endiv.line_version_manager')->findAllSortedByLineNumber();
 
         $lineVersion = empty($lineVersionId) ? null : $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
-        $startDate = ($startDate == 0) ? null : \DateTime::createFromFormat('d-m-Y', $startDate);
 
-        $stopAccessibilitiesByRoute = (empty($lineVersion) or empty($startDate)) ? null
-            : $this->get('tisseo_endiv.line_version_manager')->getStopAccessibilityChangesByRoute($lineVersion, $startDate);
+        $poiByStopArea = (empty($lineVersion)) ? null
+            : $this->get('tisseo_endiv.line_version_manager')->getPoiByStopArea($lineVersion);
+
         return $this->render(
-            'TisseoBoaBundle:Monitoring:accessibility_search.html.twig',
+            'TisseoBoaBundle:Monitoring:poi_search.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.monitoring.manage',
-                'pageTitle' => 'tisseo.boa.monitoring.accessibility.title',
+                'pageTitle' => 'tisseo.boa.monitoring.poi.title',
                 'lineVersionOptions' => $lineVersionOptions,
                 'lineVersion' => $lineVersion,
-                'startDate' => $startDate,
-                'stopAccessibilitiesByRoute' => $stopAccessibilitiesByRoute
+                'poiByStopArea' => $poiByStopArea
             )
         );
     }
