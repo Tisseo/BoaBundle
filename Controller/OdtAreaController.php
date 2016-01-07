@@ -112,7 +112,8 @@ class OdtAreaController extends CoreController
             $odtArea = $form->getData();
             try
             {
-                $odtAreaId = $odtAreaManager->create($odtArea);
+                if (empty($odtAreaId))
+                    $odtAreaId = $odtAreaManager->create($odtArea);
                 $odtAreaManager->save($odtArea);
 
                 $this->addFlash('success', 'tisseo.flash.success.edited');

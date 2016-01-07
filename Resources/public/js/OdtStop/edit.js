@@ -145,9 +145,6 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
         var odtAreaId = $('#odt-stops-list #odt-area-id').val();
         var odtStops = $('#odt-stops-list tr.odt-stop');
 
-        if (odtStops.length < 1)
-            return false;
-
         var data = [];
         odtStops.each(function() {
             var odtStop = {};
