@@ -111,22 +111,23 @@ class StopController extends CoreController
         if (empty($stop))
             $stop = new Stop();
 
-        // wtf: refactor may be needed
-        $masterStopLabel = "";
         $masterStop = $stop->getMasterStop();
 
-        $stopsJson = json_encode($stopManager->getStopsJson(array($stop)));
+        $stopsJson = json_encode($stopManager->getStopsJson(array($stop), true));
 
         //$phantoms = $stop->getPhantoms();
         //$accessibilities = $stop->getStopAccessibilities();
         //$phantomAccessibilities = null;
         if (!empty($masterStop)) {
-            $masterStopLabel = $stopManager->getStopLabel($masterStop);
+            $stopHistory = $masterStop->getCurrentOrLatestStopHistory(new \Datetime());
             //$phantomAccessibilities = $masterStop->getStopAccessibilities();
+        }
+        else {
+            $stopHistory = $stop->getCurrentOrLatestStopHistory(new \Datetime());
         }
 
         $form = $this->createForm(
-            new StopEditType($stop->getCurrentOrLatestStopHistory(new \Datetime())),
+            new StopEditType($stopHistory),
             $stop,
             array(
                 'action' => $this->generateUrl(
@@ -155,14 +156,21 @@ class StopController extends CoreController
             );
         }
 
+        if (!empty($masterStop)) {
+            $stopHistories = $stopManager->getOrderedStopHistories($masterStop->getId());
+        }
+        else {
+            $stopHistories = $stopManager->getOrderedStopHistories($stopId);
+        }
+
         return $this->render(
             'TisseoBoaBundle:Stop:edit.html.twig',
             array(
                 'pageTitle' => 'tisseo.boa.stop_point.title.edit',
                 'form' => $form->createView(),
                 'stop' => $stop,
-                'masterStopLabel' => $masterStopLabel,
-                'stopHistories' => $stopManager->getOrderedStopHistories($stopId),
+                'masterStop' => $masterStop,
+                'stopHistories' => $stopHistories,
                 'stopsJson' => $stopsJson,
                 'lines' => $stopManager->getLinesByStop($stopId)
             )

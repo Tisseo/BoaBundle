@@ -24,9 +24,8 @@
             {{ 'tisseo.boa.route_stop.label.zone'|trans }}
         {% else %}
             {% set stop = routeStop.waypoint.stop %}
-            {% set stopId = ((stop.masterStop is empty) ? stop.id : stop.masterStop.id) %}
             {% for datasource in stop.stopDatasources %}
-                <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stopId}) }}">
+                <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id}) }}">
                     {{ datasource.code }}
                 </a>
             {% endfor %}

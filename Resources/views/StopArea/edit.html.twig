@@ -123,28 +123,16 @@
             <tbody>
             {% set now = date('now') %}
             {% for stop in stops %}
-                {% set stopHistory = stop.CurrentStopHistory(now) %}
-                {% if not stopHistory %}
-                    {% set stopHistory = stop.LatestStopHistory() %}
+                {% if stop.masterStop %}
+                    {% set stopHistory = stop.masterStop.CurrentOrLatestStopHistory(now) %}
+                {% else %}
+                    {% set stopHistory = stop.CurrentOrLatestStopHistory(now) %}
                 {% endif %}
-                <tr{% if stopHistory.endDate and stopHistory.endDate < now %} class="closed-stop" style="background-color:#E4E4E4;"{% endif %}>
-                    <td>{{ stop.stopDatasources[0].datasource.agency.name }}</td>
-                    <td><a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stop.stopDatasources[0].code }}</a></td>
-                    <td>{{ stopHistory.shortName }}</td>
-                    {% if stop.masterStop %}
-                        <td></td>
-                        <td></td>
-                        <td>
-                        {% if linesByStop[stop.id] is not empty %}
-                            {% for line in linesByStop[stop.id] %}
-                            <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id }) }}">
-                                {{ render.line_number(line, 'line', 'free') }}
-                            </a>
-                            {% endfor %}
-                        {% endif %}
-                        </td>
-                        <td><a href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id}) }}">{{ 'tisseo.boa.stop_history.label.mastered_by'|trans({ '%stop%': stop.masterStop.StopLabel }) }}</a></td>
-                    {% else %}
+                {% if stopHistory.startDate <= now %}
+                    <tr{% if stopHistory.endDate and stopHistory.endDate < now %} class="closed-stop" style="background-color:#E4E4E4;"{% endif %}>
+                        <td>{{ stop.stopDatasources[0].datasource.agency.name }}</td>
+                        <td><a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stop.stopDatasources[0].code }}</a></td>
+                        <td>{{ stopHistory.shortName }}</td>
                         <td>{{ stopHistory.theGeom.x }}</td>
                         <td>{{ stopHistory.theGeom.y }}</td>
                         {% if linesByStop[stop.id] is not empty %}
@@ -164,8 +152,8 @@
                                 </a>
                             </td>
                         {% endif %}
-                    {% endif %}
-                </tr>
+                    </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

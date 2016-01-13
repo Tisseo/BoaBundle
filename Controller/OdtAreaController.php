@@ -85,10 +85,9 @@ class OdtAreaController extends CoreController
         {
             $stopsJson = $odtAreaManager->getOdtStopsJson($odtArea);
             foreach($stopsJson as $key => $stopJson) {
-                $stopId = empty($stopJson['master_stop_id']) ? $stopJson['id'] : $stopJson['master_stop_id'];
                 $stopsJson[$key]['route'] = $this->generateUrl(
                     'tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
+                    array('stopId' => $stopJson['id'])
                 );
             }
             $stopsJson = json_encode($stopsJson);
