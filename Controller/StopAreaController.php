@@ -64,7 +64,7 @@ class StopAreaController extends CoreController
         {
             $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
-            $stops = $stopAreaManager->getCurrentStops($stopArea);
+            $stops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
             $stopsJson = $stopAreaManager->getStopsJson($stopArea);
             foreach($stopsJson as $key => $stopJson) {
                 $stopsJson[$key]['route'] = $this->generateUrl(

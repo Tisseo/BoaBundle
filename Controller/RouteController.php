@@ -129,10 +129,9 @@ class RouteController extends CoreController
         $route = $routeManager->find($routeId);
         $routeStopsJson = $routeManager->getRouteStopsJson($route);
         foreach($routeStopsJson as $key => $routeStopJson) {
-            $stopId = empty($routeStopJson['master_stop_id']) ? $routeStopJson['id'] : $routeStopJson['master_stop_id'];
             $routeStopsJson[$key]['route'] = $this->generateUrl(
                 'tisseo_boa_stop_edit',
-                array('stopId' => $stopId)
+                array('stopId' => $routeStopJson['id'])
             );
         }
         $routeStopsJson = json_encode($routeStopsJson);

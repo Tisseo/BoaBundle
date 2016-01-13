@@ -47,8 +47,20 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-8">
-                    {{ form_row(form.masterStop) }}
+                <div class="col-md-10">
+                    {{ form_label(form.masterStop) }}
+                    <div class="row">
+                        <div class="col-md-10" style="margin-bottom:15px">
+                            {{ form_widget(form.masterStop) }}
+                        </div>
+                        {% if masterStop is not empty %}
+                            <div class="col-md-2">
+                                <a id="master-stop-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_edit', {'stopId': masterStop.id}) }}">
+                                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
@@ -76,18 +88,22 @@
             {{ form_end(form) }}
             <div class="row">
                 <div class="col-md-12">
-                    <label style="margin-top:15px; margin-left:5px">{{ 'tisseo.boa.stop_point.label.lines'|trans }}</label>
-                    <br>
-                    <div style="display:inline-block">
-                        <div style="height:1px; background-color:black; margin-bottom:5px"></div>
-                        <div style="margin:0 5px">
-                            {% for line in lines %}
-                                <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id}) }}">
-                                    {{ render.line_number(line, 'line', 'free') }}
-                                </a>
-                            {% endfor %}
+                    {% if lines is empty %}
+                        <label style="margin-top:20px; margin-left:5px">{{ 'tisseo.boa.stop_point.message.no_lines'|trans }}</label>
+                    {% else %}
+                        <label style="margin-top:15px; margin-left:5px">{{ 'tisseo.boa.stop_point.label.lines'|trans }}</label>
+                        <br>
+                        <div style="display:inline-block">
+                            <div style="height:1px; background-color:black; margin-bottom:5px"></div>
+                            <div style="margin:0 5px">
+                                {% for line in lines %}
+                                    <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id}) }}">
+                                        {{ render.line_number(line, 'line', 'free') }}
+                                    </a>
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

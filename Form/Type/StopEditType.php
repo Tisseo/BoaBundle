@@ -86,7 +86,7 @@ class StopEditType extends AbstractType
                             'empty_value' => '',
                             'empty_data' => null,
                             'class' => 'TisseoEndivBundle:Stop',
-                            'property' => 'StopLabel',
+                            'property' => 'StopDisplayLabel',
                             'query_builder' => function(EntityRepository $er)  use ($stop) {
                                 return $er->createQueryBuilder('s')
                                     ->where("s.stopArea = :sa")
