@@ -15,7 +15,6 @@
         <tbody>
         {% set now = date('now') %}
         {% for odtStop in odtArea.odtStops %}
-            {% set stopId = ((odtStop.stop.masterStop is empty) ? odtStop.stop.id : odtStop.stop.masterStop.id) %}
             <tr
                 {% if odtStop.endDate and (odtStop.endDate < now) %}
                     class="odt-stop closed-odt-stop" style="background-color:#E4E4E4;"
@@ -26,7 +25,7 @@
                 <input type='hidden' class="odt-stop-id" name="id" value="{{ odtStop.id }}">
                 <td>
                     {% for datasource in odtStop.stop.stopDatasources %}
-                        <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stopId}) }}">
+                        <a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': odtStop.stop.id}) }}">
                             {{ datasource.code }}
                         </a>
                     {% endfor %}
@@ -62,7 +61,7 @@
                 {{ render(controller('TisseoBoaBundle:OdtStop:renderForm', {'odtAreaId': odtArea.id})) }}
             </tr>
         {% endif %}
-    </tbody>
+        </tbody>
     </table>
     <br>
     {% if (is_granted('BUSINESS_MANAGE_STOPS')) and odtArea.id %}

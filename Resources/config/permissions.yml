@@ -32,3 +32,6 @@ parameters:
             label: Consulter les arrêts
             description: Consulter les arrêts
 
+        BUSINESS_VIEW_MONITORING:
+            label: Contrôler les données
+            description: Contrôler les données

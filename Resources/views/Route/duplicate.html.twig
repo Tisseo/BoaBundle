@@ -10,10 +10,10 @@
 
 {% block modal_body %}
     {# TODO: Translator ? #}
-    Selectionnez la version de ligne sur laquelle dupliquer la route:
+    {{ 'tisseo.boa.route.label.duplicate'|trans }}
     <select name="line_version" {{ class_attribute }}>
     {% for lv in activeLineVersions %}
-        <option value='{{ lv.id }}'>V{{ lv.version }} ( {{ lv.startDate|date('d/m/Y') }} )</option>
+        <option value='{{ lv.id }}'>{{ lv.line.number }} - V{{ lv.version }}</option>
     {% endfor %}
     </select>
 {% endblock %}

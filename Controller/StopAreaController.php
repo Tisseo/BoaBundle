@@ -11,6 +11,7 @@ use Tisseo\EndivBundle\Entity\StopAreaDatasource;
 use Tisseo\BoaBundle\Form\Type\StopAreaType;
 use Tisseo\BoaBundle\Form\Type\AliasType;
 use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
+use CrEOF\Spatial\PHP\Types\Geometry\Point;
 
 class StopAreaController extends CoreController
 {
@@ -63,7 +64,7 @@ class StopAreaController extends CoreController
         {
             $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
-            $stops = $stopAreaManager->getCurrentStops($stopArea);
+            $stops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
             $stopsJson = $stopAreaManager->getStopsJson($stopArea);
             foreach($stopsJson as $key => $stopJson) {
                 $stopsJson[$key]['route'] = $this->generateUrl(
@@ -296,5 +297,87 @@ class StopAreaController extends CoreController
                 'title' => 'tisseo.boa.alias.title.list'
             )
         );
+    }
+
+    public function geometriesAction(Request $request, $stopAreaId)
+    {
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopArea = $stopAreaManager->find($stopAreaId);
+        $data = array();
+
+        $form = $this->createFormBuilder($data)
+            ->add(
+                'x',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.stop_area.label.x',
+                    'required' => true
+                )
+            )
+            ->add(
+                'y',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.stop_area.label.y',
+                    'required' => true
+                )
+            )
+            ->add(
+                'srid',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.stop_area.label.srid',
+                    'data' => '3943',
+                    'read_only' => true,
+                    'required' => true
+                )
+            )
+            ->setAction(
+                $this->generateUrl(
+                    'tisseo_boa_stop_area_geometries_edit',
+                    array('stopAreaId' => $stopAreaId)
+                )
+            )
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                try
+                {
+                    $stopArea->setTheGeom(
+                        new Point(
+                            $form->get('x')->getData(),
+                            $form->get('y')->getData(),
+                            $form->get('srid')->getData()
+                        )
+                    );
+                    $stopAreaManager->save($stopArea);
+
+                    $this->addFlash('success', 'tisseo.flash.success.edited');
+                }
+                catch(\Exception $e)
+                {
+                    $this->addFlashException($e->getMessage());
+                }
+
+                return $this->redirectToRoute(
+                    'tisseo_boa_stop_area_edit',
+                    array('stopAreaId' => $stopAreaId)
+                );
+            }
+        }
+
+        return $this->render(
+            'TisseoBoaBundle:StopArea:geometries.html.twig',
+            array(
+                'title' => 'tisseo.boa.stop_area.title.geometries',
+                'form' => $form->createView(),
+                'theGeom' => $stopArea->getTheGeom()
+            )
+        );
+
     }
 }

@@ -50,7 +50,9 @@
             <td>
                 {% if linesByOdtArea[odtArea.id] is defined %}
                     {% for line in linesByOdtArea[odtArea.id] %}
-                        {{ render.line_number(line, 'line', 'free') }}
+                        <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id}) }}">
+                            {{ render.line_number(line, 'line', 'free') }}
+                        </a>
                     {% endfor %}
                 {% endif %}
             </td>

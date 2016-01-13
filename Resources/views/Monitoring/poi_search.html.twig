@@ -1,0 +1,75 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+{% set datatable = true %}
+
+{% block list_title -%}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div id="search-form">
+        <div class="panel col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <div style="margin-bottom:6px" class="bold">{{ 'tisseo.boa.monitoring.accessibility.label.line_version'|trans }}</div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:5px">
+                <div class="col-md-2">
+                    <select class="form-control" id="line-version-select" value="">
+                        <option disabled {% if lineVersion is empty %}selected{% endif %} value=""></option>
+                        {% for lv in lineVersionOptions %}
+                            <option value="{{ lv.id }}"
+                            {% if (lineVersion is not empty) and (lineVersion.id == lv.id) %} selected {% endif %}
+                            >
+                                {{ lv.line.number }} - {{ lv.version }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-default" id="consult-button">
+                        <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if lineVersion is not empty %}
+        <div id="stops-list" class="col-md-12">
+            <table id="table-stops" class="table table-hover datatable">
+                <thead>
+                    <th class="col-md-2">{{ 'tisseo.boa.monitoring.poi.label.city'|trans }}</th>
+                    <th class="col-md-3">{{ 'tisseo.boa.monitoring.poi.label.stop_area'|trans }}</th>
+                    <th class="col-md-7 no-sort">{{ 'tisseo.boa.monitoring.poi.label.poi'|trans }}</th>
+                </thead>
+                <tbody>
+                    {% for item in poiByStopArea %}
+                        <tr>
+                            <td>
+                                {{ item.stopArea.city.name }}
+                            </td>
+                            <td>
+                                {{ item.stopArea.shortName }}
+                            </td>
+                            <td>
+                                {% for poi in item.poiArray %}
+                                    {{ poi.name ~ ' (' ~ poi.poiType.name ~ ')' }} 
+                                    <br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['boa/monitoring/poi/search']);
+    </script>
+{% endblock %}

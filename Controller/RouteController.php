@@ -129,10 +129,9 @@ class RouteController extends CoreController
         $route = $routeManager->find($routeId);
         $routeStopsJson = $routeManager->getRouteStopsJson($route);
         foreach($routeStopsJson as $key => $routeStopJson) {
-            $stopId = empty($routeStopJson['master_stop_id']) ? $routeStopJson['id'] : $routeStopJson['master_stop_id'];
             $routeStopsJson[$key]['route'] = $this->generateUrl(
                 'tisseo_boa_stop_edit',
-                array('stopId' => $stopId)
+                array('stopId' => $routeStopJson['id'])
             );
         }
         $routeStopsJson = json_encode($routeStopsJson);
@@ -303,11 +302,14 @@ class RouteController extends CoreController
             );
         }
 
+        $activeLineVersions = $this->get('tisseo_endiv.line_version_manager')->findActiveLineVersions(new \DateTime('now'));
+
         return $this->render('TisseoBoaBundle:Route:duplicate.html.twig',
             array(
                 'title' => 'tisseo.boa.route.title.duplicate',
                 'form' => $form->createView(),
-                'activeLineVersions' => $route->getLineVersion()->getLine()->getActiveLineVersions(new \DateTime('now'))
+                //'activeLineVersions' => $route->getLineVersion()->getLine()->getActiveLineVersions(new \DateTime('now'))
+                'activeLineVersions' => $activeLineVersions
             )
         );
     }

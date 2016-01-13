@@ -71,7 +71,9 @@
             {{ form_end(form) }}
         </div>
         {% if stopArea.id %}
-            <div class="col-md-7" id="leaflet-map-container" style="float:right"></div>
+            <div class="col-md-7">
+                <div id="leaflet-map-container" style="float:right"></div>
+            </div>
         {% endif %}
     </div>
 
@@ -93,7 +95,7 @@
                     <a class="btn btn-default external-transfers-edit" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-resize-full"></span> {{ 'tisseo.boa.stop_area.action.external_transfert'|trans }}
                     </a>
-                    <a class="btn btn-default disabled" id="geometries" href="#">
+                    <a class="btn btn-default geometries-edit" href="{{ path('tisseo_boa_stop_area_geometries_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                         <span class="glyphicon glyphicon-globe"></span> {{ 'tisseo.boa.stop_area.action.geometries'|trans }}
                     </a>
                     <a class="btn btn-default aliases-edit" href="{{ path('tisseo_boa_alias_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
@@ -121,32 +123,24 @@
             <tbody>
             {% set now = date('now') %}
             {% for stop in stops %}
-                {% set stopHistory = stop.CurrentStopHistory(now) %}
-                {% if not stopHistory %}
-                    {% set stopHistory = stop.LatestStopHistory() %}
+                {% if stop.masterStop %}
+                    {% set stopHistory = stop.masterStop.CurrentOrLatestStopHistory(now) %}
+                {% else %}
+                    {% set stopHistory = stop.CurrentOrLatestStopHistory(now) %}
                 {% endif %}
-                <tr{% if stopHistory.endDate and stopHistory.endDate < now %} class="closed-stop" style="background-color:#E4E4E4;"{% endif %}>
-                    <td>{{ stop.stopDatasources[0].datasource.agency.name }}</td>
-                    <td><a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stop.stopDatasources[0].code }}</a></td>
-                    <td>{{ stopHistory.shortName }}</td>
-                    {% if stop.masterStop %}
-                        <td></td>
-                        <td></td>
-                        <td>
-                        {% if linesByStop[stop.id] is not empty %}
-                            {% for line in linesByStop[stop.id] %}
-                                {{ render.line_number(line, 'line', 'small') }}
-                            {% endfor %}
-                        {% endif %}
-                        </td>
-                        <td><a href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id}) }}">{{ 'tisseo.boa.stop_history.label.mastered_by'|trans({ '%stop%': stop.masterStop.StopLabel }) }}</a></td>
-                    {% else %}
+                {% if stopHistory.startDate <= now %}
+                    <tr{% if stopHistory.endDate and stopHistory.endDate < now %} class="closed-stop" style="background-color:#E4E4E4;"{% endif %}>
+                        <td>{{ stop.stopDatasources[0].datasource.agency.name }}</td>
+                        <td><a target="_blank" href="{{ path('tisseo_boa_stop_edit', {'stopId': stop.id }) }}">{{ stop.stopDatasources[0].code }}</a></td>
+                        <td>{{ stopHistory.shortName }}</td>
                         <td>{{ stopHistory.theGeom.x }}</td>
                         <td>{{ stopHistory.theGeom.y }}</td>
                         {% if linesByStop[stop.id] is not empty %}
                             <td>
                             {% for line in linesByStop[stop.id] %}
-                                {{ render.line_number(line, 'line', 'small') }}
+                                <a class="link-line-version" href="{{ path('tisseo_boa_route_list', {'lineVersionId': line.lastLineVersion.id }) }}">
+                                    {{ render.line_number(line, 'line', 'free') }}
+                                </a>
                             {% endfor %}
                             </td>
                             <td></td>
@@ -158,8 +152,8 @@
                                 </a>
                             </td>
                         {% endif %}
-                    {% endif %}
-                </tr>
+                    </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
@@ -179,7 +173,7 @@
                         <a class="btn btn-default external-transfers-edit" href="{{ path('tisseo_boa_external_transfer_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-resize-full"></span> {{ 'tisseo.boa.stop_area.action.external_transfert'|trans }}
                         </a>
-                        <a class="btn btn-default disabled" id="geometries" href="#">
+                        <a class="btn btn-default geometries-edit" href="{{ path('tisseo_boa_stop_area_geometries_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
                             <span class="glyphicon glyphicon-globe"></span> {{ 'tisseo.boa.stop_area.action.geometries'|trans }}
                         </a>
                         <a class="btn btn-default aliases-edit" href="{{ path('tisseo_boa_alias_edit', {'stopAreaId': stopArea.id }) }}" data-toggle="modal" data-target="#base-modal">
@@ -235,6 +229,12 @@
                 $('.modal-dialog').css('width', '600px');
                 $('#base-modal').on('loaded.bs.modal', function () {
                     $('#aliases-list #new-alias-name').focus();
+                });
+            });
+            $('.geometries-edit').click(function(){
+                $('.modal-dialog').css('width', '600px');
+                $('#base-modal').on('loaded.bs.modal', function () {
+                    $('#form_x').focus();
                 });
             });
             $('.stop-create').click(function(){

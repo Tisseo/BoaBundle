@@ -214,6 +214,11 @@ tisseo_boa_alias_edit:
         stopAreaId: \d+
     options:
         expose: true
+tisseo_boa_stop_area_geometries_edit:
+    pattern: /stoparea/{stopAreaId}/geometries/edit
+    defaults: { _controller: TisseoBoaBundle:StopArea:geometries }
+    requirements:
+        stopAreaId: \d+
 
 # Transfer routes
 tisseo_boa_internal_transfer_edit:
@@ -416,5 +421,21 @@ tisseo_boa_city_delete_stoparea:
 tisseo_boa_city_stoparea_json:
     pattern: /city/stoparea/json/{cityId}
     defaults: { _controller: TisseoBoaBundle:City:listStopArea }
+    options:
+        expose: true
+
+# Monitoring Routes
+tisseo_boa_monitoring_accessibility_search:
+    pattern: /monitoring/accessibility/search/{startDate}/{lineVersionId}
+    defaults: { _controller: TisseoBoaBundle:AccessibilityMonitoring:search, startDate:0, lineVersionId:null }
+    requirements:
+        lineVersionId: \d+
+    options:
+        expose: true
+tisseo_boa_monitoring_poi_search:
+    pattern: /monitoring/poi/search/{lineVersionId}
+    defaults: { _controller: TisseoBoaBundle:PoiMonitoring:search, lineVersionId:null }
+    requirements:
+        lineVersionId: \d+
     options:
         expose: true
