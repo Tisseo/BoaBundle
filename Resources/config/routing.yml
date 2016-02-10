@@ -125,6 +125,17 @@ tisseo_boa_poi_type_edit:
     pattern: /poitype/edit/{poiTypeId}
     defaults: { _controller: TisseoBoaBundle:PoiType:edit, poiTypeId: null }
 
+# Depot routes
+tisseo_boa_depot_list:
+    pattern: /depot/list
+    defaults: { _controller: TisseoBoaBundle:Depot:list }
+tisseo_boa_depot_edit:
+    pattern: /depot/edit/{depotId}
+    defaults: { _controller: TisseoBoaBundle:Depot:edit, depotId: null }
+tisseo_boa_depot_delete:
+    pattern: /depot/delete/{depotId}
+    defaults: { _controller: TisseoBoaBundle:Depot:delete }
+
 # ajax calls
 tisseo_boa_json_calendars:
     pattern: /json/calendars/{calendarType}
