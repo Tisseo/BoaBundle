@@ -1,0 +1,41 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+
+{% block list_title -%}
+    {{ parent() }}
+    {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+        -
+        <a href="{{ path('tisseo_boa_depot_edit') }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.depot.action.create'|trans }}
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block table_head -%}
+    <th class="col-sm-3">{{ 'tisseo.boa.depot.label.short_name'|trans }}</th>
+    <th class="col-sm-6">{{ 'tisseo.boa.depot.label.long_name'|trans }}</th>
+    <th class="col-sm-3 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {% for depot in depots %}
+        <tr>
+            <td>{{ depot.shortName }}</td>
+            <td>{{ depot.longName }}</td>
+            <td>
+            {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
+                <a class="btn btn-default" href="{{ path('tisseo_boa_depot_edit', { 'depotId': depot.id }) }}" data-toggle="modal" data-target="#base-modal">
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
+                </a>
+                <a class="btn btn-default" href="{{ path('tisseo_boa_depot_delete', {'depotId': depot.id}) }}"
+                    {% if depot.lineVersions is not empty %}
+                        disabled=disabled
+                    {% endif %}   
+                >
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.delete'|trans }}
+                </a>
+            {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
