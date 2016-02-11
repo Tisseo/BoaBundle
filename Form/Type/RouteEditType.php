@@ -34,8 +34,8 @@ class RouteEditType extends AbstractType
             )
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $form = $event->getForm();
-                $trip = $event->getData();
-                if ($trip->getWay() == Route::WAY_AREA)
+                $route = $event->getData();
+                if ($route->getWay() == Route::WAY_AREA)
                 {
                     $form->add(
                         'way',
@@ -62,6 +62,20 @@ class RouteEditType extends AbstractType
                         )
                     );
                 }
+                $currentExportDestinations = $route->getExportDestinations();
+                $form->add(
+                    'exportDestinations',
+                    'entity',
+                    array(
+                        'class' => 'TisseoEndivBundle:ExportDestination',
+                        'property' => 'name',
+                        'mapped' => false,
+                        'expanded' => true,
+                        'multiple' => true,
+                        'label' => 'tisseo.boa.route.label.export',
+                        'data' => $currentExportDestinations
+                    )
+                );
             })
             ->add(
                 'routeDatasources',

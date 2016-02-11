@@ -53,7 +53,11 @@
                 {{ 'tisseo.global.no_items'|trans }}
             </div>
         {% endfor %}
-
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.exportDestinations) }}
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">
