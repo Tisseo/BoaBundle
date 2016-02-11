@@ -146,7 +146,6 @@ class RouteController extends CoreController
                 )
             )
         );
-
         $form->handleRequest($request);
         if ($form->isValid())
         {
@@ -155,13 +154,14 @@ class RouteController extends CoreController
             try
             {
                 $routeManager->save($route);
-                $this->addFlash('success', 'tisseo.flash.success.created');
+                $exportDestinations = $form->get('exportDestinations')->getData();
+                $routeManager->updateExportDestinations($route, $exportDestinations);
+                $this->addFlash('success', 'tisseo.flash.success.edited');
             }
             catch(\Exception $e)
             {
                 $this->addFlashException($e->getMessage());
             }
-
             return $this->redirectToRoute(
                 'tisseo_boa_route_edit',
                 array('routeId' => $routeId)
