@@ -44,7 +44,7 @@
                     Zone: {{ route.routeStops.last.waypoint.odtArea.name }}
                 {% endif %}
             </td>
-            <td>{{ route.comment }}</td>
+            <td>{{ route.comment.commentText }}</td>
             <td>{{ route.way }}</td>
             <td>
                 <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_trip_list', { 'routeId': route.id }) }}">
