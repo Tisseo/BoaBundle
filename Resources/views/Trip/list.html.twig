@@ -12,6 +12,10 @@
     <a href="{{ path('tisseo_boa_route_list', { 'lineVersionId': route.lineVersion.id }) }}">
         {{ 'tisseo.boa.route.title.list'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
     </a>
+    /
+    <a href="{{ path('tisseo_boa_route_edit', { 'routeId': route.id }) }}">
+        {{ 'tisseo.boa.route.title.edit'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
+    </a>
 {% endblock %}
 
 {% block list_title %}
