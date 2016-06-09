@@ -1,0 +1,558 @@
+tisseo:
+    boa:
+        welcome: "Bienvenue sur Boa"
+        application: "Boa"
+        menu:
+            configuration: Configuration
+            physical_mode: Modes de transport
+            accessibility_mode: Modes d'accessibilité
+            agency: Réseaux
+            datasource: Sources de données
+            exception_type: Exception type
+            property: Propriétés
+            poi_type: Types de poi
+            color: Couleurs
+            log: Logs
+            depot: Dépôts
+            transport:
+                manage: Transport
+                route: Routes
+                non_concurrency: Non concurrence
+            calendar:
+                manage: Calendriers
+                day: Jour
+                period: Période
+                accessibility: Accessibilité
+                hybrid: Mixte
+                brick: Brique
+            stop:
+                manage: Lieux
+                point: Point d'arrêt
+                area: Zone d'arrêt
+                odt_area: Zone TAD
+                city: Commune
+            monitoring:
+                manage: Contrôles de données
+                accessibility: Suivi accessibilité
+                poi: Poi par ligne
+        physical_mode:
+            title:
+                list: Modes de transport
+                edit: Édition de mode de transport
+                create: Création de mode de transport
+            label:
+                name: Nom
+                type: Type
+            action:
+                create: Créer un mode de transport
+
+        accessibility_mode:
+            title:
+                list: Modes d'accessibilité
+                create: Création de mode d'accessibilité
+                edit: Édition de mode d'accessibilité
+            label:
+                name: Nom
+            action:
+                create: Créer un mode d'accessibilité
+
+        agency:
+            title:
+                list: Réseaux
+                create: Création de réseau
+                edit: Édition de réseau
+            label:
+                name: Nom
+                url: Adresse web
+                timezone: Fuseau horaire
+                lang: Langue
+                phone: Téléphone
+            action:
+                create: Créer un réseau
+
+        datasource:
+            title:
+                list: Sources de données
+                edit: Edition de source de données
+                create: Création de source de données
+            label:
+                name: Nom
+                agency: Réseau
+                datasource: Source de données
+                code: Code
+            action:
+                create: Créer une source de données
+
+        exception_type:
+            title:
+                list: Exceptions
+                edit: Edition d'exception
+                create: Création d'exception
+            label:
+                label: Nom
+                exception_text: Description
+                grid_calendar_pattern: Calendrier d'offre
+                trip_calendar_pattern: Calendrier de service
+            action:
+                create: Créer une exception
+
+        poi_type:
+            title:
+                list: Types de POI
+                edit: Edition de type de POI
+                create: Création de type de POI
+            label:
+                name: Nom
+            action:
+                create: Créer un type de POI
+
+        property:
+            title:
+                list: Propriétés
+                edit: Edition de propriété
+                create: Création de propriété
+            label:
+                name: Nom
+                default: Défaut
+            action:
+                create: Créer une propriété
+
+        color:
+            title:
+                list: Couleurs
+                edit: Edition de couleur
+                create: Création de couleur
+            label:
+                name: Nom
+                html: Html
+                pantone: Pantone
+                hoxis: Hoxis
+                cmyk: CMYK
+                cmyk_cyan: CMYK Cyan
+                cmyk_magenta: CMYK Magenta
+                cmyk_yellow: CMYK Jaune
+                cmyk_black: CMYK Noir
+                rgb: RGB
+                rgb_red: RGB Rouge
+                rgb_green: RGB Vert
+                rgb_blue: RGB Bleu
+            action:
+                create: Créer une couleur
+
+        log:
+            title:
+                list: Journal d'opérations en base
+            label:
+                id: Id
+                datetime: Date
+                table: Table
+                action: Action
+                previous_data: Donnée précédente
+                inserted_data: Donnée insérée
+                user: Utilisateur
+
+        depot:
+            title:
+                list: Dépôts
+                create: Création de dépôt
+                edit: Edition de dépôt
+            label:
+                short_name: Nom court
+                long_name: Nom long
+            action:
+                create: Créer un dépôt
+
+        line_version:
+            title:
+                list: Offres
+            label:
+                number: Numéro
+                mode: Mode
+                version: Version
+                datasource: Source de données
+                start_date: Date de début
+                end_date: Date de fin
+                date: Date
+            action:
+                calendar: Calendrier FH
+                route: Routes
+            message:
+                no_route: Il n'y a aucune route présente sur cette offre.
+
+        line:
+            label:
+                number: Numéro
+
+        non_concurrency:
+            title:
+                list: Non Concurrence
+                edit: Edition de non concurrence
+                create: Création de non concurrence
+            label:
+                number: Numéro de ligne
+                mode: Mode de transport
+                rule: Règle
+                has_priority: est prioritaire à
+                has_not_priority: est secondaire à
+                from: de
+                time: %time% min
+                priority_line: Ligne prioritaire
+                non_priority_line: Ligne secondaire
+                duration: Durée (en minutes)
+            action:
+                create: Créer une règle
+
+        route:
+            title:
+                create: Création de route
+                edit: Edition de route
+                list: Routes de la ligne %number% (version %version%)
+                link_trip_calendar: Attribution des grilles horaires aux services
+                duplicate: Dupliquer une route
+            header:
+                route_stops: Itinéraire de la route
+                trip_patterns: Patrons de service
+                way: Sens "%way%"
+            label:
+                name: Nom
+                first_stop: Départ
+                last_stop: Arrivée
+                comment: Commentaire
+                way: Sens
+                direction: Direction
+                services: Services
+                ways:
+                    forward: Aller
+                    backward: Retour
+                    loop: Boucle
+                    area: Zonal
+                duplicate: Selectionner l'offre sur laquelle dupliquer la route
+                export: Export
+            action:
+                services: Services
+                create: Créer une route
+                copy: Dupliquer
+                edit: Editer
+                delete: Supprimer
+            confirm:
+                delete: Êtes-vous sûr de vouloir supprimer cette route ?
+            message:
+                no_route_stops: La création de patrons de service nécessite au préalable la création d'un itinéraire de route.
+                duplicated: La route a été dupliquée.
+                removed: La route a été supprimée.
+
+        stop_point:
+            title:
+                search: Recherche de points d'arrêt
+                create: Création de point d'arrêt
+                edit: Edition de point d'arrêt
+            header:
+                stop_history: Propriétés du point d'arrêt
+                edit_form: Edition du point d'arrêt
+                stop_accessibility: Accessibilité du point d'arrêt
+            label:
+                short_name: Nom court
+                long_name: Nom long
+                stop_area: Zone d'arrêt
+                master_stop: Fantôme de l'arrêt :
+                accessibility_calendar: Calendrier d'inaccessibilité
+                accessible: accessible
+                not_accessible: inaccessible
+                lines: Lignes
+            action:
+                inaccessibility: Ajout d'inaccessibilité
+                create: Créer un point d'arrêt
+                edit: Modifier un point d'arrêt
+                close: Clôturer un point d'arrêt
+            message:
+                no_stop_selected: Vous n'avez pas sélectionné de point d'arrêt valide.
+                unclosable: Cette propriété de point d'arrêt n'a pu être clôturée.
+                no_accessibility_calendar: Il n'y a pas de calendrier d'accessibilité associé à ce point d'arrêt
+                no_lines: Il n'y a actuellement aucune offre passant par ce point d'arrêt
+        stop_area:
+            title:
+                search: Recherche de zones d'arrêt
+                create: Création de zone d'arrêt
+                edit: Edition de zone d'arrêt
+                geometries: Géométrie de la zone d'arrêt
+            header:
+                edit_form: Edition de la zone d'arrêt
+                stop_point: Liste des points d'arrêt
+            label:
+                short_name: Nom court
+                long_name: Nom long
+                city: Ville
+                transfer_duration: Temps de transfert intra-zone par défaut (en minutes)
+                all_stops: Tous les points d'arrêt
+                x: X
+                y: Y
+                srid: SRID
+            action:
+                internal_transfert: Transferts intra-zone
+                external_transfert: Transferts extra-zone
+                alias: Alias
+                geometries: Géométries
+                toggle_closed_stops: Afficher les points d'arrêts clôturés
+                create: Créer une zone d'arrêt
+            message:
+                no_stop_area_selected: Vous n'avez pas sélectionné de zone d'arrêt valide.
+        city:
+            title:
+                search: Rechercher une commune
+                create: Création d'une commune
+                edit: Edition d'une commune
+            action:
+                create: Créer une commune
+            label:
+                name: Nom
+                insee: Insee
+                main_stop_area: Zone d'arrêts principale
+                stop_area: Zone d'arrêts
+                number_stop: Nombre d'arrêts
+                line: Lignes
+                delete: Supprimer
+            header:
+                edit_form: Edition d'une commune
+                stop_area: Zone d'arrêts de la commune
+            message:
+                error:
+                    stop_exist: Impossible de supprimer cette zone d'arrêts. Elle contient des arrêts.
+                success:
+                    stoparea_delete: La zone d'arrêts a bien été supprimée.
+        transfer:
+            title:
+                list: Transferts de la zone d'arrêt
+            label:
+                start_stop: Point d'arrêt de départ
+                end_stop: Point d'arrêt de destination
+                duration: Durée en minutes (99 pour interdit)
+                distance: Distance en mètres
+                long_name: Description
+            header:
+                intra: Transferts intra-zone
+                extra: Transfert extra-zone
+            error:
+                stop_area_transfer_duration_invalid: Le temps de transfert intra-zone par défaut doit être un nombre entier positif inférieur ou égal à 60
+                transfer_duration_invalid: La durée d'un transfert intra-zone doit être un nombre entier positif inférieur ou égal à 60, ou égal à 99
+                transfer_distance_invalid: La distance d'un transfert intra-zone doit être un nombre entier positif
+                transfer_duration_not_filled: Le champ "durée" est obligatoire pour la création d'un transfert
+                external_transfer_start_stop_not_filled: Le champ "point d'arrêt de départ" est obligatoire pour la création d'un transfert
+                external_transfer_end_stop_not_filled: Le champ "point d'arrêt de destination" est obligatoire pour la création d'un transfert
+        alias:
+            title:
+                list: Alias de la zone d'arrêt
+            label:
+                name: Nom
+
+        odt_area:
+            title:
+                list: Zones TAD
+                create: Création de zone TAD
+                edit: Edition de zone TAD
+            action:
+                create: Créer une zone TAD
+                edit: Consulter/Modifier
+                delete: Supprimer
+                toggle_closed_stops: Afficher les points d'arrêts cloturés
+            label:
+                name: Nom
+                comments: Commentaires
+                stops: Arrêts
+                lines: Lignes
+            error:
+                deletion_error_has_route_stops: Suppression impossible au motif que la zone %zone_name% est encore utilisée dans un ou plusieurs itinéraires
+            header:
+                edit_form: Edition de la zone TAD
+                stops_list: Liste des points d'arrêt de la zone
+        odt_stop:
+            title:
+                create: Création de point d'arrêt de zone TAD
+            label:
+                name: Nom
+                code: Code
+                city: Ville
+                start_date: Date de début
+                end_date: Date de fin
+                pickup: Montée
+                drop_off: Descente
+                stop: Point d'arrêt
+            description:
+                start_date: A partir du
+                end_date: et jusqu'au
+        stop_history:
+            title:
+                create: Edition des propriétés d'un point d'arrêt
+                close: Clôture d'une propriété de point d'arrêt
+            label:
+                short_name: Nom court
+                long_name: Nom long
+                start_date: Date de début
+                end_date: Date de fin
+                x: X
+                y: Y
+                srid: SRID
+                agency: Réseau
+                code: Code
+                lines: Lignes
+                mastered_by: Arrêt fantôme de l'arrêt : %stop%
+            validation:
+                min_date: La date de début doit être au minimum celle de demain : %date%.
+                min_date_end: La date de début doit être supérieure à la date de fin de la dernière propriété : %date%.
+            action:
+                create: Nouvelle propriété de point d'arrêt
+
+        trip:
+            title:
+                list: Services
+                create: Création de service
+                edit: Edition de service
+            header:
+                trip: Service
+                stop_time: Horaires de passage
+                calendar: Calendrier de service
+            label:
+                select_all: Sél. tout
+                name: Nom du service
+                pattern: Patron de service
+                day_calendar: Calendrier jour
+                period_calendar: Calendrier période
+                start: Départ
+                type: Type
+                last_day: Dernier Jour
+                begin: Heure de départ
+                frequency: Fréquence
+                end: Jusqu'à
+            action:
+                list: Lister les services
+                create: Créer un service
+            validation:
+                stop_time: Les champs "Fréquence" et "Jusqu'à" doivent être saisis ensemble
+                pattern: Le patron de service est obligatoire (ou sa valeur est incorrecte)
+                day_calendar: Le calendrier "jour" est obligatoire (ou sa valeur est incorrecte)
+                period_calendar: Le calendrier "période" est obligatoire (ou sa valeur est incorrecte)
+                pattern_name_empty: Renseignez le/les nom(s) de patron de service.
+                pattern_time_invalid: Au moins une horaire est invalide.
+                calendar_intersection: Le calendrier choisi n'a aucune intersection avec le calendrier jour.
+            confirm:
+                delete_all: Vous allez supprimer tous les services de cette route qui ne sont pas des patrons de service. Êtes-vous sûr de vouloir accomplir cette action ?
+                delete_select: Vous allez supprimer tous les services selectionnés de cette route qui ne sont pas des patrons de service. Êtes-vous sûr de vouloir accomplir cette action ?
+            message:
+                all_deleted: Les services ont tous été supprimés
+                select_deleted: Les services sélectionnés ont tous été supprimés
+
+        trip_calendar:
+            label:
+                week_pattern: Jours de circulation (LMMJVSD)
+            validation:
+                error: Les champs "Type", "Période" et "Jours de circulation ne sont pas correctement remplis."
+
+        grid_mask_type:
+            label:
+                calendar_type: Calendrier type
+                calendar_period: Calendrier période
+
+        route_stop:
+            title:
+                list: Itinéraire de la route
+            label:
+                rank: Rang
+                city: Ville
+                stop: Arrêt
+                code: Code
+                drop_off: Descente
+                pick_up: Montée
+                scheduled: Régulation
+                internal_service: Desserte interne
+                zone: Zone
+                direction: Direction
+            validation:
+                first_stop_dropoff: La descente doit être interdite pour le premier arrêt.
+                first_stop_regulated: Le premier arrêt doit être régulé.
+                last_stop_pickup: La montée doit être interdite pour le dernier arrêt.
+                last_stop_regulated: Le dernier arrêt doit être régulé.
+            message:
+                route_section_free: L'arrêt %s n'a pas de route section attaché
+
+        stop_time:
+            label:
+                rank: Rang
+                city: Ville
+                name: Arrêt
+                code: Code
+                drop_off: Descente
+                pick_up: Montée
+                scheduled: Régulation
+                schedule: Horaire
+                internal_service: Desserte interne
+                section_time: Temps tronçon
+                cumulative_time: Temps cumulé
+                tad_time: Temps intra-zone TAD
+        trip_pattern:
+            title:
+                list: Patrons de service
+
+        calendar:
+            title:
+                list: Calendriers
+                edit: Edition de calendrier
+                create: Création de calendrier
+            header:
+                edit: Calendrier
+                calendar_elements: Éléments du calendrier
+            label:
+                name: Nom
+                type: Type
+                line: Ligne
+                start_date: Début
+                end_date: Fin
+                computed_start_date: Début
+                computed_end_date: Fin
+                calendar_elements: Elements
+                line_version: Offre liée
+            action:
+                create: Créer un calendrier
+            confirm:
+                delete_elements: Confirmez-vous la suppression de tous les éléments du calendrier ?
+            validation:
+                not_saved: Vous devez d'abord enregistrer le calendrier
+                date: la date de début ne peut être supérieure à la date de fin
+
+        calendar_element:
+            label:
+                rank: Ordre
+                start_date: Début
+                end_date: Fin
+                operator: Signe
+                interval: Récurrence
+                included_calendar: Calendrier inclus
+
+        accessibility_type:
+            label:
+                start_time: De
+                end_time: A
+                is_recursive: Récursif
+                accessibility_mode: Mode
+
+        monitoring:
+            accessibility:
+                title: Suivi accessibilité
+                label:
+                    line_version: Offre
+                    start_date: Date de début
+                    to: vers
+                message:
+                    no_change: Pas de changement
+                    gets: devient
+                    accessible: accessible
+                    not_accessible: inaccessible
+                validation:
+                    date_not_filled: Vous devez saisir une date de début pour pouvoir effectuer un suivi d'accessibilité
+                    line_version: Vous devez sélectionner une offre pour pouvoir effectuer un suivi d'accessibilité
+            poi:
+                title: Poi par ligne
+                label:
+                    city: Commune
+                    stop_area: Zone d'arrêt
+                    poi: Points d'intérêts
+                validation:
+                    line_version: Vous devez sélectionner une offre pour pouvoir consulter les POI
