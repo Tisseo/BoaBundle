@@ -8,15 +8,13 @@
 {% form_theme form 'TisseoCoreBundle:Form:fields.html.twig' %}
 
 {% block breadcrumb %}
-    <li>
-        <a href="{{ path('tisseo_boa_line_version_list') }}">
-            {{ 'tisseo.boa.line_version.title.list'|trans }}
-        </a>
-        /
-        <a href="{{ path('tisseo_boa_route_list', { 'lineVersionId': route.lineVersion.id }) }}">
-            {{ 'tisseo.boa.route.title.list'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
-        </a>
-    </li>
+    <a href="{{ path('tisseo_boa_line_version_list') }}">
+        {{ 'tisseo.boa.line_version.title.list'|trans }}
+    </a>
+    /
+    <a href="{{ path('tisseo_boa_route_list', { 'lineVersionId': route.lineVersion.id }) }}">
+        {{ 'tisseo.boa.route.title.list'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
+    </a>
 {% endblock %}
 
 {% block content %}
@@ -58,6 +56,16 @@
                 {{ form_row(form.exportDestinations) }}
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_row(form.comment.label) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.comment.commentText) }}
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success">

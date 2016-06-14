@@ -24,6 +24,7 @@ class TisseoBoaExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+        $loader->load('forms.yml');
         $loader->load('permissions.yml');
 
         $container->setParameter('tisseo_boa.datatable_views', $config['datatable_views']);

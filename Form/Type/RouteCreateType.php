@@ -61,6 +61,10 @@ class RouteCreateType extends AbstractType
                 )
             )
             ->add(
+                'comment',
+                'tisseo_boa_form_comment'
+            )
+            ->add(
                 'routeDatasources',
                 'collection',
                 array(

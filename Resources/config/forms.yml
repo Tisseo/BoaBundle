@@ -1,0 +1,5 @@
+services:
+    tisseo_boa.form.type.comment:
+        class: 'Tisseo\BoaBundle\Form\Type\CommentType'
+        tags:
+            - { name: form.type, alias: tisseo_boa_form_comment }
