@@ -31,10 +31,12 @@ tisseo:
                 area: Zone d'arrêt
                 odt_area: Zone TAD
                 city: Commune
+                locked: Arrêts vérouillés
             monitoring:
                 manage: Contrôles de données
                 accessibility: Suivi accessibilité
                 poi: Poi par ligne
+                stop_locked: Arrêts vérouillés
         physical_mode:
             title:
                 list: Modes de transport
@@ -246,6 +248,7 @@ tisseo:
                 search: Recherche de points d'arrêt
                 create: Création de point d'arrêt
                 edit: Edition de point d'arrêt
+                locked: Liste des arrêts vérouillés
             header:
                 stop_history: Propriétés du point d'arrêt
                 edit_form: Edition du point d'arrêt

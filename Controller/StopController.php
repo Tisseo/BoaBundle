@@ -204,4 +204,58 @@ class StopController extends CoreController
             array('stopAreaId' => $stopAreaId)
         );
     }
+
+    /**
+     * Lock/Unlock stop
+     *
+     * @param integer $identifier
+     */
+    public function switchLockAction($identifier)
+    {
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
+
+        $this->get('tisseo_endiv.stop_manager')->toggleLock(array($identifier));
+
+        return $this->redirectToRoute(
+            'tisseo_boa_stop_edit',
+            array('stopId' => $identifier)
+        );
+    }
+
+    /**
+     * Lock/Unlock multiple stops
+     */
+    public function switchMultipleLockAction(Request $request)
+    {
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
+
+        $stops = $request->request->all();
+        if (!empty($stops)) {
+            $this->get('tisseo_endiv.stop_manager')->toggleLock($stops);
+        }
+
+        return $this->redirectToRoute('tisseo_boa_monitoring_stop_locked');
+    }
+
+    /**
+     * List locked stops
+     */
+    public function lockedAction()
+    {
+        $this->isGranted(
+            array(
+                'BUSINESS_MANAGE_STOPS',
+                'BUSINESS_VIEW_STOPS'
+            )
+        );
+
+        return $this->render(
+            'TisseoBoaBundle:Stop:locked_list.html.twig',
+            array(
+                'navTitle'  => 'tisseo.boa.menu.stop.locked',
+                'pageTitle' => 'tisseo.boa.stop_point.title.locked',
+                'stops'     => $this->get('tisseo_endiv.stop_manager')->findLockedStops()
+            )
+        );
+    }
 }

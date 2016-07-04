@@ -1,0 +1,49 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+
+{% block table_head -%}
+    <th class="col-md-5">{{ 'tisseo.boa.stop_point.label.short_name'|trans }}</th>
+    <th class="col-md-5">{{ 'tisseo.boa.datasource.label.code'|trans }}</th>
+    <th class="col-md-2 no-sort no-search"><input class="all" type="checkbox">{{ 'tisseo.global.unlock'|trans }}</th>
+{% endblock %}
+
+{% block table_body -%}
+    {%- set now = date() -%}
+    {% for stop in stops %}
+        <tr>
+            <td>{{ stop.CurrentStopHistory(now).shortName }}</td>
+            <td>
+                {%- for datasource in stop.stopDatasources -%}
+                    {{ datasource.code }}{% if not loop.last %}, {% endif %}
+                {%- endfor -%}
+            </td>
+            <td>
+                <input name="stop_{{ loop.index0 }}" type="checkbox" value="{{ stop.id }}">
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{{ path('tisseo_boa_stops_switch_lock') }}">
+        {{ parent() }}
+        <br>
+        <button type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
+        </button>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery'], function($) {
+            $(document).ready(function() {
+                $('.all').on('change', function(event) {
+                    event.preventDefault();
+                    $('td input').prop('checked', $(this).prop('checked'));
+                });
+            });
+        });
+    </script>
+{% endblock %}

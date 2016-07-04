@@ -112,9 +112,15 @@
         </div>
     </div>
 
-    <a id="stop-history" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_history'|trans }}
-    </a>
+    {% if not stop.lock %}
+        <a id="stop-history" class="header-ribbon">
+            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_history'|trans }}
+        </a>
+    {% else %}
+        <a id="stop-history" class="header-ribbon alert-ribbon">
+            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_history'|trans }} <b>({{ 'tisseo.global.locked'|trans }})</b>
+        </a>
+    {% endif %}
     <div class="panel col-md-12">
         <table id="stop-history" class="table datatable table-hover">
             <thead>
@@ -143,8 +149,17 @@
         </a>
         {% if stop.Closable %}
         <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal">
-            <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.closure'|trans }}
+            <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.global.closure'|trans }}
         </a>
+        {% endif %}
+        {% if stop.lock %}
+            <a class="btn btn-warning" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
+                <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
+            </a>
+        {% else %}
+            <a class="btn btn-danger" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
+                <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.lock'|trans }}
+            </a>
         {% endif %}
     </div>
 
