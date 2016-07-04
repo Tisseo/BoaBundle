@@ -4,7 +4,7 @@
 {% block table_head -%}
     <th class="col-md-5">{{ 'tisseo.boa.stop_point.label.short_name'|trans }}</th>
     <th class="col-md-5">{{ 'tisseo.boa.datasource.label.code'|trans }}</th>
-    <th class="col-md-2 no-sort no-search">{{ 'tisseo.global.unlock'|trans }}</th>
+    <th class="col-md-2 no-sort no-search"><input class="all" type="checkbox">{{ 'tisseo.global.unlock'|trans }}</th>
 {% endblock %}
 
 {% block table_body -%}
@@ -32,4 +32,18 @@
             <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
         </button>
     </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery'], function($) {
+            $(document).ready(function() {
+                $('.all').on('change', function(event) {
+                    event.preventDefault();
+                    $('td input').prop('checked', $(this).prop('checked'));
+                });
+            });
+        });
+    </script>
 {% endblock %}
