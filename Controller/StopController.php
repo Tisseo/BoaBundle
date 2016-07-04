@@ -204,4 +204,24 @@ class StopController extends CoreController
             array('stopAreaId' => $stopAreaId)
         );
     }
+
+    /**
+     * Lock/Unlock stop
+     *
+     * @param integer $identifier
+     */
+    public function switchLockAction($identifier)
+    {
+        $this->isGranted('BUSINESS_MANAGE_STOPS');
+
+        $stopManager = $this->get('tisseo_endiv.stop_manager');
+        $stop = $stopManager->find($identifier);
+        $stop->setLock(!$stop->getLock());
+        $stopManager->save($stop);
+
+        return $this->redirectToRoute(
+            'tisseo_boa_stop_edit',
+            array('stopId' => $identifier)
+        );
+    }
 }

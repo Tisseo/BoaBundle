@@ -180,6 +180,12 @@ tisseo_boa_stop_create:
 tisseo_boa_stop_edit:
     pattern: /stop/edit/{stopId}
     defaults: { _controller: TisseoBoaBundle:Stop:edit, stopId: null }
+tisseo_boa_stop_switch_lock:
+    pattern: /stop/switch-lock/{identifier}
+    defaults: { _controller: TisseoBoaBundle:Stop:switchLock }
+    requirements:
+        identifier: \d+
+
 tisseo_boa_stop_detach:
     pattern: /stop/detach/{stopId}
     defaults: { _controller: TisseoBoaBundle:Stop:detach }
