@@ -110,3 +110,10 @@ Tisseo\EndivBundle\Entity\CalendarElement:
             - DateTime: ~
         endDate:
             - DateTime: ~
+
+Tisseo\EndivBundle\Entity\Route:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 7
