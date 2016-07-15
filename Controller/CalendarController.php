@@ -29,19 +29,17 @@ class CalendarController extends CoreController
             )
         );
 
-        //$calendarManager = $this->get('tisseo_endiv.calendar_manager');
-
         return $this->render(
             'TisseoBoaBundle:Calendar:list.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.calendar.manage',
                 'pageTitle' => 'tisseo.boa.calendar.title.list',
-                //'calendars' => ($calendarType ? $calendarManager->findBy(array('calendarType' => $calendarType), 5) : $calendarManager->findAll()),
                 'calendarType' => $calendarType,
                 'paginate' => true,
                 'processing' => 'true',
                 'serverSide' => 'true',
                 'iDisplayLength' => 100,
+                'caseInsensitive' => 'true',
                 'ajax' => $this->generateUrl('tisseo_boa_calendar_list_paginate', array(
                     'calendarType' => $calendarType,
                 )),
@@ -96,6 +94,7 @@ class CalendarController extends CoreController
 
         $calendarManager = $this->get('tisseo_endiv.calendar_manager');
         $data = ($calendarType ? $calendarManager->advancedFindBy($filters, $orderParam, $length, $start) : $calendarManager->findAll());
+
         $dataTotal = $calendarManager->findByCountResult($filters);
 
         return $this->createJsonResponse($data, $dataTotal, $calendarType);

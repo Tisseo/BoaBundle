@@ -21,7 +21,7 @@
     <th class="col-sm-3 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
-{#{% block table_body %}
+{% block table_body %}
     {% for calendar in calendars %}
         <tr>
             <td>
@@ -58,5 +58,4 @@
             </td>
         </tr>
     {% endfor %}
-{% endblock %}#}
-
+{% endblock %}
