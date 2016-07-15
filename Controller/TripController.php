@@ -251,7 +251,7 @@ class TripController extends CoreController
             {
                 $this->get('tisseo_endiv.trip_manager')->updateTripPatterns($tripPatterns, $route, $tripDatasource);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-                
+
                 return $this->redirectToRoute(
                     'tisseo_boa_route_edit',
                     array('routeId' => $routeId)

@@ -75,7 +75,7 @@ class StopEditType extends AbstractType
             ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 $form = $event->getForm();
                 $stop = $event->getData();
-                
+
                 $form
                     ->add(
                         'masterStop',

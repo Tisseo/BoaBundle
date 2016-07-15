@@ -67,7 +67,7 @@
                                 <option></option>
                                 {% for calendarType in calendarTypes %}
                                     <option value="{{ calendarType }}" {% if data.tripCalendar is not empty and data.tripCalendar.gridMaskType.calendarType == calendarType %}selected{% endif %}>{{ calendarType }}</option>
-                                {% endfor %} 
+                                {% endfor %}
                             </select>
                         </td>
                         <td>
@@ -75,7 +75,7 @@
                                 <option></option>
                                 {% for calendarPeriod in calendarPeriods %}
                                     <option value="{{ calendarPeriod }}" {% if data.tripCalendar is not empty and data.tripCalendar.gridMaskType.calendarPeriod == calendarPeriod %}selected{% endif %}>{{ calendarPeriod }}</option>
-                                {% endfor %} 
+                                {% endfor %}
                             </select>
                         </td>
                         <td>
@@ -100,7 +100,7 @@
     {% else %}
         {{ 'tisseo.boa.line_version.message.no_route'|trans }}
     {% endfor %}
-    
+
     {% if calendars is not empty %}
     <button type="submit" class="btn btn-success submit-trip-calendars">
         <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
