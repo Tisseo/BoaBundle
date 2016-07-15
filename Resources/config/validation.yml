@@ -100,7 +100,7 @@ Tisseo\EndivBundle\Entity\StopHistory:
                 groups: [close]
                 field: startDate
     constraints:
-        - Callback: 
+        - Callback:
             methods: [minStartDate]
             groups: [edit]
 

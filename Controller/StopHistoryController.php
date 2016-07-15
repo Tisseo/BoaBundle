@@ -24,18 +24,16 @@ class StopHistoryController extends CoreController
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
 
-        if (empty($stop))
-            throw new \Exception("Can't create a new StopHistory because the related stop with ID: ".$stopId." can't be found."); 
-    
+        if (empty($stop)) {
+            throw new \Exception("Can't create a new StopHistory because the related stop with ID: ".$stopId." can't be found.");
+        }
+
         $latestStopHistory = $stop->getLatestStopHistory();
 
-        if (empty($latestStopHistory))
-        {
+        if (empty($latestStopHistory)) {
             $stopHistory = new StopHistory();
             $stopHistory->setStop($stop);
-        }
-        else
-        {
+        } else {
             $stopHistory = new StopHistory($latestStopHistory);
         }
 
@@ -64,7 +62,7 @@ class StopHistoryController extends CoreController
                     $form->get('srid')->getData()
                 )
             );
-            
+
             try
             {
                 $stopManager->createStopHistory($stopHistory, $latestStopHistory);
@@ -74,7 +72,7 @@ class StopHistoryController extends CoreController
             {
                 $this->addFlashException($e->getMessage());
             }
-            
+
             return $this->redirectToRoute(
                 'tisseo_boa_stop_edit',
                 array('stopId' => $stopId)

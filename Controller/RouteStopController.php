@@ -67,7 +67,7 @@ class RouteStopController extends CoreController
     /**
      * List
      * @param integer $routeId
-     * 
+     *
      * List Route's RouteStops
      */
     public function listAction($routeId)
@@ -97,7 +97,7 @@ class RouteStopController extends CoreController
     public function editAction(Request $request, $routeId)
     {
         $this->isGranted('BUSINESS_MANAGE_ROUTES');
-        
+
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')

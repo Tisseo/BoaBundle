@@ -93,7 +93,7 @@ class DepotController extends CoreController
      */
     public function deleteAction($depotId)
     {
-        
+
         $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         try {
