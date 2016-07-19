@@ -100,7 +100,7 @@ Tisseo\EndivBundle\Entity\StopHistory:
                 groups: [close]
                 field: startDate
     constraints:
-        - Callback: 
+        - Callback:
             methods: [minStartDate]
             groups: [edit]
 
@@ -110,3 +110,10 @@ Tisseo\EndivBundle\Entity\CalendarElement:
             - DateTime: ~
         endDate:
             - DateTime: ~
+
+Tisseo\EndivBundle\Entity\Route:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 7

@@ -10,15 +10,15 @@
 {% endmacro %}
 
 {% macro route_header(route) %}
-    {{ 'tisseo.boa.datasource.label.agency'|trans }} : 
+    {{ 'tisseo.boa.datasource.label.agency'|trans }} :
     {% for datasource in route.lineVersion.line.lineDatasources %}
         {{ datasource.datasource.agency.name }} -
     {% endfor %}
-    {{ 'tisseo.boa.line.label.number'|trans }} : 
+    {{ 'tisseo.boa.line.label.number'|trans }} :
     {{ route.lineVersion.line.number }} -
-    {{ 'tisseo.boa.line_version.label.version'|trans }} : 
-    {{ route.lineVersion.version }} - 
-    {{ 'tisseo.boa.route.label.name'|trans }} : 
+    {{ 'tisseo.boa.line_version.label.version'|trans }} :
+    {{ route.lineVersion.version }} -
+    {{ 'tisseo.boa.route.label.name'|trans }} :
     {{ route.name }} ({{ route.way }})
 {% endmacro %}
 

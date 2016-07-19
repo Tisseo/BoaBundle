@@ -30,7 +30,7 @@
                 <a class="btn btn-default" href="{{ path('tisseo_boa_depot_delete', {'depotId': depot.id}) }}"
                     {% if depot.lineVersions is not empty %}
                         disabled=disabled
-                    {% endif %}   
+                    {% endif %}
                 >
                     <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.delete'|trans }}
                 </a>

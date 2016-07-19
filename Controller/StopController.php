@@ -108,19 +108,15 @@ class StopController extends CoreController
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
 
-        if (empty($stop))
+        if (empty($stop)) {
             $stop = new Stop();
+        }
 
         $masterStop = $stop->getMasterStop();
-
         $stopsJson = json_encode($stopManager->getStopsJson(array($stop), true));
 
-        //$phantoms = $stop->getPhantoms();
-        //$accessibilities = $stop->getStopAccessibilities();
-        //$phantomAccessibilities = null;
         if (!empty($masterStop)) {
             $stopHistory = $masterStop->getCurrentOrLatestStopHistory(new \Datetime());
-            //$phantomAccessibilities = $masterStop->getStopAccessibilities();
         }
         else {
             $stopHistory = $stop->getCurrentOrLatestStopHistory(new \Datetime());

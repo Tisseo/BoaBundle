@@ -174,7 +174,7 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
                 $inputs.each(function() {
                     if ($.inArray(this.name, ['calendar', 'includedCalendar']) >= 0)
                         calendarElement[this.name] = {'id': $(this).val()};
-                    else 
+                    else
                         calendarElement[this.name] = $(this).val();
                 });
                 calendarElement.rank = $(this).find('td.calendar-element-rank').html();
