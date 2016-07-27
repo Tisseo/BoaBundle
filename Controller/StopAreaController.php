@@ -63,6 +63,7 @@ class StopAreaController extends CoreController
         else
         {
             $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
+            $usedStops = $stopAreaManager->getUsedStops($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
             $stops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
             $stopsJson = $stopAreaManager->getStopsJson($stopArea);
@@ -117,6 +118,7 @@ class StopAreaController extends CoreController
                 'stops' => $stops,
                 'stopsJson' => $stopsJson,
                 'linesByStop' => $linesByStop,
+                'usedStops' => $usedStops,
                 'mainStopArea' => $mainStopArea
             )
         );
