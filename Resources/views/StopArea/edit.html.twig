@@ -143,14 +143,17 @@
                                 </a>
                             {% endfor %}
                             </td>
-                            <td></td>
                         {% else %}
                             <td></td>
+                        {% endif %}
+                        {% if stop.id not in usedStops %}
                             <td>
                                 <a class="btn btn-default" href="{{ path('tisseo_boa_stop_detach', {'stopId': stop.id }) }}">
                                     <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
                                 </a>
                             </td>
+                        {% else %}
+                            <td></td>
                         {% endif %}
                     </tr>
                 {% endif %}
