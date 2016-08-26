@@ -40,9 +40,11 @@
                                 data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
                         </div>
                         <div class="col-md-2">
+                            {%- if form.city.vars.data -%}
                             <a id="city-edit" class="btn btn-default" href="{{ path('tisseo_boa_city_edit', {'cityId': form.city.vars.data.id}) }}">
                                 <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
                             </a>
+                            {%- endif -%}
                         </div>
                     </div>
                 </div>

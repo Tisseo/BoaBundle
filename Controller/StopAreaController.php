@@ -56,6 +56,7 @@ class StopAreaController extends CoreController
             $this->addBoaDatasource($stopAreaDatasource);
             $stopArea->addStopAreaDatasources($stopAreaDatasource);
             $linesByStop = null;
+            $usedStops = null;
             $mainStopArea = false;
             $stops = null;
             $stopsJson = null;
