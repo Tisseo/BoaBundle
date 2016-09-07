@@ -135,7 +135,7 @@ class CityController extends CoreController
                 'paginate' => true,
                 'processing' => 'true',
                 'serverSide' => 'true',
-                'iDisplayLength' => 100,
+                'iDisplayLength' => 25,
                 'ajax' => $this->generateUrl('tisseo_boa_city_stoparea_json', array(
                     'cityId' => $cityId,
                 )),
@@ -232,11 +232,17 @@ class CityController extends CoreController
             'recordsFiltered' => $dataTotal,
         ];
 
-        $trans = $this->get('translator');
-
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 
+        $stopAreaIds = array();
         foreach($data as $key => $item) {
+            $stopAreaIds[] = $item->getId();
+        }
+
+        $linesByStopArea = $stopAreaManager->getLinesByStopAreas($stopAreaIds);
+
+        foreach($data as $key => $item) {
+
             $result = array();
             $longName = $this->renderView(
                 'TisseoBoaBundle:City:partial_list_col_name.html.twig', [
@@ -244,10 +250,14 @@ class CityController extends CoreController
                 ]
             );
             $stopCount =  $item->getStops()->count();
+
+            $stopAreaId = $item->getId();
+            $lines = (array_key_exists($stopAreaId, $linesByStopArea)) ? $linesByStopArea[$stopAreaId] : array();
+
             $linesNumbers = $this->renderView(
                 'TisseoBoaBundle:City:partial_list_col_line.html.twig',
                 [
-                    'lines' => $stopAreaManager->getLinesByStop($item->getId(), false)
+                    'lines' => $lines
                 ]
             );
 
