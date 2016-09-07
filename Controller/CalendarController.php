@@ -262,10 +262,14 @@ class CalendarController extends CoreController
         $calendarId = $request->request->get('calendarId');
         $startDate = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->request->get('startDate'));
         $endDate = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->request->get('endDate'));
-        $bitmask = $this->get('tisseo_endiv.calendar_manager')->getCalendarBitmask($calendarId, $startDate, $endDate);
-
         $response = new JsonResponse();
-        $response->setData($this->buildCalendarBitMask($startDate, $bitmask));
+
+        if ($startDate && $endDate) {
+            $bitmask = $this->get('tisseo_endiv.calendar_manager')->getCalendarBitmask($calendarId, $startDate, $endDate);
+            $response->setData($this->buildCalendarBitMask($startDate, $bitmask));
+        } else {
+            $response->setStatus(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return $response;
     }
