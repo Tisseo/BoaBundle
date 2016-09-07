@@ -75,7 +75,9 @@ define(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/'+global.locale,
         var startDate = new Date($('#boa_calendar_computedStartDate').val().split('/').reverse().join('-'));
         var endDate = new Date($('#boa_calendar_computedEndDate').val().split('/').reverse().join('-'));
 
-        initCalendar(startDate, endDate);
+        if (startDate instanceof Date && isFinite(startDate) && endDate instanceof Date && isFinite(endDate)) {
+            initCalendar(startDate, endDate);
+        }
 
         // adapting lineVersion field display/value looking at selected calendarType
         $('.calendar-form .calendar-type').on('change', function() {
