@@ -22,7 +22,7 @@
                     <select class="form-control" id="line-version-select" value="">
                         <option disabled {% if lineVersion is empty %}selected{% endif %} value=""></option>
                         {% for lv in lineVersionOptions %}
-                            <option value="{{ lv.id }}" date="{{ lv.startDate|date('d/m/Y') }}"
+                            <option value="{{ lv.id }}" date="{% if lv.Line.LastSchematic is not null %} {{ lv.Line.LastSchematic.date|date('d/m/Y') }} {% endif %}"
                             {% if (lineVersion is not empty) and (lineVersion.id == lv.id) %} selected {% endif %}
                             >
                                 {{ lv.line.number }} - {{ lv.version }}
