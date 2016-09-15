@@ -1,6 +1,6 @@
 tisseo_boa_homepage:
     pattern:  /
-    defaults: { _controller: TisseoBoaBundle:Default:index }
+    defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 
 # AccessibilityMode routes
 tisseo_boa_accessibility_mode_list:
