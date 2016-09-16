@@ -20,7 +20,7 @@ class StopController extends CoreController
      */
     public function searchAction()
     {
-        $this->isGranted(array(
+        $this->denyAccessUnlessGranted(array(
             'BUSINESS_MANAGE_STOPS',
             'BUSINESS_VIEW_STOPS',
             )
@@ -42,7 +42,7 @@ class StopController extends CoreController
      */
     public function createAction(Request $request)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stop = new Stop();
         $stop->addStopHistory(new StopHistory());
@@ -103,7 +103,7 @@ class StopController extends CoreController
     // TODO: Fix, refactor the whole action (about accessibility and phantoms)
     public function editAction(Request $request, $stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
@@ -181,7 +181,7 @@ class StopController extends CoreController
      */
     public function detachAction($stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         try
         {
@@ -208,7 +208,7 @@ class StopController extends CoreController
      */
     public function switchLockAction($identifier)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $this->get('tisseo_endiv.stop_manager')->toggleLock(array($identifier));
 
@@ -223,7 +223,7 @@ class StopController extends CoreController
      */
     public function switchMultipleLockAction(Request $request)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stops = $request->request->all();
         if (!empty($stops)) {
@@ -238,7 +238,7 @@ class StopController extends CoreController
      */
     public function lockedAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_STOPS',
                 'BUSINESS_VIEW_STOPS'

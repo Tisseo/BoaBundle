@@ -16,12 +16,10 @@ class DatasourceController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_CONFIGURATION',
-                'BUSINESS_VIEW_CONFIGURATION'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CONFIGURATION',
+            'BUSINESS_VIEW_CONFIGURATION'
+        ));
 
         return $this->render(
             'TisseoBoaBundle:Datasource:list.html.twig',
@@ -41,7 +39,7 @@ class DatasourceController extends CoreController
      */
     public function editAction(Request $request, $datasourceId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
         $datasource = $datasourceManager->find($datasourceId);

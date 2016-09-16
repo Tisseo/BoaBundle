@@ -22,7 +22,7 @@ class CalendarController extends CoreController
      */
     public function listAction($calendarType)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CALENDARS',
                 'BUSINESS_VIEW_CALENDARS'
@@ -54,7 +54,7 @@ class CalendarController extends CoreController
      */
     public function listPaginateAction(Request $request, $calendarType)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CALENDARS',
                 'BUSINESS_VIEW_CALENDARS'
@@ -139,7 +139,6 @@ class CalendarController extends CoreController
             }
 
             try {
-                $this->isGranted(array('BUSINESS_MANAGE_CALENDARS'));
                 $btnAction = $this->renderView('TisseoBoaBundle:Calendar:button.html.twig', [
                     'calendar' => $calendar,
                     'btnEdit' => [
@@ -178,7 +177,7 @@ class CalendarController extends CoreController
      */
     public function editAction(Request $request, $calendarId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CALENDARS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
 
         $calendarManager = $this->get('tisseo_endiv.calendar_manager');
         $calendar = $calendarManager->find($calendarId);
@@ -235,7 +234,7 @@ class CalendarController extends CoreController
 
     public function deleteAction($calendarId, $calendarType)
     {
-        $this->isGranted('BUSINESS_MANAGE_CALENDARS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
 
         try {
             $this->get('tisseo_endiv.calendar_manager')->remove($calendarId);
@@ -243,21 +242,22 @@ class CalendarController extends CoreController
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_calendar_list', array('calendarType' => $calendarType))
+        return $this->redirectToRoute(
+            'tisseo_boa_calendar_list',
+            array('calendarType' => $calendarType)
         );
     }
 
     public function bitmaskAction(Request $request)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_VIEW_CALENDARS',
                 'BUSINESS_MANAGE_CALENDARS'
             )
         );
 
-        $this->isPostAjax($request);
+        $this->isAjax($request, Request::METHOD_POST);
 
         $calendarId = $request->request->get('calendarId');
         $startDate = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->request->get('startDate'));
@@ -276,14 +276,14 @@ class CalendarController extends CoreController
 
     public function calendarsIntersectionAction(Request $request)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_VIEW_CALENDARS',
                 'BUSINESS_MANAGE_CALENDARS'
             )
         );
 
-        $this->isPostAjax($request);
+        $this->isAjax($request, Request::METHOD_POST);
 
         $dayCalendarId = $request->request->get('dayCalendarId');
         $periodCalendarId = $request->request->get('periodCalendarId');

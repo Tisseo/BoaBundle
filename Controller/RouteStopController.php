@@ -48,7 +48,7 @@ class RouteStopController extends CoreController
      */
     public function renderFormAction($routeId, $rank)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
@@ -72,7 +72,7 @@ class RouteStopController extends CoreController
      */
     public function listAction($routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route =  $this->get('tisseo_endiv.route_manager')->find($routeId);
 
@@ -96,7 +96,7 @@ class RouteStopController extends CoreController
      */
     public function editAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
@@ -139,8 +139,8 @@ class RouteStopController extends CoreController
      */
     public function createAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 

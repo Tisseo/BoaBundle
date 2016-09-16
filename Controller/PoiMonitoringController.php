@@ -14,11 +14,8 @@ class PoiMonitoringController extends CoreController
      */
     public function searchAction($lineVersionId)
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_VIEW_MONITORING'
-            )
-        );
+        $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
+
         $lineVersionOptions = $this->get('tisseo_endiv.line_version_manager')->findAllSortedByLineNumber();
 
         $lineVersion = empty($lineVersionId) ? null : $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);

@@ -16,7 +16,7 @@ class AgencyController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CONFIGURATION',
                 'BUSINESS_VIEW_CONFIGURATION'
@@ -41,7 +41,7 @@ class AgencyController extends CoreController
      */
     public function editAction(Request $request, $agencyId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $agencyManager = $this->get('tisseo_endiv.agency_manager');
         $agency = $agencyManager->find($agencyId);

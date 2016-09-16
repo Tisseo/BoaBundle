@@ -16,7 +16,7 @@ class PropertyController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CONFIGURATION',
                 'BUSINESS_VIEW_CONFIGURATION'
@@ -41,7 +41,7 @@ class PropertyController extends CoreController
      */
     public function editAction(Request $request, $propertyId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $propertyManager = $this->get('tisseo_endiv.property_manager');
         $property = $propertyManager->find($propertyId);

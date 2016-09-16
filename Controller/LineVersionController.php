@@ -2,8 +2,6 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Tisseo\EndivBundle\Entity\LineVersion;
 use Tisseo\CoreBundle\Controller\CoreController;
 
 class LineVersionController extends CoreController
@@ -15,12 +13,10 @@ class LineVersionController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_ROUTES',
-                'BUSINESS_VIEW_ROUTES'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $now = new \Datetime();
 

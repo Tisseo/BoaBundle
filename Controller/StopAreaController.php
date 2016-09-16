@@ -22,7 +22,7 @@ class StopAreaController extends CoreController
      */
     public function searchAction()
     {
-        $this->isGranted(array(
+        $this->denyAccessUnlessGranted(array(
                 'BUSINESS_MANAGE_STOPS',
                 'BUSINESS_VIEW_STOPS',
             )
@@ -45,7 +45,7 @@ class StopAreaController extends CoreController
      */
     public function editAction(Request $request, $stopAreaId = null)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
@@ -127,7 +127,7 @@ class StopAreaController extends CoreController
 
     public function internalTransferAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $transferManager = $this->get('tisseo_endiv.transfer_manager');
@@ -180,7 +180,7 @@ class StopAreaController extends CoreController
 
     public function externalTransferAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $transferManager = $this->get('tisseo_endiv.transfer_manager');
@@ -229,8 +229,8 @@ class StopAreaController extends CoreController
      */
     public function createExternalTransferAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
@@ -267,7 +267,7 @@ class StopAreaController extends CoreController
      */
     public function editAliasesAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($stopAreaId);
 
@@ -304,7 +304,7 @@ class StopAreaController extends CoreController
 
     public function geometriesAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
         $data = array();

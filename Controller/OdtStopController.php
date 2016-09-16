@@ -46,7 +46,7 @@ class OdtStopController extends CoreController
      */
     public function renderFormAction($odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
@@ -72,7 +72,7 @@ class OdtStopController extends CoreController
      */
     public function editAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
@@ -115,8 +115,8 @@ class OdtStopController extends CoreController
      */
     public function createAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
@@ -150,8 +150,8 @@ class OdtStopController extends CoreController
      */
     public function createGroupAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 

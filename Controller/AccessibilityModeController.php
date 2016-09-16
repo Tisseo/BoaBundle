@@ -16,7 +16,7 @@ class AccessibilityModeController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CONFIGURATION',
                 'BUSINESS_VIEW_CONFIGURATION'
@@ -41,7 +41,7 @@ class AccessibilityModeController extends CoreController
      */
     public function editAction(Request $request, $accessibilityModeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $accessModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
         $accessibilityMode = $accessModeManager->find($accessibilityModeId);

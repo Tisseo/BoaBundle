@@ -16,12 +16,10 @@ class ExceptionTypeController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_CONFIGURATION',
-                'BUSINESS_VIEW_CONFIGURATION'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CONFIGURATION',
+            'BUSINESS_VIEW_CONFIGURATION'
+        ));
 
         return $this->render(
             'TisseoBoaBundle:ExceptionType:list.html.twig',
@@ -41,7 +39,7 @@ class ExceptionTypeController extends CoreController
      */
     public function editAction(Request $request, $exceptionTypeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $exceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
         $exceptionType = $exceptionTypeManager->find($exceptionTypeId);

@@ -16,12 +16,10 @@ class ColorController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_CONFIGURATION',
-                'BUSINESS_VIEW_CONFIGURATION'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CONFIGURATION',
+            'BUSINESS_VIEW_CONFIGURATION'
+        ));
 
         return $this->render(
             'TisseoBoaBundle:Color:list.html.twig',
@@ -41,7 +39,7 @@ class ColorController extends CoreController
      */
     public function editAction(Request $request, $colorId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $colorManager = $this->get('tisseo_endiv.color_manager');
         $color = $colorManager->find($colorId);

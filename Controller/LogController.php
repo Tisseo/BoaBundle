@@ -15,12 +15,10 @@ class LogController extends CoreController
      */
     public function listAction($offset = 0, $limit = 0)
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_CONFIGURATION',
-                'BUSINESS_VIEW_CONFIGURATION'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CONFIGURATION',
+            'BUSINESS_VIEW_CONFIGURATION'
+        ));
 
         $logManager = $this->get('tisseo_endiv.log_manager');
 
