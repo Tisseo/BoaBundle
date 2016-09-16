@@ -9,7 +9,7 @@ use Symfony\Component\Security\Acl\Exception\Exception;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Calendar;
-use Tisseo\EndivBundle\Entity\CalendarDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\BoaBundle\Form\Type\CalendarType;
 
 class CalendarController extends CoreController
@@ -203,10 +203,11 @@ class CalendarController extends CoreController
 
             try
             {
-                $calendarDatasource = new CalendarDatasource();
-                $this->addBoaDatasource($calendarDatasource);
-                $calendarDatasource->setCalendar($calendar);
-                $calendar->addCalendarDatasource($calendarDatasource);
+                $this->get('tisseo_endiv.datasource_manager')->fill(
+                    $calendar,
+                    Datasource::DATA_SRC,
+                    $this->getUser()->getUsername()
+                );
                 $calendarManager->save($calendar);
                 $this->addFlash('success', ($calendarId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
                 $calendarId = $calendar->getId();

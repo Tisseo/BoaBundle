@@ -7,7 +7,7 @@ use CrEOF\Spatial\PHP\Types\Geometry\Point;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Stop;
 use Tisseo\EndivBundle\Entity\StopHistory;
-use Tisseo\EndivBundle\Entity\StopDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\BoaBundle\Form\Type\StopCreateType;
 use Tisseo\BoaBundle\Form\Type\StopEditType;
 
@@ -46,9 +46,12 @@ class StopController extends CoreController
 
         $stop = new Stop();
         $stop->addStopHistory(new StopHistory());
-        $stopDatasource = new StopDatasource();
-        $this->addBoaDatasource($stopDatasource);
-        $stop->addStopDatasources($stopDatasource);
+
+        $this->get('tisseo_endiv.datasource_manager')->fill(
+            $stop,
+            Datasource::DATA_SRC,
+            $this->getUser()->getUsername()
+        );
 
         $form = $this->createForm(
             new StopCreateType(),

@@ -8,7 +8,7 @@ use Tisseo\BoaBundle\Form\Type\RouteCreateType;
 use Tisseo\BoaBundle\Form\Type\RouteEditType;
 use Tisseo\BoaBundle\Form\Type\RouteDuplicateType;
 use Tisseo\EndivBundle\Entity\Route;
-use Tisseo\EndivBundle\Entity\RouteDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 
 /**
  * Class RouteController
@@ -63,9 +63,12 @@ class RouteController extends CoreController
 
         $route = new Route();
         $route->setLineVersion($lineVersion);
-        $routeDatasource = new RouteDatasource();
-        $this->addBoaDatasource($routeDatasource);
-        $route->addRouteDatasource($routeDatasource);
+
+        $this->get('tisseo_endiv.datasource_manager')->fill(
+            $route,
+            Datasource::DATA_SRC,
+            $this->getUser()->getUsername()
+        );
 
         $form = $this->createForm(
             new RouteCreateType(),

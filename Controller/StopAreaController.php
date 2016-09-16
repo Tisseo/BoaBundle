@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\StopArea;
-use Tisseo\EndivBundle\Entity\StopAreaDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\BoaBundle\Form\Type\StopAreaType;
 use Tisseo\BoaBundle\Form\Type\AliasType;
 use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
@@ -52,9 +52,11 @@ class StopAreaController extends CoreController
         if (empty($stopArea))
         {
             $stopArea = new StopArea();
-            $stopAreaDatasource = new StopAreaDatasource();
-            $this->addBoaDatasource($stopAreaDatasource);
-            $stopArea->addStopAreaDatasources($stopAreaDatasource);
+            $this->get('tisseo_endiv.datasource_manager')->fill(
+                $stopArea,
+                Datasource::DATA_SRC,
+                $this->getUser()->getUsername()
+            );
             $linesByStop = null;
             $usedStops = null;
             $mainStopArea = false;
