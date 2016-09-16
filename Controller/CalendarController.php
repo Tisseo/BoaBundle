@@ -242,8 +242,9 @@ class CalendarController extends CoreController
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_calendar_list', array('calendarType' => $calendarType))
+        return $this->redirectToRoute(
+            'tisseo_boa_calendar_list',
+            array('calendarType' => $calendarType)
         );
     }
 

@@ -21,12 +21,10 @@ class TripController extends CoreController
      */
     public function listAction($routeId)
     {
-        $this->denyAccessUnlessGranted(
-            array(
-                'BUSINESS_MANAGE_ROUTES',
-                'BUSINESS_VIEW_ROUTES'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
         $tripBounds = $this->get('tisseo_endiv.trip_manager')->getDateBounds($route);
@@ -91,9 +89,7 @@ class TripController extends CoreController
                 $this->addFlashException($e->getMessage());
             }
 
-            return $this->redirect(
-                $request->headers->get('referer')
-            );
+            return $this->redirect($request->headers->get('referer'));
         }
 
         return $this->render(

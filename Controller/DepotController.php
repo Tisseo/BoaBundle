@@ -101,9 +101,7 @@ class DepotController extends CoreController
             $this->addFlashException($e->getMessage());
         }
 
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_depot_list')
-        );
+        return $this->redirectToRoute('tisseo_boa_depot_list');
     }
 
 }

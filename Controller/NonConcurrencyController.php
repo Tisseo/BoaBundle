@@ -52,9 +52,7 @@ class NonConcurrencyController extends CoreController
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
 
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_non_concurrency_list')
-        );
+        return $this->redirectToRoute('tisseo_boa_non_concurrency_list');
     }
 
     /**

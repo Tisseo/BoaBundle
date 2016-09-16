@@ -37,10 +37,9 @@ class StopAccessibilityController extends CoreController
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
 
-            return $this->redirect(
-                $this->generateUrl('tisseo_boa_stop_edit',
-                    array('stopId' => $stopId)
-                )
+            return $this->redirectToRoute(
+                'tisseo_boa_stop_edit',
+                array('stopId' => $stopId)
             );
         }
 
@@ -59,10 +58,9 @@ class StopAccessibilityController extends CoreController
 
         $this->get('tisseo_endiv.stop_manager')->deleteStopAccessibility($stopId, $stopAccessibilityId);
 
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_stop_edit',
-                array('stopId' => $stopId)
-            )
+        return $this->redirectToRoute(
+            'tisseo_boa_stop_edit',
+            array('stopId' => $stopId)
         );
     }
 }
