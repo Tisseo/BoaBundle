@@ -47,7 +47,7 @@ class CalendarElementController extends CoreController
      */
     public function renderFormAction($calendarId, $rank)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 
@@ -74,7 +74,7 @@ class CalendarElementController extends CoreController
      */
     public function editAction(Request $request, $calendarId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 
@@ -118,8 +118,8 @@ class CalendarElementController extends CoreController
      */
     public function createAction(Request $request, $calendarId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 

@@ -21,7 +21,7 @@ class TripController extends CoreController
      */
     public function listAction($routeId)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_ROUTES',
                 'BUSINESS_VIEW_ROUTES'
@@ -51,7 +51,7 @@ class TripController extends CoreController
      */
     public function createAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
         $lineVersion = $route->getLineVersion();
@@ -114,7 +114,7 @@ class TripController extends CoreController
      */
     public function editAction(Request $request, $tripId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $tripManager = $this->get('tisseo_endiv.trip_manager');
         $trip = $tripManager->find($tripId);
@@ -174,7 +174,7 @@ class TripController extends CoreController
      */
     public function deleteAction($tripId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $tripManager = $this->get('tisseo_endiv.trip_manager');
         $trip = $tripManager->find($tripId);
@@ -203,7 +203,7 @@ class TripController extends CoreController
      */
     public function deleteAllAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
@@ -237,7 +237,7 @@ class TripController extends CoreController
      */
     public function editPatternAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 

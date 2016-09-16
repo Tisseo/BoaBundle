@@ -19,7 +19,7 @@ class OdtAreaController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_STOPS',
                 'BUSINESS_VIEW_STOPS'
@@ -44,7 +44,7 @@ class OdtAreaController extends CoreController
 
     public function deleteAction($odtAreaId)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_STOPS',
                 'BUSINESS_VIEW_STOPS'
@@ -72,7 +72,7 @@ class OdtAreaController extends CoreController
      */
     public function editAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $odtAreaManager = $this->get('tisseo_endiv.odt_area_manager');
         $odtArea = $odtAreaManager->find($odtAreaId);

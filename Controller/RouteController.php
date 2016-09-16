@@ -26,7 +26,7 @@ class RouteController extends CoreController
      */
     public function listAction($lineVersionId)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_ROUTES',
                 'BUSINESS_VIEW_ROUTES'
@@ -56,7 +56,7 @@ class RouteController extends CoreController
      */
     public function createAction(Request $request, $lineVersionId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
         $lineVersion = $lineVersionManager->find($lineVersionId);
@@ -123,7 +123,7 @@ class RouteController extends CoreController
      */
     public function editAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
@@ -188,7 +188,7 @@ class RouteController extends CoreController
      */
     public function deleteAction($routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         try
@@ -219,7 +219,7 @@ class RouteController extends CoreController
      */
     public function tripCalendarAction(Request $request, $lineVersionId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
@@ -263,7 +263,7 @@ class RouteController extends CoreController
      */
     public function duplicateAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
@@ -285,7 +285,7 @@ class RouteController extends CoreController
             try
             {
                 // TODO: check duplicate function in RouteManager and 'line_version' parameter from view
-                $userName = $this->get('security.context')->getToken()->getUser()->getUsername();
+                $userName = $this->getUser()->getUsername();
                 $lineVersionId = $request->request->get('line_version');
                 $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
                 $routeManager->duplicate($route, $lineVersion, $userName);

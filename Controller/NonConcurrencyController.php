@@ -7,6 +7,7 @@ use Tisseo\EndivBundle\Entity\NonConcurrency;
 use Tisseo\EndivBundle\Entity\Line;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\NonConcurrencyType;
+
 class NonConcurrencyController extends CoreController
 {
     /**
@@ -16,7 +17,7 @@ class NonConcurrencyController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_ROUTES',
                 'BUSINESS_VIEW_ROUTES'
@@ -36,7 +37,7 @@ class NonConcurrencyController extends CoreController
 
     public function deleteAction($nonConcurrencyId)
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_ROUTES',
                 'BUSINESS_VIEW_ROUTES'
@@ -64,7 +65,7 @@ class NonConcurrencyController extends CoreController
      */
     public function editAction(Request $request, $nonConcurrencyId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $nonConcurrencyManager = $this->get('tisseo_endiv.non_concurrency_manager');
         $nonConcurrency = $nonConcurrencyManager->findById($nonConcurrencyId);

@@ -11,7 +11,7 @@ class StopAccessibilityController extends CoreController
 {
     public function createAction(Request $request, $stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $form = $this->createForm(
             new StopAccessibilityType(),
@@ -55,7 +55,7 @@ class StopAccessibilityController extends CoreController
 
     public function deleteAction($stopId, $stopAccessibilityId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $this->get('tisseo_endiv.stop_manager')->deleteStopAccessibility($stopId, $stopAccessibilityId);
 
