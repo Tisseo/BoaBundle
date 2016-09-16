@@ -1,23 +1,11 @@
-parameters:
-    tisseo_boa.perimeter.class: Tisseo\BoaBundle\Services\PerimeterManager
-    tisseo_boa.user.class: Tisseo\BoaBundle\Services\UserManager
-
 services:
-    tisseo_boa.perimeter_manager:
-       class: %tisseo_boa.perimeter.class%
-       arguments: ['@doctrine.orm.default_entity_manager']
-
-    tisseo_boa.user_manager:
-       class: %tisseo_boa.user.class%
-       arguments: ['@doctrine.orm.default_entity_manager', '@translator', '@service_container']
-
     tisseo_boa.ajax_form_listener:
-        class: CanalTP\SamCoreBundle\EventListener\AjaxFormListener
+        class: 'CanalTP\SamCoreBundle\EventListener\AjaxFormListener'
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
     tisseo_boa.type.calendar_selector:
-        class: Tisseo\BoaBundle\Form\Type\CalendarSelectorType
-        arguments: ["@doctrine.orm.endiv_entity_manager"]
+        class: 'Tisseo\BoaBundle\Form\Type\CalendarSelectorType'
+        arguments: ['@doctrine.orm.endiv_entity_manager']
         tags:
             - { name: form.type, alias: calendar_selector }
