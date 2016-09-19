@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Route;
 use Tisseo\EndivBundle\Entity\Trip;
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\EndivBundle\Entity\TripDatasource;
 use Tisseo\BoaBundle\Form\Type\TripCreateType;
 use Tisseo\BoaBundle\Form\Type\TripEditType;
@@ -55,12 +56,13 @@ class TripController extends CoreController
         $lineVersion = $route->getLineVersion();
 
         $trip = new Trip();
-        $tripDatasource = new TripDatasource();
-        $this->addBoaDatasource($tripDatasource);
-
+        $this->get('tisseo_endiv.datasource_manager')->fill(
+            $trip,
+            Datasource::DATA_SRC,
+            $this->getUser()->getUsername()
+        );
         $trip->setRoute($route);
         $trip->setName($lineVersion->getLine()->getNumber()."_".$lineVersion->getVersion()."_".$route->getWay()[0]);
-        $trip->addTripDatasource($tripDatasource);
 
         $form = $this->createForm(
             new TripCreateType(),
@@ -240,8 +242,13 @@ class TripController extends CoreController
         if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
         {
             $tripPatterns = json_decode($request->getContent(), true);
+
             $tripDatasource = new TripDatasource();
-            $this->addBoaDatasource($tripDatasource);
+            $this->get('tisseo_endiv.datasource_manager')->fillDatasource(
+                $tripDatasource,
+                Datasource::DATA_SRC,
+                $this->getUser()->getUsername()
+            );
 
             try
             {
