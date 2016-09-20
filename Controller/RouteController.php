@@ -26,14 +26,13 @@ class RouteController extends CoreController
      */
     public function listAction($lineVersionId)
     {
-        $this->denyAccessUnlessGranted(
-            array(
-                'BUSINESS_MANAGE_ROUTES',
-                'BUSINESS_VIEW_ROUTES'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+
         return $this->render('TisseoBoaBundle:Route:list.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.transport.manage',
@@ -126,7 +125,10 @@ class RouteController extends CoreController
      */
     public function editAction(Request $request, $routeId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
@@ -139,6 +141,7 @@ class RouteController extends CoreController
         }
         $routeStopsJson = json_encode($routeStopsJson);
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_ROUTES');
         $form = $this->createForm(
             new RouteEditType(),
             $route,
@@ -146,9 +149,11 @@ class RouteController extends CoreController
                 'action'=> $this->generateUrl(
                     'tisseo_boa_route_edit',
                     array('routeId' => $routeId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
+
         $form->handleRequest($request);
         if ($form->isValid())
         {

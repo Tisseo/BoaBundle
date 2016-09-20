@@ -23,10 +23,9 @@ class StopAreaController extends CoreController
     public function searchAction()
     {
         $this->denyAccessUnlessGranted(array(
-                'BUSINESS_MANAGE_STOPS',
-                'BUSINESS_VIEW_STOPS',
-            )
-        );
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         return $this->render(
             'TisseoBoaBundle:StopArea:search.html.twig',
@@ -45,7 +44,11 @@ class StopAreaController extends CoreController
      */
     public function editAction(Request $request, $stopAreaId = null)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+                'BUSINESS_MANAGE_STOPS',
+                'BUSINESS_VIEW_STOPS',
+            )
+        );
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
@@ -79,6 +82,7 @@ class StopAreaController extends CoreController
             $stopsJson = json_encode($stopsJson);
         }
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
         $form = $this->createForm(
             new StopAreaType(),
             $stopArea,
@@ -86,7 +90,8 @@ class StopAreaController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_stop_area_edit',
                     array('stopAreaId' => $stopAreaId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 

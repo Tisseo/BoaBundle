@@ -71,6 +71,10 @@
                         {% endif %}
                     </ul>
                 </div>
+                {% else %}
+                <a class="btn btn-default" role="button" href="{{ path('tisseo_boa_route_edit', { 'routeId': route.id }) }}">
+                    {{ 'tisseo.boa.route.action.show'|trans }}
+                </a>
                 {% endif %}
             </td>
         </tr>

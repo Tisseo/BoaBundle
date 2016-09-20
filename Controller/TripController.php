@@ -77,17 +77,13 @@ class TripController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $newTrip = $form->getData();
                 $stopTimes = $request->request->get('stopTimes');
                 $this->get('tisseo_endiv.trip_manager')->createTripAndStopTimes($newTrip, $stopTimes);
                 $this->addFlash('success', 'tisseo.flash.success.created');
-            }
-            catch(\Exception $e)
-            {
+            } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -112,34 +108,35 @@ class TripController extends CoreController
      */
     public function editAction(Request $request, $tripId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $tripManager = $this->get('tisseo_endiv.trip_manager');
         $trip = $tripManager->find($tripId);
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_ROUTES');
         $form = $this->createForm(
             new TripEditType(),
             $trip,
             array(
-                "action" => $this->generateUrl(
+                'action' => $this->generateUrl(
                     'tisseo_boa_trip_edit',
-                    array("tripId" => $tripId)
-                )
+                    array('tripId' => $tripId)
+                ),
+                'disabled' => $disabled
             )
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $trip = $form->getData();
 
-            try
-            {
+            try {
                 $tripManager->save($trip);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -177,13 +174,10 @@ class TripController extends CoreController
         $tripManager = $this->get('tisseo_endiv.trip_manager');
         $trip = $tripManager->find($tripId);
 
-        try
-        {
+        try {
             $tripManager->remove($trip);
             $this->addFlash('success', 'tisseo.flash.success.deleted');
-        }
-        catch(\Exception $e)
-        {
+        } catch(\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
@@ -205,9 +199,8 @@ class TripController extends CoreController
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
-        try
-        {
-            if ($request->getMethod() == 'POST') {
+        try {
+            if ($request->getMethod() === Request::METHOD_POST) {
                 $idTrips = json_decode($request->getContent(), true);
                 $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route, $idTrips);
                 $this->addFlash('success', 'tisseo.boa.trip.message.select_deleted');
@@ -215,9 +208,7 @@ class TripController extends CoreController
                 $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
                 $this->addFlash('success', 'tisseo.boa.trip.message.all_deleted');
             }
-        }
-        catch(\Exception $e)
-        {
+        } catch(\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
@@ -235,12 +226,18 @@ class TripController extends CoreController
      */
     public function editPatternAction(Request $request, $routeId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
-        {
+        if (
+            $request->isXmlHttpRequest() &&
+            $request->getMethod() === Request::METHOD_POST &&
+            $this->isGranted('BUSINESS_MANAGE_ROUTES')
+        ) {
             $tripPatterns = json_decode($request->getContent(), true);
 
             $tripDatasource = new TripDatasource();
@@ -250,8 +247,7 @@ class TripController extends CoreController
                 $this->getUser()->getUsername()
             );
 
-            try
-            {
+            try {
                 $this->get('tisseo_endiv.trip_manager')->updateTripPatterns($tripPatterns, $route, $tripDatasource);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
 
@@ -259,9 +255,7 @@ class TripController extends CoreController
                     'tisseo_boa_route_edit',
                     array('routeId' => $routeId)
                 );
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 return new Response($e->getMessage());
             }
         }

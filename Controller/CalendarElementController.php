@@ -47,11 +47,15 @@ class CalendarElementController extends CoreController
      */
     public function renderFormAction($calendarId, $rank)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CALENDARS',
+            'BUSINESS_VIEW_CALENDARS'
+        ));
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 
-        $form = $this->buildForm($calendar, $rank);
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_CALENDARS');
+        $form = $this->buildForm($calendar, $rank, array('disabled' => $disabled));
 
         return $this->render(
             'TisseoBoaBundle:CalendarElement:form.html.twig',
@@ -74,7 +78,10 @@ class CalendarElementController extends CoreController
      */
     public function editAction(Request $request, $calendarId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CALENDARS',
+            'BUSINESS_VIEW_CALENDARS'
+        ));
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 
@@ -118,7 +125,7 @@ class CalendarElementController extends CoreController
      */
     public function createAction(Request $request, $calendarId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
         $this->isAjax($request, Request::METHOD_POST);
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);

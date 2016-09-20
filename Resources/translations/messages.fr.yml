@@ -211,6 +211,7 @@ tisseo:
                 list: Routes de la ligne %number% (version %version%)
                 link_trip_calendar: Attribution des grilles horaires aux services
                 duplicate: Dupliquer une route
+                show: Consultation de route
             header:
                 route_stops: Itinéraire de la route
                 trip_patterns: Patrons de service
@@ -236,6 +237,7 @@ tisseo:
                 copy: Dupliquer
                 edit: Editer
                 delete: Supprimer
+                show: Consulter
             confirm:
                 delete: Êtes-vous sûr de vouloir supprimer cette route ?
             message:

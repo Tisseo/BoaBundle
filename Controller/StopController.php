@@ -106,7 +106,11 @@ class StopController extends CoreController
     // TODO: Fix, refactor the whole action (about accessibility and phantoms)
     public function editAction(Request $request, $stopId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+                'BUSINESS_MANAGE_STOPS',
+                'BUSINESS_VIEW_STOPS',
+            )
+        );
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
@@ -125,6 +129,7 @@ class StopController extends CoreController
             $stopHistory = $stop->getCurrentOrLatestStopHistory(new \Datetime());
         }
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
         $form = $this->createForm(
             new StopEditType($stopHistory),
             $stop,
@@ -132,7 +137,8 @@ class StopController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_stop_edit',
                     array('stopId' => $stopId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 
