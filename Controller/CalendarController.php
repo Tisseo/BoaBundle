@@ -22,12 +22,10 @@ class CalendarController extends CoreController
      */
     public function listAction($calendarType)
     {
-        $this->denyAccessUnlessGranted(
-            array(
-                'BUSINESS_MANAGE_CALENDARS',
-                'BUSINESS_VIEW_CALENDARS'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CALENDARS',
+            'BUSINESS_VIEW_CALENDARS'
+        ));
 
         return $this->render(
             'TisseoBoaBundle:Calendar:list.html.twig',
@@ -54,12 +52,10 @@ class CalendarController extends CoreController
      */
     public function listPaginateAction(Request $request, $calendarType)
     {
-        $this->denyAccessUnlessGranted(
-            array(
-                'BUSINESS_MANAGE_CALENDARS',
-                'BUSINESS_VIEW_CALENDARS'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CALENDARS',
+            'BUSINESS_VIEW_CALENDARS'
+        ));
 
         $length = $request->get('length');
         $length = $length && ($length!=-1)?$length:0;
@@ -117,6 +113,7 @@ class CalendarController extends CoreController
         ];
 
         $trans = $this->get('translator');
+        $edit = $this->isGranted('BUSINESS_MANAGE_CALENDARS');
 
         foreach($data as $key => $calendar) {
             $tabCalendar = array($calendar->getName());
@@ -139,22 +136,25 @@ class CalendarController extends CoreController
             }
 
             try {
-                $btnAction = $this->renderView('TisseoBoaBundle:Calendar:button.html.twig', [
+                $payload = array(
                     'calendar' => $calendar,
                     'btnEdit' => [
                         'url' =>  $this->generateUrl('tisseo_boa_calendar_edit', [
                             'calendarId' => $calendar->getId()
                         ]),
-                        'label' => $trans->trans('tisseo.global.edit')
-                    ],
-                    'btnDelete' => [
+                        'label' => ($edit ? $trans->trans('tisseo.global.edit') : $trans->trans('tisseo.global.consult'))
+                    ]
+                );
+                if ($edit) {
+                    $payload['btnDelete'] = array(
                         'url' => $this->generateUrl('tisseo_boa_calendar_delete', [
                             'calendarId' => $calendar->getId(),
                             'calendarType' => $calendarType
                         ]),
                         'label' => $trans->trans('tisseo.global.delete'),
-                    ],
-                ]);
+                    );
+                }
+                $btnAction = $this->renderView('TisseoBoaBundle:Calendar:button.html.twig', $payload);
             } catch(\Exception $e) {
                 if (!$e instanceof AccessDeniedException) {
                     throw new \Exception($e->getMessage());
@@ -177,14 +177,19 @@ class CalendarController extends CoreController
      */
     public function editAction(Request $request, $calendarId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CALENDARS',
+            'BUSINESS_VIEW_CALENDARS'
+        ));
 
         $calendarManager = $this->get('tisseo_endiv.calendar_manager');
         $calendar = $calendarManager->find($calendarId);
 
-        if (empty($calendar))
+        if (empty($calendar)) {
             $calendar = new Calendar();
+        }
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_CALENDARS');
         $form = $this->createForm(
             new CalendarType(),
             $calendar,
@@ -192,17 +197,16 @@ class CalendarController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_calendar_edit',
                     array('calendarId' => $calendarId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $calendar = $form->getData();
 
-            try
-            {
+            try {
                 $this->get('tisseo_endiv.datasource_manager')->fill(
                     $calendar,
                     Datasource::DATA_SRC,
@@ -211,9 +215,7 @@ class CalendarController extends CoreController
                 $calendarManager->save($calendar);
                 $this->addFlash('success', ($calendarId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
                 $calendarId = $calendar->getId();
-            }
-            catch(\Exception $e)
-            {
+            } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

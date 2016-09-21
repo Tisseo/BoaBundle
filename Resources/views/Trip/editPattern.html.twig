@@ -5,9 +5,10 @@
             <th class="col-md-0.5">{{ 'tisseo.boa.route_stop.label.rank'|trans }}</th>
             <th class="col-md-2">{{ 'tisseo.boa.route_stop.label.stop'|trans }}</th>
             <th class="col-md-1.5"></th>
+            {% set granted = is_granted('BUSINESS_MANAGE_ROUTES') %}
             {% for pattern in route.TripsPattern %}
             <th id="{{ loop.index }}" class="col-md-1 text-center pattern-column name {{ loop.index }}">
-                <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}">
+                <input type="text" class="pattern-name input-sm form-control" value="{{ pattern.name }}"{% if not granted %} disabled{% endif %}>
                 <input type="hidden" class="pattern-id" value="{{ pattern.id }}">
             </th>
             {% endfor %}
@@ -21,7 +22,7 @@
             {% for pattern in route.TripsPattern %}
                 {% if route.IsPatternLocked(pattern) %}
                 <th id="{{ loop.index }}" class="text-center {{ loop.index }}"></th>
-                {% else %}
+                {% elseif granted %}
                 <th id="{{ loop.index }}" class="text-center {{ loop.index }}">
                     <button title="{{ 'tisseo.global.delete'|trans }}" class="btn btn-xs btn-danger small-button delete-pattern"><span class="glyphicon glyphicon-minus"></span></button>
                     <button title="{{ 'tisseo.global.duplicate'|trans }}" class="btn btn-xs btn-info small-button duplicate-pattern"><span class="glyphicon glyphicon-repeat"></span></button>
@@ -29,7 +30,9 @@
                 {% endif %}
             {% endfor %}
             <th class="text-center add-pattern action">
-                <button title="{{ 'tisseo.global.add'|trans }}" id="add-pattern" class="btn btn-xs btn-success small-button"><span class="glyphicon glyphicon-plus"></span></button>
+                {% if granted %}
+                    <button title="{{ 'tisseo.global.add'|trans }}" id="add-pattern" class="btn btn-xs btn-success small-button"><span class="glyphicon glyphicon-plus"></span></button>
+                {% endif %}
             </th>
             <th></th>
         </thead>
@@ -90,10 +93,12 @@
         {% endfor %}
         </tbody>
     </table>
-    <br>
-    <button id="submit-trip-patterns" type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-    </button>
+    {% if granted %}
+        <br>
+        <button id="submit-trip-patterns" type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+        </button>
+    {% endif %}
 </div>
 
 <div id="new-pattern-container" class="hidden">

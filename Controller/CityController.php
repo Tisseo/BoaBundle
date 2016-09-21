@@ -19,10 +19,9 @@ class CityController extends CoreController
     public function searchAction()
     {
         $this->denyAccessUnlessGranted(array(
-                'BUSINESS_MANAGE_STOPS',
-                'BUSINESS_VIEW_STOPS',
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
         ));
-
 
         return $this->render(
             'TisseoBoaBundle:City:search.html.twig',
@@ -90,11 +89,15 @@ class CityController extends CoreController
      */
     public function editAction(Request $request, $cityId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         $cityManager = $this->get('tisseo_endiv.city_manager');
         $city = $cityManager->find($cityId);
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
         $form = $this->createForm(
             new CityEditType(),
             $city,
@@ -102,7 +105,8 @@ class CityController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_city_edit',
                     array('cityId' => $cityId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 
@@ -149,7 +153,10 @@ class CityController extends CoreController
      */
     public function listStopAreaAction(Request $request, $cityId)
     {
-        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 

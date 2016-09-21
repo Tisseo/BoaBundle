@@ -51,8 +51,8 @@
                 <td>{{ lineVersion.startDate.date | date('d/m/Y') }}</td>
                 <td>{{ lineVersion.plannedEndDate.date | date('d/m/Y') }}</td>
                 <td>
-                    {% if (is_granted(['BUSINESS_MANAGE_ROUTES', 'BUSINESS_VIEW_ROUTES'])) %}
-                        {% if timecardViewAvailable %}
+                    {% if (is_granted('BUSINESS_VIEW_ROUTES')) %}
+                        {% if timecardViewAvailable and is_granted('BUSINESS_MAANGE_ROUTES') %}
                         <a class="btn btn-default" href="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
                             <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.boa.line_version.action.calendar'|trans }}
                         </a>

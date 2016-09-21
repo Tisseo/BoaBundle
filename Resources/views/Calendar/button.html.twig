@@ -1,7 +1,7 @@
 <a class="btn btn-default" href="{{ btnEdit.url }}">
     <span class="glyphicon glyphicon-edit"></span> {{ btnEdit.label }}
 </a>
-{% if ((calendar.periodTrips is empty) and (calendar.dayTrips is empty) and (calendar.accessibilityTypes is empty)) %}
+{% if btnDelete and ((calendar.periodTrips is empty) and (calendar.dayTrips is empty) and (calendar.accessibilityTypes is empty)) %}
     <a class="btn {% if calendar.calendarElements is empty %}btn-default{% else %}btn-danger{% endif %}" href="{{ btnDelete.url }}">
         <span class="glyphicon glyphicon-remove"></span> {{ btnDelete.label }}
     </a>

@@ -71,11 +71,13 @@
         </div>
         {% endif %}
 
-        <div class="col-md-12 row">
-            <button type="submit" class="btn btn-success">
-                <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-            </button>
-        </div>
+        {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+            <div class="col-md-12 row">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                </button>
+            </div>
+        {% endif %}
         {{ form_end(form) }}
     </div>
 

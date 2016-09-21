@@ -65,20 +65,23 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                </button>
+        {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                    </button>
+                </div>
             </div>
-        </div>
+        {% endif %}
+
         {{ form_end(form) }}
     </div>
 
     <a id="route-stops" class="header-ribbon">
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.route_stop.title.list'|trans }}
     </a>
-    {% if route.trips is empty %}
+    {% if route.trips is empty and is_granted('BUSINESS_MANAGE_ROUTES') %}
         {{ render(controller('TisseoBoaBundle:RouteStop:edit', {'routeId': route.id })) }}
     {% else %}
         {{ render(controller('TisseoBoaBundle:RouteStop:list', {'routeId': route.id })) }}
@@ -88,21 +91,23 @@
         <div id="leaflet-map-container" style="width:850px; height:520px"></div>
     {% endif %}
 
-    <a id="trip-patterns" class="header-ribbon">
-        <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip_pattern.title.list'|trans }}
-    </a>
-    {% if route.routeStops is not empty %}
-        <a class="btn btn-default" href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal">
-            <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.trip.action.create'|trans }}
+    {% if is_granted('BUSINESS_MANAGE_ROUTES') %}
+        <a id="trip-patterns" class="header-ribbon">
+            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip_pattern.title.list'|trans }}
         </a>
-        <a class="btn btn-default" href="{{ path('tisseo_boa_trip_list', {'routeId': route.id}) }}">
-            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.action.list'|trans }}
-        </a>
-        {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
-    {% else %}
-        <div class="panel col-md-12">
-            {{ 'tisseo.boa.route.message.no_route_stops'|trans }}
-        </div>
+        {% if route.routeStops is not empty %}
+            <a class="btn btn-default" href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal">
+                <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.trip.action.create'|trans }}
+            </a>
+            <a class="btn btn-default" href="{{ path('tisseo_boa_trip_list', {'routeId': route.id}) }}">
+                <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.trip.action.list'|trans }}
+            </a>
+            {{ render(controller('TisseoBoaBundle:Trip:editPattern', {'routeId': route.id })) }}
+        {% else %}
+            <div class="panel col-md-12">
+                {{ 'tisseo.boa.route.message.no_route_stops'|trans }}
+            </div>
+        {% endif %}
     {% endif %}
 {% endblock %}
 

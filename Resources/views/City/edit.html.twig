@@ -29,16 +29,18 @@
                 {{ form_row(form.mainStopArea) }}
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                </button>
-                <a href="" class="btn btn-default">
-                    <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
-                </a>
+        {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                    </button>
+                    <a href="" class="btn btn-default">
+                        <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
+                    </a>
+                </div>
             </div>
-        </div>
+        {% endif %}
         {{ form_end(form) }}
     </div>
     <a id="stop-history" class="header-ribbon">
@@ -54,14 +56,4 @@
             </thead>
         </table>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        /*require(['boa/stop/edit'], function() {
-            init_autocomplete("#stop_area", "#boa_stop_edit_stopArea", "#stop-edit");
-            $("#stop_area").val($("#boa_stop_edit_stopArea option:selected").text());
-        });*/
-    </script>
 {% endblock %}

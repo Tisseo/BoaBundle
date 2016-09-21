@@ -14,7 +14,11 @@
     </a>
     /
     <a href="{{ path('tisseo_boa_route_edit', { 'routeId': route.id }) }}">
-        {{ 'tisseo.boa.route.title.edit'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
+        {%- if is_granted('BUSINESS_MANAGE_ROUTES') -%}
+            {{ 'tisseo.boa.route.title.edit'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
+        {%- else -%}
+            {{ 'tisseo.boa.route.title.show'|trans({ '%number%': route.lineVersion.line.number, '%version%': route.lineVersion.version }) }}
+        {%- endif %}
     </a>
 {% endblock %}
 
@@ -82,12 +86,18 @@
                     </td>
                     <td>{% if bounds %}{{ bounds['end']|date("d/m/Y") }}{% endif %}</td>
                     <td>
-                        <a class="btn btn-default" href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
-                            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.edit'|trans }}
-                        </a>
-                        <a class="btn {% if bounds and bounds['start'] < yesterday %}btn-danger{% else %}btn-default{% endif %} delete-action" href="{{ path('tisseo_boa_trip_delete', {'tripId': trip.id}) }}">
-                            <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
-                        </a>
+                        {%- if (is_granted('BUSINESS_MANAGE_ROUTES')) -%}
+                            <a class="btn btn-default" href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
+                                <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.edit'|trans }}
+                            </a>
+                            <a class="btn {% if bounds and bounds['start'] < yesterday %}btn-danger{% else %}btn-default{% endif %} delete-action" href="{{ path('tisseo_boa_trip_delete', {'tripId': trip.id}) }}">
+                                <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
+                            </a>
+                        {%- else -%}
+                            <a class="btn btn-default" href="{{ path('tisseo_boa_trip_edit', {'tripId': trip.id}) }}">
+                                {{ 'tisseo.global.consult'|trans }}
+                            </a>
+                        {%- endif -%}
                     </td>
                 </tr>
             {% endfor %}
