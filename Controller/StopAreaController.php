@@ -141,7 +141,7 @@ class StopAreaController extends CoreController
         $stopArea = $stopAreaManager->find($stopAreaId);
         $transfers = $transferManager->getInternalTransfers($stopArea);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $data = json_decode($request->getContent(), true);
             $stopAreaTransferDuration = $data['stopAreaTransferDuration'];
@@ -195,7 +195,7 @@ class StopAreaController extends CoreController
         $startStops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
         $transfers = $transferManager->getExternalTransfers($stopArea);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $data = json_decode($request->getContent(), true);
 
@@ -242,27 +242,25 @@ class StopAreaController extends CoreController
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
-        {
-            try {
-                $data = json_decode($request->getContent(), true);
-                $transfers = $this->get('tisseo_endiv.transfer_manager')->createExternalTransfers($data, $stopArea);
-            } catch (\Exception $e) {
-                $this->addFlashException($e->getMessage());
-                $response = $this->redirectToRoute(
-                    'tisseo_boa_stop_area_edit',
-                    array('stopAreaId' => $stopAreaId)
-                );
-                $response->setStatusCode(500);
-                return $response;
-            }
-            return $this->render(
-                'TisseoBoaBundle:StopArea:create_external_transfer.html.twig',
-                array(
-                    'transfers' => $transfers,
-                )
+        try {
+            $data = json_decode($request->getContent(), true);
+            $transfers = $this->get('tisseo_endiv.transfer_manager')->createExternalTransfers($data, $stopArea);
+        } catch (\Exception $e) {
+            $this->addFlashException($e->getMessage());
+            $response = $this->redirectToRoute(
+                'tisseo_boa_stop_area_edit',
+                array('stopAreaId' => $stopAreaId)
             );
+            $response->setStatusCode(500);
+            return $response;
         }
+
+        return $this->render(
+            'TisseoBoaBundle:StopArea:create_external_transfer.html.twig',
+            array(
+                'transfers' => $transfers,
+            )
+        );
     }
 
 /**
@@ -278,7 +276,7 @@ class StopAreaController extends CoreController
 
         $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($stopAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request:METHOD_POST)
         {
             $aliases = json_decode($request->getContent(), true);
 
@@ -351,7 +349,7 @@ class StopAreaController extends CoreController
             )
             ->getForm();
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {

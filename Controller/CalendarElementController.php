@@ -85,7 +85,7 @@ class CalendarElementController extends CoreController
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $calendarElements = json_decode($request->getContent(), true);
 

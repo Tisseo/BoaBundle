@@ -232,17 +232,13 @@ class RouteController extends CoreController
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
 
-        if ($request->getMethod() === 'POST')
-        {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $datas = $request->request->get('route');
 
-            try
-            {
+            try {
                 $routeManager->linkTripCalendars($datas);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
