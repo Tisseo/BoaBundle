@@ -276,7 +276,7 @@ class StopAreaController extends CoreController
 
         $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($stopAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === Request:METHOD_POST)
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $aliases = json_decode($request->getContent(), true);
 
