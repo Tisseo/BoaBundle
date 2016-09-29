@@ -17,8 +17,11 @@ class JsonController extends CoreController
 
         $this->isAjax($request, Request::METHOD_POST);
 
-        if (strpos($calendarType, ','))
+        if (strpos($calendarType, ',')) {
             $calendarType = explode(',', $calendarType);
+        } else {
+            $calendarType = array($calendarType);
+        }
 
         $term = $request->request->get('term');
         $lineVersionId = $request->query->get('line_version_id');
