@@ -16,12 +16,10 @@ class DepotController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_CONFIGURATION',
-                'BUSINESS_VIEW_CONFIGURATION'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_CONFIGURATION',
+            'BUSINESS_VIEW_CONFIGURATION'
+        ));
 
         return $this->render(
             'TisseoBoaBundle:Depot:list.html.twig',
@@ -41,7 +39,7 @@ class DepotController extends CoreController
      */
     public function editAction(Request $request, $depotId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $depotManager = $this->get('tisseo_endiv.depot_manager');
         $depot = $depotManager->find($depotId);
@@ -93,8 +91,7 @@ class DepotController extends CoreController
      */
     public function deleteAction($depotId)
     {
-
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         try {
             $depot = $this->get('tisseo_endiv.depot_manager')->find($depotId);
@@ -104,9 +101,7 @@ class DepotController extends CoreController
             $this->addFlashException($e->getMessage());
         }
 
-        return $this->redirect(
-            $this->generateUrl('tisseo_boa_depot_list')
-        );
+        return $this->redirectToRoute('tisseo_boa_depot_list');
     }
 
 }

@@ -36,13 +36,19 @@
                     <div class="row">
                         <div class="col-md-10">
                             {{ form_widget(form.city, { 'attr': {'class': 'hide'}}) }}
-                            <input type="text" id="city" class="form-control" style="margin-bottom:15px"
-                                data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
+                            {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+                                <input type="text" id="city" class="form-control" style="margin-bottom:15px"
+                                    data-url="{{ path('tisseo_boa_json_city') }}"{% if mainStopArea %}"readonly=readonly"{% endif %}>
+                            {% else %}
+                                <input type="text" id="city" class="form-control" style="margin-bottom:15px" disabled>
+                            {% endif %}
                         </div>
                         <div class="col-md-2">
+                            {%- if form.city.vars.data -%}
                             <a id="city-edit" class="btn btn-default" href="{{ path('tisseo_boa_city_edit', {'cityId': form.city.vars.data.id}) }}">
                                 <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
                             </a>
+                            {%- endif -%}
                         </div>
                     </div>
                 </div>
@@ -58,16 +64,18 @@
             </div>
             {% endfor %}
 
-            <div class="row">
-                <div class="col-md-6">
-                    <button type="submit" class="btn btn-success">
-                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                    </button>
-                    <a href="" class="btn btn-default">
-                        <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
-                    </a>
+            {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                        </button>
+                        <a href="" class="btn btn-default">
+                            <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
+                        </a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             {{ form_end(form) }}
         </div>
         {% if stopArea.id %}
@@ -148,9 +156,11 @@
                         {% endif %}
                         {% if stop.id not in usedStops %}
                             <td>
-                                <a class="btn btn-default" href="{{ path('tisseo_boa_stop_detach', {'stopId': stop.id }) }}">
-                                    <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
-                                </a>
+                                {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+                                    <a class="btn btn-default" href="{{ path('tisseo_boa_stop_detach', {'stopId': stop.id }) }}">
+                                        <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete'|trans }}
+                                    </a>
+                                {% endif %}
                             </td>
                         {% else %}
                             <td></td>

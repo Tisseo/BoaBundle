@@ -18,12 +18,10 @@ class CityController extends CoreController
      */
     public function searchAction()
     {
-        $this->isGranted(array(
-                'BUSINESS_MANAGE_STOPS',
-                'BUSINESS_VIEW_STOPS',
-            )
-        );
-
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         return $this->render(
             'TisseoBoaBundle:City:search.html.twig',
@@ -42,7 +40,7 @@ class CityController extends CoreController
      */
     public function createAction(Request $request)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $form = $this->createForm(
             new CityCreateType(),
@@ -91,11 +89,15 @@ class CityController extends CoreController
      */
     public function editAction(Request $request, $cityId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         $cityManager = $this->get('tisseo_endiv.city_manager');
         $city = $cityManager->find($cityId);
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
         $form = $this->createForm(
             new CityEditType(),
             $city,
@@ -103,7 +105,8 @@ class CityController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_city_edit',
                     array('cityId' => $cityId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 
@@ -135,7 +138,7 @@ class CityController extends CoreController
                 'paginate' => true,
                 'processing' => 'true',
                 'serverSide' => 'true',
-                'iDisplayLength' => 100,
+                'iDisplayLength' => 25,
                 'ajax' => $this->generateUrl('tisseo_boa_city_stoparea_json', array(
                     'cityId' => $cityId,
                 )),
@@ -150,7 +153,10 @@ class CityController extends CoreController
      */
     public function listStopAreaAction(Request $request, $cityId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 
@@ -193,7 +199,7 @@ class CityController extends CoreController
 
     public function deleteStopAreaAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 
         try {
@@ -232,11 +238,17 @@ class CityController extends CoreController
             'recordsFiltered' => $dataTotal,
         ];
 
-        $trans = $this->get('translator');
-
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 
+        $stopAreaIds = array();
         foreach($data as $key => $item) {
+            $stopAreaIds[] = $item->getId();
+        }
+
+        $linesByStopArea = $stopAreaManager->getLinesByStopAreas($stopAreaIds);
+
+        foreach($data as $key => $item) {
+
             $result = array();
             $longName = $this->renderView(
                 'TisseoBoaBundle:City:partial_list_col_name.html.twig', [
@@ -244,16 +256,19 @@ class CityController extends CoreController
                 ]
             );
             $stopCount =  $item->getStops()->count();
+
+            $stopAreaId = $item->getId();
+            $lines = (array_key_exists($stopAreaId, $linesByStopArea)) ? $linesByStopArea[$stopAreaId] : array();
+
             $linesNumbers = $this->renderView(
                 'TisseoBoaBundle:City:partial_list_col_line.html.twig',
                 [
-                    'lines' => $stopAreaManager->getLinesByStop($item->getId(), false)
+                    'lines' => $lines
                 ]
             );
 
             try {
                 if ($stopCount == 0) {
-                    $this->isGranted('BUSINESS_MANAGE_STOPS');
                     $btnAction = $this->renderView('TisseoBoaBundle:City:partial_list_col_delete.html.twig', [
                         'stopArea' => $item
                     ]);

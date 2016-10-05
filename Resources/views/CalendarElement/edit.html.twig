@@ -1,3 +1,4 @@
+{% set granted = is_granted('BUSINESS_MANAGE_CALENDARS') %}
 <div id="calendar-elements-list" class="panel col-md-12" data-calendar-id="{{ calendar.id }}">
     <div id="error-container" class="alert alert-danger alert-dismissable danger hidden"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
     <table id="table-calendar-elements" class="table table-hover sort">
@@ -8,7 +9,7 @@
             <th class="col-md-2">{{ 'tisseo.boa.calendar_element.label.included_calendar'|trans }}</th>
             <th class="col-md-1">{{ 'tisseo.boa.calendar_element.label.operator'|trans }}</th>
             <th class="col-md-1">{{ 'tisseo.boa.calendar_element.label.interval'|trans }}</th>
-            <th class="col-md-1">{{ 'tisseo.global.actions'|trans }}</th>
+            {% if granted %}<th class="col-md-1">{{ 'tisseo.global.actions'|trans }}</th>{% endif %}
         </thead>
         <tbody>
         {% set rank = 1 %}
@@ -25,27 +26,33 @@
                 </td>
                 <td>{{ calendarElement.operator }}</td>
                 <td>{{ calendarElement.interval }}</td>
+                {% if granted %}
                 <td>
                     <button class="btn btn-xs btn-danger small-button delete-calendar-element"><span class="glyphicon glyphicon-minus"></span></button>
                     <input type='hidden' value="{{ calendarElement.includedCalendar.id }}">
                 </td>
+                {% endif %}
             </tr>
             {% if loop.last %}
                 {% set rank = calendarElement.rank + 1 %}
             {% endif %}
         {% endfor %}
         </tbody>
-        <tbody>
-            <tr class="new-calendar-element">
-                {{ render(controller('TisseoBoaBundle:CalendarElement:renderForm', {'calendarId': calendar.id, 'rank': rank})) }}
-            </tr>
-        </tbody>
+        {% if granted %}
+            <tbody>
+                <tr class="new-calendar-element">
+                    {{ render(controller('TisseoBoaBundle:CalendarElement:renderForm', {'calendarId': calendar.id, 'rank': rank})) }}
+                </tr>
+            </tbody>
+        {% endif %}
     </table>
-    <br>
-    <button id="submit-calendar-elements" type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-    </button>
-    <button id="delete-calendar-elements" type="submit" class="btn btn-danger pull-right{% if calendar.calendarElements is empty %} hidden{% endif %}">
-        <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete_all'|trans }}
-    </button>
+    {% if granted %}
+        <br>
+        <button id="submit-calendar-elements" type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+        </button>
+        <button id="delete-calendar-elements" type="submit" class="btn btn-danger pull-right{% if calendar.calendarElements is empty %} hidden{% endif %}">
+            <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete_all'|trans }}
+        </button>
+    {% endif %}
 </div>

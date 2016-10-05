@@ -46,7 +46,7 @@ class OdtStopController extends CoreController
      */
     public function renderFormAction($odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
@@ -72,11 +72,11 @@ class OdtStopController extends CoreController
      */
     public function editAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $odtStops = json_decode($request->getContent(), true);
 
@@ -115,8 +115,8 @@ class OdtStopController extends CoreController
      */
     public function createAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
@@ -150,39 +150,31 @@ class OdtStopController extends CoreController
      */
     public function createGroupAction(Request $request, $odtAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
         $form = $this->buildForm($odtArea);
         $form->handleRequest($request);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
-        {
-            try {
-                $data = json_decode($request->getContent(), true);
-                $odtStops = $this->get('tisseo_endiv.odt_stop_manager')->getGroupedOdtStops($data, $odtArea);
-            } catch (\Exception $e) {
-                $this->addFlashException($e->getMessage());
-                $response = $this->redirectToRoute(
-                    'tisseo_boa_odt_area_edit',
-                    array('odtAreaId' => $odtAreaId)
-                );
-                $response->setStatusCode(500);
-                return $response;
-            }
-            return $this->render(
-                'TisseoBoaBundle:OdtStop:new.group.html.twig',
-                array(
-                    'odtStops' => $odtStops,
-                )
+        try {
+            $data = json_decode($request->getContent(), true);
+            $odtStops = $this->get('tisseo_endiv.odt_stop_manager')->getGroupedOdtStops($data, $odtArea);
+        } catch (\Exception $e) {
+            $this->addFlashException($e->getMessage());
+            $response = $this->redirectToRoute(
+                'tisseo_boa_odt_area_edit',
+                array('odtAreaId' => $odtAreaId)
             );
+            $response->setStatusCode(500);
+            return $response;
         }
+
         return $this->render(
-            'TisseoBoaBundle:OdtStop:form.html.twig',
+            'TisseoBoaBundle:OdtStop:new.group.html.twig',
             array(
-                'form' => $form->createView()
+                'odtStops' => $odtStops,
             )
         );
     }

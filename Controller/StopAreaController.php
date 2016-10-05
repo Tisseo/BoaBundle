@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\StopArea;
-use Tisseo\EndivBundle\Entity\StopAreaDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\BoaBundle\Form\Type\StopAreaType;
 use Tisseo\BoaBundle\Form\Type\AliasType;
 use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
@@ -22,11 +22,10 @@ class StopAreaController extends CoreController
      */
     public function searchAction()
     {
-        $this->isGranted(array(
-                'BUSINESS_MANAGE_STOPS',
-                'BUSINESS_VIEW_STOPS',
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS',
+        ));
 
         return $this->render(
             'TisseoBoaBundle:StopArea:search.html.twig',
@@ -45,17 +44,24 @@ class StopAreaController extends CoreController
      */
     public function editAction(Request $request, $stopAreaId = null)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+                'BUSINESS_MANAGE_STOPS',
+                'BUSINESS_VIEW_STOPS',
+            )
+        );
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
         if (empty($stopArea))
         {
             $stopArea = new StopArea();
-            $stopAreaDatasource = new StopAreaDatasource();
-            $this->addBoaDatasource($stopAreaDatasource);
-            $stopArea->addStopAreaDatasources($stopAreaDatasource);
+            $this->get('tisseo_endiv.datasource_manager')->fill(
+                $stopArea,
+                Datasource::DATA_SRC,
+                $this->getUser()->getUsername()
+            );
             $linesByStop = null;
+            $usedStops = null;
             $mainStopArea = false;
             $stops = null;
             $stopsJson = null;
@@ -76,6 +82,7 @@ class StopAreaController extends CoreController
             $stopsJson = json_encode($stopsJson);
         }
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
         $form = $this->createForm(
             new StopAreaType(),
             $stopArea,
@@ -83,7 +90,8 @@ class StopAreaController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_stop_area_edit',
                     array('stopAreaId' => $stopAreaId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 
@@ -126,14 +134,14 @@ class StopAreaController extends CoreController
 
     public function internalTransferAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $transferManager = $this->get('tisseo_endiv.transfer_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
         $transfers = $transferManager->getInternalTransfers($stopArea);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $data = json_decode($request->getContent(), true);
             $stopAreaTransferDuration = $data['stopAreaTransferDuration'];
@@ -179,7 +187,7 @@ class StopAreaController extends CoreController
 
     public function externalTransferAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $transferManager = $this->get('tisseo_endiv.transfer_manager');
@@ -187,7 +195,7 @@ class StopAreaController extends CoreController
         $startStops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
         $transfers = $transferManager->getExternalTransfers($stopArea);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $data = json_decode($request->getContent(), true);
 
@@ -228,33 +236,31 @@ class StopAreaController extends CoreController
      */
     public function createExternalTransferAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
-        {
-            try {
-                $data = json_decode($request->getContent(), true);
-                $transfers = $this->get('tisseo_endiv.transfer_manager')->createExternalTransfers($data, $stopArea);
-            } catch (\Exception $e) {
-                $this->addFlashException($e->getMessage());
-                $response = $this->redirectToRoute(
-                    'tisseo_boa_stop_area_edit',
-                    array('stopAreaId' => $stopAreaId)
-                );
-                $response->setStatusCode(500);
-                return $response;
-            }
-            return $this->render(
-                'TisseoBoaBundle:StopArea:create_external_transfer.html.twig',
-                array(
-                    'transfers' => $transfers,
-                )
+        try {
+            $data = json_decode($request->getContent(), true);
+            $transfers = $this->get('tisseo_endiv.transfer_manager')->createExternalTransfers($data, $stopArea);
+        } catch (\Exception $e) {
+            $this->addFlashException($e->getMessage());
+            $response = $this->redirectToRoute(
+                'tisseo_boa_stop_area_edit',
+                array('stopAreaId' => $stopAreaId)
             );
+            $response->setStatusCode(500);
+            return $response;
         }
+
+        return $this->render(
+            'TisseoBoaBundle:StopArea:create_external_transfer.html.twig',
+            array(
+                'transfers' => $transfers,
+            )
+        );
     }
 
 /**
@@ -266,11 +272,11 @@ class StopAreaController extends CoreController
      */
     public function editAliasesAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($stopAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $aliases = json_decode($request->getContent(), true);
 
@@ -303,7 +309,7 @@ class StopAreaController extends CoreController
 
     public function geometriesAction(Request $request, $stopAreaId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
         $data = array();
@@ -343,7 +349,7 @@ class StopAreaController extends CoreController
             )
             ->getForm();
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {

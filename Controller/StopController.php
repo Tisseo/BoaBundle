@@ -7,7 +7,7 @@ use CrEOF\Spatial\PHP\Types\Geometry\Point;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Stop;
 use Tisseo\EndivBundle\Entity\StopHistory;
-use Tisseo\EndivBundle\Entity\StopDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\BoaBundle\Form\Type\StopCreateType;
 use Tisseo\BoaBundle\Form\Type\StopEditType;
 
@@ -20,7 +20,7 @@ class StopController extends CoreController
      */
     public function searchAction()
     {
-        $this->isGranted(array(
+        $this->denyAccessUnlessGranted(array(
             'BUSINESS_MANAGE_STOPS',
             'BUSINESS_VIEW_STOPS',
             )
@@ -42,13 +42,16 @@ class StopController extends CoreController
      */
     public function createAction(Request $request)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stop = new Stop();
         $stop->addStopHistory(new StopHistory());
-        $stopDatasource = new StopDatasource();
-        $this->addBoaDatasource($stopDatasource);
-        $stop->addStopDatasources($stopDatasource);
+
+        $this->get('tisseo_endiv.datasource_manager')->fill(
+            $stop,
+            Datasource::DATA_SRC,
+            $this->getUser()->getUsername()
+        );
 
         $form = $this->createForm(
             new StopCreateType(),
@@ -103,7 +106,11 @@ class StopController extends CoreController
     // TODO: Fix, refactor the whole action (about accessibility and phantoms)
     public function editAction(Request $request, $stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted(array(
+                'BUSINESS_MANAGE_STOPS',
+                'BUSINESS_VIEW_STOPS',
+            )
+        );
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
@@ -122,6 +129,7 @@ class StopController extends CoreController
             $stopHistory = $stop->getCurrentOrLatestStopHistory(new \Datetime());
         }
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
         $form = $this->createForm(
             new StopEditType($stopHistory),
             $stop,
@@ -129,7 +137,8 @@ class StopController extends CoreController
                 'action' => $this->generateUrl(
                     'tisseo_boa_stop_edit',
                     array('stopId' => $stopId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
 
@@ -181,7 +190,7 @@ class StopController extends CoreController
      */
     public function detachAction($stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         try
         {
@@ -208,7 +217,7 @@ class StopController extends CoreController
      */
     public function switchLockAction($identifier)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $this->get('tisseo_endiv.stop_manager')->toggleLock(array($identifier));
 
@@ -223,7 +232,7 @@ class StopController extends CoreController
      */
     public function switchMultipleLockAction(Request $request)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stops = $request->request->all();
         if (!empty($stops)) {
@@ -238,7 +247,7 @@ class StopController extends CoreController
      */
     public function lockedAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_STOPS',
                 'BUSINESS_VIEW_STOPS'

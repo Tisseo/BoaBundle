@@ -6,14 +6,16 @@
 {% block header_content %}
     {# TODO: datatables provides this functionality : https://datatables.net/examples/api/multi_filter_select.html #}
     {% if lineVersions is not empty %}
-    <div id="filter" class="form-inline list-unstyled" style="margin-bottom:20px;">
+    <div class="row col-md-12">
+        <div id="filter" class="col-md-2" style="margin-bottom:20px;">
+            <label for="datasource">{{ 'tisseo.boa.line_version.label.datasource'|trans }}</label>
             <select id="datasource" class="form-control" name="datasource">
-                <option value="" selected style="color:grey;">{{ 'tisseo.boa.line_version.label.datasource'|trans }}</option>
+                <option selected></option>
                 {% for d in datasources %}
                     <option value="{{ d.name }}">{{ d.name }}</option>
                 {% endfor %}
             </select>
-            <input type="text" id="date" class="form-control" name="date" placeHolder="{{ 'tisseo.boa.line_version.label.date'|trans }}">
+        </div>
     </div>
     {% endif %}
 {% endblock %}
@@ -50,7 +52,7 @@
                 <td>{{ lineVersion.plannedEndDate.date | date('d/m/Y') }}</td>
                 <td>
                     {% if (is_granted(['BUSINESS_MANAGE_ROUTES', 'BUSINESS_VIEW_ROUTES'])) %}
-                        {% if timecardViewAvailable %}
+                        {% if timecardViewAvailable and is_granted('BUSINESS_MANAGE_ROUTES') %}
                         <a class="btn btn-default" href="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
                             <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.boa.line_version.action.calendar'|trans }}
                         </a>
@@ -68,51 +70,22 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {# TODO: JS SCRIPT  + EMPTY DATE VALUE UPDATE + FILTER #}
     <script>
-        require(['jquery', 'bootstrap/datepicker', 'bootstrap/datepicker/fr', 'core/datatables'], function($) {
-            $('#filter').find('input[id=date]').datepicker({
-                language: 'fr',
-                todayHighlight: true,
-                autoclose: true
-            })
-            .on('changeDate', function() {
-                $('.datatable').DataTable().draw();
-            });
-
-            $(document).on('change', '#datasource', function() {
-                $('.datatable').DataTable().draw();
-            });
-
-            function convertStringToDate(dateString) {
-                var d = dateString.split("/");
-                return new Date(d[2], d[1] - 1, d[0]);
-            }
-
+        require(['jquery', 'core/datatables'], function($) {
             $.fn.dataTable.ext.search.push(
-                function( settings, data, dataIndex ) {
-                    if( !$('#date').val() && !$('#datasource').val() ) return true;
-
-                    var lineDatesValid = true;
-                    if( $('#date').val() ) {
-                        var date = convertStringToDate($('#date').val());
-                        var startDate = convertStringToDate(data[4]);
-                        var endDate = convertStringToDate(data[5]);
-
-                        lineDatesValid = ( date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime() );
+                function(settings, data, dataIndex) {
+                    if (!$('#datasource').val()) {
+                        return true;
                     }
-
-                    if( !$('#datasource').val() ) return lineDatesValid;
 
                     var selectedDatasource = $('#datasource').val();
                     var currentDatasource = data[3];
 
-                    return lineDatesValid && ( selectedDatasource == currentDatasource );
+                    return selectedDatasource == currentDatasource;
                 }
             );
-            $(document).ready(function() {
-                $('#datasource').val('Service Données');
-                $('#datasource').trigger('change');
+            $(document).on('change', '#datasource', function() {
+                $('.datatable').DataTable().draw();
             });
         });
     </script>

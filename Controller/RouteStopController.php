@@ -48,7 +48,7 @@ class RouteStopController extends CoreController
      */
     public function renderFormAction($routeId, $rank)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
@@ -72,7 +72,10 @@ class RouteStopController extends CoreController
      */
     public function listAction($routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $route =  $this->get('tisseo_endiv.route_manager')->find($routeId);
 
@@ -96,12 +99,18 @@ class RouteStopController extends CoreController
      */
     public function editAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === 'POST')
-        {
+        if (
+            $request->isXmlHttpRequest() &&
+            $request->getMethod() === Request::METHOD_POST &&
+            $this->isGranted('BUSINESS_MANAGE_ROUTES')
+        ) {
             $routeStops = json_decode($request->getContent(), true);
 
             try {
@@ -139,15 +148,14 @@ class RouteStopController extends CoreController
      */
     public function createAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
-        $this->isPostAjax($request);
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
+        $this->isAjax($request, Request::METHOD_POST);
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
         $form = $this->buildForm($route);
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $routeStop = $form->getData();
             return $this->render(
                 'TisseoBoaBundle:RouteStop:new.html.twig',

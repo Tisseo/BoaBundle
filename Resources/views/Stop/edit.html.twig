@@ -36,7 +36,11 @@
                     <div class="row">
                         <div class="col-md-10">
                             {{ form_widget(form.stopArea, { 'attr': {'class': 'hide'}}) }}
-                            <input type="text" id="stop_area" class="form-control" style="margin-bottom:15px;" data-url="{{ path('tisseo_boa_json_stop_area') }}">
+                            {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+                                <input type="text" id="stop_area" class="form-control" style="margin-bottom:15px;" data-url="{{ path('tisseo_boa_json_stop_area') }}">
+                            {% else %}
+                                <input type="text" id="stop_area" class="form-control" style="margin-bottom:15px;" disabled>
+                            {% endif %}
                         </div>
                         <div class="col-md-2">
                             <a id="stop-area-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': form.stopArea.vars.data.id}) }}">
@@ -75,16 +79,18 @@
             </div>
             {% endfor %}
 
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-success">
-                        <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
-                    </button>
-                    <a href="" class="btn btn-default">
-                        <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
-                    </a>
+            {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
+                        </button>
+                        <a href="" class="btn btn-default">
+                            <span class="glyphicon glyphicon-repeat"></span> {{ 'tisseo.global.cancel'|trans }}
+                        </a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             {{ form_end(form) }}
             <div class="row">
                 <div class="col-md-12">
@@ -144,22 +150,24 @@
             {% endfor %}
             </tbody>
         </table>
-        <a href="{{ path('tisseo_boa_stop_history_create', {'stopId': stop.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-default">
-            <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
-        </a>
-        {% if stop.Closable %}
-        <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal">
-            <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.global.closure'|trans }}
-        </a>
-        {% endif %}
-        {% if stop.lock %}
-            <a class="btn btn-warning" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
-                <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
+        {% if is_granted('BUSINESS_MANAGE_STOPS') %}
+            <a href="{{ path('tisseo_boa_stop_history_create', {'stopId': stop.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-default">
+                <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
             </a>
-        {% else %}
-            <a class="btn btn-danger" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
-                <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.lock'|trans }}
+            {% if stop.Closable %}
+            <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal">
+                <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.global.closure'|trans }}
             </a>
+            {% endif %}
+            {% if stop.lock %}
+                <a class="btn btn-warning" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
+                    <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
+                </a>
+            {% else %}
+                <a class="btn btn-danger" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
+                    <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.lock'|trans }}
+                </a>
+            {% endif %}
         {% endif %}
     </div>
 

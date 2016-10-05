@@ -16,7 +16,7 @@ class PoiTypeController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CONFIGURATION',
                 'BUSINESS_VIEW_CONFIGURATION'
@@ -41,7 +41,7 @@ class PoiTypeController extends CoreController
      */
     public function editAction(Request $request, $poiTypeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $poiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
         $poiType = $poiTypeManager->find($poiTypeId);

@@ -8,7 +8,7 @@ use Tisseo\BoaBundle\Form\Type\RouteCreateType;
 use Tisseo\BoaBundle\Form\Type\RouteEditType;
 use Tisseo\BoaBundle\Form\Type\RouteDuplicateType;
 use Tisseo\EndivBundle\Entity\Route;
-use Tisseo\EndivBundle\Entity\RouteDatasource;
+use Tisseo\EndivBundle\Entity\Datasource;
 
 /**
  * Class RouteController
@@ -26,14 +26,13 @@ class RouteController extends CoreController
      */
     public function listAction($lineVersionId)
     {
-        $this->isGranted(
-            array(
-                'BUSINESS_MANAGE_ROUTES',
-                'BUSINESS_VIEW_ROUTES'
-            )
-        );
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+
         return $this->render('TisseoBoaBundle:Route:list.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.transport.manage',
@@ -56,16 +55,19 @@ class RouteController extends CoreController
      */
     public function createAction(Request $request, $lineVersionId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
         $lineVersion = $lineVersionManager->find($lineVersionId);
 
         $route = new Route();
         $route->setLineVersion($lineVersion);
-        $routeDatasource = new RouteDatasource();
-        $this->addBoaDatasource($routeDatasource);
-        $route->addRouteDatasource($routeDatasource);
+
+        $this->get('tisseo_endiv.datasource_manager')->fill(
+            $route,
+            Datasource::DATA_SRC,
+            $this->getUser()->getUsername()
+        );
 
         $form = $this->createForm(
             new RouteCreateType(),
@@ -123,7 +125,10 @@ class RouteController extends CoreController
      */
     public function editAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
@@ -136,6 +141,7 @@ class RouteController extends CoreController
         }
         $routeStopsJson = json_encode($routeStopsJson);
 
+        $disabled = !$this->isGranted('BUSINESS_MANAGE_ROUTES');
         $form = $this->createForm(
             new RouteEditType(),
             $route,
@@ -143,9 +149,11 @@ class RouteController extends CoreController
                 'action'=> $this->generateUrl(
                     'tisseo_boa_route_edit',
                     array('routeId' => $routeId)
-                )
+                ),
+                'disabled' => $disabled
             )
         );
+
         $form->handleRequest($request);
         if ($form->isValid())
         {
@@ -188,7 +196,7 @@ class RouteController extends CoreController
      */
     public function deleteAction($routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         try
@@ -219,22 +227,18 @@ class RouteController extends CoreController
      */
     public function tripCalendarAction(Request $request, $lineVersionId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
 
-        if ($request->getMethod() === 'POST')
-        {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $datas = $request->request->get('route');
 
-            try
-            {
+            try {
                 $routeManager->linkTripCalendars($datas);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -263,7 +267,7 @@ class RouteController extends CoreController
      */
     public function duplicateAction(Request $request, $routeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_ROUTES');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
@@ -285,7 +289,7 @@ class RouteController extends CoreController
             try
             {
                 // TODO: check duplicate function in RouteManager and 'line_version' parameter from view
-                $userName = $this->get('security.context')->getToken()->getUser()->getUsername();
+                $userName = $this->getUser()->getUsername();
                 $lineVersionId = $request->request->get('line_version');
                 $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
                 $routeManager->duplicate($route, $lineVersion, $userName);

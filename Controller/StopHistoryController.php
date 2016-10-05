@@ -19,7 +19,7 @@ class StopHistoryController extends CoreController
      */
     public function createAction(Request $request, $stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
@@ -98,7 +98,7 @@ class StopHistoryController extends CoreController
      */
     public function closeAction(Request $request, $stopId)
     {
-        $this->isGranted('BUSINESS_MANAGE_STOPS');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);

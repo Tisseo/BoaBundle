@@ -16,7 +16,7 @@ class PhysicalModeController extends CoreController
      */
     public function listAction()
     {
-        $this->isGranted(
+        $this->denyAccessUnlessGranted(
             array(
                 'BUSINESS_MANAGE_CONFIGURATION',
                 'BUSINESS_VIEW_CONFIGURATION'
@@ -41,7 +41,7 @@ class PhysicalModeController extends CoreController
      */
     public function editAction(Request $request, $physicalModeId)
     {
-        $this->isGranted('BUSINESS_MANAGE_CONFIGURATION');
+        $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         $physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
         $physicalMode = $physicalModeManager->find($physicalModeId);
