@@ -116,17 +116,14 @@ class RouteStopController extends CoreController
             try {
                 $this->get('tisseo_endiv.routestop_manager')->updateRouteStops($routeStops, $route);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-                $code = 302;
             } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
-                $code = 500;
             }
 
             $response = $this->redirectToRoute(
                 'tisseo_boa_route_edit',
                 array('routeId' => $routeId)
             );
-            $response->setStatusCode($code);
 
             return $response;
         }
