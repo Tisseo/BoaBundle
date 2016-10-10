@@ -48,7 +48,7 @@ class OdtStopController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
+        $odtArea = $this->get('tisseo_endiv.manager.odt_area')->find($odtAreaId);
 
         $form = $this->buildForm($odtArea);
 
@@ -74,14 +74,14 @@ class OdtStopController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
+        $odtArea = $this->get('tisseo_endiv.manager.odt_area')->find($odtAreaId);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $odtStops = json_decode($request->getContent(), true);
 
             try {
-                $this->get('tisseo_endiv.odt_stop_manager')->updateOdtStops($odtStops, $odtArea);
+                $this->get('tisseo_endiv.manager.odt_stop')->updateOdtStops($odtStops, $odtArea);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
                 $code = 302;
             } catch (\Exception $e) {
@@ -118,7 +118,7 @@ class OdtStopController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
         $this->isAjax($request, Request::METHOD_POST);
 
-        $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
+        $odtArea = $this->get('tisseo_endiv.manager.odt_area')->find($odtAreaId);
 
         $form = $this->buildForm($odtArea);
         $form->handleRequest($request);
@@ -153,14 +153,14 @@ class OdtStopController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
         $this->isAjax($request, Request::METHOD_POST);
 
-        $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
+        $odtArea = $this->get('tisseo_endiv.manager.odt_area')->find($odtAreaId);
 
         $form = $this->buildForm($odtArea);
         $form->handleRequest($request);
 
         try {
             $data = json_decode($request->getContent(), true);
-            $odtStops = $this->get('tisseo_endiv.odt_stop_manager')->getGroupedOdtStops($data, $odtArea);
+            $odtStops = $this->get('tisseo_endiv.manager.odt_stop')->getGroupedOdtStops($data, $odtArea);
         } catch (\Exception $e) {
             $this->addFlashException($e->getMessage());
             $response = $this->redirectToRoute(

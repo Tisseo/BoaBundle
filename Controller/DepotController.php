@@ -26,7 +26,7 @@ class DepotController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.depot.title.list',
-                'depots' => $this->get('tisseo_endiv.depot_manager')->findAll()
+                'depots' => $this->get('tisseo_endiv.manager.depot')->findAll()
             )
         );
     }
@@ -41,7 +41,7 @@ class DepotController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $depotManager = $this->get('tisseo_endiv.depot_manager');
+        $depotManager = $this->get('tisseo_endiv.manager.depot');
         $depot = $depotManager->find($depotId);
 
         if (empty($depot))
@@ -94,14 +94,13 @@ class DepotController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
         try {
-            $depot = $this->get('tisseo_endiv.depot_manager')->find($depotId);
+            $depot = $this->get('tisseo_endiv.manager.depot')->find($depotId);
             if (!empty($depot))
-                $this->get('tisseo_endiv.depot_manager')->delete($depot);
+                $this->get('tisseo_endiv.manager.depot')->delete($depot);
         } catch(\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
         return $this->redirectToRoute('tisseo_boa_depot_list');
     }
-
 }

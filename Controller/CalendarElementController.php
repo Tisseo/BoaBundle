@@ -52,7 +52,7 @@ class CalendarElementController extends CoreController
             'BUSINESS_VIEW_CALENDARS'
         ));
 
-        $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
+        $calendar = $this->get('tisseo_endiv.manager.calendar')->find($calendarId);
 
         $disabled = !$this->isGranted('BUSINESS_MANAGE_CALENDARS');
         $form = $this->buildForm($calendar, $rank, array('disabled' => $disabled));
@@ -83,7 +83,7 @@ class CalendarElementController extends CoreController
             'BUSINESS_VIEW_CALENDARS'
         ));
 
-        $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
+        $calendar = $this->get('tisseo_endiv.manager.calendar')->find($calendarId);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
@@ -91,7 +91,7 @@ class CalendarElementController extends CoreController
 
             try
             {
-                $this->get('tisseo_endiv.calendar_element_manager')->updateCalendarElements($calendarElements, $calendar);
+                $this->get('tisseo_endiv.manager.calendar_element')->updateCalendarElements($calendarElements, $calendar);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
 
                 return $this->redirectToRoute(
@@ -128,7 +128,7 @@ class CalendarElementController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
         $this->isAjax($request, Request::METHOD_POST);
 
-        $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
+        $calendar = $this->get('tisseo_endiv.manager.calendar')->find($calendarId);
 
         $form = $this->buildForm($calendar);
         $form->handleRequest($request);

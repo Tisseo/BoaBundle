@@ -16,12 +16,12 @@ class PoiMonitoringController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
 
-        $lineVersionOptions = $this->get('tisseo_endiv.line_version_manager')->findAllSortedByLineNumber();
+        $lineVersionOptions = $this->get('tisseo_endiv.manager.line_version')->findAllSortedByLineNumber();
 
-        $lineVersion = empty($lineVersionId) ? null : $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+        $lineVersion = empty($lineVersionId) ? null : $this->get('tisseo_endiv.manager.line_version')->find($lineVersionId);
 
         $poiByStopArea = (empty($lineVersion)) ? null
-            : $this->get('tisseo_endiv.line_version_manager')->getPoiByStopArea($lineVersion);
+            : $this->get('tisseo_endiv.manager.line_version')->getPoiByStopArea($lineVersion);
 
         return $this->render(
             'TisseoBoaBundle:Monitoring:poi_search.html.twig',

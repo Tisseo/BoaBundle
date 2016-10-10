@@ -30,7 +30,7 @@ class StopAccessibilityController extends CoreController
             try
             {
                 $stopAccessibility = $form->getData();
-                $this->get('tisseo_endiv.stop_manager')->saveStopAccessibility($stopId, $stopAccessibility);
+                $this->get('tisseo_endiv.manager.stop')->saveStopAccessibility($stopId, $stopAccessibility);
                 $this->get('session')->getFlashBag()->add('success', 'stop_accessibility.created');
             }
             catch(\Exception $e) {
@@ -56,7 +56,7 @@ class StopAccessibilityController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $this->get('tisseo_endiv.stop_manager')->deleteStopAccessibility($stopId, $stopAccessibilityId);
+        $this->get('tisseo_endiv.manager.stop')->deleteStopAccessibility($stopId, $stopAccessibilityId);
 
         return $this->redirectToRoute(
             'tisseo_boa_stop_edit',

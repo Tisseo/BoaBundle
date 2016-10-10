@@ -28,7 +28,7 @@ class AccessibilityModeController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.accessibility_mode.title.list',
-                'accessibilityModes' => $this->get('tisseo_endiv.accessibility_mode_manager')->findAll()
+                'accessibilityModes' => $this->get('tisseo_endiv.manager.accessibility_mode')->findAll()
             )
         );
     }
@@ -43,7 +43,7 @@ class AccessibilityModeController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $accessModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
+        $accessModeManager = $this->get('tisseo_endiv.manager.accessibility_mode');
         $accessibilityMode = $accessModeManager->find($accessibilityModeId);
 
         if (empty($accessibilityMode))

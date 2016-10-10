@@ -50,12 +50,12 @@ class StopAreaController extends CoreController
             )
         );
 
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
         $stopArea = $stopAreaManager->find($stopAreaId);
         if (empty($stopArea))
         {
             $stopArea = new StopArea();
-            $this->get('tisseo_endiv.datasource_manager')->fill(
+            $this->get('tisseo_endiv.manager.datasource')->fill(
                 $stopArea,
                 Datasource::DATA_SRC,
                 $this->getUser()->getUsername()
@@ -136,8 +136,8 @@ class StopAreaController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-        $transferManager = $this->get('tisseo_endiv.transfer_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
+        $transferManager = $this->get('tisseo_endiv.manager.transfer');
         $stopArea = $stopAreaManager->find($stopAreaId);
         $transfers = $transferManager->getInternalTransfers($stopArea);
 
@@ -189,8 +189,8 @@ class StopAreaController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
-        $transferManager = $this->get('tisseo_endiv.transfer_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
+        $transferManager = $this->get('tisseo_endiv.manager.transfer');
         $stopArea = $stopAreaManager->find($stopAreaId);
         $startStops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
         $transfers = $transferManager->getExternalTransfers($stopArea);
@@ -239,12 +239,12 @@ class StopAreaController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
         $this->isAjax($request, Request::METHOD_POST);
 
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
         $stopArea = $stopAreaManager->find($stopAreaId);
 
         try {
             $data = json_decode($request->getContent(), true);
-            $transfers = $this->get('tisseo_endiv.transfer_manager')->createExternalTransfers($data, $stopArea);
+            $transfers = $this->get('tisseo_endiv.manager.transfer')->createExternalTransfers($data, $stopArea);
         } catch (\Exception $e) {
             $this->addFlashException($e->getMessage());
             $response = $this->redirectToRoute(
@@ -274,14 +274,14 @@ class StopAreaController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($stopAreaId);
+        $stopArea = $this->get('tisseo_endiv.manager.stop_area')->find($stopAreaId);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
         {
             $aliases = json_decode($request->getContent(), true);
 
             try {
-                $this->get('tisseo_endiv.stop_area_manager')->updateAliases($aliases, $stopArea);
+                $this->get('tisseo_endiv.manager.stop_area')->updateAliases($aliases, $stopArea);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
                 $code = 302;
             } catch (\Exception $e) {
@@ -310,7 +310,7 @@ class StopAreaController extends CoreController
     public function geometriesAction(Request $request, $stopAreaId)
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
         $stopArea = $stopAreaManager->find($stopAreaId);
         $data = array();
 

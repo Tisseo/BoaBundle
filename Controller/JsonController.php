@@ -20,15 +20,24 @@ class JsonController extends CoreController
         if ($calendarType !== null) {
             if (strpos($calendarType, ',')) {
                 $calendarType = explode(',', $calendarType);
-            } else {
+            } else if ($calendarType !== null) {
                 $calendarType = array($calendarType);
             }
+        } else {
+            $calendarType = array();
         }
 
         $term = $request->request->get('term');
         $lineVersionId = $request->query->get('line_version_id');
 
-        $data = $this->get('tisseo_endiv.calendar_manager')->findCalendarsLike($term, $calendarType, 0, $lineVersionId);
+        $data = $this->get('tisseo_endiv.manager.calendar')->findCalendarsLike($term, $calendarType, $lineVersionId);
+
+        if (empty($data)) {
+            return $this->prepareJsonResponse(
+                $this->get('translator')->trans('tisseo.global.no_data'),
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        }
 
         return $this->prepareJsonResponse($data);
     }
@@ -44,7 +53,7 @@ class JsonController extends CoreController
         $this->isAjax($request, Request::METHOD_POST);
 
         $term = $request->request->get('term');
-        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, null, true);
+        $data = $this->get('tisseo_endiv.manager.stop')->findStopsLike($term, null, true);
 
         return $this->prepareJsonResponse($data);
     }
@@ -59,7 +68,7 @@ class JsonController extends CoreController
         $this->isAjax($request, Request::METHOD_POST);
 
         $term = $request->request->get('term');
-        $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+        $data = $this->get('tisseo_endiv.manager.stop_area')->findStopAreasLike($term);
         return $this->prepareJsonResponse($data);
     }
 
@@ -73,12 +82,12 @@ class JsonController extends CoreController
         $this->isAjax($request, Request::METHOD_POST);
 
         $term = $request->request->get('term');
-        $stopData = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, null, true);
+        $stopData = $this->get('tisseo_endiv.manager.stop')->findStopsLike($term, null, true);
         foreach ($stopData as $key => $stopItem){
             $stopData[$key]['type'] = 'sp';
         }
 
-        $stopAreaData = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term);
+        $stopAreaData = $this->get('tisseo_endiv.manager.stop_area')->findStopAreasLike($term);
         foreach ($stopAreaData as $key => $stopItem){
             $stopAreaData[$key]['type'] = 'sa';
         }
@@ -96,12 +105,12 @@ class JsonController extends CoreController
         $this->isAjax($request, Request::METHOD_POST);
 
         $term = $request->request->get('term');
-        $stops = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, null, true);
+        $stops = $this->get('tisseo_endiv.manager.stop')->findStopsLike($term, null, true);
         foreach ($stops as $key => $item){
             $stops[$key]['type'] = 'sp';
         }
 
-        $odtAreas = $this->get('tisseo_endiv.odt_area_manager')->findOdtAreasLike($term);
+        $odtAreas = $this->get('tisseo_endiv.manager.odt_area')->findOdtAreasLike($term);
         foreach ($odtAreas as $key => $item){
             $odtAreas[$key]['type'] = 'oa';
         }
@@ -119,7 +128,7 @@ class JsonController extends CoreController
         $this->isAjax($request, Request::METHOD_POST);
 
         $term = $request->request->get('term');
-        $data = $this->get('tisseo_endiv.city_manager')->findCityLike($term);
+        $data = $this->get('tisseo_endiv.manager.city')->findCityLike($term);
 
         return $this->prepareJsonResponse($data);
     }
@@ -135,7 +144,7 @@ class JsonController extends CoreController
 
         $term = $request->request->get('term');
         $result = array();
-        $data = $this->get('tisseo_endiv.stop_area_manager')->findStopAreasLike($term, $stopAreaId);
+        $data = $this->get('tisseo_endiv.manager.stop_area')->findStopAreasLike($term, $stopAreaId);
         foreach ($data as $item)
         {
             $result[] = array(
@@ -144,7 +153,7 @@ class JsonController extends CoreController
                 "type" => "sa"
             );
         }
-        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, $stopAreaId, true);
+        $data = $this->get('tisseo_endiv.manager.stop')->findStopsLike($term, $stopAreaId, true);
         foreach ($data as $item)
         {
             $result[] = array(
@@ -166,7 +175,7 @@ class JsonController extends CoreController
 
         $this->isAjax($request, Request::METHOD_POST);
 
-        $data = $this->get('tisseo_endiv.trip_manager')->getTripTemplates(
+        $data = $this->get('tisseo_endiv.manager.trip')->getTripTemplates(
             $request->request->get('term'),
             $request->request->get('routeId')
         );

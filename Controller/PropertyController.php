@@ -28,7 +28,7 @@ class PropertyController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.property.title.list',
-                'properties' => $this->get('tisseo_endiv.property_manager')->findAll()
+                'properties' => $this->get('tisseo_endiv.manager.property')->findAll()
             )
         );
     }
@@ -43,7 +43,7 @@ class PropertyController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $propertyManager = $this->get('tisseo_endiv.property_manager');
+        $propertyManager = $this->get('tisseo_endiv.manager.property');
         $property = $propertyManager->find($propertyId);
 
         if (empty($property))

@@ -88,7 +88,7 @@ class CalendarController extends CoreController
         $filters = (empty($search['value']))?[]:['name' => $search['value']];
         $filters = array_merge(array('calendarType' => $calendarType), $filters);
 
-        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $calendarManager = $this->get('tisseo_endiv.manager.calendar');
         $data = ($calendarType ? $calendarManager->advancedFindBy($filters, $orderParam, $length, $start) : $calendarManager->findAll());
 
         $dataTotal = $calendarManager->findByCountResult($filters);
@@ -182,7 +182,7 @@ class CalendarController extends CoreController
             'BUSINESS_VIEW_CALENDARS'
         ));
 
-        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $calendarManager = $this->get('tisseo_endiv.manager.calendar');
         $calendar = $calendarManager->find($calendarId);
 
         if (empty($calendar)) {
@@ -207,7 +207,7 @@ class CalendarController extends CoreController
             $calendar = $form->getData();
 
             try {
-                $this->get('tisseo_endiv.datasource_manager')->fill(
+                $this->get('tisseo_endiv.manager.datasource')->fill(
                     $calendar,
                     Datasource::DATA_SRC,
                     $this->getUser()->getUsername()
@@ -240,7 +240,7 @@ class CalendarController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
 
         try {
-            $this->get('tisseo_endiv.calendar_manager')->remove($calendarId);
+            $this->get('tisseo_endiv.manager.calendar')->remove($calendarId);
         } catch(\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
@@ -268,7 +268,7 @@ class CalendarController extends CoreController
         $response = new JsonResponse();
 
         if ($startDate && $endDate) {
-            $bitmask = $this->get('tisseo_endiv.calendar_manager')->getCalendarBitmask($calendarId, $startDate, $endDate);
+            $bitmask = $this->get('tisseo_endiv.manager.calendar')->getCalendarBitmask($calendarId, $startDate, $endDate);
             $response->setData($this->buildCalendarBitMask($startDate, $bitmask));
         } else {
             $response->setStatus(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
@@ -291,7 +291,7 @@ class CalendarController extends CoreController
         $dayCalendarId = $request->request->get('dayCalendarId');
         $periodCalendarId = $request->request->get('periodCalendarId');
 
-        $calendarManager = $this->get('tisseo_endiv.calendar_manager');
+        $calendarManager = $this->get('tisseo_endiv.manager.calendar');
         $periodCalendar = $calendarManager->find($periodCalendarId);
 
         $bitmask = $calendarManager->getCalendarsIntersectionBitmask(

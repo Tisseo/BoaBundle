@@ -58,7 +58,7 @@ class CityController extends CoreController
             try
             {
 
-                $this->get('tisseo_endiv.city_manager')->save($form->getData());
+                $this->get('tisseo_endiv.manager.city')->save($form->getData());
                 $this->addFlash('success', 'tisseo.flash.success.created');
 
             } catch(\Exception $e) {
@@ -94,7 +94,7 @@ class CityController extends CoreController
             'BUSINESS_VIEW_STOPS',
         ));
 
-        $cityManager = $this->get('tisseo_endiv.city_manager');
+        $cityManager = $this->get('tisseo_endiv.manager.city');
         $city = $cityManager->find($cityId);
 
         $disabled = !$this->isGranted('BUSINESS_MANAGE_STOPS');
@@ -158,7 +158,7 @@ class CityController extends CoreController
             'BUSINESS_VIEW_STOPS',
         ));
 
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
 
         $length = $request->get('length');
         $length = $length && ($length!=-1)?$length:0;
@@ -200,7 +200,7 @@ class CityController extends CoreController
     public function deleteStopAreaAction(Request $request, $stopAreaId)
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
 
         try {
             /** @var /Tisseo/EndivBundle/Entity/StopArea $stopArea */
@@ -238,7 +238,7 @@ class CityController extends CoreController
             'recordsFiltered' => $dataTotal,
         ];
 
-        $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
+        $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
 
         $stopAreaIds = array();
         foreach($data as $key => $item) {

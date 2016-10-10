@@ -50,7 +50,7 @@ class RouteStopController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
 
         $form = $this->buildForm($route, $rank);
 
@@ -77,7 +77,7 @@ class RouteStopController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $route =  $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route =  $this->get('tisseo_endiv.manager.route')->find($routeId);
 
         return $this->render(
             'TisseoBoaBundle:RouteStop:list.html.twig',
@@ -104,7 +104,7 @@ class RouteStopController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
 
         if (
             $request->isXmlHttpRequest() &&
@@ -114,7 +114,7 @@ class RouteStopController extends CoreController
             $routeStops = json_decode($request->getContent(), true);
 
             try {
-                $this->get('tisseo_endiv.routestop_manager')->updateRouteStops($routeStops, $route);
+                $this->get('tisseo_endiv.manager.routestop')->updateRouteStops($routeStops, $route);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
             } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
@@ -148,7 +148,7 @@ class RouteStopController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
         $this->isAjax($request, Request::METHOD_POST);
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
 
         $form = $this->buildForm($route);
         $form->handleRequest($request);

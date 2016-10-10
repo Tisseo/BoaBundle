@@ -31,7 +31,7 @@ class RouteController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+        $lineVersion = $this->get('tisseo_endiv.manager.line_version')->find($lineVersionId);
 
         return $this->render('TisseoBoaBundle:Route:list.html.twig',
             array(
@@ -57,13 +57,13 @@ class RouteController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $lineVersionManager = $this->get('tisseo_endiv.line_version_manager');
+        $lineVersionManager = $this->get('tisseo_endiv.manager.line_version');
         $lineVersion = $lineVersionManager->find($lineVersionId);
 
         $route = new Route();
         $route->setLineVersion($lineVersion);
 
-        $this->get('tisseo_endiv.datasource_manager')->fill(
+        $this->get('tisseo_endiv.manager.datasource')->fill(
             $route,
             Datasource::DATA_SRC,
             $this->getUser()->getUsername()
@@ -88,7 +88,7 @@ class RouteController extends CoreController
 
             try
             {
-                $this->get('tisseo_endiv.route_manager')->save($route);
+                $this->get('tisseo_endiv.manager.route')->save($route);
                 $this->addFlash('success', 'route.message.created');
                 return $this->redirectToRoute(
                     'tisseo_boa_route_edit',
@@ -130,7 +130,7 @@ class RouteController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $routeManager = $this->get('tisseo_endiv.manager.route');
         $route = $routeManager->find($routeId);
         $routeStopsJson = $routeManager->getRouteStopsJson($route);
         foreach($routeStopsJson as $key => $routeStopJson) {
@@ -198,7 +198,7 @@ class RouteController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $routeManager = $this->get('tisseo_endiv.manager.route');
         try
         {
             $lineVersionId = $routeManager->remove($routeId);
@@ -229,8 +229,8 @@ class RouteController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $routeManager = $this->get('tisseo_endiv.route_manager');
-        $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+        $routeManager = $this->get('tisseo_endiv.manager.route');
+        $lineVersion = $this->get('tisseo_endiv.manager.line_version')->find($lineVersionId);
 
         if ($request->getMethod() === Request::METHOD_POST) {
             $datas = $request->request->get('route');
@@ -269,7 +269,7 @@ class RouteController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $routeManager = $this->get('tisseo_endiv.route_manager');
+        $routeManager = $this->get('tisseo_endiv.manager.route');
         $route = $routeManager->find($routeId);
 
         $form = $this->createForm(
@@ -291,7 +291,7 @@ class RouteController extends CoreController
                 // TODO: check duplicate function in RouteManager and 'line_version' parameter from view
                 $userName = $this->getUser()->getUsername();
                 $lineVersionId = $request->request->get('line_version');
-                $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+                $lineVersion = $this->get('tisseo_endiv.manager.line_version')->find($lineVersionId);
                 $routeManager->duplicate($route, $lineVersion, $userName);
                 $this->addFlash('success', 'tisseo.boa.route.message.duplicated');
             }
@@ -306,7 +306,7 @@ class RouteController extends CoreController
             );
         }
 
-        $activeLineVersions = $this->get('tisseo_endiv.line_version_manager')->findActiveLineVersions(new \DateTime('now'));
+        $activeLineVersions = $this->get('tisseo_endiv.manager.line_version')->findActiveLineVersions(new \DateTime('now'));
 
         return $this->render('TisseoBoaBundle:Route:duplicate.html.twig',
             array(

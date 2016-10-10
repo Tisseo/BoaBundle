@@ -26,7 +26,7 @@ class DatasourceController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.datasource.title.list',
-                'datasources' => $this->get('tisseo_endiv.datasource_manager')->findAll()
+                'datasources' => $this->get('tisseo_endiv.manager.datasource')->findAll()
             )
         );
     }
@@ -41,7 +41,7 @@ class DatasourceController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
+        $datasourceManager = $this->get('tisseo_endiv.manager.datasource');
         $datasource = $datasourceManager->find($datasourceId);
 
         if (empty($datasource))

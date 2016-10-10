@@ -27,7 +27,7 @@ class OdtAreaController extends CoreController
         );
 
         /**$log = fopen('/tmp/test-jean.log','a+');
-        foreach ($this->get('tisseo_endiv.odt_area_manager')->findAll() as $odtArea)
+        foreach ($this->get('tisseo_endiv.manager.odt_area')->findAll() as $odtArea)
             fwrite($log, "\n".json_encode($odtArea->getOdtStops()->first()->getId()));
 
         fclose($log);*/
@@ -36,8 +36,8 @@ class OdtAreaController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.stop.manage',
                 'pageTitle' => 'tisseo.boa.odt_area.title.list',
-                'odtAreas' => $this->get('tisseo_endiv.odt_area_manager')->findAll(),
-                'linesByOdtArea' => $this->get('tisseo_endiv.odt_area_manager')->getLinesByOdtArea(),
+                'odtAreas' => $this->get('tisseo_endiv.manager.odt_area')->findAll(),
+                'linesByOdtArea' => $this->get('tisseo_endiv.manager.odt_area')->getLinesByOdtArea(),
             )
         );
     }
@@ -52,9 +52,9 @@ class OdtAreaController extends CoreController
         );
 
         try {
-            $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
+            $odtArea = $this->get('tisseo_endiv.manager.odt_area')->find($odtAreaId);
             if (!empty($odtArea))
-                $this->get('tisseo_endiv.odt_area_manager')->delete($odtArea);
+                $this->get('tisseo_endiv.manager.odt_area')->delete($odtArea);
         } catch(\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
@@ -72,7 +72,7 @@ class OdtAreaController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $odtAreaManager = $this->get('tisseo_endiv.odt_area_manager');
+        $odtAreaManager = $this->get('tisseo_endiv.manager.odt_area');
         $odtArea = $odtAreaManager->find($odtAreaId);
         if (empty($odtArea))
         {

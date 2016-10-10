@@ -28,7 +28,7 @@ class AgencyController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.agency.title.list',
-                'agencies' => $this->get('tisseo_endiv.agency_manager')->findAll()
+                'agencies' => $this->get('tisseo_endiv.manager.agency')->findAll()
             )
         );
     }
@@ -43,7 +43,7 @@ class AgencyController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $agencyManager = $this->get('tisseo_endiv.agency_manager');
+        $agencyManager = $this->get('tisseo_endiv.manager.agency');
         $agency = $agencyManager->find($agencyId);
 
         if (empty($agency))

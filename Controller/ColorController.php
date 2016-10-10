@@ -26,7 +26,7 @@ class ColorController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.color.title.list',
-                'colors' => $this->get('tisseo_endiv.color_manager')->findAll()
+                'colors' => $this->get('tisseo_endiv.manager.color')->findAll()
             )
         );
     }
@@ -41,7 +41,7 @@ class ColorController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $colorManager = $this->get('tisseo_endiv.color_manager');
+        $colorManager = $this->get('tisseo_endiv.manager.color');
         $color = $colorManager->find($colorId);
 
         if (empty($color))

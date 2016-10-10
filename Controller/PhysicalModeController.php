@@ -28,7 +28,7 @@ class PhysicalModeController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.physical_mode.title.list',
-                'physicalModes' => $this->get('tisseo_endiv.physical_mode_manager')->findAll()
+                'physicalModes' => $this->get('tisseo_endiv.manager.physical_mode')->findAll()
             )
         );
     }
@@ -43,7 +43,7 @@ class PhysicalModeController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
+        $physicalModeManager = $this->get('tisseo_endiv.manager.physical_mode');
         $physicalMode = $physicalModeManager->find($physicalModeId);
 
         if (empty($physicalMode))

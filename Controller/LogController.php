@@ -20,14 +20,14 @@ class LogController extends CoreController
             'BUSINESS_VIEW_CONFIGURATION'
         ));
 
-        $logManager = $this->get('tisseo_endiv.log_manager');
+        $logManager = $this->get('tisseo_endiv.manager.log');
 
         return $this->render(
             'TisseoBoaBundle:Log:list.html.twig',
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.log.title.list',
-                'logs' => $logManager->findLogEntries($offset, $limit),
+                'logs' => $logManager->findBy(array(), array('id' => 'desc'), $limit, $offset),
                 'max' => $logManager->count()
             )
         );

@@ -16,13 +16,13 @@ class AccessibilityMonitoringController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
 
-        $lineVersionOptions = $this->get('tisseo_endiv.line_version_manager')->findAllSortedByLineNumber();
+        $lineVersionOptions = $this->get('tisseo_endiv.manager.line_version')->findAllSortedByLineNumber();
 
-        $lineVersion = empty($lineVersionId) ? null : $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
+        $lineVersion = empty($lineVersionId) ? null : $this->get('tisseo_endiv.manager.line_version')->find($lineVersionId);
         $startDate = ($startDate == 0) ? null : \DateTime::createFromFormat('d-m-Y', $startDate);
 
         $stopAccessibilitiesByRoute = (empty($lineVersion) or empty($startDate)) ? null
-            : $this->get('tisseo_endiv.line_version_manager')->getStopAccessibilityChangesByRoute($lineVersion, $startDate);
+            : $this->get('tisseo_endiv.manager.line_version')->getStopAccessibilityChangesByRoute($lineVersion, $startDate);
         return $this->render(
             'TisseoBoaBundle:Monitoring:accessibility_search.html.twig',
             array(

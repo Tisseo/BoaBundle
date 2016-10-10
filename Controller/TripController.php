@@ -27,8 +27,8 @@ class TripController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
-        $tripBounds = $this->get('tisseo_endiv.trip_manager')->getDateBounds($route);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
+        $tripBounds = $this->get('tisseo_endiv.manager.trip')->getDateBounds($route);
         $yesterday = new \Datetime('-1 day');
 
         return $this->render(
@@ -52,11 +52,11 @@ class TripController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
         $lineVersion = $route->getLineVersion();
 
         $trip = new Trip();
-        $this->get('tisseo_endiv.datasource_manager')->fill(
+        $this->get('tisseo_endiv.manager.datasource')->fill(
             $trip,
             Datasource::DATA_SRC,
             $this->getUser()->getUsername()
@@ -81,7 +81,7 @@ class TripController extends CoreController
             try {
                 $newTrip = $form->getData();
                 $stopTimes = $request->request->get('stopTimes');
-                $this->get('tisseo_endiv.trip_manager')->createTripAndStopTimes($newTrip, $stopTimes);
+                $this->get('tisseo_endiv.manager.trip')->createTripAndStopTimes($newTrip, $stopTimes);
                 $this->addFlash('success', 'tisseo.flash.success.created');
             } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
@@ -113,7 +113,7 @@ class TripController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $tripManager = $this->get('tisseo_endiv.trip_manager');
+        $tripManager = $this->get('tisseo_endiv.manager.trip');
         $trip = $tripManager->find($tripId);
 
         $disabled = !$this->isGranted('BUSINESS_MANAGE_ROUTES');
@@ -171,7 +171,7 @@ class TripController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $tripManager = $this->get('tisseo_endiv.trip_manager');
+        $tripManager = $this->get('tisseo_endiv.manager.trip');
         $trip = $tripManager->find($tripId);
 
         try {
@@ -197,15 +197,15 @@ class TripController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
 
         try {
             if ($request->getMethod() === Request::METHOD_POST) {
                 $idTrips = json_decode($request->getContent(), true);
-                $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route, $idTrips);
+                $this->get('tisseo_endiv.manager.trip')->deleteTripsFromRoute($route, $idTrips);
                 $this->addFlash('success', 'tisseo.boa.trip.message.select_deleted');
             } else {
-                $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
+                $this->get('tisseo_endiv.manager.trip')->deleteTripsFromRoute($route);
                 $this->addFlash('success', 'tisseo.boa.trip.message.all_deleted');
             }
         } catch(\Exception $e) {
@@ -231,7 +231,7 @@ class TripController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.manager.route')->find($routeId);
 
         if (
             $request->isXmlHttpRequest() &&
@@ -241,14 +241,14 @@ class TripController extends CoreController
             $tripPatterns = json_decode($request->getContent(), true);
 
             $tripDatasource = new TripDatasource();
-            $this->get('tisseo_endiv.datasource_manager')->fillDatasource(
+            $this->get('tisseo_endiv.manager.datasource')->fillDatasource(
                 $tripDatasource,
                 Datasource::DATA_SRC,
                 $this->getUser()->getUsername()
             );
 
             try {
-                $this->get('tisseo_endiv.trip_manager')->updateTripPatterns($tripPatterns, $route, $tripDatasource);
+                $this->get('tisseo_endiv.manager.trip')->updateTripPatterns($tripPatterns, $route, $tripDatasource);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
 
                 return $this->redirectToRoute(

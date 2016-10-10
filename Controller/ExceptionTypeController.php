@@ -26,7 +26,7 @@ class ExceptionTypeController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.exception_type.title.list',
-                'exceptionTypes' => $this->get('tisseo_endiv.exception_type_manager')->findAll()
+                'exceptionTypes' => $this->get('tisseo_endiv.manager.exception_type')->findAll()
             )
         );
     }
@@ -41,7 +41,7 @@ class ExceptionTypeController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $exceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
+        $exceptionTypeManager = $this->get('tisseo_endiv.manager.exception_type');
         $exceptionType = $exceptionTypeManager->find($exceptionTypeId);
 
         if (empty($exceptionType))

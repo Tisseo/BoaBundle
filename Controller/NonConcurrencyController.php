@@ -29,8 +29,8 @@ class NonConcurrencyController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.transport.manage',
                 'pageTitle' => 'tisseo.boa.non_concurrency.title.list',
-                'nonConcurrencies' => $this->get('tisseo_endiv.non_concurrency_manager')->findAll(),
-                'lines' => $this->get('tisseo_endiv.line_manager')->findAllLinesByPriority(),
+                'nonConcurrencies' => $this->get('tisseo_endiv.manager.non_concurrency')->findAll(),
+                'lines' => $this->get('tisseo_endiv.manager.line')->findAll(),
             )
         );
     }
@@ -45,9 +45,9 @@ class NonConcurrencyController extends CoreController
         );
 
         try {
-            $nonConcurrency = $this->get('tisseo_endiv.non_concurrency_manager')->findById($nonConcurrencyId);
+            $nonConcurrency = $this->get('tisseo_endiv.manager.non_concurrency')->find($nonConcurrencyId);
             if (!empty($nonConcurrency))
-                $this->get('tisseo_endiv.non_concurrency_manager')->delete($nonConcurrency);
+                $this->get('tisseo_endiv.manager.non_concurrency')->delete($nonConcurrency);
         } catch(\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
@@ -65,8 +65,8 @@ class NonConcurrencyController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
-        $nonConcurrencyManager = $this->get('tisseo_endiv.non_concurrency_manager');
-        $nonConcurrency = $nonConcurrencyManager->findById($nonConcurrencyId);
+        $nonConcurrencyManager = $this->get('tisseo_endiv.manager.non_concurrency');
+        $nonConcurrency = $nonConcurrencyManager->find($nonConcurrencyId);
 
         if (empty($nonConcurrency))
             $nonConcurrency = new NonConcurrency();
@@ -105,9 +105,8 @@ class NonConcurrencyController extends CoreController
             array(
                 'form' => $form->createView(),
                 'title' => ($nonConcurrencyId ? 'tisseo.boa.non_concurrency.title.edit' : 'tisseo.boa.non_concurrency.title.create'),
-                'lines' => $this->get('tisseo_endiv.line_manager')->findAllLinesByPriority(),
+                'lines' => $this->get('tisseo_endiv.manager.line')->findAllLinesByPriority(),
             )
         );
     }
-
 }

@@ -21,7 +21,7 @@ class StopHistoryController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $stopManager = $this->get('tisseo_endiv.stop_manager');
+        $stopManager = $this->get('tisseo_endiv.manager.stop');
         $stop = $stopManager->find($stopId);
 
         if (empty($stop)) {
@@ -100,7 +100,7 @@ class StopHistoryController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        $stopManager = $this->get('tisseo_endiv.stop_manager');
+        $stopManager = $this->get('tisseo_endiv.manager.stop');
         $stop = $stopManager->find($stopId);
 
         if (!$stop->closable())

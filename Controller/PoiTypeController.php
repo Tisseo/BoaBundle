@@ -29,7 +29,7 @@ class PoiTypeController extends CoreController
             array(
                 'navTitle' => 'tisseo.boa.menu.configuration',
                 'pageTitle' => 'tisseo.boa.poi_type.title.list',
-                'poiTypes' => $this->get('tisseo_endiv.poi_type_manager')->findAll()
+                'poiTypes' => $this->get('tisseo_endiv.manager.poi_type')->findAll()
             )
         );
     }
@@ -45,7 +45,7 @@ class PoiTypeController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CONFIGURATION');
 
-        $poiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
+        $poiTypeManager = $this->get('tisseo_endiv.manager.poi_type');
         $poiType = $poiTypeManager->find($poiTypeId);
 
         if (empty($poiType))
