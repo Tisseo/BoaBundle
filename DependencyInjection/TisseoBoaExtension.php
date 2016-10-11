@@ -29,17 +29,4 @@ class TisseoBoaExtension extends Extension
 
         $container->setParameter('tisseo_boa.datatable_views', $config['datatable_views']);
     }
-
-    public function prepend(ContainerBuilder $container)
-    {
-        $container->prependExtensionConfig('doctrine', array(
-            'orm' => array(
-                'dql' => array(
-                    'string_functions' => array(
-                        'unaccent' => 'Tisseo\EndivBundle\Doctrine\DQL\Unaccent'
-                    )
-                )
-            )
-        ));
-    }
 }
