@@ -8,7 +8,7 @@ use Tisseo\CoreBundle\Controller\CoreController;
 
 class JsonController extends CoreController
 {
-    public function CalendarsAction(Request $request, $calendarType = null)
+    public function calendarsAction(Request $request, $calendarType = null)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_CALENDARS',
@@ -42,7 +42,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($data);
     }
 
-    public function StopAction(Request $request)
+    public function stopAction(Request $request)
     {
 
         $this->denyAccessUnlessGranted(array(
@@ -58,7 +58,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($data);
     }
 
-    public function StopAreaAction(Request $request)
+    public function stopAreaAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
@@ -72,7 +72,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($data);
     }
 
-    public function StopAndStopAreaAction(Request $request)
+    public function stopAndStopAreaAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
@@ -95,7 +95,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($data);
     }
 
-    public function StopAndOdtAreaAction(Request $request)
+    public function stopAndOdtAreaAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
@@ -118,7 +118,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($data);
     }
 
-    public function CityAction(Request $request)
+    public function cityAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
@@ -133,7 +133,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($data);
     }
 
-    public function StopTransferAction(Request $request, $stopAreaId)
+    public function stopTransferAction(Request $request, $stopAreaId)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
@@ -166,7 +166,7 @@ class JsonController extends CoreController
         return $this->prepareJsonResponse($result);
     }
 
-    public function TripTemplateAction(Request $request)
+    public function tripTemplateAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_ROUTES',
