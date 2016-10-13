@@ -32,13 +32,6 @@ class JsonController extends CoreController
 
         $data = $this->get('tisseo_endiv.manager.calendar')->findCalendarsLike($term, $calendarType, $lineVersionId);
 
-        if (empty($data)) {
-            return $this->prepareJsonResponse(
-                $this->get('translator')->trans('tisseo.global.no_data'),
-                JsonResponse::HTTP_NOT_FOUND
-            );
-        }
-
         return $this->prepareJsonResponse($data);
     }
 
@@ -175,7 +168,7 @@ class JsonController extends CoreController
 
         $this->isAjax($request, Request::METHOD_POST);
 
-        $data = $this->get('tisseo_endiv.manager.trip')->getTripTemplates(
+        $data = $this->get('tisseo_endiv.manager.trip')->findTripTemplatesLike(
             $request->request->get('term'),
             $request->request->get('routeId')
         );

@@ -71,7 +71,7 @@ class StopAreaController extends CoreController
             $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
             $usedStops = $stopAreaManager->getUsedStops($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
-            $stops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
+            $stops = $this->get('tisseo_endiv.manager.stop')->getStopsOrderedByCode($stopArea->getId(), true);
             $stopsJson = $stopAreaManager->getStopsJson($stopArea);
             foreach($stopsJson as $key => $stopJson) {
                 $stopsJson[$key]['route'] = $this->generateUrl(
@@ -192,7 +192,7 @@ class StopAreaController extends CoreController
         $stopAreaManager = $this->get('tisseo_endiv.manager.stop_area');
         $transferManager = $this->get('tisseo_endiv.manager.transfer');
         $stopArea = $stopAreaManager->find($stopAreaId);
-        $startStops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
+        $startStops = $this->get('tisseo_endiv.manager.stop')->getStopsOrderedByCode($stopArea->getId(), true);
         $transfers = $transferManager->getExternalTransfers($stopArea);
 
         if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)

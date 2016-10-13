@@ -49,7 +49,7 @@ class TripCreateType extends AbstractType
                 $trip = $event->getData();
 
                 $form->add(
-                    'pattern',
+                    'tripPattern',
                     'entity',
                     array(
                         'label' => 'tisseo.boa.trip.label.pattern',
@@ -59,7 +59,7 @@ class TripCreateType extends AbstractType
                         'query_builder' => function(EntityRepository $er) use ($trip) {
                             return $er->createQueryBuilder('t')
                                 ->where("IDENTITY(t.route) = :routeId")
-                                ->andWhere("t.isPattern = true")
+                                ->andWhere("t.pattern = true")
                                 ->setParameter('routeId', $trip->getRoute()->getId());
                         }
                     )
