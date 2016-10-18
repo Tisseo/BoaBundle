@@ -33,6 +33,7 @@ class JsonController extends CoreController
 
     public function StopAction(Request $request)
     {
+
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
             'BUSINESS_MANAGE_STOPS'
