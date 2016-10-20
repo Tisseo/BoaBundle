@@ -42,31 +42,31 @@
                                 <input type="text" id="stop_area" class="form-control" style="margin-bottom:15px;" disabled>
                             {% endif %}
                         </div>
+                        {% if form.vars.data.stopArea %}
                         <div class="col-md-2">
                             <a id="stop-area-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': form.stopArea.vars.data.id}) }}">
                                 <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
                             </a>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10">
-                    {{ form_label(form.masterStop) }}
-                    <div class="row">
-                        <div class="col-md-10" style="margin-bottom:15px">
-                            {{ form_widget(form.masterStop) }}
-                        </div>
-                        {% if masterStop is not empty %}
-                            <div class="col-md-2">
-                                <a id="master-stop-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_edit', {'stopId': masterStop.id}) }}">
-                                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
-                                </a>
-                            </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
+            {% if form.vars.data.masterStop %}
+                <div class="row">
+                    <div class="col-md-10">
+                        <label class="control-label">{{ 'tisseo.boa.stop_point.label.master_stop'| trans }}</label>
+                        <div class="row">
+                            <div class="col-md-10">{{ form.vars.data.masterStop.StopDisplayLabel }}</div>
+                            <div class="col-md-2">
+                                <a id="master-stop-edit" class="btn btn-default" href="{{ path('tisseo_boa_stop_edit', {'stopId': form.vars.data.masterStop.id}) }}">
+                                    <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.consult'|trans }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
             {% for datasource in form.stopDatasources %}
             <div class="row">
@@ -151,20 +151,20 @@
             </tbody>
         </table>
         {% if is_granted('BUSINESS_MANAGE_STOPS') %}
-            <a href="{{ path('tisseo_boa_stop_history_create', {'stopId': stop.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-default">
+            <a href="{{ path('tisseo_boa_stop_history_create', {'stopId': form.vars.data.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-default">
                 <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
             </a>
             {% if stop.Closable %}
-            <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': stop.id }) }}"  data-toggle="modal" data-target="#base-modal">
+            <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': form.vars.data.id }) }}"  data-toggle="modal" data-target="#base-modal">
                 <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.global.closure'|trans }}
             </a>
             {% endif %}
             {% if stop.lock %}
-                <a class="btn btn-warning" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
+                <a class="btn btn-warning" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': form.vars.data.id }) }}">
                     <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
                 </a>
             {% else %}
-                <a class="btn btn-danger" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': stop.id }) }}">
+                <a class="btn btn-danger" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': form.vars.data.id }) }}">
                     <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.lock'|trans }}
                 </a>
             {% endif %}

@@ -17,10 +17,12 @@ class JsonController extends CoreController
 
         $this->isAjax($request, Request::METHOD_POST);
 
-        if (strpos($calendarType, ',')) {
-            $calendarType = explode(',', $calendarType);
-        } else {
-            $calendarType = array($calendarType);
+        if ($calendarType !== null) {
+            if (strpos($calendarType, ',')) {
+                $calendarType = explode(',', $calendarType);
+            } else {
+                $calendarType = array($calendarType);
+            }
         }
 
         $term = $request->request->get('term');
@@ -33,6 +35,7 @@ class JsonController extends CoreController
 
     public function StopAction(Request $request)
     {
+
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_VIEW_STOPS',
             'BUSINESS_MANAGE_STOPS'

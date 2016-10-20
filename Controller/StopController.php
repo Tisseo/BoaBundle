@@ -23,8 +23,7 @@ class StopController extends CoreController
         $this->denyAccessUnlessGranted(array(
             'BUSINESS_MANAGE_STOPS',
             'BUSINESS_VIEW_STOPS',
-            )
-        );
+        ));
 
         return $this->render(
             'TisseoBoaBundle:Stop:search.html.twig',
@@ -119,13 +118,11 @@ class StopController extends CoreController
             $stop = new Stop();
         }
 
-        $masterStop = $stop->getMasterStop();
         $stopsJson = json_encode($stopManager->getStopsJson(array($stop), true));
 
-        if (!empty($masterStop)) {
-            $stopHistory = $masterStop->getCurrentOrLatestStopHistory(new \Datetime());
-        }
-        else {
+        if ($stop->getMasterStop() instanceof Stop) {
+            $stopHistory = $stop->getMasterStop()->getCurrentOrLatestStopHistory(new \Datetime());
+        } else {
             $stopHistory = $stop->getCurrentOrLatestStopHistory(new \Datetime());
         }
 
@@ -143,15 +140,11 @@ class StopController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $stopManager->save($form->getData());
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch(\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -161,8 +154,8 @@ class StopController extends CoreController
             );
         }
 
-        if (!empty($masterStop)) {
-            $stopHistories = $stopManager->getOrderedStopHistories($masterStop->getId());
+        if ($stop->getMasterStop() instanceof Stop) {
+            $stopHistories = $stopManager->getOrderedStopHistories($stop->getMasterStop()->getId());
         }
         else {
             $stopHistories = $stopManager->getOrderedStopHistories($stopId);
@@ -173,8 +166,6 @@ class StopController extends CoreController
             array(
                 'pageTitle' => 'tisseo.boa.stop_point.title.edit',
                 'form' => $form->createView(),
-                'stop' => $stop,
-                'masterStop' => $masterStop,
                 'stopHistories' => $stopHistories,
                 'stopsJson' => $stopsJson,
                 'lines' => $stopManager->getLinesByStop($stopId)

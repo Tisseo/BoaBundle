@@ -36,7 +36,8 @@ class StopEditType extends AbstractType
                     'class' => 'TisseoEndivBundle:StopArea',
                     'property' => 'nameLabel',
                     'empty_data' => '',
-                    'empty_value' => ''
+                    'empty_value' => '',
+                    'required' => false
                 )
             )
             ->add(
@@ -72,32 +73,6 @@ class StopEditType extends AbstractType
                     'disabled' => true
                 )
             )
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-                $form = $event->getForm();
-                $stop = $event->getData();
-
-                $form
-                    ->add(
-                        'masterStop',
-                        'entity',
-                        array(
-                            'label' => 'tisseo.boa.stop_point.label.master_stop',
-                            'required' => false,
-                            'empty_value' => '',
-                            'empty_data' => null,
-                            'class' => 'TisseoEndivBundle:Stop',
-                            'property' => 'StopDisplayLabel',
-                            'query_builder' => function(EntityRepository $er)  use ($stop) {
-                                return $er->createQueryBuilder('s')
-                                    ->where("s.stopArea = :sa")
-                                    ->andWhere("s.masterStop is null")
-                                    ->setParameter('sa', $stop->getStopArea());
-                            },
-                            'disabled' => true // TODO: FOR NOW THIS IS DISABLED
-                        )
-                    )
-                ;
-            })
             ->setAction($options['action'])
         ;
     }
