@@ -23,6 +23,13 @@ class PoiTypeType extends AbstractType
                 )
             )
             ->setAction($options['action'])
+            ->add(
+                'long_name',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.poi_type.label.long_name'
+                )
+            )
         ;
     }
 
