@@ -105,6 +105,7 @@ tisseo:
                 create: Création de type de POI
             label:
                 name: Nom
+                long_name: Nom long
             action:
                 create: Créer un type de POI
 

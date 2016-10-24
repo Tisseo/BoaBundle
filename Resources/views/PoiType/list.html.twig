@@ -12,7 +12,8 @@
 {% endblock %}
 
 {% block table_head -%}
-    <th class="col-sm-10">{{ 'tisseo.boa.poi_type.label.name'|trans }}</th>
+    <th class="col-sm-6">{{ 'tisseo.boa.poi_type.label.name'|trans }}</th>
+    <th class="col-sm-6">{{ 'tisseo.boa.poi_type.label.long_name'|trans }}</th>
     <th class="col-sm-2 no-search no-sort">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
@@ -20,6 +21,7 @@
     {% for poiType in poiTypes %}
         <tr>
             <td>{{ poiType.name }}</td>
+            <td>{{ poiType.longName }}</td>
             <td>
             {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
                 <a class="btn btn-default" href="{{ path('tisseo_boa_poi_type_edit', { 'poiTypeId': poiType.id }) }}" data-toggle="modal" data-target="#base-modal">
