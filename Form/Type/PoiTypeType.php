@@ -19,7 +19,8 @@ class PoiTypeType extends AbstractType
                 'name',
                 'text',
                 array(
-                    'label' => 'tisseo.boa.poi_type.label.name'
+                    'label' => 'tisseo.boa.poi_type.label.name',
+                    'required' => true
                 )
             )
             ->setAction($options['action'])
@@ -27,7 +28,8 @@ class PoiTypeType extends AbstractType
                 'long_name',
                 'text',
                 array(
-                    'label' => 'tisseo.boa.poi_type.label.long_name'
+                    'label' => 'tisseo.boa.poi_type.label.long_name',
+                    'required' => false
                 )
             )
         ;
