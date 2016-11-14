@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    {% if not stop.lock %}
+    {% if not form.vars.data.lock %}
         <a id="stop-history" class="header-ribbon">
             <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_history'|trans }}
         </a>
@@ -154,12 +154,12 @@
             <a href="{{ path('tisseo_boa_stop_history_create', {'stopId': form.vars.data.id }) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-default">
                 <span class="glyphicon glyphicon-edit"></span> {{ 'tisseo.global.edit'|trans }}
             </a>
-            {% if stop.Closable %}
+            {% if form.vars.data.Closable %}
             <a class="btn btn-default" href="{{ path('tisseo_boa_stop_history_close', {'stopId': form.vars.data.id }) }}"  data-toggle="modal" data-target="#base-modal">
                 <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.global.closure'|trans }}
             </a>
             {% endif %}
-            {% if stop.lock %}
+            {% if form.vars.data.lock %}
                 <a class="btn btn-warning" href="{{ path('tisseo_boa_stop_switch_lock', {'identifier': form.vars.data.id }) }}">
                     <span class="glyphicon glyphicon-lock"></span> {{ 'tisseo.global.unlock'|trans }}
                 </a>
@@ -175,7 +175,8 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_accessibility'|trans }}
     </a>
 
-    {% if (stop.accessibilityCalendar is empty) %}
+    {% set accessibilityCalendar = form.vars.data.accessibilityCalendar %}
+    {% if (accessibilityCalendar is empty) %}
         <div style="text-align:center; margin: 10px 0">
             <b>{{ 'tisseo.boa.stop_point.message.no_accessibility_calendar'|trans }}</b>
         </div>
@@ -185,8 +186,8 @@
                 <div class="col-md-2">
                     <span style="display:inline-block; margin:8px 0" class="bold">{{ 'tisseo.boa.stop_point.label.accessibility_calendar'|trans }}</span>
                     <br>
-                    <a target="_blank" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': stop.accessibilityCalendar.id}) }}">
-                        {{ stop.accessibilityCalendar.name }}
+                    <a target="_blank" href="{{ path('tisseo_boa_calendar_edit', {'calendarId': accessibilityCalendar.id}) }}">
+                        {{ accessibilityCalendar.name }}
                     </a>
                     <div style="margin-top:30px">
                         <div class="legend green"></div>
@@ -221,10 +222,10 @@
             $("#stop_area").val($("#boa_stop_edit_stopArea option:selected").text());
 
             //accessibility Calendar
-            {% if not (stop.accessibilityCalendar is empty) %}
-                var startDate = new Date("{{ stop.accessibilityCalendar.computedStartDate|date("Y-m-d") }}");
-                var endDate = new Date("{{ stop.accessibilityCalendar.computedEndDate|date("Y-m-d") }}");
-                var calendarId = {{ stop.accessibilityCalendar.id }}
+            {% if not (accessibilityCalendar is empty) %}
+                var startDate = new Date("{{ accessibilityCalendar.computedStartDate|date("Y-m-d") }}");
+                var endDate = new Date("{{ accessibilityCalendar.computedEndDate|date("Y-m-d") }}");
+                var calendarId = {{ accessibilityCalendar.id }}
                 initCalendar(calendarId, startDate, endDate);
             {% endif %}
         });
