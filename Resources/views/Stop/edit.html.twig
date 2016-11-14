@@ -12,6 +12,8 @@
     </a>
 {% endblock %}
 
+{% set accessibilityCalendar = form.vars.data.accessibilityCalendar %}
+
 {% block content %}
     {% import "TisseoCoreBundle::macros.html.twig" as render %}
     <a id="stop-history" class="header-ribbon">
@@ -175,8 +177,7 @@
         <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.stop_point.header.stop_accessibility'|trans }}
     </a>
 
-    {% set accessibilityCalendar = form.vars.data.accessibilityCalendar %}
-    {% if (accessibilityCalendar is empty) %}
+    {% if not accessibilityCalendar %}
         <div style="text-align:center; margin: 10px 0">
             <b>{{ 'tisseo.boa.stop_point.message.no_accessibility_calendar'|trans }}</b>
         </div>
@@ -211,18 +212,13 @@
         require(['core/leaflet_utils'], function() {
             init_map_with_stops({{ stopsJson|raw }}, false);
         });
-    </script>
-    <script>
-        global = {
-                locale: '{{ app.request.locale }}'
-            };
 
         require(['boa/stop/edit'], function() {
             init_autocomplete("#stop_area", "#boa_stop_edit_stopArea", "#stop-edit");
             $("#stop_area").val($("#boa_stop_edit_stopArea option:selected").text());
 
             //accessibility Calendar
-            {% if not (accessibilityCalendar is empty) %}
+            {% if accessibilityCalendar %}
                 var startDate = new Date("{{ accessibilityCalendar.computedStartDate|date("Y-m-d") }}");
                 var endDate = new Date("{{ accessibilityCalendar.computedEndDate|date("Y-m-d") }}");
                 var calendarId = {{ accessibilityCalendar.id }}
