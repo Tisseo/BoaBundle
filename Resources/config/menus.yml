@@ -1,30 +1,74 @@
-'tisseo.paon.menu.line':
-    route: 'tisseo_paon_line_list'
-    rights: ['BUSINESS_LIST_LINE', 'BUSINESS_MANAGE_LINE']
-    submenus: null
-'tisseo.paon.menu.line_version.manage':
+'tisseo.boa.menu.configuration':
     route: null
-    rights: ['BUSINESS_LIST_LINE_VERSION', 'BUSINESS_MANAGE_LINE_VERSION']
+    rights: ['BUSINESS_MANAGE_CONFIGURATION', 'BUSINESS_VIEW_CONFIGURATION']
     submenus:
-        'tisseo.paon.menu.line_version.active':
-            route: 'tisseo_paon_line_version_list'
-        'tisseo.paon.menu.line_version.history':
-            route: 'tisseo_paon_line_version_history'
-'tisseo.paon.menu.data_exchange':
-    route: 'tisseo_paon_data_exchange_show'
-    rights: ['BUSINESS_MANAGE_DATA_EXCHANGE']
-    submenus: null
-'tisseo.paon.menu.schematic.manage':
+        'tisseo.boa.menu.physical_mode':
+            route: 'tisseo_boa_physical_mode_list'
+        'tisseo.boa.menu.accessibility_mode':
+            route: 'tisseo_boa_accessibility_mode_list'
+        'tisseo.boa.menu.agency':
+            route: 'tisseo_boa_agency_list'
+        'tisseo.boa.menu.datasource':
+            route: 'tisseo_boa_datasource_list'
+        'tisseo.boa.menu.exception_type':
+            route: 'tisseo_boa_exception_type_list'
+        'tisseo.boa.menu.poi_type':
+            route: 'tisseo_boa_poi_type_list'
+        'tisseo.boa.menu.property':
+            route: 'tisseo_boa_property_list'
+        'tisseo.boa.menu.color':
+            route: 'tisseo_boa_color_list'
+        'tisseo.boa.menu.log':
+            route: 'tisseo_boa_log_list'
+            parameters: { 'limit': 1000, 'offset': 0 }
+        'tisseo.boa.menu.depot':
+            route: 'tisseo_boa_depot_list'
+'tisseo.boa.menu.transport.manage':
     route: null
-    rights: ['BUSINESS_LIST_GROUP_GIS', 'BUSINESS_MANAGE_GROUP_GIS', 'BUSINESS_LIST_SCHEMA', 'BUSINESS_MANAGE_NEW_SCHEMA', 'BUSINESS_MANAGE_ASK_SCHEMA']
+    rights: ['BUSINESS_MANAGE_ROUTES', 'BUSINESS_VIEW_ROUTES']
     submenus:
-        'tisseo.paon.menu.schematic.list':
-            route: 'tisseo_paon_schematic_list_with_lines'
-            rights: ['BUSINESS_LIST_SCHEMA', 'BUSINESS_MANAGE_NEW_SCHEMA', 'BUSINESS_MANAGE_ASK_SCHEMA'] 
-        'tisseo.paon.menu.schematic.gis_group':
-            route: 'tisseo_paon_line_group_gis_list'
-            rights: ['BUSINESS_LIST_GROUP_GIS', 'BUSINESS_MANAGE_GROUP_GIS']
-'tisseo.paon.menu.line_validation':
-    route: 'tisseo_paon_line_validation_list'
-    rights: ['BUSINESS_VALIDATE_LINES_EXPLOITATION']
-    submenus: null
+        'tisseo.boa.menu.transport.route':
+            route: 'tisseo_boa_line_version_list'
+        'tisseo.boa.menu.transport.non_concurrency':
+            route: 'tisseo_boa_non_concurrency_list'
+'tisseo.boa.menu.calendar.manage':
+    route: null
+    rights: ['BUSINESS_MANAGE_CALENDARS', 'BUSINESS_VIEW_CALENDARS']
+    submenus:
+        'tisseo.boa.menu.calendar.day':
+            route: 'tisseo_boa_calendar_list'
+            parameters: { 'calendarType': 'jour' }
+        'tisseo.boa.menu.calendar.period':
+            route: 'tisseo_boa_calendar_list'
+            parameters: { 'calendarType': 'periode' }
+        'tisseo.boa.menu.calendar.accessibility':
+            route: 'tisseo_boa_calendar_list'
+            parameters: { 'calendarType': 'accessibilite' }
+        'tisseo.boa.menu.calendar.hybrid':
+            route: 'tisseo_boa_calendar_list'
+            parameters: { 'calendarType': 'mixte' }
+        'tisseo.boa.menu.calendar.brick':
+            route: 'tisseo_boa_calendar_list'
+            parameters: { 'calendarType': 'brique' }
+'tisseo.boa.menu.stop.manage':
+    route: null
+    rights: ['BUSINESS_MANAGE_STOPS', 'BUSINESS_VIEW_STOPS']
+    submenus:
+        'tisseo.boa.menu.stop.point':
+            route: 'tisseo_boa_stop_search'
+        'tisseo.boa.menu.stop.area':
+            route: 'tisseo_boa_stop_area_search'
+        'tisseo.boa.menu.stop.odt_area':
+            route: 'tisseo_boa_odt_area_list'
+        'tisseo.boa.menu.stop.city':
+            route: 'tisseo_boa_city_search'
+'tisseo.boa.menu.monitoring.manage':
+    route: null
+    rights: ['BUSINESS_VIEW_MONITORING']
+    submenus:
+        'tisseo.boa.menu.monitoring.accessibility':
+            route: 'tisseo_boa_monitoring_accessibility_search'
+        'tisseo.boa.menu.monitoring.poi':
+            route: 'tisseo_boa_monitoring_poi_search'
+        'tisseo.boa.menu.monitoring.stop_locked':
+            route: 'tisseo_boa_monitoring_stop_locked'
