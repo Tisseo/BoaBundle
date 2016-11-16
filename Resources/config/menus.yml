@@ -1,0 +1,30 @@
+'tisseo.paon.menu.line':
+    route: 'tisseo_paon_line_list'
+    rights: ['BUSINESS_LIST_LINE', 'BUSINESS_MANAGE_LINE']
+    submenus: null
+'tisseo.paon.menu.line_version.manage':
+    route: null
+    rights: ['BUSINESS_LIST_LINE_VERSION', 'BUSINESS_MANAGE_LINE_VERSION']
+    submenus:
+        'tisseo.paon.menu.line_version.active':
+            route: 'tisseo_paon_line_version_list'
+        'tisseo.paon.menu.line_version.history':
+            route: 'tisseo_paon_line_version_history'
+'tisseo.paon.menu.data_exchange':
+    route: 'tisseo_paon_data_exchange_show'
+    rights: ['BUSINESS_MANAGE_DATA_EXCHANGE']
+    submenus: null
+'tisseo.paon.menu.schematic.manage':
+    route: null
+    rights: ['BUSINESS_LIST_GROUP_GIS', 'BUSINESS_MANAGE_GROUP_GIS', 'BUSINESS_LIST_SCHEMA', 'BUSINESS_MANAGE_NEW_SCHEMA', 'BUSINESS_MANAGE_ASK_SCHEMA']
+    submenus:
+        'tisseo.paon.menu.schematic.list':
+            route: 'tisseo_paon_schematic_list_with_lines'
+            rights: ['BUSINESS_LIST_SCHEMA', 'BUSINESS_MANAGE_NEW_SCHEMA', 'BUSINESS_MANAGE_ASK_SCHEMA'] 
+        'tisseo.paon.menu.schematic.gis_group':
+            route: 'tisseo_paon_line_group_gis_list'
+            rights: ['BUSINESS_LIST_GROUP_GIS', 'BUSINESS_MANAGE_GROUP_GIS']
+'tisseo.paon.menu.line_validation':
+    route: 'tisseo_paon_line_validation_list'
+    rights: ['BUSINESS_VALIDATE_LINES_EXPLOITATION']
+    submenus: null

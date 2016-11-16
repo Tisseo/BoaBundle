@@ -12,9 +12,6 @@ multiple functionalities in order to manage a
 This bundle is only working with [CanalTP](https://github.com/CanalTP)
 [NMM](https://github.com/CanalTP/NmmPortalBundle) portal.
 
-The BoaBundle is linked to [BoaBridgeBundle](https://github.com/Tisseo/BoaBridgeBundle)
-in order to integrate the application in NMM portal.
-
 Requirements
 ------------
 
@@ -49,17 +46,12 @@ You need to declare some repositories and requirements in the composer.json file
         "type": "git",
         "url": "https://github.com/Tisseo/BoaBundle.git"
     },
-    {
-        "type": "git",
-        "url": "https://github.com/Tisseo/BoaBridgeBundle.git"
-    },
     //...
 ],
 "require": {
     "tisseo/endiv-bundle": "dev-master",
     "tisseo/core-bundle": "dev-master",
     "tisseo/boa-bundle": "dev-master",
-    "tisseo/boa-bridge-bundle": "dev-master"
     // ...
 }
 ```
@@ -70,7 +62,6 @@ You need to declare some repositories and requirements in the composer.json file
 $bundles = array(
     new Tisseo\EndivBundle\TisseoEndivBundle(),
     new Tisseo\CoreBundle\TisseoCoreBundle(),
-    new Tisseo\BoaBridgeBundle\TisseoBoaBridgeBundle(),
     new Tisseo\BoaBundle\TisseoBoaBundle(),
     // ...
 );
@@ -81,13 +72,6 @@ Configuration
 
 Check [EndivBundle](https://github.com/Tisseo/EndivBundle) configuration to provide a correct mapping
 with TID database and allow BoaBundle to manage it.
-
-Contributing
-------------
-
-- Vincent Passama - vincent.passama@gmail.com
-- Rodolphe Duval - rdldvl@gmail.com
-- Pierre-Yves Claitte - pierre.cl@gmail.com
 
 Todo
 ----

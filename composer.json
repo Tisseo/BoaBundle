@@ -5,24 +5,6 @@
     "keywords" : ["Tisseo boa bundle NMM"],
     "homepage": "https://github.com/Tisseo/BoaBundle",
     "license": "AGPLv3",
-    "authors" : [
-        {
-            "name" : "Vincent Passama",
-            "email" : "vincent.passama@gmail.com"
-        },
-        {
-            "name" : "Rodolphe Duval",
-            "email" : "rdldvl@gmail.com"
-        },
-        {
-            "name" : "Pierre-Yves Claitte",
-            "email" : "pierre.cl@gmail.com"
-        },
-        {
-            "name" : "Jean Lavat",
-            "email" : "jean.lavat@gmail.com"
-        }
-    ],
     "require" : {
         "php": ">=5.4.3",
         "tisseo/endiv-bundle": "~1.2.0",

@@ -1,4 +1,27 @@
 services:
+    sam.business_module.boa:
+        class: 'Tisseo\BoaBundle\Permission\BusinessPermissionModule'
+        arguments: ['%boa.permissions%']
+        public: false
+    sam.business_permission_manager.boa:
+        class: 'Tisseo\BoaBundle\Permission\BusinessPermissionManager'
+        arguments: ['@sam.business_module.boa']
+        public: false
+    sam.business_perimeter_manager.boa:
+        class: 'Tisseo\BoaBundle\Perimeter\BusinessPerimeterManager'
+        arguments: ['@nmm.perimeter_manager']
+        public: false
+    sam.menu_manager.boa:
+        class: 'Tisseo\BoaBundle\Menu\MenuManager'
+        arguments: ['@service_container']
+        public: false
+    sam.business_component.boa:
+        class: 'Tisseo\BoaBundle\Component\BusinessComponent'
+        arguments: ['@sam.business_permission_manager.boa', '@sam.business_perimeter_manager.boa', '@sam.menu_manager.boa']
+        public: false
+        tags:
+            - { name: 'sam.app_business_component', canonical_app_name: 'boa' }
+
     tisseo_boa.ajax_form_listener:
         class: 'CanalTP\SamCoreBundle\EventListener\AjaxFormListener'
         tags:
