@@ -12,8 +12,9 @@
 {% endblock %}
 
 {% block table_head -%}
-    <th class="col-sm-5">{{ 'tisseo.boa.physical_mode.label.name'|trans }}</th>
-    <th class="col-sm-5">{{ 'tisseo.boa.physical_mode.label.type'|trans }}</th>
+    <th class="col-sm-4">{{ 'tisseo.boa.physical_mode.label.name'|trans }}</th>
+    <th class="col-sm-4">{{ 'tisseo.boa.physical_mode.label.type'|trans }}</th>
+    <th class="col-sm-2">{{ 'tisseo.boa.physical_mode.label.co2_emission'|trans }}</th>
     <th class="col-sm-2 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
 {% endblock %}
 
@@ -22,6 +23,7 @@
         <tr>
             <td>{{ physicalMode.name }}</td>
             <td>{{ physicalMode.type }}</td>
+            <td>{{ physicalMode.co2Emission }}</td>
             <td>
             {% if (is_granted('BUSINESS_MANAGE_CONFIGURATION')) %}
                 <a class="btn btn-default" href="{{ path('tisseo_boa_physical_mode_edit', { 'physicalModeId': physicalMode.id }) }}" data-toggle="modal" data-target="#base-modal">
