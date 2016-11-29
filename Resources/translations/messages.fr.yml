@@ -45,6 +45,7 @@ tisseo:
             label:
                 name: Nom
                 type: Type
+                co2_emission: CO2 g/km/voyageur
             action:
                 create: Créer un mode de transport
 
