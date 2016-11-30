@@ -139,7 +139,7 @@ tisseo_boa_depot_delete:
 # ajax calls
 tisseo_boa_json_calendars:
     pattern: /json/calendars/{calendarType}
-    defaults: { _controller: TisseoBoaBundle:Json:calendars, calendarType: null }
+    defaults: { _controller: TisseoBoaBundle:Calendar:autocomplete, calendarType: null }
 tisseo_boa_json_stop:
     pattern: /json/stop
     defaults: { _controller: TisseoBoaBundle:Json:stop }
