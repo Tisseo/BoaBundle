@@ -28,6 +28,7 @@ class TripController extends CoreController
         ));
 
         $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $trips = $this->get('tisseo_endiv.trip_manager')->getTripsListForOneRoute($route);
         $tripBounds = $this->get('tisseo_endiv.trip_manager')->getDateBounds($route);
         $yesterday = new \Datetime('-1 day');
 
@@ -36,6 +37,7 @@ class TripController extends CoreController
             array(
                 'pageTitle' => 'tisseo.boa.trip.title.list',
                 'route' => $route,
+                'trips' => $trips,
                 'tripBounds' => $tripBounds,
                 'yesterday' => $yesterday
             )
