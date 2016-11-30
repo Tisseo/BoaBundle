@@ -8,31 +8,6 @@ use Tisseo\CoreBundle\Controller\CoreController;
 
 class JsonController extends CoreController
 {
-    public function CalendarsAction(Request $request, $calendarType = null)
-    {
-        $this->denyAccessUnlessGranted(array(
-            'BUSINESS_VIEW_CALENDARS',
-            'BUSINESS_MANAGE_CALENDARS'
-        ));
-
-        $this->isAjax($request, Request::METHOD_POST);
-
-        if ($calendarType !== null) {
-            if (strpos($calendarType, ',')) {
-                $calendarType = explode(',', $calendarType);
-            } else {
-                $calendarType = array($calendarType);
-            }
-        }
-
-        $term = $request->request->get('term');
-        $lineVersionId = $request->query->get('line_version_id');
-
-        $data = $this->get('tisseo_endiv.calendar_manager')->findCalendarsLike($term, $calendarType, 0, $lineVersionId);
-
-        return $this->prepareJsonResponse($data);
-    }
-
     public function StopAction(Request $request)
     {
 

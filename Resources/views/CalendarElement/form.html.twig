@@ -5,7 +5,7 @@
 <td>{{ form_widget(form.rank) }}</td>
 <td>{{ form_widget(form.startDate) }}</td>
 <td>{{ form_widget(form.endDate) }}</td>
-<td><input type="text" id="calendar-search" class="form-control input-sm" data-url="{{ path('tisseo_boa_json_calendars') }}"></td>
+<td><input type="text" id="calendar-search" class="form-control input-sm" data-url="{{ path('tisseo_boa_json_calendars', {'calendarType': 'periode,jour,brique'}) }}"></td>
 <td>{{ form_widget(form.operator) }}</td>
 <td>{{ form_widget(form.interval) }}</td>
 <td>
