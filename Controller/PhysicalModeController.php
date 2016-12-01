@@ -46,8 +46,9 @@ class PhysicalModeController extends CoreController
         $physicalModeManager = $this->get('tisseo_endiv.physical_mode_manager');
         $physicalMode = $physicalModeManager->find($physicalModeId);
 
-        if (empty($physicalMode))
+        if (empty($physicalMode)) {
             $physicalMode = new PhysicalMode();
+        }
 
         $form = $this->createForm(
             new PhysicalModeType(),
@@ -61,15 +62,14 @@ class PhysicalModeController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $physicalModeManager->save($form->getData());
-                $this->addFlash('success', ($physicalModeId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+                $this->addFlash(
+                    'success',
+                    ($physicalModeId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created')
+                );
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -80,7 +80,11 @@ class PhysicalModeController extends CoreController
             'TisseoBoaBundle:PhysicalMode:form.html.twig',
             array(
                 'form' => $form->createView(),
-                'title' => ($physicalModeId ? 'tisseo.boa.physical_mode.title.edit' : 'tisseo.boa.physical_mode.title.create')
+                'title' => (
+                    $physicalModeId ?
+                    'tisseo.boa.physical_mode.title.edit' :
+                    'tisseo.boa.physical_mode.title.create'
+                )
             )
         );
     }

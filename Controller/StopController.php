@@ -106,10 +106,9 @@ class StopController extends CoreController
     public function editAction(Request $request, $stopId)
     {
         $this->denyAccessUnlessGranted(array(
-                'BUSINESS_MANAGE_STOPS',
-                'BUSINESS_VIEW_STOPS',
-            )
-        );
+            'BUSINESS_MANAGE_STOPS',
+            'BUSINESS_VIEW_STOPS'
+        ));
 
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);

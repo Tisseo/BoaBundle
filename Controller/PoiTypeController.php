@@ -13,6 +13,7 @@ class PoiTypeController extends CoreController
      * List
      *
      * Listing all PoiTypes
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
     public function listAction()
     {
@@ -38,6 +39,7 @@ class PoiTypeController extends CoreController
      * @param integer $poiTypeId
      *
      * Creating/editing PoiType
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, $poiTypeId)
     {
@@ -61,15 +63,11 @@ class PoiTypeController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $poiTypeManager->save($form->getData());
                 $this->addFlash('success', ($poiTypeId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

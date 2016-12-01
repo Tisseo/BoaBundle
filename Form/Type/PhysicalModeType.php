@@ -29,6 +29,13 @@ class PhysicalModeType extends AbstractType
                     'label' => 'tisseo.boa.physical_mode.label.type'
                 )
             )
+            ->add(
+                'co2Emission',
+                'number',
+                array(
+                    'label' => 'tisseo.boa.physical_mode.label.co2_emission'
+                )
+            )
             ->setAction($options['action'])
         ;
     }

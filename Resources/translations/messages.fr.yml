@@ -45,6 +45,7 @@ tisseo:
             label:
                 name: Nom
                 type: Type
+                co2_emission: CO2 g/km/voyageur
             action:
                 create: Créer un mode de transport
 
@@ -105,6 +106,7 @@ tisseo:
                 create: Création de type de POI
             label:
                 name: Nom
+                long_name: Nom long
             action:
                 create: Créer un type de POI
 

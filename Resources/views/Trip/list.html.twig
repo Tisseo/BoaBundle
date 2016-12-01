@@ -29,7 +29,7 @@
         <a href="{{ path('tisseo_boa_trip_create', {'routeId': route.id}) }}" data-toggle="modal" data-target="#base-modal" class="btn btn-success">
             <span class="glyphicon glyphicon-plus"></span> {{ 'tisseo.boa.trip.action.create'|trans }}
         </a>
-        {% if route.TripsNotPattern is not empty %}
+        {% if trips is not empty %}
         <a id="delete-all" href="{{ path('tisseo_boa_trip_delete_all', {'routeId': route.id}) }}" class="btn btn-danger">
             <span class="glyphicon glyphicon-remove"></span> {{ 'tisseo.global.delete_all'|trans }}
         </a>
@@ -60,8 +60,8 @@
             <th class="col-md-3 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
         </thead>
         <tbody>
-            {% for trip in route.TripsNotPattern %}
-                {% set stopTime = trip.FirstStopTime %}
+            {% for trip in trips %}
+                {% set stopTime = trip.StopTimes.first %}
                 {% set bounds = tripBounds[trip.id] %}
                 <tr>
                     <td>
