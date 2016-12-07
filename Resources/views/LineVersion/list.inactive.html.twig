@@ -1,0 +1,92 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+
+{% import "TisseoCoreBundle::macros.html.twig" as render %}
+
+{% block header_content %}
+    {# TODO: datatables provides this functionality : https://datatables.net/examples/api/multi_filter_select.html #}
+    {% if lineVersions is not empty %}
+    <div class="row col-md-12">
+        <div id="filter" class="col-md-2" style="margin-bottom:20px;">
+            <label for="datasource">{{ 'tisseo.boa.line_version.label.datasource'|trans }}</label>
+            <select id="datasource" class="form-control" name="datasource">
+                <option selected></option>
+                {% for d in datasources %}
+                    <option value="{{ d.name }}">{{ d.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <table id="datatable" class="table datatable" role="grid" aria-describedby="datatable_info">
+        <thead>
+            <th class="col-md-1">{{ 'tisseo.boa.line_version.label.number'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.line_version.label.mode'|trans }}</th>
+            <th class="col-md-1">{{ 'tisseo.boa.line_version.label.version'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.line_version.label.datasource'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.line_version.label.start_date'|trans }}</th>
+            <th class="col-md-2 no-sort">{{ 'tisseo.boa.line_version.label.end_date'|trans }}</th>
+            <th class="col-md-3 no-sort no-search">{{ 'tisseo.global.actions'|trans }}</th>
+        </thead>
+        <tbody>
+        {% for lineVersion in lineVersions %}
+            {% set timecardViewAvailable = none %}
+            <tr>
+                <td>{{ render.line_number(lineVersion, 'lineVersion', 'free') }}</td>
+                <td>{{ lineVersion.line.physicalMode.name }}</td>
+                <td>{{ lineVersion.version }}</td>
+                <td>
+                    {% for lineDatasource in lineVersion.line.lineDatasources %}
+                        {{ lineDatasource.datasource.name }}
+                        {% if lineDatasource.datasource.name == 'HASTUS' %}
+                            {% set timecardViewAvailable = false %}
+                        {% else %}
+                            {% set timecardViewAvailable = true %}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ lineVersion.startDate.date | date('d/m/Y') }}</td>
+                <td>{{ lineVersion.plannedEndDate.date | date('d/m/Y') }}</td>
+                <td>
+                    {% if (is_granted(['BUSINESS_MANAGE_ROUTES', 'BUSINESS_VIEW_ROUTES'])) %}
+                        {% if timecardViewAvailable and is_granted('BUSINESS_MANAGE_ROUTES') %}
+                        <a class="btn btn-default" href="{{ path('tisseo_boa_route_trip_calendar', {'lineVersionId': lineVersion.id}) }}">
+                            <span class="glyphicon glyphicon-calendar"></span> {{ 'tisseo.boa.line_version.action.calendar'|trans }}
+                        </a>
+                        {% endif %}
+                        <a class="btn btn-default" href="{{ path('tisseo_boa_route_list', {'lineVersionId': lineVersion.id}) }}">
+                            <span class="glyphicon glyphicon-list"></span> {{ 'tisseo.boa.line_version.action.route'|trans }}
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery', 'core/datatables'], function($) {
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    if (!$('#datasource').val()) {
+                        return true;
+                    }
+
+                    var selectedDatasource = $('#datasource').val();
+                    var currentDatasource = data[3];
+
+                    return selectedDatasource == currentDatasource;
+                }
+            );
+            $(document).on('change', '#datasource', function() {
+                $('.datatable').DataTable().draw();
+            });
+        });
+    </script>
+{% endblock %}

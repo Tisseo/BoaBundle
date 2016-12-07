@@ -17,6 +17,7 @@ tisseo:
             transport:
                 manage: Transport
                 route: Routes
+                route_inactive: Routes passées
                 non_concurrency: Non concurrence
             calendar:
                 manage: Calendriers
@@ -169,6 +170,7 @@ tisseo:
         line_version:
             title:
                 list: Offres
+                list_inactive: Offres passées
             label:
                 number: Numéro
                 mode: Mode
