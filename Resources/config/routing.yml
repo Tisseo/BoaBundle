@@ -313,6 +313,10 @@ tisseo_boa_line_version_list:
     pattern: /offer/list
     defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 
+tisseo_boa_line_version_list_inactive:
+    pattern: /offer/list/inactive
+    defaults: { _controller: TisseoBoaBundle:LineVersion:listInactive }
+
 # Non concurrency routes
 tisseo_boa_non_concurrency_list:
     pattern: /non_concurrency/list

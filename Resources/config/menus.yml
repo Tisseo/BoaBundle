@@ -29,6 +29,8 @@
     submenus:
         'tisseo.boa.menu.transport.route':
             route: 'tisseo_boa_line_version_list'
+        'tisseo.boa.menu.transport.route_inactive':
+            route: 'tisseo_boa_line_version_list_inactive'
         'tisseo.boa.menu.transport.non_concurrency':
             route: 'tisseo_boa_non_concurrency_list'
 'tisseo.boa.menu.calendar.manage':
