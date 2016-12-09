@@ -30,4 +30,30 @@ class LineVersionController extends CoreController
             )
         );
     }
+
+    /**
+     * List passed lineVersion
+     */
+    public function listInactiveAction()
+    {
+        $this->denyAccessUnlessGranted(array(
+            'BUSINESS_MANAGE_ROUTES',
+            'BUSINESS_VIEW_ROUTES'
+        ));
+
+        $now = new \Datetime();
+        $lineVersions = $this->get('tisseo_endiv.line_version_manager')->findInactiveLineVersions($now);
+        $datasources = $this->get('tisseo_endiv.datasource_manager')->findAll();
+
+        return $this->render(
+            'TisseoBoaBundle:LineVersion:list.inactive.html.twig',
+            array(
+                'navTitle' => 'tisseo.boa.menu.transport.manage',
+                'pageTitle' => 'tisseo.boa.line_version.title.list_inactive',
+                'lineVersions' => $lineVersions,
+                'datasources' => $datasources
+            )
+        );
+
+    }
 }
