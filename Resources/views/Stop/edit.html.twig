@@ -114,6 +114,24 @@
                     {% endif %}
                 </div>
             </div>
+            {% if phantoms is not empty %}
+            <div class="row">
+                <div class="col-md-12">
+                    <label style="margin-top:15px; margin-left:5px">{{ 'tisseo.boa.stop_point.label.phantoms'|trans }}</label>
+                    <br>
+                    <div style="display:inline-block">
+                        <div style="height:1px; background-color:black; margin-bottom:5px"></div>
+                        <div style="margin:0 5px">
+                            {% for phantom in phantoms %}
+                                <a class="link-line-version" href="{{ path('tisseo_boa_stop_edit', {'stopId': phantom.id}) }}">
+                                    {{ phantom.stopDatasources.count > 0 ? phantom.stopDatasources.first.code : phantom.id }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="col-md-7">
             <div id="leaflet-map-container" style="float:right"></div>

@@ -167,7 +167,8 @@ class StopController extends CoreController
                 'form' => $form->createView(),
                 'stopHistories' => $stopHistories,
                 'stopsJson' => $stopsJson,
-                'lines' => $stopManager->getLinesByStop($stopId)
+                'lines' => $stopManager->getLinesByStop($stopId),
+                'phantoms' => $stopManager->getPhantomsByStop($stopId)
             )
         );
     }
