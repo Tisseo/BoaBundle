@@ -268,6 +268,7 @@ tisseo:
                 accessible: accessible
                 not_accessible: inaccessible
                 lines: Lignes
+                phantoms: Arrêts fantômes
             action:
                 inaccessibility: Ajout d'inaccessibilité
                 create: Créer un point d'arrêt
@@ -278,6 +279,7 @@ tisseo:
                 unclosable: Cette propriété de point d'arrêt n'a pu être clôturée.
                 no_accessibility_calendar: Il n'y a pas de calendrier d'accessibilité associé à ce point d'arrêt
                 no_lines: Il n'y a actuellement aucune offre passant par ce point d'arrêt
+                no_phantoms: Cet arrêt ne possède aucun arrêt fantôme
         stop_area:
             title:
                 search: Recherche de zones d'arrêt
