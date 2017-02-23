@@ -19,13 +19,20 @@
         <tbody>
         {% set rank = 1 %}
         {% for routeStop in route.routeStops %}
+            {% if not routeStop.isOdtAreaRouteStop %}
+                {% set stop = routeStop.waypoint.stop %}
+                {% if stop.masterStop is not none %}
+                    {% set stop = stop.masterStop %}
+                {% endif %}
+            {% endif %}
+
             <tr class="route-stop">
                 <input type='hidden' class="route-stop-id" name="id" value="{{ routeStop.id }}">
                 <td class="route-stop-rank">{{ routeStop.rank }}</td>
                 <td>
                     {% if not routeStop.isOdtAreaRouteStop %}
-                        <a target="_blank" href="{{ path('tisseo_boa_city_edit', {'cityId': routeStop.waypoint.stop.stopArea.city.id}) }}">
-                            {{ routeStop.waypoint.stop.stopArea.city.name }}
+                        <a target="_blank" href="{{ path('tisseo_boa_city_edit', {'cityId': stop.stopArea.city.id}) }}">
+                            {{ stop.stopArea.city.name }}
                         </a>
                     {% endif %}
                 </td>
@@ -35,8 +42,8 @@
                             {{ routeStop.waypoint.odtArea.name }}
                         </a>
                     {% else %}
-                        <a target="_blank" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': routeStop.waypoint.stop.stopArea.id}) }}">
-                            {{ routeStop.waypoint.stop.stopArea.shortName }}
+                        <a target="_blank" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': stop.stopArea.id}) }}">
+                            {{ stop.stopArea.shortName }}
                         </a>
                     {% endif %}
                 </td>
