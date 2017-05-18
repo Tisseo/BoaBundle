@@ -411,7 +411,8 @@ tisseo:
                 min_date_end: La date de début doit être supérieure à la date de fin de la dernière propriété : %date%.
             action:
                 create: Nouvelle propriété de point d'arrêt
-
+            message:
+                odt_stop_close: Cet arrêt appartient à la zone TAD %odt_area%, ne pas oublier de le clore également dans cette zone.|Cet arrêt appartient aux zones TAD %odt_area%, ne pas oublier de le clore également dans ces zones.
         trip:
             title:
                 list: Services
