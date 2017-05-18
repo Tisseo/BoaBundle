@@ -273,10 +273,10 @@ tisseo:
                 inaccessibility: Ajout d'inaccessibilité
                 create: Créer un point d'arrêt
                 edit: Modifier un point d'arrêt
-                close: Clôturer un point d'arrêt
+                close: Clore un point d'arrêt
             message:
                 no_stop_selected: Vous n'avez pas sélectionné de point d'arrêt valide.
-                unclosable: Cette propriété de point d'arrêt n'a pu être clôturée.
+                unclosable: Cette propriété de point d'arrêt n'a pas pu être close.
                 no_accessibility_calendar: Il n'y a pas de calendrier d'accessibilité associé à ce point d'arrêt
                 no_lines: Il n'y a actuellement aucune offre passant par ce point d'arrêt
                 no_phantoms: Cet arrêt ne possède aucun arrêt fantôme
@@ -303,7 +303,7 @@ tisseo:
                 external_transfert: Transferts extra-zone
                 alias: Alias
                 geometries: Géométries
-                toggle_closed_stops: Afficher les points d'arrêts clôturés
+                toggle_closed_stops: Afficher les points d'arrêts clos
                 create: Créer une zone d'arrêt
             message:
                 no_stop_area_selected: Vous n'avez pas sélectionné de zone d'arrêt valide.
@@ -364,7 +364,7 @@ tisseo:
                 create: Créer une zone TAD
                 edit: Consulter/Modifier
                 delete: Supprimer
-                toggle_closed_stops: Afficher les points d'arrêts cloturés
+                toggle_closed_stops: Afficher les points d'arrêts clos
             label:
                 name: Nom
                 comments: Commentaires
