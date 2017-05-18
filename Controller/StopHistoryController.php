@@ -145,9 +145,27 @@ class StopHistoryController extends CoreController
             );
         }
 
+        $message = null;
+        $odtAreasNames = array();
+        foreach ($stop->getOdtStops() as $odtStop) {
+            if (!in_array($odtStop->getOdtArea()->getName(), $odtAreasNames)) {
+                $odtAreasNames[] = $odtStop->getOdtArea()->getName();
+            }
+        }
+
+        $nbOdtAreasNames = count($odtAreasNames);
+        if (count($odtAreasNames)) {
+            $message = $this->get('translator')->transChoice(
+                'tisseo.boa.stop_history.message.odt_stop_close',
+                $nbOdtAreasNames,
+                array('%odt_area%' => implode(', ', $odtAreasNames))
+            );
+        }
+
         return $this->render('TisseoBoaBundle:StopHistory:close.html.twig',
             array(
                 'title' => 'tisseo.boa.stop_history.title.close',
+                'message' => $message,
                 'form' => $form->createView()
             )
         );

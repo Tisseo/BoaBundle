@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block modal_body %}
+    {% if message %}
+        <div class="alert alert-warning">{{ message|trans }}</div>
+    {% endif %}
     {{ form_errors(form) }}
     <div class="form form-edit">
         <div class="col-md-12">

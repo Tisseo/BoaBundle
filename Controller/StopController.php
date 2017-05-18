@@ -155,8 +155,7 @@ class StopController extends CoreController
 
         if ($stop->getMasterStop() instanceof Stop) {
             $stopHistories = $stopManager->getOrderedStopHistories($stop->getMasterStop()->getId());
-        }
-        else {
+        } else {
             $stopHistories = $stopManager->getOrderedStopHistories($stopId);
         }
 
