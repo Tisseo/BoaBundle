@@ -1,0 +1,20 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+{% set datatable = true %}
+
+{% block list_title -%}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['boa/monitoring/poi/search']);
+    </script>
+{% endblock %}

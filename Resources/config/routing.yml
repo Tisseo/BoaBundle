@@ -466,3 +466,8 @@ tisseo_boa_monitoring_poi_search:
 tisseo_boa_monitoring_stop_locked:
     pattern: /monitoring/stop/locked
     defaults: { _controller: TisseoBoaBundle:Stop:locked }
+
+tisseo_boa_monitoring_offer_by_line:
+    pattern: /monitoring/offer
+    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:search }
+

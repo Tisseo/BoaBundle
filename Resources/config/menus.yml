@@ -74,3 +74,5 @@
             route: 'tisseo_boa_monitoring_poi_search'
         'tisseo.boa.menu.monitoring.stop_locked':
             route: 'tisseo_boa_monitoring_stop_locked'
+        'tisseo.boa.menu.monitoring.offer_by_line':
+            route: 'tisseo_boa_monitoring_offer_by_line'
