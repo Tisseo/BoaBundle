@@ -5,7 +5,6 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tisseo\EndivBundle\Entity\AccessibilityType;
 
 class AccessibilityTypeType extends AbstractType
 {
@@ -21,7 +20,7 @@ class AccessibilityTypeType extends AbstractType
                 'time',
                 array(
                     'label' => 'accessibility_type.labels.startTime',
-                    'input'  => 'timestamp',
+                    'input' => 'timestamp',
                     'widget' => 'single_text',
                     'required' => false
                 )
@@ -31,7 +30,7 @@ class AccessibilityTypeType extends AbstractType
                 'time',
                 array(
                     'label' => 'accessibility_type.labels.endTime',
-                    'input'  => 'timestamp',
+                    'input' => 'timestamp',
                     'widget' => 'single_text',
                     'required' => false
                 )

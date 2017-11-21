@@ -5,8 +5,6 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\EntityRepository;
-
 use Tisseo\EndivBundle\Entity\Calendar;
 
 class CalendarAccessibilityType extends AbstractType
@@ -17,9 +15,9 @@ class CalendarAccessibilityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $calendar= $builder->getData();
+        $calendar = $builder->getData();
 
-        $builder->add('name', 'text',  array('label' => 'calendar.labels.name'));
+        $builder->add('name', 'text', array('label' => 'calendar.labels.name'));
 
         $builder->add('computedStartDate', 'date',
             array(

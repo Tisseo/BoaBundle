@@ -19,16 +19,16 @@ class CommentType extends AbstractType
                 'label',
                 'text',
                 array(
-                    'label'     => 'tisseo.paon.comment.label.label',
-                    'required'  => false
+                    'label' => 'tisseo.paon.comment.label.label',
+                    'required' => false
                 )
             )
             ->add(
                 'commentText',
                 'textarea',
                 array(
-                    'label'     => 'tisseo.paon.comment.label.text',
-                    'required'  => false
+                    'label' => 'tisseo.paon.comment.label.text',
+                    'required' => false
                 )
             )
         ;

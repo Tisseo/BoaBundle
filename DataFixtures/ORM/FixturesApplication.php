@@ -3,7 +3,6 @@
 namespace Tisseo\BoaBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use CanalTP\SamCoreBundle\DataFixtures\ORM\ApplicationTrait;
@@ -19,8 +18,8 @@ class FixturesApplication extends AbstractFixture implements OrderedFixtureInter
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritdoc}
+     */
     public function getOrder()
     {
         return 1;

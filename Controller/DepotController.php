@@ -33,7 +33,8 @@ class DepotController extends CoreController
 
     /**
      * Edit
-     * @param integer $depotId
+     *
+     * @param int $depotId
      *
      * Creating/editing Depot
      */
@@ -44,8 +45,9 @@ class DepotController extends CoreController
         $depotManager = $this->get('tisseo_endiv.depot_manager');
         $depot = $depotManager->find($depotId);
 
-        if (empty($depot))
+        if (empty($depot)) {
             $depot = new Depot();
+        }
 
         $form = $this->createForm(
             new DepotType(),
@@ -59,15 +61,11 @@ class DepotController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $depotManager->save($form->getData());
                 $this->addFlash('success', ($depotId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -85,7 +83,8 @@ class DepotController extends CoreController
 
     /**
      * Delete
-     * @param integer $depotId
+     *
+     * @param int $depotId
      *
      * Deleting Depot
      */
@@ -95,13 +94,13 @@ class DepotController extends CoreController
 
         try {
             $depot = $this->get('tisseo_endiv.depot_manager')->find($depotId);
-            if (!empty($depot))
+            if (!empty($depot)) {
                 $this->get('tisseo_endiv.depot_manager')->delete($depot);
-        } catch(\Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
         return $this->redirectToRoute('tisseo_boa_depot_list');
     }
-
 }

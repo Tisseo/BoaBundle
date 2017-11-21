@@ -2,7 +2,6 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Tisseo\CoreBundle\Controller\CoreController;
 
 class PoiMonitoringController extends CoreController

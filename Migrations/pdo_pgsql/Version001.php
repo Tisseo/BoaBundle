@@ -18,8 +18,10 @@ class Version001 extends AbstractMigration
     }
 
     public function up(Schema $schema)
-    {}
+    {
+    }
 
     public function down(Schema $schema)
-    {}
+    {
+    }
 }

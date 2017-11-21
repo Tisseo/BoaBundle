@@ -10,10 +10,8 @@ use Symfony\Component\Form\FormEvent;
 use Doctrine\ORM\EntityRepository;
 use Tisseo\EndivBundle\Entity\City;
 
-
 class CityEditType extends AbstractType
 {
-
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -38,7 +36,7 @@ class CityEditType extends AbstractType
                 )
             )
 
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $form = $event->getForm();
                 $city = $event->getData();
 
@@ -53,10 +51,10 @@ class CityEditType extends AbstractType
                             'empty_data' => null,
                             'class' => 'TisseoEndivBundle:StopArea',
                             'property' => 'longName',
-                            'query_builder' => function(EntityRepository $er)  use ($city) {
+                            'query_builder' => function (EntityRepository $er) use ($city) {
                                 return $er->createQueryBuilder('s')
-                                    ->where("s.city = :sa")
-                                    ->addOrderBy('s.longName','ASC')
+                                    ->where('s.city = :sa')
+                                    ->addOrderBy('s.longName', 'ASC')
                                     ->setParameter('sa', $city->getId());
                             }
                         )

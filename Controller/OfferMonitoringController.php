@@ -2,12 +2,10 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Tisseo\CoreBundle\Controller\CoreController;
 
 class OfferMonitoringController extends CoreController
 {
-
     public function searchAction()
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');

@@ -13,7 +13,8 @@ class StopHistoryController extends CoreController
 {
     /**
      * Create
-     * @param integer $stopid
+     *
+     * @param int $stopid
      *
      * Creating StopHistory
      */
@@ -52,8 +53,7 @@ class StopHistoryController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $stopHistory = $form->getData();
             $stopHistory->setTheGeom(
                 new Point(
@@ -63,13 +63,10 @@ class StopHistoryController extends CoreController
                 )
             );
 
-            try
-            {
+            try {
                 $stopManager->createStopHistory($stopHistory, $latestStopHistory);
                 $this->addFlash('success', 'tisseo.flash.success.created');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -92,7 +89,8 @@ class StopHistoryController extends CoreController
 
     /**
      * Close
-     * @param integer $stopId
+     *
+     * @param int $stopId
      *
      * Closing Stop properties
      */
@@ -103,8 +101,7 @@ class StopHistoryController extends CoreController
         $stopManager = $this->get('tisseo_endiv.stop_manager');
         $stop = $stopManager->find($stopId);
 
-        if (!$stop->closable())
-        {
+        if (!$stop->closable()) {
             $this->addFlash('warning', 'tisseo.boa.stop_point.message.unclosable');
 
             return $this->redirectToRoute(
@@ -127,15 +124,11 @@ class StopHistoryController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $stopManager->saveStopHistory($stopHistory);
                 $this->addFlash('success', 'tisseo.flash.success.closed');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

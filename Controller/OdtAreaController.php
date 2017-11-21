@@ -4,11 +4,9 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\OdtArea;
-use Tisseo\EndivBundle\Entity\OdtStop;
 use Tisseo\EndivBundle\Entity\Stop;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\OdtAreaType;
-use Tisseo\BoaBundle\Form\Type\OdtStopType;
 
 class OdtAreaController extends CoreController
 {
@@ -53,9 +51,10 @@ class OdtAreaController extends CoreController
 
         try {
             $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
-            if (!empty($odtArea))
+            if (!empty($odtArea)) {
                 $this->get('tisseo_endiv.odt_area_manager')->delete($odtArea);
-        } catch(\Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
 
@@ -64,7 +63,8 @@ class OdtAreaController extends CoreController
 
     /**
      * Edit
-     * @param integer $odtAreaId
+     *
+     * @param int $odtAreaId
      *
      * Creating/editing odtArea
      */
@@ -74,15 +74,12 @@ class OdtAreaController extends CoreController
 
         $odtAreaManager = $this->get('tisseo_endiv.odt_area_manager');
         $odtArea = $odtAreaManager->find($odtAreaId);
-        if (empty($odtArea))
-        {
+        if (empty($odtArea)) {
             $odtArea = new OdtArea();
             $stopsJson = null;
-        }
-        else
-        {
+        } else {
             $stopsJson = $odtAreaManager->getOdtStopsJson($odtArea);
-            foreach($stopsJson as $key => $stopJson) {
+            foreach ($stopsJson as $key => $stopJson) {
                 $stopsJson[$key]['route'] = $this->generateUrl(
                     'tisseo_boa_stop_edit',
                     array('stopId' => $stopJson['id'])
@@ -104,19 +101,16 @@ class OdtAreaController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $odtArea = $form->getData();
-            try
-            {
-                if (empty($odtAreaId))
+            try {
+                if (empty($odtAreaId)) {
                     $odtAreaId = $odtAreaManager->create($odtArea);
+                }
                 $odtAreaManager->save($odtArea);
 
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $odtAreaId = null;
                 $this->addFlashException($e->getMessage());
             }

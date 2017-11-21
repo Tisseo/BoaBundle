@@ -19,7 +19,7 @@ class FixturesCustomer extends AbstractFixture implements OrderedFixtureInterfac
     private $container;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -27,7 +27,7 @@ class FixturesCustomer extends AbstractFixture implements OrderedFixtureInterfac
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(ObjectManager $om)
     {
@@ -36,18 +36,17 @@ class FixturesCustomer extends AbstractFixture implements OrderedFixtureInterfac
 
         $this->addCustomerToApplication($om, 'app-boa', 'customer-tisseo', $navitiaToken);
 
-        foreach($samFixturePerimeters as $key => $value) {
+        foreach ($samFixturePerimeters as $key => $value) {
             $this->addPerimeterToCustomer($om, $value['coverage'], $value['network'], 'customer-tisseo');
         }
         $om->flush();
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritdoc}
+     */
     public function getOrder()
     {
         return 3;
     }
-
 }
