@@ -247,6 +247,7 @@ class CalendarController extends CoreController
     /**
      * @param $calendarId
      * @param $calendarType
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteAction($calendarId, $calendarType)
@@ -267,6 +268,7 @@ class CalendarController extends CoreController
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function bitmaskAction(Request $request)
@@ -297,6 +299,7 @@ class CalendarController extends CoreController
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function calendarsIntersectionAction(Request $request)
@@ -341,6 +344,7 @@ class CalendarController extends CoreController
     /**
      * @param \Datetime $startDate
      * @param $bitmask
+     *
      * @return array
      */
     private function buildCalendarBitMask(\Datetime $startDate, $bitmask)
@@ -358,7 +362,8 @@ class CalendarController extends CoreController
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param null $calendarType
+     * @param null                                      $calendarType
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function autocompleteAction(Request $request, $calendarType = null)

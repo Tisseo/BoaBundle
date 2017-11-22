@@ -32,3 +32,9 @@ services:
         arguments: ['@doctrine.orm.endiv_entity_manager']
         tags:
             - { name: form.type, alias: calendar_selector }
+
+    tisseo_boa.type.monitoring.offer_by_line:
+        class: 'Tisseo\BoaBundle\Form\Type\OfferByLineType'
+        arguments: ['@tisseo_endiv.line_version_manager']
+        tags:
+            - { name: form.type, alias: boa_offer_by_line_type }

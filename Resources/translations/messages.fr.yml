@@ -571,3 +571,7 @@ tisseo:
                     line_version: Vous devez sélectionner une offre pour pouvoir consulter les POI
             offer_by_line:
                 title: Offre par ligne
+                label:
+                    line_version: Offre
+                    month: Mois
+                    view: Consulter
