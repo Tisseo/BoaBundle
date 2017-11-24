@@ -3,6 +3,8 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
 
     $(document).ready(function () {
 
+        $(document).find('.color-picker').colorpicker();
+        console.log($(document).find('.color-picker'));
         function replaceOptions(element, data) {
             if (data.length > 0) {
                 var currentSelection = parseInt($(element).val());
@@ -26,10 +28,13 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
             var month = $('select[name="boa_offer_by_line_type[month][month]"]').val();
             var year = $('select[name="boa_offer_by_line_type[month][year]"]').val();
             var target = $('#boa_offer_by_line_type_offer');
-            var depElements = $('.ajax_dep_element, #boa_offer_by_line_type_month select');
+            var depElements = $('.ajax_dep_element');
+            var selectElement = $('#boa_offer_by_line_type_month select');
+
             $('#loading-indicator').show();
 
             $(depElements).prop('disabled', true);
+            $(selectElement).prop('disabled', true);
 
             $.ajax({
                 url: Routing.generate('tisseo_boa_monitoring_offer_by_date_json', { month: month, year: year }),
@@ -47,6 +52,7 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
                     if (JSON.parse(data.responseText).length > 0) {
                         $(depElements).prop('disabled', false);
                     }
+                    $(selectElement).prop('disabled', false);
                     $('#loading-indicator').hide();
                 }
             });

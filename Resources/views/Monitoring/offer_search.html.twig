@@ -32,6 +32,7 @@
     </div>
     {% if results %}
     <div class="row">
+        {{ dump(results) }}
         <div class="col-md-12">
             <table class="table">
                 <thead>
@@ -45,21 +46,28 @@
                 </thead>
                 <tbody>
                 {%  for result in results %}
-                <tr>
-                    <th scope="row"><input type="checkbox" value="{{ result.name }}" /></th>
-                    <th scope="color">
-                        <div class="input-group colorpicker-component color-picker" title="Using input value">
-                            <input type="text" class="form-control" value="#DD0F20"/>
-                            <span class="input-group-addon"><i></i></span>
-                        </div>
-                    </th>
-                    <td>{{ result.name }}</td>
-                    <td>{{ result.departure }}</td>
-                    <td>{{ result.arrival }}</td>
-                    <td>{{ result.month }}</td>
-                    <td>{{ result.day }}</td>
-                    <td>{{ result.hour }}</td>
-                <tr>
+                    <tr>
+                        <th scope="row"><input type="checkbox" value="{{ result.name }}" /></th>
+                        <th scope="color">
+                            <div class="input-group colorpicker-component color-picker" title="Using input value">
+                                <input type="text" class="form-control" value="#DD0F20"/>
+                                <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </th>
+                        <td>{{ result.name }}</td>
+                        <td>{{ result.departure }}</td>
+                        <td>{{ result.arrival }}</td>
+                        <td>{{ result.month }}</td>
+                        <td>{{ result.day }}</td>
+                        <td>{{ result.hour }}</td>
+                    <tr>
+                {% if loop.last %}
+                <tfoot>
+                    <td colspan="8">
+                        <button class="btn btn-default">{{ 'graph'|trans }}</button>
+                    </td>
+                </tfoot>
+                {% endif %}
                 {% else %}
                 <tr>
                     <td colspan="7">{{ 'no_result'|trans }}</td>

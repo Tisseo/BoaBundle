@@ -29,7 +29,8 @@ class OfferMonitoringController extends CoreController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $data = $form->getData();
-            $result = $lvm->findLineVersionSortedByLineNumber($data['month']);
+            $monitoring = $this->get("tisseo_boa.monitoring");
+            $results = $monitoring->compute($data['offer'], $data['month']);
         }
 
         return $this->render(
@@ -38,7 +39,7 @@ class OfferMonitoringController extends CoreController
                 'navTitle' => 'tisseo.boa.menu.monitoring.manage',
                 'pageTitle' => 'tisseo.boa.monitoring.offer_by_line.title',
                 'form' => $form->createView(),
-                'result' => isset($result) ? $result : null
+                'results' => isset($results) ? $results : null
             ]
         );
     }
