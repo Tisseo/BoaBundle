@@ -30,6 +30,45 @@
         {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>
+    {% if results %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                    <th scope="col" class="col-md-2" colspan="2">#</th>
+                    <th scope="col" class="col-md-1">route</th>
+                    <th scope="col" class="col-md-3">depart</th>
+                    <th scope="col" class="col-md-3">arrivé</th>
+                    <th scope="col" class="col-md-1">month-year</th>
+                    <th scope="col" class="col-md-1">jour</th>
+                    <th scope="col" class="col-md-1">heure</th>
+                </thead>
+                <tbody>
+                {%  for result in results %}
+                <tr>
+                    <th scope="row"><input type="checkbox" value="{{ result.name }}" /></th>
+                    <th scope="color">
+                        <div class="input-group colorpicker-component color-picker" title="Using input value">
+                            <input type="text" class="form-control" value="#DD0F20"/>
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
+                    </th>
+                    <td>{{ result.name }}</td>
+                    <td>{{ result.departure }}</td>
+                    <td>{{ result.arrival }}</td>
+                    <td>{{ result.month }}</td>
+                    <td>{{ result.day }}</td>
+                    <td>{{ result.hour }}</td>
+                <tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">{{ 'no_result'|trans }}</td>
+                <tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
 
 
