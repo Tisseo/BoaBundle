@@ -19,7 +19,8 @@ requirejs.config({
         'boa/transfer/external_transfer':       'bundles/tisseoboa/js/Transfer/externalTransfer',
         'boa/monitoring/accessibility/search':  'bundles/tisseoboa/js/Monitoring/accessibilitySearch',
         'boa/monitoring/poi/search':            'bundles/tisseoboa/js/Monitoring/poiSearch',
-        'boa/monitoring/offer/search':          'bundles/tisseoboa/js/Monitoring/offerSearch'
+        'boa/monitoring/offer/search':          'bundles/tisseoboa/js/Monitoring/offerSearch',
+        'boa/monitoring/offer/graph':           'bundles/tisseoboa/js/Monitoring/offerGraph'
     },
     shim: {
         'boa/trip/create': {
@@ -42,6 +43,9 @@ requirejs.config({
         },
         'boa/monitoring/offer/search': {
             deps: ['bootstrap-colorpicker']
+        },
+        'boa/monitoring/offer/graph': {
+            deps: ['chartjs']
         }
     },
     deps: ['utils', 'jquery', 'core/form']

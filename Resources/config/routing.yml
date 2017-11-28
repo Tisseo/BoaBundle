@@ -479,3 +479,9 @@ tisseo_boa_monitoring_offer_by_date_json:
         year: \d+
     options:
         expose: true
+tisseo_boa_monitoring_generate_graph:
+    path: /monitoring/graph
+    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:generateGraph }
+    methods: [POST]
+    options:
+        expose: true

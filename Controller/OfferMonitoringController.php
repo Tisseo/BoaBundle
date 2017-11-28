@@ -54,6 +54,8 @@ class OfferMonitoringController extends CoreController
      */
     public function searchLineVersionAction($month, $year)
     {
+        $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
+
         $response = new Response();
         $lvm = $this->get('tisseo_endiv.line_version_manager');
         $serializer = $this->get('jms_serializer');
@@ -69,6 +71,38 @@ class OfferMonitoringController extends CoreController
                 SerializationContext::create()->setGroups(array('monitoring'))
             )
         );
+
+        return $response;
+    }
+
+
+
+    /*
+    data: {
+        labels: ["1/11", "2/11", "3/11", "4/11", "5/11", "6/11", "7/11", "8/11", "9/11", "10/11", "11/11", "12/11",
+            "13/11", "14/11", "15/11", "16/11", "17/11", "18/11", "19/11", "20/11", "21/11", "22/11", "23/11", "24/11",
+            "25/11", "26/11", "27/11", "28/11", "29/11", "30/11"],
+        datasets: [{
+            label: '18/L01',
+            data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3, 19, 3, 5, 2, 3],
+            backgroundColor: 'rgba(41,37,237,0.8)',
+            borderColor: 'rgba(41,37,237,0.8)',
+            borderWidth: 1
+        }, {
+            label: '14/L01',
+            data: [15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 5, 10, 1, 6, 4, 9],
+            backgroundColor: 'rgba(44,186,109,0.83)',
+            borderColor: 'rgba(44,186,109,0.83)',
+            borderWidth: 1
+        }]
+    }
+    */
+    public function generateGraphAction($routes, $dates)
+    {
+        $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
+
+        $response = new Response();
+
 
         return $response;
     }

@@ -32,25 +32,30 @@
     </div>
     {% if results %}
     <div class="row">
-        {{ dump(results) }}
         <div class="col-md-12">
-            <table class="table">
+            <table class="table table-stats">
                 <thead>
                     <th scope="col" class="col-md-2" colspan="2">#</th>
-                    <th scope="col" class="col-md-1">route</th>
-                    <th scope="col" class="col-md-3">depart</th>
-                    <th scope="col" class="col-md-3">arrivé</th>
-                    <th scope="col" class="col-md-1">month-year</th>
-                    <th scope="col" class="col-md-1">jour</th>
-                    <th scope="col" class="col-md-1">heure</th>
+                    <th scope="col" class="col-md-1">{{ 'tisseo.boa.monitoring.offer_by_line.label.name' | trans }}</th>
+                    <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.departure' | trans }}</th>
+                    <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.arrival' | trans }}</th>
+                    <th scope="col" class="col-md-1 label-control">
+                        <a href="#" class="previous round">&#8249;</a>month-year<a href="#" class="next round">&#8250;</a>
+                    </th>
+                    <th scope="col" class="col-md-1 label-control">
+                        <a href="#" class="previous round">&#8249;</a>jour<a href="#" class="next round">&#8250;</a>
+                    </th>
+                    <th scope="col" class="col-md-1 label-control">
+                        <a href="#" class="previous round">&#8249;</a>heure<a href="#" class="next round">&#8250;</a>
+                    </th>
                 </thead>
                 <tbody>
                 {%  for result in results %}
                     <tr>
-                        <th scope="row"><input type="checkbox" value="{{ result.name }}" /></th>
+                        <th scope="row"><input type="checkbox" class="ckb-route" value="{{ result|json_encode() }}" /></th>
                         <th scope="color">
                             <div class="input-group colorpicker-component color-picker" title="Using input value">
-                                <input type="text" class="form-control" value="#DD0F20"/>
+                                <input type="text" class="form-control" value="#DD0F20" data-route="{{ result.name }}" />
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </th>
@@ -64,7 +69,7 @@
                 {% if loop.last %}
                 <tfoot>
                     <td colspan="8">
-                        <button class="btn btn-default">{{ 'graph'|trans }}</button>
+                        <button class="btn btn-default generate-graph">{{ 'graph'|trans }}</button>
                     </td>
                 </tfoot>
                 {% endif %}
@@ -76,13 +81,23 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="chart_month"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="chart_day"></canvas>
+        </div>
+    </div>
     {% endif %}
 {% endblock %}
 
 
 {% block javascripts %}
     {{ parent() }}
+    <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
     <script type="text/javascript">
         require(['boa/monitoring/offer/search']);
+        require(['boa/monitoring/offer/graph']);
     </script>
 {% endblock %}

@@ -186,7 +186,7 @@ class Monitoring
             }
         }
         $timestamp_fin = microtime(true);
-        dump('Temps d\'execution :' . ($timestamp_fin-$timestamp_debut));
+        //dump('Temps d\'execution :' . ($timestamp_fin-$timestamp_debut));
         return $nbService;
     }
 

@@ -4,7 +4,6 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
     $(document).ready(function () {
 
         $(document).find('.color-picker').colorpicker();
-        console.log($(document).find('.color-picker'));
         function replaceOptions(element, data) {
             if (data.length > 0) {
                 var currentSelection = parseInt($(element).val());

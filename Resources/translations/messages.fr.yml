@@ -575,3 +575,6 @@ tisseo:
                     line_version: Offre
                     month: Mois
                     view: Consulter
+                    name: Route
+                    departure: Départ
+                    arrival: Arrivée
