@@ -12,7 +12,6 @@ use Tisseo\EndivBundle\Services\LineVersionManager;
 
 class OfferByLineType extends AbstractType
 {
-
     /**
      * @var LineVersionManager
      */
@@ -20,6 +19,7 @@ class OfferByLineType extends AbstractType
 
     /**
      * OfferByLineType constructor.
+     *
      * @param \Tisseo\EndivBundle\Services\LineVersionManager $lvm
      */
     public function __construct(LineVersionManager $lvm)
@@ -35,10 +35,10 @@ class OfferByLineType extends AbstractType
     {
         $currentDate = new \Datetime('now');
         $currentDate->setDate($currentDate->format('Y'), $currentDate->format('m'), 1);
-
+        $currentDate->setTime(8, 0, 0);
         $builder->add(
             'month',
-            'date',
+            'datetime',
             array(
                 'label' => 'tisseo.boa.monitoring.offer_by_line.label.month',
                 'required' => true,
@@ -66,9 +66,13 @@ class OfferByLineType extends AbstractType
             $data = $event->getData();
 
             if ($data['month'] && !$data['month'] instanceof \DateTime) {
-                $data['month'] = \DateTime::createFromFormat('Ymd', $data['month']['year'].$data['month']['month'].$data['month']['day']);
+                $data['month'] = \DateTime::createFromFormat(
+                    'Ymd-H',
+                    $data['month']['date']['year'].$data['month']['date']['month'].$data['month']['date']['day'].'-'.$data['month']['time']['hour']);
             } else {
-                $data['month'] = new \DateTime('now');
+                $date = new \DateTime('now');
+                $date->setTime(8, 0, 0);
+                $data['month'] = $date;
             }
 
             $lvOptions = $this->getOptions(

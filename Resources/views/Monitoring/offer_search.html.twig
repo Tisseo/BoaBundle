@@ -11,7 +11,9 @@
     <div class="row">
         {{ form_start(form) }}
         <div class="col-md-2 col-sm-4 ">
-            {{ form_widget(form.month.day, {'attr': {'class': 'hide'}}) }}
+            {{ form_widget(form.month.date.day, {'attr': {'class': 'hide'}}) }}
+            {{ form_widget(form.month.time.hour, {'attr': {'class': 'hide'}}) }}
+            {{ form_widget(form.month.time.minute, {'attr': {'class': 'hide'}}) }}
             {{ form_row(form.month) }}
         </div>
         <div class="col-md-4 col-sm-4">
@@ -39,14 +41,20 @@
                     <th scope="col" class="col-md-1">{{ 'tisseo.boa.monitoring.offer_by_line.label.name' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.departure' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.arrival' | trans }}</th>
-                    <th scope="col" class="col-md-1 label-control">
-                        <a href="#" class="previous round">&#8249;</a>month-year<a href="#" class="next round">&#8250;</a>
+                    <th scope="col" class="col-md-1 label-control text-center">
+                        <div>{{ form.vars.value.month|localizeddate('none', 'none', app.request.locale, null, "MMM Y") }}</div>
+                        <a href="#" class="previous round" data-value="{{ navDate.previous_month }}">&#8249;</a>
+                        <a href="#" class="next round" data-value="{{ navDate.next_month }}">&#8250;</a>
                     </th>
-                    <th scope="col" class="col-md-1 label-control">
-                        <a href="#" class="previous round">&#8249;</a>jour<a href="#" class="next round">&#8250;</a>
+                    <th scope="col" class="col-md-1 label-control text-center">
+                        <div>{{ form.vars.value.month|date('d/m/Y') }}</div>
+                        <a href="#" class="previous round" data-value="{{ navDate.previous_day }}">&#8249;</a>
+                        <a href="#" class="next round" data-value="{{ navDate.next_day }}">&#8250;</a>
                     </th>
-                    <th scope="col" class="col-md-1 label-control">
-                        <a href="#" class="previous round">&#8249;</a>heure<a href="#" class="next round">&#8250;</a>
+                    <th scope="col" class="col-md-1 label-control text-center">
+                        <div>{{ form.vars.value.month|date('H') ~ ' h' }}</div>
+                        <a href="#" class="previous round" data-value="{{ navDate.previous_hour }}">&#8249;</a>
+                        <a href="#" class="next round" data-value="{{ navDate.next_hour }}">&#8250;</a>
                     </th>
                 </thead>
                 <tbody>
@@ -69,24 +77,36 @@
                 {% if loop.last %}
                 <tfoot>
                     <td colspan="8">
-                        <button class="btn btn-default generate-graph">{{ 'graph'|trans }}</button>
+                        <button class="btn btn-default generate-graph">{{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}</button>
                     </td>
                 </tfoot>
                 {% endif %}
                 {% else %}
                 <tr>
-                    <td colspan="7">{{ 'no_result'|trans }}</td>
+                    <td colspan="7">{{ 'tisseo.boa.monitoring.offer_by_line.message.no_result'|trans }}</td>
                 <tr>
                 {% endfor %}
             </table>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <canvas id="chart_month"></canvas>
-        </div>
-        <div class="col-md-6">
-            <canvas id="chart_day"></canvas>
+        <div class="col-md-12">
+            <div class="col-md-2 col-md-offset-10 text-right control-graph hide">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active btn-display">
+                        <input type="radio" name="options" data-type="grid" autocomplete="off" checked> <span class="glyphicon glyphicon-th-large"></span>
+                    </label>
+                    <label class="btn btn-default btn-display">
+                        <input type="radio" name="options" data-type="list" autocomplete="off"> <span class="glyphicon glyphicon-align-justify"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6 chart">
+                <canvas id="chart_month"></canvas>
+            </div>
+            <div class="col-md-6 chart">
+                <canvas id="chart_day"></canvas>
+            </div>
         </div>
     </div>
     {% endif %}
@@ -95,7 +115,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
     <script type="text/javascript">
         require(['boa/monitoring/offer/search']);
         require(['boa/monitoring/offer/graph']);

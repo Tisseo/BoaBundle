@@ -578,3 +578,6 @@ tisseo:
                     name: Route
                     departure: Départ
                     arrival: Arrivée
+                    show_graph: Voir les graphiques
+                message:
+                    no_result: Il n'y a aucun résultat

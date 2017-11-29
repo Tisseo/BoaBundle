@@ -3,9 +3,6 @@
 namespace Tisseo\BoaBundle\Services;
 
 use Doctrine\Common\Persistence\ObjectManager;
-
-use Tisseo\EndivBundle\Entity\Calendar;
-use Tisseo\EndivBundle\Entity\StopTime;
 use Tisseo\EndivBundle\Services\CalendarManager;
 use Tisseo\EndivBundle\Services\LineVersionManager;
 use Tisseo\EndivBundle\Entity\LineVersion;
@@ -16,7 +13,7 @@ use Tisseo\EndivBundle\Services\StopTimeManager;
 
 class Monitoring
 {
-    /** @var  \Doctrine\Common\Persistence\ObjectManager $om */
+    /** @var \Doctrine\Common\Persistence\ObjectManager $om */
     private $om;
 
     /**
@@ -25,16 +22,15 @@ class Monitoring
     private $lineVersionManager;
 
     /**
-     * @var CalendarManager $calendarManager
+     * @var CalendarManager
      */
     private $calendarManager;
 
-    /** @var  RouteStopManager */
+    /** @var RouteStopManager */
     private $routeStopManager;
 
-    /** @var  StopTimeManager */
+    /** @var StopTimeManager */
     private $stopTimeManager;
-
 
     public function __construct(
         ObjectManager $om,
@@ -50,21 +46,20 @@ class Monitoring
         $this->stopTimeManager = $stopTimeManager;
     }
 
-
-    public function compute($lineVersionId, \DateTime $date)
+    public function compute($lineVersionId, \DateTimeInterface $date)
     {
         $result = [];
+        $date = \DateTimeImmutable::createFromMutable($date);
 
         /** @var LineVersion $lineVersion */
         $lineVersion = $this->lineVersionManager->find($lineVersionId);
 
         /** @var Route $route */
-        foreach($lineVersion->getRoutes() as $route) {
-
+        foreach ($lineVersion->getRoutes() as $route) {
             /** @var RouteStop $routeStop */
             $rank = 0;
 
-            foreach($route->getRouteStops() as $routeStop) {
+            foreach ($route->getRouteStops() as $routeStop) {
                 if ($routeStop->getRank() == 1) {
                     $routeStopDeparture = $routeStop;
                 }
@@ -79,7 +74,6 @@ class Monitoring
                 throw new \Exception();
             }
 
-
             $trips = $route->getTrips();
 
             array_push(
@@ -93,45 +87,35 @@ class Monitoring
                     'hour' => $this->tripsByHour($routeStopDeparture, $date), // Call method computeForHour
                 ]
             );
-
-
         }
 
         return $result;
     }
 
-    private function tripsByMonth($trips, \Datetime $startDate)
+    private function tripsByMonth($trips, \DateTimeInterface $startDate)
     {
-        $startDate->setTime(00,00,00);
-        $endDate = clone $startDate;
-        $endDate->modify('+1 month -1 day');
-        $endDate->setTime(23,59,59);
-
-        //$trips = $route->getTrips();
+        $startDate = $startDate->setTime(00, 00, 00);
+        $endDate = $startDate->modify('+1 month -1 day');
+        $endDate->setTime(23, 59, 59);
 
         return $this->countServices($trips, $startDate, $endDate);
     }
 
-
-    private function tripsByDay($trips, \Datetime $startDate)
+    private function tripsByDay($trips, \DateTimeInterface $startDate)
     {
-        $startDate->setTime(00,00,00);
-        $endDate = clone $startDate;
-        $endDate->setTime(23,59,59);
-
-        //$trips = $route->getTrips();
+        $startDate = $startDate->setTime(00, 00, 00);
+        $endDate = $startDate->setTime(23, 59, 59);
 
         return $this->countServices($trips, $startDate, $endDate);
     }
 
-    private function tripsByHour(RouteStop $routeStopDeparture, \Datetime $startDate, $hour = 8)
+    private function tripsByHour(RouteStop $routeStopDeparture, \DateTimeInterface $startDate)
     {
-        $startDate->setTime(00,00,00);
-        $endDate = clone $startDate;
-        $endDate->setTime(24,59,59);
+        //$startDate = $startDate->setTime(00,00,00);
+        $endDate = $startDate->setTime(24, 59, 59);
 
-          // Convert StartDate time to second
-        $startTime = $hour * 3600;
+        // Convert StartDate time to second
+        $startTime = intval($startDate->format('h')) * 3600;
         // Adds 59 min and 59 sec
         $endTime = $startTime + 3599;
 
@@ -142,7 +126,7 @@ class Monitoring
         /** @var \Tisseo\EndivBundle\Entity\Trip $trip */
         $filteredTrips = [];
         foreach ($trips as $trip) {
-            foreach($stopTimes as $k => $stopTime) {
+            foreach ($stopTimes as $k => $stopTime) {
                 if ($stopTime->getTrip()->getId() == $trip->getId()) {
                     $filteredTrips[] = $trip;
                     unset($stopTimes[$k]);
@@ -153,8 +137,7 @@ class Monitoring
         return $this->countServices($filteredTrips, $startDate, $endDate);
     }
 
-
-    private function countServices($trips, \Datetime $startDate, \DateTime $endDate)
+    private function countServices($trips, \DateTimeInterface $startDate, \DateTimeInterface $endDate)
     {
         if (empty($trips)) {
             return 0;
@@ -162,19 +145,18 @@ class Monitoring
 
         $nbService = 0;
         /** @var \Tisseo\EndivBundle\Entity\Trip $trip */
-        $timestamp_debut = microtime(true);
         foreach ($trips as $trip) {
-            if(!$trip->getPeriodCalendar()) {
+            if (!$trip->getPeriodCalendar()) {
                 continue;  // ignore trip without period calendar
             }
 
-            if(!$trip->getDayCalendar()) {
+            if (!$trip->getDayCalendar()) {
                 $bitmask = $this->calendarManager->getCalendarBitmask(
                     $trip->getPeriodCalendar()->getId(),
                     $startDate,
                     $endDate
                 );
-                $nbService += substr_count($bitmask,1);
+                $nbService += substr_count($bitmask, 1);
             } else {
                 $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
                     $trip->getPeriodCalendar()->getId(),
@@ -182,22 +164,10 @@ class Monitoring
                     $startDate,
                     $endDate
                 );
-                $nbService += substr_count($bitmask,1);
+                $nbService += substr_count($bitmask, 1);
             }
         }
-        $timestamp_fin = microtime(true);
-        //dump('Temps d\'execution :' . ($timestamp_fin-$timestamp_debut));
+
         return $nbService;
-    }
-
-    private function timeDiff($second, $outputFormat = '%H:%i:%s')
-    {
-        $interval = \DateInterval::createFromDateString($second . ' seconds');
-        $d1 = new \DateTimeImmutable();
-        $d2 = $d1;
-        $d2->add($interval);
-        $diff = $d1->diff($d2); // $d2 - $d1
-
-        return $diff->format($outputFormat);
     }
 }

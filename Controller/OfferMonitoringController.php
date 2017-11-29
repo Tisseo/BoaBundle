@@ -29,8 +29,19 @@ class OfferMonitoringController extends CoreController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $data = $form->getData();
-            $monitoring = $this->get("tisseo_boa.monitoring");
+            $monitoring = $this->get('tisseo_boa.monitoring');
             $results = $monitoring->compute($data['offer'], $data['month']);
+
+            $date = \DateTimeImmutable::createFromMutable($data['month']);
+            $format = 'Y-m-d H:m:i';
+            $navDate = [
+                'previous_month' => $date->modify('-1 month')->format($format),
+                'next_month' => $date->modify('+1 month')->format($format),
+                'previous_day' => $date->modify('-1 day')->format($format),
+                'next_day' => $date->modify('+1 day')->format($format),
+                'previous_hour' => $date->modify('-1 hour')->format($format),
+                'next_hour' => $date->modify('+1 hour')->format($format)
+            ];
         }
 
         return $this->render(
@@ -39,7 +50,8 @@ class OfferMonitoringController extends CoreController
                 'navTitle' => 'tisseo.boa.menu.monitoring.manage',
                 'pageTitle' => 'tisseo.boa.monitoring.offer_by_line.title',
                 'form' => $form->createView(),
-                'results' => isset($results) ? $results : null
+                'results' => isset($results) ? $results : null,
+                'navDate' => isset($navDate) ? $navDate : null,
             ]
         );
     }
@@ -75,8 +87,6 @@ class OfferMonitoringController extends CoreController
         return $response;
     }
 
-
-
     /*
     data: {
         labels: ["1/11", "2/11", "3/11", "4/11", "5/11", "6/11", "7/11", "8/11", "9/11", "10/11", "11/11", "12/11",
@@ -102,7 +112,6 @@ class OfferMonitoringController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
 
         $response = new Response();
-
 
         return $response;
     }

@@ -1,8 +1,7 @@
-define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
+define(['jquery', 'core/moment', 'fosjsrouting', 'translations/messages'], function($, moment) {
     "use strict";
 
     $(document).ready(function () {
-
         $(document).find('.color-picker').colorpicker();
         function replaceOptions(element, data) {
             if (data.length > 0) {
@@ -24,8 +23,8 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
 
         // On change date
         $(document).on('change', '[name=boa_offer_by_line_type] .bootstrap-date select', function(ev) {
-            var month = $('select[name="boa_offer_by_line_type[month][month]"]').val();
-            var year = $('select[name="boa_offer_by_line_type[month][year]"]').val();
+            var month = $('select[name="boa_offer_by_line_type[month][date][month]"]').val();
+            var year = $('select[name="boa_offer_by_line_type[month][date][year]"]').val();
             var target = $('#boa_offer_by_line_type_offer');
             var depElements = $('.ajax_dep_element');
             var selectElement = $('#boa_offer_by_line_type_month select');
@@ -56,5 +55,20 @@ define(['jquery', 'fosjsrouting', 'translations/messages'], function($) {
                 }
             });
         });
+
+        // Change month / day / hour
+        $(document).on('click', '.label-control a', function(e) {
+            e.preventDefault(e);
+            // get form
+            var form = $('form[name="boa_offer_by_line_type"]');
+            var date = moment($(this).data('value'));
+            $(form).find('select[name="boa_offer_by_line_type[month][date][year]"]').val(date.format('YYYY'));
+            $(form).find('select[name="boa_offer_by_line_type[month][date][month]"]').val(date.format('M'));
+            $(form).find('select[name="boa_offer_by_line_type[month][date][day]"]').val(date.format('D'));
+            $(form).find('select[name="boa_offer_by_line_type[month][time][hour]"]').val(date.format('H'));
+
+            $(form).submit();
+        });
+
     });
 });

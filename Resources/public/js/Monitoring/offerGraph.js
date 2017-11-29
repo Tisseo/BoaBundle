@@ -6,6 +6,7 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
         $(document).on('click', '.generate-graph', function(ev) {
             var routes = $(document).find('input.ckb-route:checked');
             if (routes.length > 0) {
+                $(document).find('.control-graph').removeClass('hide');
                 var data = [];
                 var dom = $(document).find('.table-stats tbody');
                 $(routes.each(function($idx, route) {
@@ -13,7 +14,6 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
                     route.color = $(dom).find('input[data-route="'+route.name+'"]').val();
                     data.push(route);
                 }));
-                console.log(data);
 
                 var ctx = document.getElementById("chart_month").getContext('2d');
                 var myChart = new Chart(ctx, {
@@ -33,6 +33,12 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
                             data: [15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 5, 10, 1, 6, 4, 9],
                             backgroundColor: 'rgba(44,186,109,0.83)',
                             borderColor: 'rgba(44,186,109,0.83)',
+                            borderWidth: 1
+                        }, {
+                            label: '7/L01',
+                            data: [15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 5, 10, 1, 6, 4, 9],
+                            backgroundColor: 'rgba(44,0,109,0.83)',
+                            borderColor: 'rgba(44,0,109,0.83)',
                             borderWidth: 1
                         }]
                     },
@@ -114,6 +120,16 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
                     }
                 });*/
             }
+        });
+
+        $(document).on('click', '.btn-display', function(ev) {
+           var elem = $(this).find('input');
+           if ($(elem).data('type') === 'grid') {
+               $('.chart').addClass('col-md-6').removeClass('col-md-12');
+           } else {
+               $('.chart').addClass('col-md-12').removeClass('col-md-6');
+           }
+
         });
     });
 });
