@@ -3,6 +3,7 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\CoreBundle\Controller\CoreController;
@@ -107,11 +108,74 @@ class OfferMonitoringController extends CoreController
         }]
     }
     */
-    public function generateGraphAction($routes, $dates)
+    public function generateGraphAction(Request $request)
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
+        $response = new JsonResponse();
 
-        $response = new Response();
+        try {
+            $routes = $request->request->get('routes');
+            if (!$routes) {
+                throw new \Exception('Aucune route sélectionnée', 500);
+            }
+
+            $monitoring = $this->get('tisseo_boa.monitoring');
+            $routeMng = $this->get('tisseo_endiv.route_manager');
+
+            $data = [];
+
+            foreach ($routes as $key => $route) {
+                $date = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $route['date']);
+                $objRoute = $routeMng->find($route['route_id']);
+
+                $routeStopDeparture = null;
+                foreach ($objRoute->getRouteStops() as $routeStop) {
+                    if ($routeStop->getRank() == 1) {
+                        $routeStopDeparture = $routeStop;
+                        continue;
+                    }
+                }
+
+                // get route trips
+                $trips = $objRoute->getTrips();
+                // Compute each day of month
+                $result = $monitoring->tripsByMonth($trips, $date, true);
+
+                // Format
+                $data['month']['labels'] = array_keys($result);
+                $data['month']['datasets'][] = [
+                    'label' => $route['name'],
+                    'data' => array_values($result),
+                    'backgroundColor' => $route['color'],
+                    'borderColor' => $route['color'],
+                    'borderWidth' => 1,
+                ];
+
+                // Compute each hour of day
+                if(!is_null($routeStopDeparture)) {
+                    $result = $monitoring->tripsByHour($routeStopDeparture, $date, TRUE);
+                    // Format
+                    $data['hour']['labels'] = array_keys($result);
+                    $data['hour']['datasets'][] = [
+                        'label' => $route['name'],
+                        'data' => array_values($result),
+                        'backgroundColor' => $route['color'],
+                        'borderColor' => $route['color'],
+                        'borderWidth' => 1,
+                    ];
+                }
+
+            }
+
+            $serializer = $this->get('jms_serializer');
+            $response->setContent(
+                $serializer->serialize($data, 'json')
+            );
+
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), $e->getCode());
+        }
+
 
         return $response;
     }

@@ -13,6 +13,9 @@ use Tisseo\EndivBundle\Services\StopTimeManager;
 
 class Monitoring
 {
+    const GRAPH_TYPE_MONTH = 1;
+    const GRAPH_TYPE_DAY = 2;
+
     /** @var \Doctrine\Common\Persistence\ObjectManager $om */
     private $om;
 
@@ -50,6 +53,7 @@ class Monitoring
     {
         $result = [];
         $date = \DateTimeImmutable::createFromMutable($date);
+        $stringDate = $date->format('Y-m-d H:i:s');
 
         /** @var LineVersion $lineVersion */
         $lineVersion = $this->lineVersionManager->find($lineVersionId);
@@ -80,6 +84,8 @@ class Monitoring
                 $result,
                 [
                     'name' => $route->getName(),
+                    'route_id' => $route->getId(),
+                    'date' => $stringDate,
                     'departure' => $routeStopDeparture->getWaypoint()->getStop()->getStopArea()->getLongName(),
                     'arrival' => $routeStopArrival->getWaypoint()->getStop()->getStopArea()->getLongName(),
                     'month' => $this->tripsByMonth($trips, $date), // Call method computeForMonth
@@ -92,16 +98,21 @@ class Monitoring
         return $result;
     }
 
-    private function tripsByMonth($trips, \DateTimeInterface $startDate)
+    public function tripsByMonth($trips, \DateTimeInterface $startDate, $graph=false)
     {
-        $startDate = $startDate->setTime(00, 00, 00);
-        $endDate = $startDate->modify('+1 month -1 day');
+        $startDate = $startDate->modify('first day of this month');
+        $startDate->setTime(00, 00, 00);
+        $endDate = $startDate->modify('last day of this month');
         $endDate->setTime(23, 59, 59);
 
-        return $this->countServices($trips, $startDate, $endDate);
+        if (!$graph) {
+            return $this->countServices($trips, $startDate, $endDate);
+        } else {
+            return $this->generateDataGraph($trips, $startDate, $endDate);
+        }
     }
 
-    private function tripsByDay($trips, \DateTimeInterface $startDate)
+    public function tripsByDay($trips, \DateTimeInterface $startDate)
     {
         $startDate = $startDate->setTime(00, 00, 00);
         $endDate = $startDate->setTime(23, 59, 59);
@@ -109,7 +120,7 @@ class Monitoring
         return $this->countServices($trips, $startDate, $endDate);
     }
 
-    private function tripsByHour(RouteStop $routeStopDeparture, \DateTimeInterface $startDate)
+    public function tripsByHour(RouteStop $routeStopDeparture, \DateTimeInterface $startDate, $graph=false)
     {
         //$startDate = $startDate->setTime(00,00,00);
         $endDate = $startDate->setTime(24, 59, 59);
@@ -134,7 +145,11 @@ class Monitoring
             }
         }
 
-        return $this->countServices($filteredTrips, $startDate, $endDate);
+        if (!$graph) {
+            return $this->countServices($filteredTrips, $startDate, $endDate);
+        } else {
+            return $this->generateDataGraph($filteredTrips, $startDate, $endDate, self::GRAPH_TYPE_DAY);
+        }
     }
 
     private function countServices($trips, \DateTimeInterface $startDate, \DateTimeInterface $endDate)
@@ -169,5 +184,107 @@ class Monitoring
         }
 
         return $nbService;
+    }
+
+    private function generateDataGraph($trips, \DateTimeInterface $startDate, \DateTimeInterface $endDate, $type = self::GRAPH_TYPE_MONTH)
+    {
+        if (empty($trips)) {
+            return 0;
+        }
+
+        switch($type) {
+            case self::GRAPH_TYPE_MONTH:
+                $monthYear = $startDate->format('m/Y');
+                $dayInMonth = cal_days_in_month(CAL_GREGORIAN, $startDate->format('m'), $startDate->format('Y'));
+                $arrayBitmask = str_split(str_repeat('0', $dayInMonth));
+
+                $sumFunc = function ($t1, $t2) {
+                    return $t1 + $t2;
+                };
+
+                foreach ($trips as $trip) {
+                    if (!$trip->getPeriodCalendar()) {
+                        continue;  // ignore trip without period calendar
+                    }
+                    if (!$trip->getDayCalendar()) {
+                        $bitmask = $this->calendarManager->getCalendarBitmask(
+                            $trip->getPeriodCalendar()->getId(),
+                            $startDate,
+                            $endDate
+                        );
+                    }
+                    else {
+                        $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
+                            $trip->getPeriodCalendar()->getId(),
+                            $trip->getDayCalendar()->getId(),
+                            $startDate,
+                            $endDate
+                        );
+                    }
+
+                    $arrayBitmask = array_map($sumFunc, $arrayBitmask, str_split($bitmask));
+
+                }
+
+                // Rename array keys
+                foreach ($arrayBitmask as $key => $value) {
+                    $newKey = str_pad(($key + 1), 2, 0, STR_PAD_LEFT);
+                    $arrayBitmask[$newKey . '/' . $monthYear] = $value;
+                    unset($arrayBitmask[$key]);
+                }
+
+                break;
+
+            case self::GRAPH_TYPE_DAY:
+                $arrayBitmask = [];
+
+                //$monthYear = $startDate->format('m/Y');
+                //$dayInMonth = cal_days_in_month(CAL_GREGORIAN, $startDate->format('m'), $startDate->format('Y'));
+                $arrayBitmask = str_split(str_repeat('0', 23));
+
+                $sumFunc = function ($t1, $t2) {
+                    return $t1 + $t2;
+                };
+
+
+                foreach ($trips as $trip) {
+                    if (!$trip->getPeriodCalendar()) {
+                        continue;  // ignore trip without period calendar
+                    }
+                    if (!$trip->getDayCalendar()) {
+                        $bitmask = $this->calendarManager->getCalendarBitmask(
+                            $trip->getPeriodCalendar()->getId(),
+                            $startDate,
+                            $endDate
+                        );
+                    }
+                    else {
+                        $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
+                            $trip->getPeriodCalendar()->getId(),
+                            $trip->getDayCalendar()->getId(),
+                            $startDate,
+                            $endDate
+                        );
+                    }
+
+                    $arrayBitmask = array_map($sumFunc, $arrayBitmask, str_split($bitmask));
+
+                }
+
+                // Rename array keys
+                foreach ($arrayBitmask as $key => $value) {
+                    $newKey = str_pad(($key + 1), 2, 0, STR_PAD_LEFT);
+                    $arrayBitmask[$newKey . 'h'] = $value;
+                    unset($arrayBitmask[$key]);
+                }
+
+
+                break;
+            default:
+                throw new \Exception('graph type unknown');
+
+        }
+
+        return $arrayBitmask;
     }
 }

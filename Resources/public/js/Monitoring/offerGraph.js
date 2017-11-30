@@ -6,15 +6,15 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
         $(document).on('click', '.generate-graph', function(ev) {
             var routes = $(document).find('input.ckb-route:checked');
             if (routes.length > 0) {
-                $(document).find('.control-graph').removeClass('hide');
-                var data = [];
+                var data = {};
+                data.routes = [];
                 var dom = $(document).find('.table-stats tbody');
                 $(routes.each(function($idx, route) {
                     route = JSON.parse($(route).val());
                     route.color = $(dom).find('input[data-route="'+route.name+'"]').val();
-                    data.push(route);
+                    data.routes.push(route);
                 }));
-
+/*
                 var ctx = document.getElementById("chart_month").getContext('2d');
                 var myChart = new Chart(ctx, {
                     type: 'bar',
@@ -92,17 +92,56 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
                         }
                     }
                 });
-
-                /*$.ajax({
+*/
+                $.ajax({
                     url: Routing.generate('tisseo_boa_monitoring_generate_graph'),
                     type: "POST",
                     data: data,
                     dataType: 'html',
                     success: function(data, status) {
                         try {
-                            //var result = JSON.parse(data.content);
-                            $('#div_chart').replaceWith(data.content);
-                            //console.log(result);
+                            var data = JSON.parse(data);
+                            console.log(data);
+                            var monthCtx = document.getElementById("chart_month").getContext('2d');
+                            var monthChart = new Chart(monthCtx, {
+                                type: 'bar',
+                                data: data.month,
+                                options: {
+                                    scales: {
+                                        xAxes: [{
+                                            stacked: true
+                                        }],
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero:true
+                                            },
+                                            stacked: true,
+                                        }]
+                                    }
+                                }
+                            });
+
+                            var hourCtx = document.getElementById("chart_hour").getContext('2d');
+                            var hourChart = new Chart(hourCtx, {
+                                type: 'bar',
+                                data: data.hour,
+                                options: {
+                                    scales: {
+                                        xAxes: [{
+                                            stacked: true
+                                        }],
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero:true
+                                            },
+                                            stacked: true,
+                                        }]
+                                    }
+                                }
+                            });
+
+                            $(document).find('.control-graph').removeClass('hide');
+
                         } catch(e) {
                             console.error(e.name + ' : ' + e.message);
                         }
@@ -118,7 +157,7 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
                         //$('#loading-indicator').hide();
                         console.log('complete');
                     }
-                });*/
+                });
             }
         });
 

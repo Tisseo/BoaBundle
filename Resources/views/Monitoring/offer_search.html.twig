@@ -42,7 +42,9 @@
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.departure' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.arrival' | trans }}</th>
                     <th scope="col" class="col-md-1 label-control text-center">
-                        <div>{{ form.vars.value.month|localizeddate('none', 'none', app.request.locale, null, "MMM Y") }}</div>
+                        <div>
+                            {{ form.vars.value.month|localizeddate('none', 'none', app.request.locale, null, "MMM Y") }}
+                        </div>
                         <a href="#" class="previous round" data-value="{{ navDate.previous_month }}">&#8249;</a>
                         <a href="#" class="next round" data-value="{{ navDate.next_month }}">&#8250;</a>
                     </th>
@@ -105,7 +107,7 @@
                 <canvas id="chart_month"></canvas>
             </div>
             <div class="col-md-6 chart">
-                <canvas id="chart_day"></canvas>
+                <canvas id="chart_hour"></canvas>
             </div>
         </div>
     </div>
