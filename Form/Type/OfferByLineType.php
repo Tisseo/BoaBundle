@@ -61,6 +61,8 @@ class OfferByLineType extends AbstractType
             )
         );
 
+        $builder->add('colors', 'hidden', ['required' => false]);
+
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $data = $event->getData();
@@ -87,8 +89,8 @@ class OfferByLineType extends AbstractType
                     'choices' => $lvOptions,
                     'required' => true,
                     'attr' => [
-                        'class' => 'ajax_dep_element'
-                    ]
+                        'class' => 'ajax_dep_element',
+                    ],
                 )
             );
         });

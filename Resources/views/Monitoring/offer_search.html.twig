@@ -65,7 +65,7 @@
                         <th scope="row"><input type="checkbox" class="ckb-route" value="{{ result|json_encode() }}" /></th>
                         <th scope="color">
                             <div class="input-group colorpicker-component color-picker" title="Using input value">
-                                <input type="text" class="form-control" value="#DD0F20" data-route="{{ result.name }}" />
+                                <input type="text" class="form-control" value="{% if (result.color) %}{{ result.color }}{% else %}#DD0F20{% endif %}" data-route="{{ result.name }}" />
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </th>
@@ -79,7 +79,10 @@
                 {% if loop.last %}
                 <tfoot>
                     <td colspan="8">
-                        <button class="btn btn-default generate-graph">{{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}</button>
+                        <button class="btn btn-default generate-graph" disabled>{{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}</button>
+                        {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
+                        <img src="{{  asset_url }}" id="loading-indicator-graph" style="display: none;" />
+                        {% endimage %}
                     </td>
                 </tfoot>
                 {% endif %}

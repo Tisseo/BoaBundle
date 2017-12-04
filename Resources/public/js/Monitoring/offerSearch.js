@@ -20,6 +20,10 @@ define(['jquery', 'core/moment', 'fosjsrouting', 'translations/messages'], funct
             }
         }
 
+        // Form submit
+        $(document).on('submit', '[name="boa_offer_by_line_type"]', function() {
+            $('#loading-indicator').show();
+        });
 
         // On change date
         $(document).on('change', '[name=boa_offer_by_line_type] .bootstrap-date select', function(ev) {
@@ -66,6 +70,13 @@ define(['jquery', 'core/moment', 'fosjsrouting', 'translations/messages'], funct
             $(form).find('select[name="boa_offer_by_line_type[month][date][month]"]').val(date.format('M'));
             $(form).find('select[name="boa_offer_by_line_type[month][date][day]"]').val(date.format('D'));
             $(form).find('select[name="boa_offer_by_line_type[month][time][hour]"]').val(date.format('H'));
+            $(form).find('input[name="boa_offer_by_line_type[colors]"]').val(function() {
+                var data = [];
+                $('.color-picker input').each(function() {
+                    data.push({'route': $(this).data('route'), 'value': $(this).val() });
+                });
+                return JSON.stringify(data);
+            });
 
             $(form).submit();
         });

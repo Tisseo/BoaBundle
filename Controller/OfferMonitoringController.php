@@ -19,7 +19,6 @@ class OfferMonitoringController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
 
-        $lvm = $this->get('tisseo_endiv.line_version_manager');
         $data = $request->request->get('boa_offer_by_line_type');
 
         $form = $this->createForm(
@@ -32,6 +31,13 @@ class OfferMonitoringController extends CoreController
             $data = $form->getData();
             $monitoring = $this->get('tisseo_boa.monitoring');
             $results = $monitoring->compute($data['offer'], $data['month']);
+
+            if ($data['colors'] != null) {
+                $colors = json_decode($data['colors']);
+                foreach ($results as $key => &$result) {
+                    $result['color'] = $colors[$key]->value;
+                }
+            }
 
             $date = \DateTimeImmutable::createFromMutable($data['month']);
             $format = 'Y-m-d H:m:i';
@@ -88,26 +94,6 @@ class OfferMonitoringController extends CoreController
         return $response;
     }
 
-    /*
-    data: {
-        labels: ["1/11", "2/11", "3/11", "4/11", "5/11", "6/11", "7/11", "8/11", "9/11", "10/11", "11/11", "12/11",
-            "13/11", "14/11", "15/11", "16/11", "17/11", "18/11", "19/11", "20/11", "21/11", "22/11", "23/11", "24/11",
-            "25/11", "26/11", "27/11", "28/11", "29/11", "30/11"],
-        datasets: [{
-            label: '18/L01',
-            data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3, 19, 3, 5, 2, 3],
-            backgroundColor: 'rgba(41,37,237,0.8)',
-            borderColor: 'rgba(41,37,237,0.8)',
-            borderWidth: 1
-        }, {
-            label: '14/L01',
-            data: [15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 15, 10, 1, 6, 4, 9, 5, 10, 1, 6, 4, 9],
-            backgroundColor: 'rgba(44,186,109,0.83)',
-            borderColor: 'rgba(44,186,109,0.83)',
-            borderWidth: 1
-        }]
-    }
-    */
     public function generateGraphAction(Request $request)
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
@@ -132,12 +118,13 @@ class OfferMonitoringController extends CoreController
                 foreach ($objRoute->getRouteStops() as $routeStop) {
                     if ($routeStop->getRank() == 1) {
                         $routeStopDeparture = $routeStop;
-                        continue;
+                        break;
                     }
                 }
 
                 // get route trips
                 $trips = $objRoute->getTrips();
+
                 // Compute each day of month
                 $result = $monitoring->tripsByMonth($trips, $date, true);
 
@@ -152,8 +139,8 @@ class OfferMonitoringController extends CoreController
                 ];
 
                 // Compute each hour of day
-                if(!is_null($routeStopDeparture)) {
-                    $result = $monitoring->tripsByHour($routeStopDeparture, $date, TRUE);
+                if (!is_null($routeStopDeparture)) {
+                    $result = $monitoring->tripsByHour($routeStopDeparture, $date, true);
                     // Format
                     $data['hour']['labels'] = array_keys($result);
                     $data['hour']['datasets'][] = [
@@ -164,18 +151,15 @@ class OfferMonitoringController extends CoreController
                         'borderWidth' => 1,
                     ];
                 }
-
             }
 
             $serializer = $this->get('jms_serializer');
             $response->setContent(
                 $serializer->serialize($data, 'json')
             );
-
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
-
 
         return $response;
     }
