@@ -3,8 +3,6 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\RouteStopType;
 use Tisseo\EndivBundle\Entity\RouteStop;
@@ -34,7 +32,7 @@ class RouteStopController extends CoreController
             )
         );
 
-        return ($form);
+        return $form;
     }
 
     /*
@@ -66,7 +64,8 @@ class RouteStopController extends CoreController
 
     /**
      * List
-     * @param integer $routeId
+     *
+     * @param int $routeId
      *
      * List Route's RouteStops
      */
@@ -77,7 +76,7 @@ class RouteStopController extends CoreController
             'BUSINESS_VIEW_ROUTES'
         ));
 
-        $route =  $this->get('tisseo_endiv.route_manager')->find($routeId);
+        $route = $this->get('tisseo_endiv.route_manager')->find($routeId);
 
         return $this->render(
             'TisseoBoaBundle:RouteStop:list.html.twig',
@@ -89,7 +88,8 @@ class RouteStopController extends CoreController
 
     /**
      * Edit
-     * @param integer $routeStopId
+     *
+     * @param int $routeStopId
      *
      * If request's method is GET, display a pseudo-form (ajax/json) which
      * purpose is to create/delete RouteStop.
@@ -154,6 +154,7 @@ class RouteStopController extends CoreController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $routeStop = $form->getData();
+
             return $this->render(
                 'TisseoBoaBundle:RouteStop:new.html.twig',
                 array(

@@ -1,0 +1,130 @@
+{% extends "TisseoCoreBundle::datatable_list.html.twig" %}
+{% set bundle = 'TisseoBoaBundle' %}
+{% set smoothness = true %}
+{% set datatable = true %}
+
+{% block list_title -%}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        {{ form_start(form) }}
+        <div class="col-md-2 col-sm-4 ">
+            {{ form_widget(form.month.date.day, {'attr': {'class': 'hide'}}) }}
+            {{ form_widget(form.month.time.hour, {'attr': {'class': 'hide'}}) }}
+            {{ form_widget(form.month.time.minute, {'attr': {'class': 'hide'}}) }}
+            {{ form_row(form.month) }}
+        </div>
+        <div class="col-md-4 col-sm-4">
+            {{ form_row(form.offer) }}
+        </div>
+        <div class="col-md-6 col-sm-4">
+            <div class="boa-inline-button">
+            <button type="button" class="btn btn-default btn-submit ajax_dep_element">
+                {{ 'tisseo.boa.monitoring.offer_by_line.label.view' | trans }}
+            </button>
+            {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
+            <img src="{{  asset_url }}" id="loading-indicator" style="display: none;" />
+            {% endimage %}
+            </div>
+            <div>
+                {{ form_row(form.reset) }}
+            </div>
+        </div>
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
+    {% if results %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-stats">
+                <thead>
+                    <th scope="col" class="col-md-2" colspan="2">#</th>
+                    <th scope="col" class="col-md-1">{{ 'tisseo.boa.monitoring.offer_by_line.label.name' | trans }}</th>
+                    <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.departure' | trans }}</th>
+                    <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.arrival' | trans }}</th>
+                    <th scope="col" class="col-md-1 label-control text-center">
+                        <div>
+                            {{ form.vars.value.month|localizeddate('none', 'none', app.request.locale, null, "MMM Y") }}
+                        </div>
+                        <a href="#" class="previous round" data-value="{{ navDate.previous_month }}">&#8249;</a>
+                        <a href="#" class="next round" data-value="{{ navDate.next_month }}">&#8250;</a>
+                    </th>
+                    <th scope="col" class="col-md-1 label-control text-center">
+                        <div>{{ form.vars.value.month|date('d/m/Y') }}</div>
+                        <a href="#" class="previous round" data-value="{{ navDate.previous_day }}">&#8249;</a>
+                        <a href="#" class="next round" data-value="{{ navDate.next_day }}">&#8250;</a>
+                    </th>
+                    <th scope="col" class="col-md-1 label-control text-center">
+                        <div>{{ form.vars.value.month|date('H') ~ ' h' }}</div>
+                        <a href="#" class="previous round" data-value="{{ navDate.previous_hour }}">&#8249;</a>
+                        <a href="#" class="next round" data-value="{{ navDate.next_hour }}">&#8250;</a>
+                    </th>
+                </thead>
+                <tbody>
+                {%  for result in results %}
+                    <tr>
+                        <th scope="row"><input type="checkbox" class="ckb-route" value="{{ result|json_encode() }}" /></th>
+                        <th scope="color">
+                            <div class="input-group colorpicker-component color-picker" title="Using input value">
+                                <input type="text" class="form-control" value="{% if result.color is not null %}{{ result.color }}{% else %}#DD0F20{% endif %}" data-route="{{ result.name }}" />
+                                <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </th>
+                        <td>{{ result.name }}</td>
+                        <td>{{ result.departure }}</td>
+                        <td>{{ result.arrival }}</td>
+                        <td>{{ result.month }}</td>
+                        <td>{{ result.day }}</td>
+                        <td>{{ result.hour }}</td>
+                    <tr>
+                {% if loop.last %}
+                <tfoot>
+                    <td colspan="8">
+                        <button class="btn btn-default generate-graph" disabled>{{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}</button>
+                        {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
+                        <img src="{{  asset_url }}" id="loading-indicator-graph" style="display: none;" />
+                        {% endimage %}
+                    </td>
+                </tfoot>
+                {% endif %}
+                {% else %}
+                <tr>
+                    <td colspan="7">{{ 'tisseo.boa.monitoring.offer_by_line.message.no_result'|trans }}</td>
+                <tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-2 col-md-offset-10 text-right control-graph hide">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active btn-display">
+                        <input type="radio" name="options" data-type="grid" autocomplete="off" checked> <span class="glyphicon glyphicon-th-large"></span>
+                    </label>
+                    <label class="btn btn-default btn-display">
+                        <input type="radio" name="options" data-type="list" autocomplete="off"> <span class="glyphicon glyphicon-align-justify"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6 chart">
+                <canvas id="chart_month"></canvas>
+            </div>
+            <div class="col-md-6 chart">
+                <canvas id="chart_hour"></canvas>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require(['boa/monitoring/offer/search']);
+        require(['boa/monitoring/offer/graph']);
+    </script>
+{% endblock %}

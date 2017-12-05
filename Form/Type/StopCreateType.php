@@ -65,4 +65,3 @@ class StopCreateType extends AbstractType
         return 'boa_stop_create';
     }
 }
-

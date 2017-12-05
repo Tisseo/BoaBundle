@@ -35,8 +35,7 @@ class RouteEditType extends AbstractType
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $form = $event->getForm();
                 $route = $event->getData();
-                if ($route->getWay() == Route::WAY_AREA)
-                {
+                if ($route->getWay() == Route::WAY_AREA) {
                     $form->add(
                         'way',
                         'text',
@@ -45,9 +44,7 @@ class RouteEditType extends AbstractType
                             'read_only' => true
                         )
                     );
-                }
-                else
-                {
+                } else {
                     $form->add(
                         'way',
                         'choice',

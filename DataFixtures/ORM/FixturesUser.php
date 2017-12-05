@@ -5,7 +5,6 @@ namespace Tisseo\BoaBundle\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-
 use CanalTP\SamCoreBundle\DataFixtures\ORM\UserTrait;
 
 class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
@@ -14,24 +13,24 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
 
     private $users = array(
         array(
-            'id'        => null,
-            'username'  => 'user_boa',
+            'id' => null,
+            'username' => 'user_boa',
             'firstname' => 'User',
-            'lastname'  => 'Boa',
-            'email'     => 'user-boa@tisseo.fr',
-            'password'  => 'boa',
-            'roles'     => array('role-user-boa'),
-            'customer'  => 'customer-tisseo'
+            'lastname' => 'Boa',
+            'email' => 'user-boa@tisseo.fr',
+            'password' => 'boa',
+            'roles' => array('role-user-boa'),
+            'customer' => 'customer-tisseo'
         ),
         array(
-            'id'        => null,
-            'username'  => 'admin_boa',
+            'id' => null,
+            'username' => 'admin_boa',
             'firstname' => 'Admin',
-            'lastname'  => 'Boa',
-            'email'     => 'admin-boa@tisseo.fr',
-            'password'  => 'boa',
-            'roles'     => array('role-admin-boa'),
-            'customer'  => 'customer-tisseo'
+            'lastname' => 'Boa',
+            'email' => 'admin-boa@tisseo.fr',
+            'password' => 'boa',
+            'roles' => array('role-admin-boa'),
+            'customer' => 'customer-tisseo'
         )
     );
 
@@ -44,8 +43,8 @@ class FixturesUser extends AbstractFixture implements OrderedFixtureInterface
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritdoc}
+     */
     public function getOrder()
     {
         return 5;

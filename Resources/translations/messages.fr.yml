@@ -38,6 +38,7 @@ tisseo:
                 accessibility: Suivi accessibilité
                 poi: Poi par ligne
                 stop_locked: Arrêts verrouillés
+                offer_by_line: Offre par ligne
         physical_mode:
             title:
                 list: Modes de transport
@@ -568,3 +569,16 @@ tisseo:
                     poi: Points d'intérêts
                 validation:
                     line_version: Vous devez sélectionner une offre pour pouvoir consulter les POI
+            offer_by_line:
+                title: Offre par ligne
+                label:
+                    line_version: Offre
+                    month: Mois
+                    view: Consulter
+                    name: Route
+                    departure: Départ
+                    arrival: Arrivée
+                    show_graph: Voir les graphiques
+                    reset: Réiniatiliser le jour et l'heure.
+                message:
+                    no_result: Il n'y a aucun résultat

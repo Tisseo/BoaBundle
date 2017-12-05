@@ -45,7 +45,6 @@ class CityCreateType extends AbstractType
         );
     }
 
-
     /**
      * @return string
      */

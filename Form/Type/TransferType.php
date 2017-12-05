@@ -29,7 +29,6 @@ class TransferType extends AbstractType
         );
     }
 
-
     /**
      * @return string
      */

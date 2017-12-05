@@ -1,67 +1,67 @@
 tisseo_boa_homepage:
-    pattern:  /
+    path:  /
     defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 
 # AccessibilityMode routes
 tisseo_boa_accessibility_mode_list:
-    pattern: /accessibilitymode/list
+    path: /accessibilitymode/list
     defaults: { _controller: TisseoBoaBundle:AccessibilityMode:list }
 tisseo_boa_accessibility_mode_edit:
-    pattern: /accessibilitymode/edit/{accessibilityModeId}
+    path: /accessibilitymode/edit/{accessibilityModeId}
     defaults: { _controller: TisseoBoaBundle:AccessibilityMode:edit, accessibilityModeId: null }
 
 # Agency routes
 tisseo_boa_agency_list:
-    pattern: /agency/list
+    path: /agency/list
     defaults: { _controller: TisseoBoaBundle:Agency:list }
 tisseo_boa_agency_edit:
-    pattern: /agency/edit/{agencyId}
+    path: /agency/edit/{agencyId}
     defaults: { _controller: TisseoBoaBundle:Agency:edit, agencyId: null }
 
 # Calendar routes
 tisseo_boa_calendar_list:
-    pattern: /calendar/{calendarType}/list/
+    path: /calendar/{calendarType}/list/
     defaults: { _controller: TisseoBoaBundle:Calendar:list }
 tisseo_boa_calendar_list_paginate:
-    pattern: /calendar/{calendarType}/list/paginate
+    path: /calendar/{calendarType}/list/paginate
     defaults: { _controller: TisseoBoaBundle:Calendar:listPaginate }
     options:
         expose: true;
 tisseo_boa_calendar_edit:
-    pattern: /calendar/edit/{calendarId}
+    path: /calendar/edit/{calendarId}
     defaults: { _controller: TisseoBoaBundle:Calendar:edit, calendarId: null }
 tisseo_boa_calendar_delete:
-    pattern:  /calendar/{calendarType}/delete/{calendarId}
+    path:  /calendar/{calendarType}/delete/{calendarId}
     defaults: { _controller: TisseoBoaBundle:Calendar:delete }
     requirements:
         calendarId: \d+
 tisseo_boa_calendar_bitmask:
-    pattern: /calendar/bitmask
+    path: /calendar/bitmask
     defaults: { _controller: TisseoBoaBundle:Calendar:bitmask }
     options:
         expose: true
 tisseo_boa_calendar_intersection:
-    pattern: /calendar/intersection
+    path: /calendar/intersection
     defaults: { _controller: TisseoBoaBundle:Calendar:calendarsIntersection }
     options:
         expose: true
 # CalendarElement routes
 tisseo_boa_calendar_element_create:
-    pattern: /calendar/{calendarId}/calendar_element/create
+    path: /calendar/{calendarId}/calendar_element/create
     defaults: { _controller: TisseoBoaBundle:CalendarElement:create }
     requirements:
         calendarId: \d+
     options:
         expose: true
 tisseo_boa_calendar_element_edit:
-    pattern: /calendar/{calendarId}/calendar_element/edit
+    path: /calendar/{calendarId}/calendar_element/edit
     defaults: { _controller: TisseoBoaBundle:CalendarElement:edit }
     requirements:
         calendarId: \d+
     options:
         expose: true
 tisseo_boa_calendar_element_form:
-    pattern: /calendar/{calendarId}/calendar_element/form/{rank}
+    path: /calendar/{calendarId}/calendar_element/form/{rank}
     defaults: { _controller: TisseoBoaBundle:CalendarElement:renderForm }
     requirements:
         calendarId: \d+
@@ -71,39 +71,39 @@ tisseo_boa_calendar_element_form:
 
 # Color routes
 tisseo_boa_color_list:
-    pattern: /color/list
+    path: /color/list
     defaults: { _controller: TisseoBoaBundle:Color:list }
 tisseo_boa_color_edit:
-    pattern: /color/edit/{colorId}
+    path: /color/edit/{colorId}
     defaults: { _controller: TisseoBoaBundle:Color:edit, colorId: null }
 
 # Datasource routes
 tisseo_boa_datasource_list:
-    pattern: /datasource/list
+    path: /datasource/list
     defaults: { _controller: TisseoBoaBundle:Datasource:list }
 tisseo_boa_datasource_edit:
-    pattern: /datasource/edit/{datasourceId}
+    path: /datasource/edit/{datasourceId}
     defaults: { _controller: TisseoBoaBundle:Datasource:edit, datasourceId: null }
 
 # ExceptionType routes
 tisseo_boa_exception_type_list:
-    pattern: /exceptiontype/list
+    path: /exceptiontype/list
     defaults: { _controller: TisseoBoaBundle:ExceptionType:list }
 tisseo_boa_exception_type_edit:
-    pattern: /exceptiontype/edit/{exceptionTypeId}
+    path: /exceptiontype/edit/{exceptionTypeId}
     defaults: { _controller: TisseoBoaBundle:ExceptionType:edit, exceptionTypeId: null }
 
 # Property routes
 tisseo_boa_property_list:
-    pattern: /property/list
+    path: /property/list
     defaults: { _controller: TisseoBoaBundle:Property:list }
 tisseo_boa_property_edit:
-    pattern: /property/edit/{propertyId}
+    path: /property/edit/{propertyId}
     defaults: { _controller: TisseoBoaBundle:Property:edit, propertyId: null }
 
 # Log routes
 tisseo_boa_log_list:
-    pattern: /log/list/offset/{offset}/limit/{limit}
+    path: /log/list/offset/{offset}/limit/{limit}
     defaults: { _controller: TisseoBoaBundle:Log:list, offset: 0, limit: 0 }
     requirements:
         offset: -?\d+
@@ -111,98 +111,98 @@ tisseo_boa_log_list:
 
 # Physical mode routes
 tisseo_boa_physical_mode_list:
-    pattern: /physicalmode/list
+    path: /physicalmode/list
     defaults: { _controller: TisseoBoaBundle:PhysicalMode:list }
 tisseo_boa_physical_mode_edit:
-    pattern: /physicalmode/edit/{physicalModeId}
+    path: /physicalmode/edit/{physicalModeId}
     defaults: { _controller: TisseoBoaBundle:PhysicalMode:edit, physicalModeId: null }
 
 # POI routes
 tisseo_boa_poi_type_list:
-    pattern: /poitype/list
+    path: /poitype/list
     defaults: { _controller: TisseoBoaBundle:PoiType:list }
 tisseo_boa_poi_type_edit:
-    pattern: /poitype/edit/{poiTypeId}
+    path: /poitype/edit/{poiTypeId}
     defaults: { _controller: TisseoBoaBundle:PoiType:edit, poiTypeId: null }
 
 # Depot routes
 tisseo_boa_depot_list:
-    pattern: /depot/list
+    path: /depot/list
     defaults: { _controller: TisseoBoaBundle:Depot:list }
 tisseo_boa_depot_edit:
-    pattern: /depot/edit/{depotId}
+    path: /depot/edit/{depotId}
     defaults: { _controller: TisseoBoaBundle:Depot:edit, depotId: null }
 tisseo_boa_depot_delete:
-    pattern: /depot/delete/{depotId}
+    path: /depot/delete/{depotId}
     defaults: { _controller: TisseoBoaBundle:Depot:delete }
 
 # ajax calls
 tisseo_boa_json_calendars:
-    pattern: /json/calendars/{calendarType}
+    path: /json/calendars/{calendarType}
     defaults: { _controller: TisseoBoaBundle:Calendar:autocomplete, calendarType: null }
 tisseo_boa_json_stop:
-    pattern: /json/stop
+    path: /json/stop
     defaults: { _controller: TisseoBoaBundle:Json:stop }
     options:
         expose: true
 tisseo_boa_json_stop_area:
-    pattern: /json/stoparea
+    path: /json/stoparea
     defaults: { _controller: TisseoBoaBundle:Json:stopArea }
 tisseo_boa_json_stop_stop_area:
-    pattern: /json/stop/stoparea
+    path: /json/stop/stoparea
     defaults: { _controller: TisseoBoaBundle:Json:stopAndStopArea }
     options:
         expose: true
 tisseo_boa_json_stop_odt_area:
-    pattern: /json/stop/odtarea
+    path: /json/stop/odtarea
     defaults: { _controller: TisseoBoaBundle:Json:stopAndOdtArea }
     options:
         expose: true
 tisseo_boa_json_city:
-    pattern: /json/city
+    path: /json/city
     defaults: { _controller: TisseoBoaBundle:Json:city }
 tisseo_boa_json_transfer_stop:
-    pattern: /json/stoptransfer/{stopAreaId}
+    path: /json/stoptransfer/{stopAreaId}
     defaults: { _controller: TisseoBoaBundle:Json:stopTransfer }
     requirements:
         stopAreaId: \d+
 tisseo_boa_json_trip_template:
-    pattern: /json/triptemplate
+    path: /json/triptemplate
     defaults: { _controller: TisseoBoaBundle:Json:TripTemplate }
 
 # Stop routes
 tisseo_boa_stop_search:
-    pattern: /stop/search
+    path: /stop/search
     defaults: { _controller: TisseoBoaBundle:Stop:search }
 tisseo_boa_stop_create:
-    pattern: /stop/create
+    path: /stop/create
     defaults: { _controller: TisseoBoaBundle:Stop:create }
 tisseo_boa_stop_edit:
-    pattern: /stop/edit/{stopId}
+    path: /stop/edit/{stopId}
     defaults: { _controller: TisseoBoaBundle:Stop:edit, stopId: null }
 tisseo_boa_stop_switch_lock:
-    pattern: /stop/switch-lock/{identifier}
+    path: /stop/switch-lock/{identifier}
     defaults: { _controller: TisseoBoaBundle:Stop:switchLock }
     requirements:
         identifier: \d+
 tisseo_boa_stops_switch_lock:
-    pattern: /stops/switch-lock
+    path: /stops/switch-lock
     defaults: { _controller: TisseoBoaBundle:Stop:switchMultipleLock }
 
 tisseo_boa_stop_detach:
-    pattern: /stop/detach/{stopId}
+    path: /stop/detach/{stopId}
     defaults: { _controller: TisseoBoaBundle:Stop:detach }
     requirements:
         stopId: \d+
 
 # StopAccessibility routes
 tisseo_boa_stop_accessibility_create:
-    pattern: /stop/{stopId}/stopaccessibility/create
+    path: /stop/{stopId}/stopaccessibility/create
     defaults: { _controller: TisseoBoaBundle:StopAccessibility:create }
     requirements:
         stopId: \d+
 tisseo_boa_stop_accessibility_delete:
-    pattern: /stop/{stopId}/stopaccessibility/delete/{stopAccessibilityId}
+    path: /stop/{stopId}/stopaccessibility/delete/{stopAccessibilityId}
     defaults: { _controller: TisseoBoaBundle:StopAccessibility:delete }
     requirements:
         stopId: \d+
@@ -210,53 +210,53 @@ tisseo_boa_stop_accessibility_delete:
 
 # StopHistory routes
 tisseo_boa_stop_history_create:
-    pattern: /stop/{stopId}/stophistory/create
+    path: /stop/{stopId}/stophistory/create
     defaults: { _controller: TisseoBoaBundle:StopHistory:create }
     requirements:
         stopId: \d+
 tisseo_boa_stop_history_close:
-    pattern: /stop/{stopId}/stophistory/close
+    path: /stop/{stopId}/stophistory/close
     defaults: { _controller: TisseoBoaBundle:StopHistory:close }
     requirements:
         stopId: \d+
 
 # StopArea routes
 tisseo_boa_stop_area_search:
-    pattern: /stoparea/search
+    path: /stoparea/search
     defaults: { _controller: TisseoBoaBundle:StopArea:search }
 tisseo_boa_stop_area_edit:
-    pattern: /stoparea/edit/{stopAreaId}
+    path: /stoparea/edit/{stopAreaId}
     defaults: { _controller: TisseoBoaBundle:StopArea:edit, stopAreaId: null }
 tisseo_boa_alias_edit:
-    pattern: /stoparea/{stopAreaId}/alias/edit
+    path: /stoparea/{stopAreaId}/alias/edit
     defaults: { _controller: TisseoBoaBundle:StopArea:editAliases }
     requirements:
         stopAreaId: \d+
     options:
         expose: true
 tisseo_boa_stop_area_geometries_edit:
-    pattern: /stoparea/{stopAreaId}/geometries/edit
+    path: /stoparea/{stopAreaId}/geometries/edit
     defaults: { _controller: TisseoBoaBundle:StopArea:geometries }
     requirements:
         stopAreaId: \d+
 
 # Transfer routes
 tisseo_boa_internal_transfer_edit:
-    pattern: /stop_area/{stopAreaId}/internal_transfer/edit
+    path: /stop_area/{stopAreaId}/internal_transfer/edit
     defaults: { _controller: TisseoBoaBundle:StopArea:internalTransfer }
     requirements:
         stopAreaId: \d+
     options:
         expose: true
 tisseo_boa_external_transfer_edit:
-    pattern: /stop_area/{stopAreaId}/external_transfer/edit
+    path: /stop_area/{stopAreaId}/external_transfer/edit
     defaults: { _controller: TisseoBoaBundle:StopArea:externalTransfer }
     requirements:
         stopAreaId: \d+
     options:
         expose: true
 tisseo_boa_external_transfer_create:
-    pattern: /stop_area/{stopAreaId}/external_transfer/create
+    path: /stop_area/{stopAreaId}/external_transfer/create
     defaults: { _controller: TisseoBoaBundle:StopArea:createExternalTransfer }
     requirements:
         stopAreaId: \d+
@@ -265,43 +265,43 @@ tisseo_boa_external_transfer_create:
 
 # OdtAreas routes
 tisseo_boa_odt_area_list:
-    pattern: /odtarea/list
+    path: /odtarea/list
     defaults: { _controller: TisseoBoaBundle:OdtArea:list }
 tisseo_boa_odt_area_edit:
-    pattern: /odtarea/edit/{odtAreaId}
+    path: /odtarea/edit/{odtAreaId}
     defaults: { _controller: TisseoBoaBundle:OdtArea:edit, odtAreaId:null }
     requirements:
         odtAreaId: \d+
 tisseo_boa_odt_area_delete:
-    pattern: /odtarea/delete/{odtAreaId}
+    path: /odtarea/delete/{odtAreaId}
     defaults: { _controller: TisseoBoaBundle:OdtArea:delete }
     requirements:
         odtAreaId: \d+
 
 # OdtStops routes
 tisseo_boa_odt_stop_create:
-    pattern: /odt_area/{odtAreaId}/odtstop/create
+    path: /odt_area/{odtAreaId}/odtstop/create
     defaults: { _controller: TisseoBoaBundle:OdtStop:create }
     requirements:
         odtAreaId: \d+
     options:
         expose: true
 tisseo_boa_odt_stop_create_group:
-    pattern: /odt_area/{odtAreaId}/odtstop/create_group
+    path: /odt_area/{odtAreaId}/odtstop/create_group
     defaults: { _controller: TisseoBoaBundle:OdtStop:createGroup }
     requirements:
         odtAreaId: \d+
     options:
         expose: true
 tisseo_boa_odt_stop_edit:
-    pattern: /odt_area/{odtAreaId}/odtstop/edit
+    path: /odt_area/{odtAreaId}/odtstop/edit
     defaults: { _controller: TisseoBoaBundle:OdtStop:edit }
     requirements:
         odtAreaId: \d+
     options:
         expose: true
 tisseo_boa_odt_stop_form:
-    pattern: /odt_area/{odtAreaId}/odtstop/form
+    path: /odt_area/{odtAreaId}/odtstop/form
     defaults: { _controller: TisseoBoaBundle:OdtStop:renderForm }
     requirements:
         odtAreaId: \d+
@@ -310,77 +310,77 @@ tisseo_boa_odt_stop_form:
 
 # LineVersion routes
 tisseo_boa_line_version_list:
-    pattern: /offer/list
+    path: /offer/list
     defaults: { _controller: TisseoBoaBundle:LineVersion:list }
 
 tisseo_boa_line_version_list_inactive:
-    pattern: /offer/list/inactive
+    path: /offer/list/inactive
     defaults: { _controller: TisseoBoaBundle:LineVersion:listInactive }
 
 # Non concurrency routes
 tisseo_boa_non_concurrency_list:
-    pattern: /non_concurrency/list
+    path: /non_concurrency/list
     defaults: { _controller: TisseoBoaBundle:NonConcurrency:list }
 tisseo_boa_non_concurrency_edit:
-    pattern: /non_concurrency/edit/{nonConcurrencyId}
+    path: /non_concurrency/edit/{nonConcurrencyId}
     defaults: { _controller: TisseoBoaBundle:NonConcurrency:edit, nonConcurrencyId:null }
     requirements:
         nonConcurrencyId: \d+/\d+
 tisseo_boa_non_concurrency_delete:
-    pattern: /non_concurrency/delete/{nonConcurrencyId}
+    path: /non_concurrency/delete/{nonConcurrencyId}
     defaults: { _controller: TisseoBoaBundle:NonConcurrency:delete }
     requirements:
         nonConcurrencyId: \d+/\d+
 
 # Route routes
 tisseo_boa_route_list:
-    pattern: /offer/{lineVersionId}/route/list
+    path: /offer/{lineVersionId}/route/list
     defaults: { _controller: TisseoBoaBundle:Route:list }
     requirements:
         lineVersionId: \d+
 tisseo_boa_route_create:
-    pattern: /offer/{lineVersionId}/route/create
+    path: /offer/{lineVersionId}/route/create
     defaults: { _controller: TisseoBoaBundle:Route:create }
     requirements:
         lineVersionId: \d+
 tisseo_boa_route_trip_calendar:
-    pattern: /offer/{lineVersionId}/route/tripcalendar
+    path: /offer/{lineVersionId}/route/tripcalendar
     defaults: { _controller: TisseoBoaBundle:Route:tripCalendar }
     requirements:
         lineVersionId: \d+
 tisseo_boa_route_edit:
-    pattern: /route/edit/{routeId}
+    path: /route/edit/{routeId}
     defaults: { _controller: TisseoBoaBundle:Route:edit }
     requirements:
         routeId: \d+
 tisseo_boa_route_delete:
-    pattern: /route/delete/{routeId}
+    path: /route/delete/{routeId}
     defaults: { _controller: TisseoBoaBundle:Route:delete }
     requirements:
         routeId: \d+
 tisseo_boa_route_duplicate:
-    pattern: /route/duplicate/{routeId}
+    path: /route/duplicate/{routeId}
     defaults: { _controller: TisseoBoaBundle:Route:duplicate }
     requirements:
         routeId: \d+
 
 # RouteStop routes
 tisseo_boa_route_stop_create:
-    pattern: /route/{routeId}/route_stop/create
+    path: /route/{routeId}/route_stop/create
     defaults: { _controller: TisseoBoaBundle:RouteStop:create }
     requirements:
         routeId: \d+
     options:
         expose: true
 tisseo_boa_route_stop_edit:
-    pattern: /route/{routeId}/route_stop/edit
+    path: /route/{routeId}/route_stop/edit
     defaults: { _controller: TisseoBoaBundle:RouteStop:edit }
     requirements:
         routeId: \d+
     options:
         expose: true
 tisseo_boa_route_stop_form:
-    pattern: /route/{routeId}/route_stop/form/{rank}
+    path: /route/{routeId}/route_stop/form/{rank}
     defaults: { _controller: TisseoBoaBundle:RouteStop:renderForm }
     requirements:
         routeId: \d+
@@ -390,36 +390,36 @@ tisseo_boa_route_stop_form:
 
 # Trip routes
 tisseo_boa_trip_list:
-    pattern: /route/{routeId}/trip/list
+    path: /route/{routeId}/trip/list
     defaults: { _controller: TisseoBoaBundle:Trip:list }
     requirements:
         routeId: \d+
 tisseo_boa_trip_edit:
-    pattern: /trip/edit/{tripId}
+    path: /trip/edit/{tripId}
     defaults: { _controller: TisseoBoaBundle:Trip:edit }
     requirements:
         tripId: \d+
 tisseo_boa_trip_create:
-    pattern: /route/{routeId}/trip/create
+    path: /route/{routeId}/trip/create
     defaults: { _controller: TisseoBoaBundle:Trip:create }
     requirements:
         routeId: \d+
 tisseo_boa_trip_delete:
-    pattern: /trip/delete/{tripId}
+    path: /trip/delete/{tripId}
     defaults: { _controller: TisseoBoaBundle:Trip:delete }
     requirements:
         tripId: \d+
 tisseo_boa_trip_delete_all:
-    pattern: /trip/delete/all/{routeId}
+    path: /trip/delete/all/{routeId}
     defaults: { _controller: TisseoBoaBundle:Trip:deleteAll }
     requirements:
         routeId: \d+
     methods: [GET, POST]
     options:
         expose: true
-tisseo_boa_trip_edit_pattern:
-    pattern: /route{routeId}/trip/editpattern
-    defaults: { _controller: TisseoBoaBundle:Trip:editPattern }
+tisseo_boa_trip_edit_path:
+    path: /route{routeId}/trip/editpath
+    defaults: { _controller: TisseoBoaBundle:Trip:editpath }
     requirements:
         routeId: \d+
     options:
@@ -427,42 +427,61 @@ tisseo_boa_trip_edit_pattern:
 
 # City Route
 tisseo_boa_city_search:
-    pattern: /city/search
+    path: /city/search
     defaults: { _controller: TisseoBoaBundle:City:search }
 tisseo_boa_city_create:
-    pattern: /city/create
+    path: /city/create
     defaults: { _controller: TisseoBoaBundle:City:create }
 tisseo_boa_city_edit:
-    pattern: /city/edit/{cityId}
+    path: /city/edit/{cityId}
     defaults: { _controller: TisseoBoaBundle:City:edit }
     options:
         expose: true
 tisseo_boa_city_delete_stoparea:
-    pattern: /city/stopaera/delete/{stopAreaId}
+    path: /city/stopaera/delete/{stopAreaId}
     defaults: { _controller: TisseoBoaBundle:City:deleteStopArea }
     requirements:
         stopAreaId: \d+
 tisseo_boa_city_stoparea_json:
-    pattern: /city/stoparea/json/{cityId}
+    path: /city/stoparea/json/{cityId}
     defaults: { _controller: TisseoBoaBundle:City:listStopArea }
     options:
         expose: true
 
 # Monitoring Routes
 tisseo_boa_monitoring_accessibility_search:
-    pattern: /monitoring/accessibility/search/{startDate}/{lineVersionId}
+    path: /monitoring/accessibility/search/{startDate}/{lineVersionId}
     defaults: { _controller: TisseoBoaBundle:AccessibilityMonitoring:search, startDate:0, lineVersionId:null }
     requirements:
         lineVersionId: \d+
     options:
         expose: true
 tisseo_boa_monitoring_poi_search:
-    pattern: /monitoring/poi/search/{lineVersionId}
+    path: /monitoring/poi/search/{lineVersionId}
     defaults: { _controller: TisseoBoaBundle:PoiMonitoring:search, lineVersionId:null }
     requirements:
         lineVersionId: \d+
     options:
         expose: true
 tisseo_boa_monitoring_stop_locked:
-    pattern: /monitoring/stop/locked
+    path: /monitoring/stop/locked
     defaults: { _controller: TisseoBoaBundle:Stop:locked }
+
+tisseo_boa_monitoring_offer_by_line:
+    path: /monitoring/offer
+    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:search }
+
+tisseo_boa_monitoring_offer_by_date_json:
+    path: /monitoring/offer/json/{month}/{year}
+    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:searchLineVersion }
+    requirements:
+        month: \d+
+        year: \d+
+    options:
+        expose: true
+tisseo_boa_monitoring_generate_graph:
+    path: /monitoring/graph
+    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:generateGraph }
+    methods: [POST]
+    options:
+        expose: true

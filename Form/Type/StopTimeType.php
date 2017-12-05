@@ -5,10 +5,6 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormEvent;
-use Doctrine\ORM\EntityRepository;
-
 
 class StopTimeType extends AbstractType
 {
@@ -21,7 +17,6 @@ class StopTimeType extends AbstractType
         $builder->add('id', 'text')
                 ->add('departureTime', 'text')
                 ->add('arrivalTime', 'text');
-
 
         $builder->setAction($options['action']);
     }
@@ -46,4 +41,3 @@ class StopTimeType extends AbstractType
         return 'boa_stoptime';
     }
 }
-

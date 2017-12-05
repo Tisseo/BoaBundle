@@ -69,4 +69,3 @@ class NonConcurrencyType extends AbstractType
         return 'boa_non_concurrency';
     }
 }
-

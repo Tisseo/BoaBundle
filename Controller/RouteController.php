@@ -12,13 +12,13 @@ use Tisseo\EndivBundle\Entity\Datasource;
 
 /**
  * Class RouteController
- * @package Tisseo\BoaBundle\Controller
  */
 class RouteController extends CoreController
 {
     /**
      * List
-     * @param integer $lineVersionId
+     *
+     * @param int $lineVersionId
      *
      * Listing all Routes
      *
@@ -48,8 +48,9 @@ class RouteController extends CoreController
 
     /**
      * Create
+     *
      * @param Request $request
-     * @param integer $lineVersionId
+     * @param int     $lineVersionId
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -82,22 +83,20 @@ class RouteController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $route = $form->getData();
 
-            try
-            {
+            try {
                 $this->get('tisseo_endiv.route_manager')->save($route);
                 $this->addFlash('success', 'route.message.created');
+
                 return $this->redirectToRoute(
                     'tisseo_boa_route_edit',
                     array('routeId' => $route->getId())
                 );
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
+
                 return $this->redirectToRoute(
                     'tisseo_boa_line_version_list',
                     array('lineVersionId' => $lineVersionId)
@@ -116,8 +115,9 @@ class RouteController extends CoreController
 
     /**
      * Edit
+     *
      * @param Request $request
-     * @param integer $routeId
+     * @param int     $routeId
      *
      * Editing Route
      *
@@ -133,7 +133,7 @@ class RouteController extends CoreController
         $routeManager = $this->get('tisseo_endiv.route_manager');
         $route = $routeManager->find($routeId);
         $routeStopsJson = $routeManager->getRouteStopsJson($route);
-        foreach($routeStopsJson as $key => $routeStopJson) {
+        foreach ($routeStopsJson as $key => $routeStopJson) {
             $routeStopsJson[$key]['route'] = $this->generateUrl(
                 'tisseo_boa_stop_edit',
                 array('stopId' => $routeStopJson['id'])
@@ -146,7 +146,7 @@ class RouteController extends CoreController
             new RouteEditType(),
             $route,
             array(
-                'action'=> $this->generateUrl(
+                'action' => $this->generateUrl(
                     'tisseo_boa_route_edit',
                     array('routeId' => $routeId)
                 ),
@@ -155,21 +155,18 @@ class RouteController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $route = $form->getData();
 
-            try
-            {
+            try {
                 $routeManager->save($route);
                 $exportDestinations = $form->get('exportDestinations')->getData();
                 $routeManager->updateExportDestinations($route, $exportDestinations);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
+
             return $this->redirectToRoute(
                 'tisseo_boa_route_edit',
                 array('routeId' => $routeId)
@@ -190,7 +187,7 @@ class RouteController extends CoreController
     /**
      * Delete a route
      *
-     * @param integer $routeId
+     * @param int $routeId
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -199,13 +196,10 @@ class RouteController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_ROUTES');
 
         $routeManager = $this->get('tisseo_endiv.route_manager');
-        try
-        {
+        try {
             $lineVersionId = $routeManager->remove($routeId);
             $this->addFlash('success', 'tisseo.boa.route.message.removed');
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lineVersionId = $routeManager->find($routeId)->getLineVersion()->getId();
             $this->addFlashException($e->getMessage());
         }
@@ -218,8 +212,9 @@ class RouteController extends CoreController
 
     /**
      * TripCalendar
+     *
      * @param Request $request
-     * @param integer $lineVersionId
+     * @param int     $lineVersionId
      *
      * Editing Trips in order to link them to TripCalendar
      *
@@ -238,7 +233,7 @@ class RouteController extends CoreController
             try {
                 $routeManager->linkTripCalendars($datas);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -261,7 +256,8 @@ class RouteController extends CoreController
 
     /**
      * Duplicate
-     * @param integer $routeId
+     *
+     * @param int $routeId
      *
      * @return \Symfony\Component\HttpFoundation\Response A response instance
      */
@@ -284,19 +280,15 @@ class RouteController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 // TODO: check duplicate function in RouteManager and 'line_version' parameter from view
                 $userName = $this->getUser()->getUsername();
                 $lineVersionId = $request->request->get('line_version');
                 $lineVersion = $this->get('tisseo_endiv.line_version_manager')->find($lineVersionId);
                 $routeManager->duplicate($route, $lineVersion, $userName);
                 $this->addFlash('success', 'tisseo.boa.route.message.duplicated');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

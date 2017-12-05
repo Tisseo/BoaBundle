@@ -2,10 +2,8 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Acl\Exception\Exception;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\Calendar;
@@ -16,9 +14,12 @@ class CalendarController extends CoreController
 {
     /**
      * List
+     *
      * @param string $calendarType
      *
      * Listing Calendars
+     *
+     * @return \Symfony\Component\HttpFoundation\Response A Response instance
      */
     public function listAction($calendarType)
     {
@@ -49,6 +50,8 @@ class CalendarController extends CoreController
      * @param $calendarType
      * @param $limit integer max result per page
      * @param $offset integer current offset
+     *
+     * @return JsonResponse
      */
     public function listPaginateAction(Request $request, $calendarType)
     {
@@ -58,10 +61,10 @@ class CalendarController extends CoreController
         ));
 
         $length = $request->get('length');
-        $length = $length && ($length!=-1)?$length:0;
+        $length = $length && ($length != -1) ? $length : 0;
 
         $start = $request->get('start');
-        $start = $length?($start && ($start!=-1)?$start:0)/$length:0;
+        $start = $length ? ($start && ($start != -1) ? $start : 0) / $length : 0;
 
         $order = $request->get('order');
         $orderParam = null;
@@ -72,7 +75,7 @@ class CalendarController extends CoreController
                 $columnList = $this->container->getParameter('tisseo_boa.datatable_views')['default_view'];
             }
             foreach ($order as $key => $orderby) {
-                foreach($columnList as $index => $columnDef) {
+                foreach ($columnList as $index => $columnDef) {
                     if ($columnDef['index'] == $orderby['column']) {
                         $orderParam[] = [
                             'columnName' => $columnDef['colDbName'],
@@ -85,7 +88,7 @@ class CalendarController extends CoreController
         }
 
         $search = $request->get('search');
-        $filters = (empty($search['value']))?[]:['name' => $search['value']];
+        $filters = (empty($search['value'])) ? [] : ['name' => $search['value']];
         $filters = array_merge(array('calendarType' => $calendarType), $filters);
 
         $calendarManager = $this->get('tisseo_endiv.calendar_manager');
@@ -98,10 +101,13 @@ class CalendarController extends CoreController
 
     /**
      * Prepare data for inject it into "datatable" js object
+     *
      * @param $data array
      * @param $dataTotal int
      * @param $calendarType string
+     *
      * @return JsonResponse
+     *
      * @throws \Exception
      */
     private function createJsonResponse($data, $dataTotal, $calendarType)
@@ -115,15 +121,15 @@ class CalendarController extends CoreController
         $trans = $this->get('translator');
         $edit = $this->isGranted('BUSINESS_MANAGE_CALENDARS');
 
-        foreach($data as $key => $calendar) {
+        foreach ($data as $key => $calendar) {
             $tabCalendar = array($calendar->getName());
 
-            $dateEnd = ($calendar->getComputedEndDate() instanceof \DateTime) ? $calendar->getComputedEndDate()->format('d-m-Y'):'';
-            $dateStart = ($calendar->getComputedStartDate() instanceof \DateTime) ? $calendar->getComputedStartDate()->format('d-m-Y'):'';
+            $dateEnd = ($calendar->getComputedEndDate() instanceof \DateTime) ? $calendar->getComputedEndDate()->format('d-m-Y') : '';
+            $dateStart = ($calendar->getComputedStartDate() instanceof \DateTime) ? $calendar->getComputedStartDate()->format('d-m-Y') : '';
 
             if ($calendarType == Calendar::CALENDAR_TYPE_HYBRID || $calendarType == Calendar::CALENDAR_TYPE_PERIOD) {
                 if (!is_null($calendar->getLineVersion())) {
-                    $version = $calendar->getLineVersion()->getLine()->getNumber() . ' - v' .
+                    $version = $calendar->getLineVersion()->getLine()->getNumber().' - v'.
                         $calendar->getLineVersion()->getVersion();
                 } else {
                     $version = '';
@@ -139,7 +145,7 @@ class CalendarController extends CoreController
                 $payload = array(
                     'calendar' => $calendar,
                     'btnEdit' => [
-                        'url' =>  $this->generateUrl('tisseo_boa_calendar_edit', [
+                        'url' => $this->generateUrl('tisseo_boa_calendar_edit', [
                             'calendarId' => $calendar->getId()
                         ]),
                         'label' => ($edit ? $trans->trans('tisseo.global.edit') : $trans->trans('tisseo.global.consult'))
@@ -155,7 +161,7 @@ class CalendarController extends CoreController
                     );
                 }
                 $btnAction = $this->renderView('TisseoBoaBundle:Calendar:button.html.twig', $payload);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 if (!$e instanceof AccessDeniedException) {
                     throw new \Exception($e->getMessage());
                 }
@@ -171,9 +177,12 @@ class CalendarController extends CoreController
 
     /**
      * Edit
+     *
      * @param $calendarId
      *
      * Creating/editing Calendar
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse | \Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, $calendarId)
     {
@@ -215,7 +224,7 @@ class CalendarController extends CoreController
                 $calendarManager->save($calendar);
                 $this->addFlash('success', ($calendarId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
                 $calendarId = $calendar->getId();
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -235,13 +244,19 @@ class CalendarController extends CoreController
         );
     }
 
+    /**
+     * @param $calendarId
+     * @param $calendarType
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteAction($calendarId, $calendarType)
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_CALENDARS');
 
         try {
             $this->get('tisseo_endiv.calendar_manager')->remove($calendarId);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
 
@@ -251,6 +266,11 @@ class CalendarController extends CoreController
         );
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function bitmaskAction(Request $request)
     {
         $this->denyAccessUnlessGranted(
@@ -277,6 +297,11 @@ class CalendarController extends CoreController
         return $response;
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function calendarsIntersectionAction(Request $request)
     {
         $this->denyAccessUnlessGranted(
@@ -303,27 +328,30 @@ class CalendarController extends CoreController
 
         $response = new JsonResponse();
 
-        if ($request->request->get('bitmask'))
-        {
+        if ($request->request->get('bitmask')) {
             $response->setData($this->buildCalendarBitMask($periodCalendar->getComputedStartDate(), $bitmask));
-        }
-        else
-        {
-            if (strpos($bitmask, '1') === false)
+        } else {
+            if (strpos($bitmask, '1') === false) {
                 $response->setData(false);
-            else
+            } else {
                 $response->setData(true);
+            }
         }
 
         return $response;
     }
 
+    /**
+     * @param \Datetime $startDate
+     * @param $bitmask
+     *
+     * @return array
+     */
     private function buildCalendarBitMask(\Datetime $startDate, $bitmask)
     {
         $data = array();
         $strlen = strlen($bitmask);
-        for ($i = 0; $i < $strlen; $i++)
-        {
+        for ($i = 0; $i < $strlen; ++$i) {
             $bit = substr($bitmask, $i, 1);
             $data[$startDate->format('Ymd')] = $bit;
             $startDate->modify('+1 day');
@@ -332,6 +360,12 @@ class CalendarController extends CoreController
         return $data;
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param null                                      $calendarType
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function autocompleteAction(Request $request, $calendarType = null)
     {
         $this->denyAccessUnlessGranted(array(

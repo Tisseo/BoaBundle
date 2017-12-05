@@ -2,7 +2,6 @@
 
 namespace Tisseo\BoaBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Tisseo\CoreBundle\Controller\CoreController;
 
 class AccessibilityMonitoringController extends CoreController
@@ -23,6 +22,7 @@ class AccessibilityMonitoringController extends CoreController
 
         $stopAccessibilitiesByRoute = (empty($lineVersion) or empty($startDate)) ? null
             : $this->get('tisseo_endiv.line_version_manager')->getStopAccessibilityChangesByRoute($lineVersion, $startDate);
+
         return $this->render(
             'TisseoBoaBundle:Monitoring:accessibility_search.html.twig',
             array(

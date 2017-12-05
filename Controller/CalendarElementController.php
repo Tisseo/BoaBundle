@@ -33,7 +33,7 @@ class CalendarElementController extends CoreController
             )
         );
 
-        return ($form);
+        return $form;
     }
 
     /*
@@ -68,7 +68,8 @@ class CalendarElementController extends CoreController
 
     /**
      * Edit
-     * @param integer $calendarElementId
+     *
+     * @param int $calendarElementId
      *
      * If request's method is GET, display a pseudo-form (ajax/json) which
      * purpose is to create/delete RouteStop.
@@ -85,12 +86,10 @@ class CalendarElementController extends CoreController
 
         $calendar = $this->get('tisseo_endiv.calendar_manager')->find($calendarId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
-        {
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST) {
             $calendarElements = json_decode($request->getContent(), true);
 
-            try
-            {
+            try {
                 $this->get('tisseo_endiv.calendar_element_manager')->updateCalendarElements($calendarElements, $calendar);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
 
@@ -98,9 +97,7 @@ class CalendarElementController extends CoreController
                     'tisseo_boa_calendar_edit',
                     array('calendarId' => $calendarId)
                 );
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $response = new JsonResponse();
                 $response->setData(array('error' => $e->getMessage()));
 
@@ -133,8 +130,7 @@ class CalendarElementController extends CoreController
         $form = $this->buildForm($calendar);
         $form->handleRequest($request);
 
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $calendarElement = $form->getData();
 
             return $this->render(

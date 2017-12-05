@@ -4,7 +4,6 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\NonConcurrency;
-use Tisseo\EndivBundle\Entity\Line;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\NonConcurrencyType;
 
@@ -46,9 +45,10 @@ class NonConcurrencyController extends CoreController
 
         try {
             $nonConcurrency = $this->get('tisseo_endiv.non_concurrency_manager')->findById($nonConcurrencyId);
-            if (!empty($nonConcurrency))
+            if (!empty($nonConcurrency)) {
                 $this->get('tisseo_endiv.non_concurrency_manager')->delete($nonConcurrency);
-        } catch(\Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
         }
 
@@ -57,7 +57,8 @@ class NonConcurrencyController extends CoreController
 
     /**
      * Edit
-     * @param integer $priorityLineId, nonPriorityLineId
+     *
+     * @param int $priorityLineId, nonPriorityLineId
      *
      * Creating/editing NonConcurrency
      */
@@ -68,8 +69,9 @@ class NonConcurrencyController extends CoreController
         $nonConcurrencyManager = $this->get('tisseo_endiv.non_concurrency_manager');
         $nonConcurrency = $nonConcurrencyManager->findById($nonConcurrencyId);
 
-        if (empty($nonConcurrency))
+        if (empty($nonConcurrency)) {
             $nonConcurrency = new NonConcurrency();
+        }
 
         $form = $this->createForm(
             new NonConcurrencyType(),
@@ -85,15 +87,11 @@ class NonConcurrencyController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $nonConcurrencyManager->save($form->getData());
                 $this->addFlash('success', ($nonConcurrencyId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -109,5 +107,4 @@ class NonConcurrencyController extends CoreController
             )
         );
     }
-
 }

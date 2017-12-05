@@ -37,7 +37,6 @@ class AliasType extends AbstractType
         );
     }
 
-
     /**
      * @return string
      */

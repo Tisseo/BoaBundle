@@ -3,14 +3,11 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\OdtStopType;
 use Tisseo\EndivBundle\Entity\OdtArea;
 use Tisseo\EndivBundle\Entity\OdtStop;
-use Tisseo\EndivBundle\Entity\StopArea;
+
 class OdtStopController extends CoreController
 {
     /*
@@ -33,7 +30,7 @@ class OdtStopController extends CoreController
             )
         );
 
-        return ($form);
+        return $form;
     }
 
     /*
@@ -60,9 +57,10 @@ class OdtStopController extends CoreController
         );
     }
 
-     /**
+    /**
      * Edit
-     * @param integer $odtAreaId
+     *
+     * @param int $odtAreaId
      *
      * If request's method is GET, display a pseudo-form (ajax/json) which
      * purpose is to create/delete OdtStop.
@@ -76,8 +74,7 @@ class OdtStopController extends CoreController
 
         $odtArea = $this->get('tisseo_endiv.odt_area_manager')->find($odtAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
-        {
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST) {
             $odtStops = json_decode($request->getContent(), true);
 
             try {
@@ -123,9 +120,9 @@ class OdtStopController extends CoreController
         $form = $this->buildForm($odtArea);
         $form->handleRequest($request);
 
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $odtStop = $form->getData();
+
             return $this->render(
                 'TisseoBoaBundle:OdtStop:new.html.twig',
                 array(
@@ -133,6 +130,7 @@ class OdtStopController extends CoreController
                 )
             );
         }
+
         return $this->render(
             'TisseoBoaBundle:OdtStop:form.html.twig',
             array(
@@ -168,6 +166,7 @@ class OdtStopController extends CoreController
                 array('odtAreaId' => $odtAreaId)
             );
             $response->setStatusCode(500);
+
             return $response;
         }
 

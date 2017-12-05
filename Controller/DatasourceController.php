@@ -33,7 +33,8 @@ class DatasourceController extends CoreController
 
     /**
      * Edit
-     * @param integer $datasourceId
+     *
+     * @param int $datasourceId
      *
      * Creating/editing Datasource
      */
@@ -44,8 +45,9 @@ class DatasourceController extends CoreController
         $datasourceManager = $this->get('tisseo_endiv.datasource_manager');
         $datasource = $datasourceManager->find($datasourceId);
 
-        if (empty($datasource))
+        if (empty($datasource)) {
             $datasource = new Datasource();
+        }
 
         $form = $this->createForm(
             new DatasourceType(),
@@ -59,15 +61,11 @@ class DatasourceController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $datasourceManager->save($form->getData());
                 $this->addFlash('success', ($datasourceId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

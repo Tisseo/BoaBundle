@@ -35,7 +35,8 @@ class PropertyController extends CoreController
 
     /**
      * Edit
-     * @param integer $propertyId
+     *
+     * @param int $propertyId
      *
      * Creating/editing Property
      */
@@ -46,8 +47,9 @@ class PropertyController extends CoreController
         $propertyManager = $this->get('tisseo_endiv.property_manager');
         $property = $propertyManager->find($propertyId);
 
-        if (empty($property))
+        if (empty($property)) {
             $property = new Property();
+        }
 
         $form = $this->createForm(
             new PropertyType(),
@@ -61,15 +63,11 @@ class PropertyController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $propertyManager->save($form->getData());
                 $this->addFlash('success', ($propertyId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

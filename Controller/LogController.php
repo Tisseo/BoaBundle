@@ -8,8 +8,9 @@ class LogController extends CoreController
 {
     /**
      * List
-     * @param integer offset
-     * @param integer limit
+     *
+     * @param int offset
+     * @param int limit
      *
      * Listing all Logs
      */

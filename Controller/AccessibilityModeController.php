@@ -35,7 +35,8 @@ class AccessibilityModeController extends CoreController
 
     /**
      * Edit
-     * @param integer $accessibilityModeId
+     *
+     * @param int $accessibilityModeId
      *
      * Creating/editing AccessibilityMode
      */
@@ -46,8 +47,9 @@ class AccessibilityModeController extends CoreController
         $accessModeManager = $this->get('tisseo_endiv.accessibility_mode_manager');
         $accessibilityMode = $accessModeManager->find($accessibilityModeId);
 
-        if (empty($accessibilityMode))
+        if (empty($accessibilityMode)) {
             $accessibilityMode = new AccessibilityMode();
+        }
 
         $form = $this->createForm(
             new AccessibilityModeType(),
@@ -61,15 +63,11 @@ class AccessibilityModeController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $accessModeManager->save($form->getData());
                 $this->addFlash('success', ($accessibilityModeId ? 'tisseo.flash.success.edit' : 'tisseo.flash.success.create'));
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

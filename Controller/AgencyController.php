@@ -35,7 +35,8 @@ class AgencyController extends CoreController
 
     /**
      * Edit
-     * @param integer $agencyId
+     *
+     * @param int $agencyId
      *
      * Creating/editing Agency
      */
@@ -46,8 +47,9 @@ class AgencyController extends CoreController
         $agencyManager = $this->get('tisseo_endiv.agency_manager');
         $agency = $agencyManager->find($agencyId);
 
-        if (empty($agency))
+        if (empty($agency)) {
             $agency = new Agency();
+        }
 
         $form = $this->createForm(
             new AgencyType(),
@@ -61,15 +63,11 @@ class AgencyController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $agencyManager->save($form->getData());
                 $this->addFlash('success', ($agencyId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

@@ -88,3 +88,34 @@ div.stop-monitoring-container {
     background:#e9e9e9;
     border-radius:5px;
 }
+
+.boa-inline-button {
+    margin-top: 21px;
+}
+
+
+.label-control a{
+    text-decoration: none;
+    display: inline-block;
+    padding: 4px 12px;
+    margin: 5px;
+    border: 1px solid #ddd;
+}
+
+.label-control a:hover {
+    background-color: #ddd;
+}
+
+.label-control .previous {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.label-control .next {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.label-control .round {
+    border-radius: 25%;
+}

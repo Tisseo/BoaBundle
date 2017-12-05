@@ -63,12 +63,9 @@ class StopController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
-                foreach($form->get('stopHistories') as $stopHistory)
-                {
+        if ($form->isValid()) {
+            try {
+                foreach ($form->get('stopHistories') as $stopHistory) {
                     $stopHistory->getData()->setTheGeom(
                         new Point(
                             $stopHistory->get('x')->getData(),
@@ -80,9 +77,7 @@ class StopController extends CoreController
 
                 $stopId = $this->get('tisseo_endiv.stop_manager')->create($form->getData());
                 $this->addFlash('success', 'tisseo.flash.success.create');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
                 $stopId = null;
             }
@@ -143,7 +138,7 @@ class StopController extends CoreController
             try {
                 $stopManager->save($form->getData());
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -174,7 +169,8 @@ class StopController extends CoreController
 
     /**
      * Detach
-     * @param integer $stopId
+     *
+     * @param int $stopId
      *
      * Detaching a Stop from its StopArea
      */
@@ -182,13 +178,10 @@ class StopController extends CoreController
     {
         $this->denyAccessUnlessGranted('BUSINESS_MANAGE_STOPS');
 
-        try
-        {
+        try {
             $stopAreaId = $this->get('tisseo_endiv.stop_manager')->detach($stopId);
             $this->addFlash('success', 'tisseo.flash.success.detached');
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $stop = $this->get('tisseo_endiv.stop_manager')->find($stopId);
             $stopAreaId = $stop->getStopArea()->getId();
             $this->addFlashException($e->getMessage());
@@ -203,7 +196,7 @@ class StopController extends CoreController
     /**
      * Lock/Unlock stop
      *
-     * @param integer $identifier
+     * @param int $identifier
      */
     public function switchLockAction($identifier)
     {
@@ -247,9 +240,9 @@ class StopController extends CoreController
         return $this->render(
             'TisseoBoaBundle:Stop:locked_list.html.twig',
             array(
-                'navTitle'  => 'tisseo.boa.menu.stop.locked',
+                'navTitle' => 'tisseo.boa.menu.stop.locked',
                 'pageTitle' => 'tisseo.boa.stop_point.title.locked',
-                'stops'     => $this->get('tisseo_endiv.stop_manager')->findLockedStops()
+                'stops' => $this->get('tisseo_endiv.stop_manager')->findLockedStops()
             )
         );
     }

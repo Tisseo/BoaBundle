@@ -5,7 +5,6 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tisseo\EndivBundle\Entity\OdtStop;
 use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
 
 class OdtStopType extends AbstractType
@@ -15,15 +14,16 @@ class OdtStopType extends AbstractType
     private function buildTransformers($em)
     {
         $this->odtAreaTransformer = new EntityToIntTransformer($em);
-        $this->odtAreaTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\OdtArea");
-        $this->odtAreaTransformer->setEntityRepository("TisseoEndivBundle:OdtArea");
-        $this->odtAreaTransformer->setEntityType("OdtArea");
+        $this->odtAreaTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\OdtArea');
+        $this->odtAreaTransformer->setEntityRepository('TisseoEndivBundle:OdtArea');
+        $this->odtAreaTransformer->setEntityType('OdtArea');
 
         $this->stopTransformer = new EntityToIntTransformer($em);
-        $this->stopTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Stop");
-        $this->stopTransformer->setEntityRepository("TisseoEndivBundle:Stop");
-        $this->stopTransformer->setEntityType("Stop");
+        $this->stopTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\Stop');
+        $this->stopTransformer->setEntityRepository('TisseoEndivBundle:Stop');
+        $this->stopTransformer->setEntityType('Stop');
     }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options

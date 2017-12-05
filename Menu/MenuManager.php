@@ -40,8 +40,9 @@ class MenuManager
                             $subMenuItem = new BusinessMenuItem();
                             $subMenuItem->setName($translator->trans($subMenu));
                             $subMenuItem->setRoute($subConfig['route']);
-                            if (array_key_exists('parameters', $subConfig))
+                            if (array_key_exists('parameters', $subConfig)) {
                                 $subMenuItem->setParameters($subConfig['parameters']);
+                            }
                             $menuItem->addChild($subMenuItem);
                         }
                     }
