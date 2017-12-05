@@ -579,5 +579,6 @@ tisseo:
                     departure: Départ
                     arrival: Arrivée
                     show_graph: Voir les graphiques
+                    reset: Réiniatiliser le jour et l'heure.
                 message:
                     no_result: Il n'y a aucun résultat

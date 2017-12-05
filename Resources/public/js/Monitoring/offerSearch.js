@@ -25,6 +25,17 @@ define(['jquery', 'core/moment', 'fosjsrouting', 'translations/messages'], funct
             $('#loading-indicator').show();
         });
 
+        $(document).on('click', '.btn-submit', function() {
+            var form = $('form[name="boa_offer_by_line_type"]');
+
+            if ($(form).find('input[name="boa_offer_by_line_type[reset]"]').prop('checked')) {
+                $(form).find('select[name="boa_offer_by_line_type[month][date][day]"]').val(1);
+                $(form).find('select[name="boa_offer_by_line_type[month][time][hour]"]').val(8);
+            }
+            $(form).find('input[name="boa_offer_by_line_type[reset]"]').prop('checked', false);
+            $(form).submit();
+        });
+
         // On change date
         $(document).on('change', '[name=boa_offer_by_line_type] .bootstrap-date select', function(ev) {
             var month = $('select[name="boa_offer_by_line_type[month][date][month]"]').val();
@@ -77,7 +88,7 @@ define(['jquery', 'core/moment', 'fosjsrouting', 'translations/messages'], funct
                 });
                 return JSON.stringify(data);
             });
-
+            $(form).find('input[name="boa_offer_by_line_type[reset]"]').prop('checked', false);
             $(form).submit();
         });
 

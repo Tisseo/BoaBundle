@@ -21,12 +21,15 @@
         </div>
         <div class="col-md-6 col-sm-4">
             <div class="boa-inline-button">
-            <button type="submit" class="btn btn-default btn-submit ajax_dep_element">
+            <button type="button" class="btn btn-default btn-submit ajax_dep_element">
                 {{ 'tisseo.boa.monitoring.offer_by_line.label.view' | trans }}
             </button>
             {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
             <img src="{{  asset_url }}" id="loading-indicator" style="display: none;" />
             {% endimage %}
+            </div>
+            <div>
+                {{ form_row(form.reset) }}
             </div>
         </div>
         {{ form_rest(form) }}
@@ -65,7 +68,7 @@
                         <th scope="row"><input type="checkbox" class="ckb-route" value="{{ result|json_encode() }}" /></th>
                         <th scope="color">
                             <div class="input-group colorpicker-component color-picker" title="Using input value">
-                                <input type="text" class="form-control" value="{% if (result.color) %}{{ result.color }}{% else %}#DD0F20{% endif %}" data-route="{{ result.name }}" />
+                                <input type="text" class="form-control" value="{% if result.color is not null %}{{ result.color }}{% else %}#DD0F20{% endif %}" data-route="{{ result.name }}" />
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </th>

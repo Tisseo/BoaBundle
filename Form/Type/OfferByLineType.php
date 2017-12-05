@@ -8,6 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tisseo\EndivBundle\Entity\Line;
+use Tisseo\EndivBundle\Entity\LineVersion;
+use Tisseo\EndivBundle\Entity\PhysicalMode;
 use Tisseo\EndivBundle\Services\LineVersionManager;
 
 class OfferByLineType extends AbstractType
@@ -61,13 +64,29 @@ class OfferByLineType extends AbstractType
             )
         );
 
-        $builder->add('colors', 'hidden', ['required' => false]);
+        $builder->add(
+            'colors',
+            'hidden',
+            [
+                'required' => false
+            ]
+        );
+
+        $builder->add(
+            'reset',
+            'checkbox',
+            [
+                'label' => 'tisseo.boa.monitoring.offer_by_line.label.reset',
+                'required' => false,
+                'data' => false
+            ]
+        );
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $data = $event->getData();
 
-            if ($data['month'] && !$data['month'] instanceof \DateTime) {
+            if (isset($data['month']) && !$data['month'] instanceof \DateTime) {
                 $data['month'] = \DateTime::createFromFormat(
                     'Ymd-H',
                     $data['month']['date']['year'].$data['month']['date']['month'].$data['month']['date']['day'].'-'.$data['month']['time']['hour']);
@@ -77,8 +96,9 @@ class OfferByLineType extends AbstractType
                 $data['month'] = $date;
             }
 
+
             $lvOptions = $this->getOptions(
-                $this->lvm->findLineVersionSortedByLineNumber($data['month'])
+                $this->lvm->findLineVersionSortedByLineNumber($data['month'], [PhysicalMode::PHYSICAL_MODE_TAD])
             );
 
             $form->add(

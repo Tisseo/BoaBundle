@@ -35,7 +35,7 @@ class OfferMonitoringController extends CoreController
             if ($data['colors'] != null) {
                 $colors = json_decode($data['colors']);
                 foreach ($results as $key => &$result) {
-                    $result['color'] = $colors[$key]->value;
+                    $result['color'] = isset($colors[$key]) ? $colors[$key]->value : null;
                 }
             }
 

@@ -154,18 +154,11 @@ class Monitoring
 
         $stopTimes = $this->stopTimeManager->getStopTimeWhoStartBetween($startTime, $endTime, $routeStopDeparture);
 
-        /* @var \Tisseo\EndivBundle\Entity\StopTime $stopTime */
-        /* @var \Tisseo\EndivBundle\Entity\Trip $trip */
         if (!$graph) {
-            $trips = $routeStopDeparture->getRoute()->getTrips();
             $filteredTrips = [];
-            foreach ($trips as $trip) {
-                foreach ($stopTimes as $k => $stopTime) {
-                    if ($stopTime->getTrip()->getId() == $trip->getId()) {
-                        $filteredTrips[] = $trip;
-                        unset($stopTimes[$k]);
-                    }
-                }
+            /* @var \Tisseo\EndivBundle\Entity\StopTime $stopTime */
+            foreach ($stopTimes as $k => $stopTime) {
+                $filteredTrips[] = $stopTime->getTrip();
             }
 
             return $this->countServices($filteredTrips, $startDate, $endDate);
