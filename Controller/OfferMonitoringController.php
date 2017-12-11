@@ -32,10 +32,11 @@ class OfferMonitoringController extends CoreController
             $monitoring = $this->get('tisseo_boa.monitoring');
             $results = $monitoring->compute($data['offer'], $data['month']);
 
-            if ($data['colors'] != null) {
-                $colors = json_decode($data['colors']);
+            if ($data['routes'] != null) {
+                $properties = json_decode($data['routes']);
                 foreach ($results as $key => &$result) {
-                    $result['color'] = isset($colors[$key]) ? $colors[$key]->value : null;
+                    $result['properties']['color'] = isset($properties[$key]->value) ? $properties[$key]->value : null;
+                    $result['properties']['checked'] = isset($properties[$key]->checked) ? $properties[$key]->checked : null;
                 }
             }
 

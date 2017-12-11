@@ -65,7 +65,7 @@ class OfferByLineType extends AbstractType
         );
 
         $builder->add(
-            'colors',
+            'routes',
             'hidden',
             [
                 'required' => false
