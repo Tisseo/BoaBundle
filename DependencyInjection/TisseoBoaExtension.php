@@ -28,6 +28,7 @@ class TisseoBoaExtension extends Extension
         $loader->load('permissions.yml');
 
         $container->setParameter('tisseo_boa.datatable_views', $config['datatable_views']);
+        $container->setParameter('tisseo_boa.configuration', $config['configuration']);
     }
 
     public function prepend(ContainerBuilder $container)
