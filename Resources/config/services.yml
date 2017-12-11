@@ -34,6 +34,7 @@ services:
             - '@tisseo_endiv.calendar_manager'
             - '@tisseo_endiv.stoptime_manager'
             - '@tisseo_endiv.trip_manager'
+            - '%tisseo_boa.configuration%'
 
 
     tisseo_boa.type.calendar_selector:

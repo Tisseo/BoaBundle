@@ -29,6 +29,9 @@ class Monitoring
     /** @var TripManager */
     private $tripManager;
 
+    /** @var  array */
+    private $configuration;
+
     /**
      * Monitoring constructor.
      *
@@ -36,17 +39,20 @@ class Monitoring
      * @param CalendarManager    $calendarManager
      * @param StopTimeManager    $stopTimeManager
      * @param TripManager        $tripManager
+     * @param array              $configuration
      */
     public function __construct(
         LineVersionManager $lineVersionManager,
         CalendarManager $calendarManager,
         StopTimeManager $stopTimeManager,
-        TripManager $tripManager)
+        TripManager $tripManager,
+        $configuration)
     {
         $this->lineVersionManager = $lineVersionManager;
         $this->calendarManager = $calendarManager;
         $this->stopTimeManager = $stopTimeManager;
         $this->tripManager = $tripManager;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -64,8 +70,10 @@ class Monitoring
         /** @var LineVersion $lineVersion */
         $lineVersion = $this->lineVersionManager->find($lineVersionId);
 
+        $defaultListColor = $this->configuration['defaultColors'];
+
         /** @var Route $route */
-        foreach ($lineVersion->getRoutes() as $route) {
+        foreach ($lineVersion->getRoutes() as $key => $route) {
             $trips = $this->tripManager->getTripsListForOneRoute($route);
             $routeStopDeparture = $trips[0]->getRoute()->getRouteStops()->first();
             $routeStopArrival = $trips[0]->getRoute()->getRouteStops()->last();
@@ -95,6 +103,7 @@ class Monitoring
                     'month' => $this->tripsByMonth($trips, $date), // Call method computeForMonth;
                     'day' => $this->tripsByDay($trips, $date), //Call method computeForDay
                     'hour' => $this->tripsByHour($routeStopDeparture, $date), // Call method computeForHour
+                    'properties' => ['color' => isset($defaultListColor[$key]) ? $defaultListColor[$key] : '#00ff00'],
                 ]
             );
         }
