@@ -40,7 +40,13 @@
         <div class="col-md-12">
             <table class="table table-stats">
                 <thead>
-                    <th scope="col" class="col-md-2" colspan="2">#</th>
+                    <th scope="col" class="col-md-2" colspan="2">
+                        <div class="checkbox">
+                            <label for="ckb-route-all">
+                                <input type="checkbox" id="ckb-route-all"> {{ 'tisseo.boa.monitoring.offer_by_line.label.select_all' | trans }}
+                            </label>
+                        </div>
+                    </th>
                     <th scope="col" class="col-md-1">{{ 'tisseo.boa.monitoring.offer_by_line.label.name' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.departure' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.arrival' | trans }}</th>
@@ -64,11 +70,26 @@
                 </thead>
                 <tbody>
                 {%  for result in results %}
+                    {% if result.properties.checked == true %}
+                        {% set checked='checked' %}
+                        {% set activeButtonGraph = true %}
+                    {% else %}
+                        {% set checked='' %}
+                    {% endif %}
                     <tr>
-                        <th scope="row"><input type="checkbox" class="ckb-route" value="{{ result|json_encode() }}" /></th>
+                        <th scope="row">
+                            <input type="checkbox" class="ckb-route ckb-route-{{ loop.index }}"
+                                   value="{{ result|json_encode() }}"
+                                   {% if result.properties.checked == true %}checked{% endif %}
+                            />
+                        </th>
                         <th scope="color">
                             <div class="input-group colorpicker-component color-picker" title="Using input value">
-                                <input type="text" class="form-control" value="{% if result.color is not null %}{{ result.color }}{% else %}#DD0F20{% endif %}" data-route="{{ result.name }}" />
+                                <input type="text" class="form-control"
+                                       value="{% if result.properties.color is not null %}{{ result.properties.color }}{% else %}#DD0F20{% endif %}"
+                                       data-route="{{ result.name }}"
+                                       data-index="{{ loop.index }}"
+                                />
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </th>
@@ -82,7 +103,12 @@
                 {% if loop.last %}
                 <tfoot>
                     <td colspan="8">
-                        <button class="btn btn-default generate-graph" disabled>{{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}</button>
+                        <button
+                            class="btn btn-default generate-graph"
+                            {% if activeButtonGraph is not defined %}disabled{% endif %}
+                        >
+                            {{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}
+                        </button>
                         {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
                         <img src="{{  asset_url }}" id="loading-indicator-graph" style="display: none;" />
                         {% endimage %}

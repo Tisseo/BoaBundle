@@ -3,15 +3,39 @@ define(['jquery', 'chartjs', 'fosjsrouting', 'translations/messages'], function(
 
     $(document).ready(function () {
         var btn = $(document).find('.generate-graph');
+        var ckbRouteAll = $(document).find('#ckb-route-all');
 
-        $(document).on('click', '.ckb-route', function(ev) {
+        function ckbRouteState() {
             btn.prop('disabled', true);
-            $(document).find('.ckb-route').each(function(el) {
-               if ($(this).prop('checked')) {
-                   btn.prop('disabled', false);
-                   return false; // break
-               }
+            ckbRouteAll.prop('checked', true);
+            $(document).find('.ckb-route').each(function() {
+                if ($(this).prop('checked')) {
+                    btn.prop('disabled', false);
+                } else {
+                    ckbRouteAll.prop('checked', false);
+                }
             });
+        }
+
+        ckbRouteState();
+
+        $(document).on('click', '.ckb-route', function() {
+            ckbRouteState();
+        });
+
+        // Select all / unselect all routes
+        $(document).on('change', '#ckb-route-all', function() {
+            if ($(this).prop('checked') === true) {
+                $(document).find('input.ckb-route').each(function() {
+                    $(this).prop('checked', true);
+                    btn.prop('disabled', false);
+                });
+            } else {
+                $(document).find('input.ckb-route').each(function() {
+                    $(this).prop('checked', false);
+                    btn.prop('disabled', true);
+                });
+            }
         });
 
         $(document).on('click', '.generate-graph', function(ev) {
