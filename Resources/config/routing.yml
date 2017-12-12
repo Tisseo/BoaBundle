@@ -417,9 +417,9 @@ tisseo_boa_trip_delete_all:
     methods: [GET, POST]
     options:
         expose: true
-tisseo_boa_trip_edit_path:
-    path: /route{routeId}/trip/editpath
-    defaults: { _controller: TisseoBoaBundle:Trip:editpath }
+tisseo_boa_trip_edit_pattern:
+    path: /route{routeId}/trip/editpattern
+    defaults: { _controller: TisseoBoaBundle:Trip:editPattern }
     requirements:
         routeId: \d+
     options:
