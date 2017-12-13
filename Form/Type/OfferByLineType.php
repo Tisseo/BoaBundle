@@ -87,9 +87,11 @@ class OfferByLineType extends AbstractType
             $data = $event->getData();
 
             if (isset($data['month']) && !$data['month'] instanceof \DateTime) {
+                $strDate = $data['month']['date']['year'].'-'.$data['month']['date']['month'].'-'.$data['month']['date']['day'].'-'.$data['month']['time']['hour'];
                 $data['month'] = \DateTime::createFromFormat(
-                    'Ymd-H',
-                    $data['month']['date']['year'].$data['month']['date']['month'].$data['month']['date']['day'].'-'.$data['month']['time']['hour']);
+                    'Y-n-j-G',
+                    $strDate
+                );
             } else {
                 $date = new \DateTime('now');
                 $date->setTime(8, 0, 0);
