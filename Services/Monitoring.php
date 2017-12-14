@@ -2,6 +2,7 @@
 
 namespace Tisseo\BoaBundle\Services;
 
+use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\EndivBundle\Entity\Trip;
 use Tisseo\EndivBundle\Services\CalendarManager;
 use Tisseo\EndivBundle\Services\LineVersionManager;
@@ -10,6 +11,7 @@ use Tisseo\EndivBundle\Entity\Route;
 use Tisseo\EndivBundle\Entity\RouteStop;
 use Tisseo\EndivBundle\Services\StopTimeManager;
 use Tisseo\EndivBundle\Services\TripManager;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class Monitoring
 {
@@ -63,18 +65,30 @@ class Monitoring
      */
     public function compute($lineVersionId, \DateTimeInterface $date)
     {
+        $session = new Session();
         $result = [];
         $date = \DateTimeImmutable::createFromMutable($date);
         $stringDate = $date->format('Y-m-d H:i:s');
 
         /** @var LineVersion $lineVersion */
         $lineVersion = $this->lineVersionManager->find($lineVersionId);
-
         $defaultListColor = $this->configuration['defaultColors'];
+
+        $session->set('lineVersionId', $lineVersionId);
+
+        // Get Bitmasks
+        $cachedBitmask = $session->get('cachedBitmask', null);
+        if (is_null($cachedBitmask)) {
+            $session->set('cachedBitmask', []);
+        } else if (!isset($cachedBitmask[$lineVersionId])) {
+            $cachedBitmask[$lineVersionId] = null;
+            $session->set('cachedBitmask', $cachedBitmask);
+        }
+
 
         /** @var Route $route */
         foreach ($lineVersion->getRoutes() as $key => $route) {
-            $trips = $this->tripManager->getTripsListForOneRoute($route);
+            $trips = $this->getTripsForRoute($route);
             $routeStopDeparture = $trips[0]->getRoute()->getRouteStops()->first();
             $routeStopArrival = $trips[0]->getRoute()->getRouteStops()->last();
 
@@ -92,6 +106,23 @@ class Monitoring
                 $arrivalName = $stopArrival->getStopArea()->getLongName();
             }
 
+            // Caches the month results of the each route of the line version
+            $monthYear = $date->format('m-Y');
+            if (isset($cachedBitmask[$lineVersionId]['month'][$monthYear][$route->getId()])) {
+                $month = $cachedBitmask[$lineVersionId]['month'][$monthYear][$route->getId()];
+                $monthCached = true;
+            } else {
+                $month = $this->tripsByMonth($trips, $date);
+                $cachedBitmask = $session->get('cachedBitmask');
+                $cachedBitmask[$lineVersionId]['month'][$monthYear][$route->getId()] = $month;
+                $session->set('cachedBitmask', $cachedBitmask);
+                $monthCached = false;
+            }
+
+
+            $day = $this->tripsByDay($trips, $date);
+            $hour = $this->tripsByHour($routeStopDeparture, $date);
+
             array_push(
                 $result,
                 [
@@ -100,15 +131,40 @@ class Monitoring
                     'date' => $stringDate,
                     'departure' => $departureName,
                     'arrival' => $arrivalName,
-                    'month' => $this->tripsByMonth($trips, $date), // Call method computeForMonth;
-                    'day' => $this->tripsByDay($trips, $date), //Call method computeForDay
-                    'hour' => $this->tripsByHour($routeStopDeparture, $date), // Call method computeForHour
+                    'month' => $month, // Call method computeForMonth;
+                    'monthCached' => $monthCached, // flag for template
+                    'day' => $day, //Call method computeForDay
+                    'hour' => $hour, // Call method computeForHour
+                    'lineVersion' => $lineVersionId,
                     'properties' => ['color' => isset($defaultListColor[$key]) ? $defaultListColor[$key] : '#00ff00'],
                 ]
             );
         }
 
         return $result;
+    }
+
+    /**
+     * @param \Tisseo\EndivBundle\Entity\Route $route
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTripsForRoute(Route $route)
+    {
+        $session = new Session();
+        $cachedTrips = $session->get('cachedTrips');
+        if (is_null($cachedTrips) || empty($cachedTrips)) {
+            $session->set('cachedTrips', []);
+        }
+
+        if(isset($cachedTrips[$route->getId()])) {
+            $trips = $cachedTrips[$route->getId()];
+        } else {
+            $trips = $route->getTrips();
+            $cachedTrips[$route->getId()] = $trips;
+            $session->set('cachedTrips', $cachedTrips);
+        }
+
+        return $trips;
     }
 
     /**
@@ -121,9 +177,9 @@ class Monitoring
     public function tripsByMonth($trips, \DateTimeInterface $startDate, $graph = false)
     {
         $startDate = $startDate->modify('first day of this month');
-        $startDate->setTime(0, 0, 0);
+        $startDate = $startDate->setTime(0, 0, 0);
         $endDate = $startDate->modify('last day of this month');
-        $endDate->setTime(23, 59, 59);
+        $endDate = $endDate->setTime(23, 59, 59);
 
         if (!$graph) {
             return $this->countServices($trips, $startDate, $endDate);
@@ -140,10 +196,15 @@ class Monitoring
      */
     public function tripsByDay($trips, \DateTimeInterface $startDate)
     {
+        //$startDate = $startDate->setTime(0, 0, 0);
+        //$endDate = $startDate->setTime(23, 59, 59);
+        $day = $startDate->format('j');
+        $startDate = $startDate->modify('first day of this month');
         $startDate = $startDate->setTime(0, 0, 0);
-        $endDate = $startDate->setTime(23, 59, 59);
+        $endDate = $startDate->modify('last day of this month');
+        $endDate = $endDate->setTime(23, 59, 59);
 
-        return $this->countServices($trips, $startDate, $endDate);
+        return $this->countServices($trips, $startDate, $endDate, 2, $day);
     }
 
     /**
@@ -182,23 +243,47 @@ class Monitoring
      * @param $trips
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $endDate
+     * @param int $mode
+     * @param int $day current day number
      *
      * @return int
      */
-    private function countServices($trips, \DateTimeInterface $startDate, \DateTimeInterface $endDate)
+    private function countServices($trips, \DateTimeInterface $startDate, \DateTimeInterface $endDate, $mode = 1, $day = null)
     {
         if (empty($trips)) {
             return 0;
         }
 
         $nbService = 0;
-        $cachedBitmask = [];
+        $session = new Session();
+        $lineVersionId = $session->get('lineVersionId');
+        list($key, $cachedBitmask) = $this->getCachedBitmask(
+            $lineVersionId,
+            $startDate,
+            $endDate
+        );
 
-        /** @var \Tisseo\EndivBundle\Entity\Trip $trip */
-        foreach ($trips as $trip) {
-            $bitmask = $this->getBitmask($trip, $startDate, $endDate, $cachedBitmask);
-            $nbService += substr_count($bitmask, 1);
+        switch($mode) {
+            case 1:
+                /** @var \Tisseo\EndivBundle\Entity\Trip $trip */
+                foreach ($trips as $trip) {
+                    $bitmask = $this->getBitmask($trip, $startDate, $endDate, $cachedBitmask[$lineVersionId][$key]);
+                    $nbService += substr_count($bitmask, 1);
+                }
+                $session->set('cachedBitmask', $cachedBitmask);
+                break;
+            case 2:
+                /** @var \Tisseo\EndivBundle\Entity\Trip $trip */
+                foreach ($trips as $trip) {
+                    if (isset($cachedBitmask[$lineVersionId][$key][$trip->getId()])) {
+                        $bitmask = $cachedBitmask[$lineVersionId][$key][$trip->getId()];
+                        $bit = substr($bitmask,$day -1, $day);
+                        $nbService += $bit;
+                    };
+                }
+                break;
         }
+
 
         return $nbService;
     }
@@ -218,14 +303,21 @@ class Monitoring
 
         $dayInMonth = cal_days_in_month(CAL_GREGORIAN, $startDate->format('m'), $startDate->format('Y'));
         $arrayBitmask = str_split(str_repeat('0', $dayInMonth));
-        $cachedBitmask = [];
+
+        $session = new Session();
+        $lineVersionId = $session->get('lineVersionId', null);
+        list($key, $cachedBitmask) = $this->getCachedBitmask(
+            $lineVersionId,
+            $startDate,
+            $endDate
+        );
 
         $sumFunc = function ($t1, $t2) {
             return $t1 + $t2;
         };
 
         foreach ($trips as $trip) {
-            $bitmask = $this->getBitmask($trip, $startDate, $endDate, $cachedBitmask);
+            $bitmask = $this->getBitmask($trip, $startDate, $endDate, $cachedBitmask[$lineVersionId][$key]);
             $arrayBitmask = array_map($sumFunc, $arrayBitmask, str_split($bitmask));
         }
 
@@ -297,32 +389,77 @@ class Monitoring
         if (!$trip->getPeriodCalendar()) {
             return '0';  // ignore trip without period calendar
         }
-
-        if (!$trip->getDayCalendar()) {
-            if (!isset($cachedBitmask[$trip->getPeriodCalendar()->getId()])) {
+        /*$tests = $trip->getRoute()->getLineVersion()->getLine()->getLineDatasources();
+        foreach ($tests as $test) {
+            dump($test);
+        }*/
+        if (isset($cachedBitmask[$trip->getId()])) {
+            return $cachedBitmask[$trip->getId()];
+        }
+        if (!$trip->getDayCalendar() /* || linedatasoure = 1 (hastus) */) {
+            //if (!isset($cachedBitmask[$trip->getPeriodCalendar()->getId()])) {
+            //if (!isset($cachedBitmask[$trip->getId()])) {
                 $bitmask = $this->calendarManager->getCalendarBitmask(
                     $trip->getPeriodCalendar()->getId(),
                     $startDate,
                     $endDate
                 );
-                $cachedBitmask[$trip->getPeriodCalendar()->getId()] = $bitmask;
-            } else {
-                $bitmask = $cachedBitmask[$trip->getPeriodCalendar()->getId()];
-            }
+                //$cachedBitmask[$trip->getPeriodCalendar()->getId()] = $bitmask;
+                $cachedBitmask[$trip->getId()] = $bitmask;
+            //} else {
+                //$bitmask = $cachedBitmask[$trip->getPeriodCalendar()->getId()];
+
+            //}
         } else {
-            if (!isset($cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()])) {
+            //if (!isset($cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()])) {
+            //if (!isset($cachedBitmask[$trip->getId()])) {
                 $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
                     $trip->getPeriodCalendar()->getId(),
                     $trip->getDayCalendar()->getId(),
                     $startDate,
                     $endDate
                 );
-                $cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()] = $bitmask;
-            } else {
-                $bitmask = $cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()];
-            }
+              //  $cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()] = $bitmask;
+                $cachedBitmask[$trip->getId()] = $bitmask;
+            //} else {
+               // $bitmask = $cachedBitmask[$trip->getId()];
+
+            //}
         }
 
         return $bitmask;
+    }
+
+
+    /**
+     * Generate key for cache array
+     *
+     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $endDate
+     * @return string
+     */
+    private function generateCacheKey(\DateTimeInterface $startDate, \DateTimeInterface $endDate)
+    {
+        return $startDate->getTimestamp() .':'. $endDate->getTimeStamp();
+    }
+
+    /**
+     * Get catchedBitmask array
+     *
+     * @param $lineVersionId
+     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $endDate
+     * @return mixed array
+     */
+    private function getCachedBitmask($lineVersionId, \DateTimeInterface $startDate, \DateTimeInterface $endDate)
+    {
+        $session = new Session();
+        $cachedBitmask = $session->get('cachedBitmask', null);
+        $key = $this->generateCacheKey($startDate, $endDate);
+        if (!isset($cachedBitmask[$lineVersionId][$key])) {
+            $cachedBitmask[$lineVersionId][$key] = null;
+        }
+
+        return [$key, $cachedBitmask];
     }
 }

@@ -6,6 +6,7 @@ use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Tisseo\CoreBundle\Controller\CoreController;
 
 class OfferMonitoringController extends CoreController
@@ -31,11 +32,12 @@ class OfferMonitoringController extends CoreController
             $data = $form->getData();
             $monitoring = $this->get('tisseo_boa.monitoring');
             $results = $monitoring->compute($data['offer'], $data['month']);
-
+            $defaultColors = $this->container->getParameter('tisseo_boa.configuration')['defaultColors'];
             if ($data['routes'] != null) {
                 $properties = json_decode($data['routes']);
                 foreach ($results as $key => &$result) {
-                    $result['properties']['color'] = isset($properties[$key]->value) ? $properties[$key]->value : null;
+                    $defaultColor = isset($defaultColors[$key]) ? $defaultColors[$key] : null;
+                    $result['properties']['color'] = isset($properties[$key]->value) ? $properties[$key]->value : $defaultColor;
                     $result['properties']['checked'] = isset($properties[$key]->checked) ? $properties[$key]->checked : null;
                 }
             }
@@ -50,6 +52,10 @@ class OfferMonitoringController extends CoreController
                 'previous_hour' => $date->modify('-1 hour')->format($format),
                 'next_hour' => $date->modify('+1 hour')->format($format)
             ];
+        } else {
+            $session = new Session();
+            $session->set('cachedBitmask', []);
+            $session->set('cachedTrip', []);
         }
 
         return $this->render(
@@ -124,7 +130,7 @@ class OfferMonitoringController extends CoreController
                 }
 
                 // get route trips
-                $trips = $objRoute->getTrips();
+                $trips = $monitoring->getTripsForRoute($objRoute);
 
                 // Compute each day of month
                 $result = $monitoring->tripsByMonth($trips, $date, true);
