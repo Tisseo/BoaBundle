@@ -2,7 +2,6 @@
 
 namespace Tisseo\BoaBundle\Services;
 
-use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\EndivBundle\Entity\Trip;
 use Tisseo\EndivBundle\Services\CalendarManager;
 use Tisseo\EndivBundle\Services\LineVersionManager;
@@ -31,7 +30,7 @@ class Monitoring
     /** @var TripManager */
     private $tripManager;
 
-    /** @var  array */
+    /** @var array */
     private $configuration;
 
     /**
@@ -80,11 +79,10 @@ class Monitoring
         $cachedBitmask = $session->get('cachedBitmask', null);
         if (is_null($cachedBitmask)) {
             $session->set('cachedBitmask', []);
-        } else if (!isset($cachedBitmask[$lineVersionId])) {
+        } elseif (!isset($cachedBitmask[$lineVersionId])) {
             $cachedBitmask[$lineVersionId] = null;
             $session->set('cachedBitmask', $cachedBitmask);
         }
-
 
         /** @var Route $route */
         foreach ($lineVersion->getRoutes() as $key => $route) {
@@ -119,7 +117,6 @@ class Monitoring
                 $monthCached = false;
             }
 
-
             $day = $this->tripsByDay($trips, $date);
             $hour = $this->tripsByHour($routeStopDeparture, $date);
 
@@ -146,6 +143,7 @@ class Monitoring
 
     /**
      * @param \Tisseo\EndivBundle\Entity\Route $route
+     *
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getTripsForRoute(Route $route)
@@ -156,7 +154,7 @@ class Monitoring
             $session->set('cachedTrips', []);
         }
 
-        if(isset($cachedTrips[$route->getId()])) {
+        if (isset($cachedTrips[$route->getId()])) {
             $trips = $cachedTrips[$route->getId()];
         } else {
             $trips = $route->getTrips();
@@ -243,8 +241,8 @@ class Monitoring
      * @param $trips
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $endDate
-     * @param int $mode
-     * @param int $day current day number
+     * @param int                $mode
+     * @param int                $day       current day number
      *
      * @return int
      */
@@ -263,7 +261,7 @@ class Monitoring
             $endDate
         );
 
-        switch($mode) {
+        switch ($mode) {
             case 1:
                 /** @var \Tisseo\EndivBundle\Entity\Trip $trip */
                 foreach ($trips as $trip) {
@@ -277,13 +275,12 @@ class Monitoring
                 foreach ($trips as $trip) {
                     if (isset($cachedBitmask[$lineVersionId][$key][$trip->getId()])) {
                         $bitmask = $cachedBitmask[$lineVersionId][$key][$trip->getId()];
-                        $bit = substr($bitmask,$day -1, $day);
+                        $bit = substr($bitmask, $day - 1, $day);
                         $nbService += $bit;
-                    };
+                    }
                 }
                 break;
         }
-
 
         return $nbService;
     }
@@ -389,58 +386,41 @@ class Monitoring
         if (!$trip->getPeriodCalendar()) {
             return '0';  // ignore trip without period calendar
         }
-        /*$tests = $trip->getRoute()->getLineVersion()->getLine()->getLineDatasources();
-        foreach ($tests as $test) {
-            dump($test);
-        }*/
         if (isset($cachedBitmask[$trip->getId()])) {
             return $cachedBitmask[$trip->getId()];
         }
         if (!$trip->getDayCalendar() /* || linedatasoure = 1 (hastus) */) {
-            //if (!isset($cachedBitmask[$trip->getPeriodCalendar()->getId()])) {
-            //if (!isset($cachedBitmask[$trip->getId()])) {
-                $bitmask = $this->calendarManager->getCalendarBitmask(
-                    $trip->getPeriodCalendar()->getId(),
-                    $startDate,
-                    $endDate
-                );
-                //$cachedBitmask[$trip->getPeriodCalendar()->getId()] = $bitmask;
-                $cachedBitmask[$trip->getId()] = $bitmask;
-            //} else {
-                //$bitmask = $cachedBitmask[$trip->getPeriodCalendar()->getId()];
+            $bitmask = $this->calendarManager->getCalendarBitmask(
+                $trip->getPeriodCalendar()->getId(),
+                $startDate,
+                $endDate
+            );
 
-            //}
+            $cachedBitmask[$trip->getId()] = $bitmask;
         } else {
-            //if (!isset($cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()])) {
-            //if (!isset($cachedBitmask[$trip->getId()])) {
-                $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
-                    $trip->getPeriodCalendar()->getId(),
-                    $trip->getDayCalendar()->getId(),
-                    $startDate,
-                    $endDate
-                );
-              //  $cachedBitmask[$trip->getDayCalendar()->getId().'-'.$trip->getPeriodCalendar()->getId()] = $bitmask;
-                $cachedBitmask[$trip->getId()] = $bitmask;
-            //} else {
-               // $bitmask = $cachedBitmask[$trip->getId()];
-
-            //}
+            $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
+                $trip->getPeriodCalendar()->getId(),
+                $trip->getDayCalendar()->getId(),
+                $startDate,
+                $endDate
+            );
+            $cachedBitmask[$trip->getId()] = $bitmask;
         }
 
         return $bitmask;
     }
-
 
     /**
      * Generate key for cache array
      *
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $endDate
+     *
      * @return string
      */
     private function generateCacheKey(\DateTimeInterface $startDate, \DateTimeInterface $endDate)
     {
-        return $startDate->getTimestamp() .':'. $endDate->getTimeStamp();
+        return $startDate->getTimestamp().':'.$endDate->getTimeStamp();
     }
 
     /**
@@ -449,6 +429,7 @@ class Monitoring
      * @param $lineVersionId
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $endDate
+     *
      * @return mixed array
      */
     private function getCachedBitmask($lineVersionId, \DateTimeInterface $startDate, \DateTimeInterface $endDate)

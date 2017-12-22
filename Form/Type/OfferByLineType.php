@@ -8,8 +8,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tisseo\EndivBundle\Entity\Line;
-use Tisseo\EndivBundle\Entity\LineVersion;
 use Tisseo\EndivBundle\Entity\PhysicalMode;
 use Tisseo\EndivBundle\Services\LineVersionManager;
 
@@ -97,7 +95,6 @@ class OfferByLineType extends AbstractType
                 $date->setTime(8, 0, 0);
                 $data['month'] = $date;
             }
-
 
             $lvOptions = $this->getOptions(
                 $this->lvm->findLineVersionSortedByLineNumber($data['month'], [PhysicalMode::PHYSICAL_MODE_TAD])
