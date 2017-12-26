@@ -275,7 +275,7 @@ class Monitoring
                 foreach ($trips as $trip) {
                     if (isset($cachedBitmask[$lineVersionId][$key][$trip->getId()])) {
                         $bitmask = $cachedBitmask[$lineVersionId][$key][$trip->getId()];
-                        $bit = substr($bitmask, $day - 1, $day);
+                        $bit = substr($bitmask, $day - 1, 1);
                         $nbService += $bit;
                     }
                 }
