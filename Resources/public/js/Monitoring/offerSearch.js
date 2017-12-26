@@ -3,7 +3,7 @@ define(['jquery', 'core/moment', 'fosjsrouting', 'translations/messages'], funct
 
     $(document).ready(function () {
         $(document).find('.color-picker').colorpicker();
-
+        $(document).find('[data-toggle="tooltip"]').tooltip();
         function replaceOptions(element, data) {
             if (data.length > 0) {
                 var currentSelection = parseInt($(element).val());

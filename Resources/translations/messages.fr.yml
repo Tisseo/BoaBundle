@@ -583,3 +583,4 @@ tisseo:
                     select_all: Sél./Désel. tout.
                 message:
                     no_result: Il n'y a aucun résultat
+                    cache: Résultat en provenance du cache

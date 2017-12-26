@@ -96,7 +96,11 @@
                         <td>{{ result.name }}</td>
                         <td>{{ result.departure }}</td>
                         <td>{{ result.arrival }}</td>
-                        <td>{{ result.month }}</td>
+                        <td>{% if result.monthCached %}<span
+                                    class="label label-info"
+                                    data-toggle="tooltip"
+                                    title="{{ 'tisseo.boa.monitoring.offer_by_line.message.cache'|trans }}">c</span>
+                            {% endif %}{{ result.month }}</td>
                         <td>{{ result.day }}</td>
                         <td>{{ result.hour }}</td>
                     <tr>
