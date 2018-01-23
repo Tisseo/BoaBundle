@@ -54,6 +54,5 @@ class LineVersionController extends CoreController
                 'datasources' => $datasources
             )
         );
-
     }
 }

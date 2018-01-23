@@ -27,8 +27,24 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
+    tisseo_boa.monitoring:
+        class: 'Tisseo\BoaBundle\Services\Monitoring'
+        arguments:
+            - '@tisseo_endiv.line_version_manager'
+            - '@tisseo_endiv.calendar_manager'
+            - '@tisseo_endiv.stoptime_manager'
+            - '@tisseo_endiv.trip_manager'
+            - '%tisseo_boa.configuration%'
+
+
     tisseo_boa.type.calendar_selector:
         class: 'Tisseo\BoaBundle\Form\Type\CalendarSelectorType'
         arguments: ['@doctrine.orm.endiv_entity_manager']
         tags:
             - { name: form.type, alias: calendar_selector }
+
+    tisseo_boa.type.monitoring.offer_by_line:
+        class: 'Tisseo\BoaBundle\Form\Type\OfferByLineType'
+        arguments: ['@tisseo_endiv.line_version_manager']
+        tags:
+            - { name: form.type, alias: boa_offer_by_line_type }

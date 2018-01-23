@@ -33,7 +33,8 @@ class ExceptionTypeController extends CoreController
 
     /**
      * Edit
-     * @param integer $exceptionTypeId
+     *
+     * @param int $exceptionTypeId
      *
      * Creating/editing ExceptionType
      */
@@ -44,8 +45,9 @@ class ExceptionTypeController extends CoreController
         $exceptionTypeManager = $this->get('tisseo_endiv.exception_type_manager');
         $exceptionType = $exceptionTypeManager->find($exceptionTypeId);
 
-        if (empty($exceptionType))
+        if (empty($exceptionType)) {
             $exceptionType = new ExceptionType();
+        }
 
         $form = $this->createForm(
             new ExceptionTypeType(),
@@ -59,15 +61,11 @@ class ExceptionTypeController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $exceptionTypeManager->save($form->getData());
                 $this->addFlash('success', ($exceptionTypeId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

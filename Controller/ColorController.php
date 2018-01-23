@@ -33,7 +33,8 @@ class ColorController extends CoreController
 
     /**
      * Edit
-     * @param integer $colorId
+     *
+     * @param int $colorId
      *
      * Creating/editing Color
      */
@@ -44,8 +45,9 @@ class ColorController extends CoreController
         $colorManager = $this->get('tisseo_endiv.color_manager');
         $color = $colorManager->find($colorId);
 
-        if (empty($color))
+        if (empty($color)) {
             $color = new Color();
+        }
 
         $form = $this->createForm(
             new ColorType(),
@@ -59,15 +61,11 @@ class ColorController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $colorManager->save($form->getData());
                 $this->addFlash('success', ($colorId ? 'tisseo.flash.success.edited' : 'tisseo.flash.success.created'));
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 

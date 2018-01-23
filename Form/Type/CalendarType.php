@@ -11,28 +11,29 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Extension\Core\View\ChoiceView;
 use Tisseo\EndivBundle\Entity\Calendar;
-use Tisseo\BoaBundle\Form\Type\CalendarElementType;
 
 class CalendarType extends AbstractType
 {
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        usort($view->children['lineVersion']->vars['choices'], function(ChoiceView $choice1, ChoiceView $choice2) {
+        usort($view->children['lineVersion']->vars['choices'], function (ChoiceView $choice1, ChoiceView $choice2) {
             $lineVersion1 = $choice1->data;
             $lineVersion2 = $choice2->data;
-            if ($lineVersion1->getLine()->getPriority() == $lineVersion2->getLine()->getPriority())
-            {
+            if ($lineVersion1->getLine()->getPriority() == $lineVersion2->getLine()->getPriority()) {
                 $numberComparison = strnatcmp($lineVersion1->getLine()->getNumber(), $lineVersion2->getLine()->getNumber());
 
-                if ($numberComparison == 0)
-                    return ($lineVersion1->getVersion() < $lineVersion2->getVersion() ? -1 : 1);
-                else
+                if ($numberComparison == 0) {
+                    return $lineVersion1->getVersion() < $lineVersion2->getVersion() ? -1 : 1;
+                } else {
                     return $numberComparison;
+                }
             }
-            if ($lineVersion1->getLine()->getPriority() > $lineVersion2->getLine()->getPriority())
+            if ($lineVersion1->getLine()->getPriority() > $lineVersion2->getLine()->getPriority()) {
                 return 1;
-            if ($lineVersion1->getLine()->getPriority() < $lineVersion2->getLine()->getPriority())
+            }
+            if ($lineVersion1->getLine()->getPriority() < $lineVersion2->getLine()->getPriority()) {
                 return -1;
+            }
         });
     }
 
@@ -78,8 +79,7 @@ class CalendarType extends AbstractType
                     $form = $event->getForm();
                     $calendar = $event->getData();
 
-                    if ($calendar->getId() !== null)
-                    {
+                    if ($calendar->getId() !== null) {
                         $form
                             ->add(
                                 'computedStartDate',

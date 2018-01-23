@@ -16,7 +16,8 @@ class TripController extends CoreController
 {
     /**
      * List
-     * @param integer $routeId
+     *
+     * @param int $routeId
      *
      * Listing all Trips of a specific Route
      */
@@ -46,7 +47,8 @@ class TripController extends CoreController
 
     /**
      * Create
-     * @param integer $routeId
+     *
+     * @param int $routeId
      *
      * Creating Trip in a specific Route
      */
@@ -64,15 +66,15 @@ class TripController extends CoreController
             $this->getUser()->getUsername()
         );
         $trip->setRoute($route);
-        $trip->setName($lineVersion->getLine()->getNumber()."_".$lineVersion->getVersion()."_".$route->getWay()[0]);
+        $trip->setName($lineVersion->getLine()->getNumber().'_'.$lineVersion->getVersion().'_'.$route->getWay()[0]);
 
         $form = $this->createForm(
             new TripCreateType(),
             $trip,
             array(
-                "action" => $this->generateUrl(
+                'action' => $this->generateUrl(
                     'tisseo_boa_trip_create',
-                    array("routeId" => $routeId)
+                    array('routeId' => $routeId)
                 ),
                 'em' => $this->getDoctrine()->getManager($this->container->getParameter('endiv_database_connection'))
             )
@@ -85,7 +87,7 @@ class TripController extends CoreController
                 $stopTimes = $request->request->get('stopTimes');
                 $this->get('tisseo_endiv.trip_manager')->createTripAndStopTimes($newTrip, $stopTimes);
                 $this->addFlash('success', 'tisseo.flash.success.created');
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -104,7 +106,8 @@ class TripController extends CoreController
 
     /**
      * Edit
-     * @param integer $tripId
+     *
+     * @param int $tripId
      *
      * Editing Trip
      */
@@ -138,7 +141,7 @@ class TripController extends CoreController
             try {
                 $tripManager->save($trip);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -165,6 +168,7 @@ class TripController extends CoreController
 
     /**
      * Delete
+     *
      * @param $tripId
      *
      * Deleting Trip
@@ -179,7 +183,7 @@ class TripController extends CoreController
         try {
             $tripManager->remove($trip);
             $this->addFlash('success', 'tisseo.flash.success.deleted');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
@@ -191,7 +195,8 @@ class TripController extends CoreController
 
     /**
      * Delete all
-     * @param integer $routeId
+     *
+     * @param int $routeId
      *
      * Deleting all or selected Trips from a Route
      */
@@ -210,7 +215,7 @@ class TripController extends CoreController
                 $this->get('tisseo_endiv.trip_manager')->deleteTripsFromRoute($route);
                 $this->addFlash('success', 'tisseo.boa.trip.message.all_deleted');
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
@@ -222,7 +227,8 @@ class TripController extends CoreController
 
     /**
      * Edit pattern
-     * @param integer $routeId
+     *
+     * @param int $routeId
      *
      * Editing Trip 'pattern' in a Route
      */

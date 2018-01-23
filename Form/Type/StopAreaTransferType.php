@@ -5,9 +5,6 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\EntityRepository;
-
-use Tisseo\EndivBundle\Entity\Stop;
 
 class StopAreaTransferType extends AbstractType
 {
@@ -17,7 +14,7 @@ class StopAreaTransferType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $stop= $builder->getData();
+        $stop = $builder->getData();
 
         $builder->add('transferDuration', 'text',
             array(
@@ -56,4 +53,3 @@ class StopAreaTransferType extends AbstractType
         return 'boa_stop_area_transfer';
     }
 }
-

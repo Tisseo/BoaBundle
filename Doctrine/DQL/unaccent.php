@@ -10,7 +10,6 @@ use Doctrine\ORM\Query\Lexer;
  * http://www.postgresql.org/docs/current/static/unaccent.html
  *
  * Usage : StringFunction UNACCENT(string)
- *
  */
 class Unaccent extends FunctionNode
 {
@@ -18,7 +17,7 @@ class Unaccent extends FunctionNode
 
     public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker)
     {
-        return 'UNACCENT(' . $this->string->dispatch($sqlWalker) .")";
+        return 'UNACCENT('.$this->string->dispatch($sqlWalker).')';
     }
 
     public function parse(\Doctrine\ORM\Query\Parser $parser)
@@ -30,5 +29,4 @@ class Unaccent extends FunctionNode
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
-
 }

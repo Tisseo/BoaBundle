@@ -65,7 +65,8 @@ define([
                         }
                     }
                 });
-                $('#calendar-view').datepicker('setDate', startDate);
+                //$('#calendar-view').datepicker('setDate', startDate);
+                $('#calendar-view').datepicker('setDate', new Date());
                 $('#calendar-view').datepicker('update');
             }
         });

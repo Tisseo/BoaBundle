@@ -3,14 +3,10 @@
 namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Doctrine\Common\Collections\ArrayCollection;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\EndivBundle\Entity\StopArea;
 use Tisseo\EndivBundle\Entity\Datasource;
 use Tisseo\BoaBundle\Form\Type\StopAreaType;
-use Tisseo\BoaBundle\Form\Type\AliasType;
-use Tisseo\BoaBundle\Form\Type\StopAreaTransferType;
 use CrEOF\Spatial\PHP\Types\Geometry\Point;
 
 class StopAreaController extends CoreController
@@ -38,7 +34,8 @@ class StopAreaController extends CoreController
 
     /**
      * Edit
-     * @param integer $stopAreaId
+     *
+     * @param int $stopAreaId
      *
      * Creating/editing StopArea
      */
@@ -52,8 +49,7 @@ class StopAreaController extends CoreController
 
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
         $stopArea = $stopAreaManager->find($stopAreaId);
-        if (empty($stopArea))
-        {
+        if (empty($stopArea)) {
             $stopArea = new StopArea();
             $this->get('tisseo_endiv.datasource_manager')->fill(
                 $stopArea,
@@ -65,15 +61,13 @@ class StopAreaController extends CoreController
             $mainStopArea = false;
             $stops = null;
             $stopsJson = null;
-        }
-        else
-        {
+        } else {
             $linesByStop = $stopAreaManager->getLinesByStop($stopAreaId);
             $usedStops = $stopAreaManager->getUsedStops($stopAreaId);
             $mainStopArea = $stopArea->isMainOfCity();
             $stops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
             $stopsJson = $stopAreaManager->getStopsJson($stopArea);
-            foreach($stopsJson as $key => $stopJson) {
+            foreach ($stopsJson as $key => $stopJson) {
                 $stopsJson[$key]['route'] = $this->generateUrl(
                     'tisseo_boa_stop_edit',
                     array('stopId' => $stopJson['id'])
@@ -96,17 +90,13 @@ class StopAreaController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
+        if ($form->isValid()) {
             $stopArea = $form->getData();
 
-            try
-            {
+            try {
                 $stopAreaId = $stopAreaManager->save($stopArea);
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $stopAreaId = null;
                 $this->addFlashException($e->getMessage());
             }
@@ -141,20 +131,19 @@ class StopAreaController extends CoreController
         $stopArea = $stopAreaManager->find($stopAreaId);
         $transfers = $transferManager->getInternalTransfers($stopArea);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
-        {
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST) {
             $data = json_decode($request->getContent(), true);
             $stopAreaTransferDuration = $data['stopAreaTransferDuration'];
             $transfers = $data['transfers'];
 
             try {
-                if (empty($stopAreaTransferDuration) || !is_numeric($stopAreaTransferDuration) || $stopAreaTransferDuration < 0 || $stopAreaTransferDuration > 60){
+                if (empty($stopAreaTransferDuration) || !is_numeric($stopAreaTransferDuration) || $stopAreaTransferDuration < 0 || $stopAreaTransferDuration > 60) {
                     throw new \Exception($this->get('translator')->trans('tisseo.boa.transfer.error.stop_area_transfer_duration_invalid'));
                 }
 
                 $transferManager->saveInternalTransfers($transfers, $stopArea);
 
-                if ($stopArea->getTransferDuration() !== (int)$stopAreaTransferDuration) {
+                if ($stopArea->getTransferDuration() !== (int) $stopAreaTransferDuration) {
                     $stopArea->setTransferDuration($stopAreaTransferDuration);
                     $stopAreaManager->save($stopArea);
                 }
@@ -195,8 +184,7 @@ class StopAreaController extends CoreController
         $startStops = $stopAreaManager->getStopsOrderedByCode($stopArea, true);
         $transfers = $transferManager->getExternalTransfers($stopArea);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
-        {
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST) {
             $data = json_decode($request->getContent(), true);
 
             try {
@@ -228,7 +216,7 @@ class StopAreaController extends CoreController
         );
     }
 
-        /*
+    /*
      * Create
      * @param integer $stopAreaId
      *
@@ -252,6 +240,7 @@ class StopAreaController extends CoreController
                 array('stopAreaId' => $stopAreaId)
             );
             $response->setStatusCode(500);
+
             return $response;
         }
 
@@ -263,9 +252,10 @@ class StopAreaController extends CoreController
         );
     }
 
-/**
+    /**
      * EditAliases
-     * @param integer $stopAreaId
+     *
+     * @param int $stopAreaId
      *
      * the pseudo-form data is sent as AJAX POST request and is
      * decoded then will be used for database update.
@@ -276,8 +266,7 @@ class StopAreaController extends CoreController
 
         $stopArea = $this->get('tisseo_endiv.stop_area_manager')->find($stopAreaId);
 
-        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST)
-        {
+        if ($request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST) {
             $aliases = json_decode($request->getContent(), true);
 
             try {
@@ -353,8 +342,7 @@ class StopAreaController extends CoreController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                try
-                {
+                try {
                     $stopArea->setTheGeom(
                         new Point(
                             $form->get('x')->getData(),
@@ -365,9 +353,7 @@ class StopAreaController extends CoreController
                     $stopAreaManager->save($stopArea);
 
                     $this->addFlash('success', 'tisseo.flash.success.edited');
-                }
-                catch(\Exception $e)
-                {
+                } catch (\Exception $e) {
                     $this->addFlashException($e->getMessage());
                 }
 
@@ -386,6 +372,5 @@ class StopAreaController extends CoreController
                 'theGeom' => $stopArea->getTheGeom()
             )
         );
-
     }
 }

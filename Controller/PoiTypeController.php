@@ -13,6 +13,7 @@ class PoiTypeController extends CoreController
      * List
      *
      * Listing all PoiTypes
+     *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
     public function listAction()
@@ -36,9 +37,11 @@ class PoiTypeController extends CoreController
 
     /**
      * Edit
-     * @param integer $poiTypeId
+     *
+     * @param int $poiTypeId
      *
      * Creating/editing PoiType
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, $poiTypeId)
@@ -48,8 +51,9 @@ class PoiTypeController extends CoreController
         $poiTypeManager = $this->get('tisseo_endiv.poi_type_manager');
         $poiType = $poiTypeManager->find($poiTypeId);
 
-        if (empty($poiType))
+        if (empty($poiType)) {
             $poiType = new PoiType();
+        }
 
         $form = $this->createForm(
             new PoiTypeType(),

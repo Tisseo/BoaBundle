@@ -37,4 +37,3 @@ class RouteDuplicateType extends AbstractType
         return 'boa_route_duplicate';
     }
 }
-

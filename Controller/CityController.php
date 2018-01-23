@@ -14,6 +14,7 @@ class CityController extends CoreController
 {
     /**
      * Searching for city
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function searchAction()
@@ -36,6 +37,7 @@ class CityController extends CoreController
      * Create City
      *
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
@@ -53,21 +55,15 @@ class CityController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
-
+        if ($form->isValid()) {
+            try {
                 $this->get('tisseo_endiv.city_manager')->save($form->getData());
                 $this->addFlash('success', 'tisseo.flash.success.created');
-
-            } catch(\Exception $e) {
-
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
-
             }
 
-            return $this->redirectToRoute( 'tisseo_boa_city_search');
+            return $this->redirectToRoute('tisseo_boa_city_search');
         }
 
         return $this->render(
@@ -77,7 +73,6 @@ class CityController extends CoreController
                 'form' => $form->createView()
             )
         );
-
     }
 
     /**
@@ -85,6 +80,7 @@ class CityController extends CoreController
      *
      * @param Request $request
      * @param $stopId
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, $cityId)
@@ -111,15 +107,11 @@ class CityController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $cityManager->save($form->getData());
                 $this->addFlash('success', 'tisseo.flash.success.edited');
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlashException($e->getMessage());
             }
 
@@ -149,6 +141,7 @@ class CityController extends CoreController
     /**
      * @param Request $request
      * @param $cityId
+     *
      * @return mixed
      */
     public function listStopAreaAction(Request $request, $cityId)
@@ -161,18 +154,17 @@ class CityController extends CoreController
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 
         $length = $request->get('length');
-        $length = $length && ($length!=-1)?$length:0;
+        $length = $length && ($length != -1) ? $length : 0;
 
         $start = $request->get('start');
-        $start = $length?($start && ($start!=-1)?$start:0)/$length:0;
+        $start = $length ? ($start && ($start != -1) ? $start : 0) / $length : 0;
 
         $order = $request->get('order');
         $orderParam = array();
         $columnList = $this->container->getParameter('tisseo_boa.datatable_views')['city_edit'];
         if (!is_null($order) && is_array($order)) {
-
             foreach ($order as $key => $orderby) {
-                foreach($columnList as $index => $columnDef) {
+                foreach ($columnList as $index => $columnDef) {
                     if ($columnDef['index'] == $orderby['column']) {
                         $orderParam[] = [
                             'columnName' => $columnDef['colDbName'],
@@ -182,20 +174,18 @@ class CityController extends CoreController
                     }
                 }
             }
-        }
-        else {
+        } else {
             $columnName = $columnList[0]['colDbName'];
             $orderParam[] = array('columnName' => $columnName, 'orderDir' => 'asc');
         }
         $search = $request->get('search');
-        $search = (empty($search['value']))?[]:['longName' => $search['value']];
+        $search = (empty($search['value'])) ? [] : ['longName' => $search['value']];
 
         $data = $stopAreaManager->findByCityId($cityId, $search, $orderParam, $length, $start);
         $dataTotal = $stopAreaManager->findByCountResult($cityId, $search);
 
         return $this->createJsonResponse($data, $dataTotal);
     }
-
 
     public function deleteStopAreaAction(Request $request, $stopAreaId)
     {
@@ -207,12 +197,12 @@ class CityController extends CoreController
             $stopArea = $stopAreaManager->find($stopAreaId);
 
             if ($stopArea->getStops()->count() > 0) {
-                $this->addFlash('error','tisseo.boa.city.message.error.stop_exist');
+                $this->addFlash('error', 'tisseo.boa.city.message.error.stop_exist');
             } else {
                 $stopAreaManager->delete($stopArea);
-                $this->addFlash('success','tisseo.boa.city.message.success.stoparea_delete');
+                $this->addFlash('success', 'tisseo.boa.city.message.success.stoparea_delete');
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlashException($e->getMessage());
         }
 
@@ -220,14 +210,16 @@ class CityController extends CoreController
             'tisseo_boa_city_edit',
             array('cityId' => $stopArea->getCity()->getId())
         );
-
     }
 
     /**
      * Prepare data for inject it into "datatable" js object
+     *
      * @param $data array
      * @param $dataTotal int
+     *
      * @return JsonResponse
+     *
      * @throws \Exception
      */
     private function createJsonResponse($data, $dataTotal)
@@ -241,21 +233,20 @@ class CityController extends CoreController
         $stopAreaManager = $this->get('tisseo_endiv.stop_area_manager');
 
         $stopAreaIds = array();
-        foreach($data as $key => $item) {
+        foreach ($data as $key => $item) {
             $stopAreaIds[] = $item->getId();
         }
 
         $linesByStopArea = $stopAreaManager->getLinesByStopAreas($stopAreaIds);
 
-        foreach($data as $key => $item) {
-
+        foreach ($data as $key => $item) {
             $result = array();
             $longName = $this->renderView(
                 'TisseoBoaBundle:City:partial_list_col_name.html.twig', [
                     'stopArea' => $item
                 ]
             );
-            $stopCount =  $item->getStops()->count();
+            $stopCount = $item->getStops()->count();
 
             $stopAreaId = $item->getId();
             $lines = (array_key_exists($stopAreaId, $linesByStopArea)) ? $linesByStopArea[$stopAreaId] : array();
@@ -275,7 +266,7 @@ class CityController extends CoreController
                 } else {
                     $btnAction = null;
                 }
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 if (!$e instanceof AccessDeniedException) {
                     throw new \Exception($e->getMessage());
                 }

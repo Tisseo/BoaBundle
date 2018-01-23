@@ -1,4 +1,5 @@
 <?php
+
 namespace Tisseo\BoaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -8,7 +9,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityRepository;
 use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
-use Tisseo\Form\Type\TripDatasource;
 
 class TripCreateType extends AbstractType
 {
@@ -18,14 +18,14 @@ class TripCreateType extends AbstractType
     private function buildTransformers($em)
     {
         $this->calendarTransformer = new EntityToIntTransformer($em);
-        $this->calendarTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Calendar");
-        $this->calendarTransformer->setEntityRepository("TisseoEndivBundle:Calendar");
-        $this->calendarTransformer->setEntityType("calendar");
+        $this->calendarTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\Calendar');
+        $this->calendarTransformer->setEntityRepository('TisseoEndivBundle:Calendar');
+        $this->calendarTransformer->setEntityType('calendar');
 
         $this->routeTransformer = new EntityToIntTransformer($em);
-        $this->routeTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Route");
-        $this->routeTransformer->setEntityRepository("TisseoEndivBundle:Route");
-        $this->routeTransformer->setEntityType("route");
+        $this->routeTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\Route');
+        $this->routeTransformer->setEntityRepository('TisseoEndivBundle:Route');
+        $this->routeTransformer->setEntityType('route');
     }
 
     /**
@@ -56,10 +56,10 @@ class TripCreateType extends AbstractType
                         'required' => true,
                         'class' => 'TisseoEndivBundle:Trip',
                         'property' => 'name',
-                        'query_builder' => function(EntityRepository $er) use ($trip) {
+                        'query_builder' => function (EntityRepository $er) use ($trip) {
                             return $er->createQueryBuilder('t')
-                                ->where("IDENTITY(t.route) = :routeId")
-                                ->andWhere("t.isPattern = true")
+                                ->where('IDENTITY(t.route) = :routeId')
+                                ->andWhere('t.isPattern = true')
                                 ->setParameter('routeId', $trip->getRoute()->getId());
                         }
                     )

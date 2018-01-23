@@ -25,15 +25,12 @@ class StopAccessibilityController extends CoreController
         );
 
         $form->handleRequest($request);
-        if ($form->isValid())
-        {
-            try
-            {
+        if ($form->isValid()) {
+            try {
                 $stopAccessibility = $form->getData();
                 $this->get('tisseo_endiv.stop_manager')->saveStopAccessibility($stopId, $stopAccessibility);
                 $this->get('session')->getFlashBag()->add('success', 'stop_accessibility.created');
-            }
-            catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->get('session')->getFlashBag()->add('danger', $e->getMessage());
             }
 

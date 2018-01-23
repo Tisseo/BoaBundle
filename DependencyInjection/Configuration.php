@@ -76,6 +76,13 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
+            ->arrayNode('configuration')
+                ->children()
+                    ->arrayNode('defaultColors')
+                        ->prototype('scalar')->end()
+                    ->end()
+                ->end()
+            ->end()
         ->end();
 
         return $treeBuilder;

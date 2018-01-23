@@ -35,7 +35,8 @@ class PhysicalModeController extends CoreController
 
     /**
      * Edit
-     * @param integer $physicalModeId
+     *
+     * @param int $physicalModeId
      *
      * Creating/editing PhysicalMode
      */

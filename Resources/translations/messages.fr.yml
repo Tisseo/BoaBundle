@@ -38,6 +38,7 @@ tisseo:
                 accessibility: Suivi accessibilité
                 poi: Poi par ligne
                 stop_locked: Arrêts verrouillés
+                offer_by_line: Offre par ligne
         physical_mode:
             title:
                 list: Modes de transport
@@ -273,10 +274,10 @@ tisseo:
                 inaccessibility: Ajout d'inaccessibilité
                 create: Créer un point d'arrêt
                 edit: Modifier un point d'arrêt
-                close: Clôturer un point d'arrêt
+                close: Clore un point d'arrêt
             message:
                 no_stop_selected: Vous n'avez pas sélectionné de point d'arrêt valide.
-                unclosable: Cette propriété de point d'arrêt n'a pu être clôturée.
+                unclosable: Cette propriété de point d'arrêt n'a pas pu être close.
                 no_accessibility_calendar: Il n'y a pas de calendrier d'accessibilité associé à ce point d'arrêt
                 no_lines: Il n'y a actuellement aucune offre passant par ce point d'arrêt
                 no_phantoms: Cet arrêt ne possède aucun arrêt fantôme
@@ -303,7 +304,7 @@ tisseo:
                 external_transfert: Transferts extra-zone
                 alias: Alias
                 geometries: Géométries
-                toggle_closed_stops: Afficher les points d'arrêts clôturés
+                toggle_closed_stops: Afficher les points d'arrêts clos
                 create: Créer une zone d'arrêt
             message:
                 no_stop_area_selected: Vous n'avez pas sélectionné de zone d'arrêt valide.
@@ -364,7 +365,7 @@ tisseo:
                 create: Créer une zone TAD
                 edit: Consulter/Modifier
                 delete: Supprimer
-                toggle_closed_stops: Afficher les points d'arrêts cloturés
+                toggle_closed_stops: Afficher les points d'arrêts clos
             label:
                 name: Nom
                 comments: Commentaires
@@ -411,7 +412,8 @@ tisseo:
                 min_date_end: La date de début doit être supérieure à la date de fin de la dernière propriété : %date%.
             action:
                 create: Nouvelle propriété de point d'arrêt
-
+            message:
+                odt_stop_close: Cet arrêt appartient à la zone TAD %odt_area%, ne pas oublier de le clore également dans cette zone.|Cet arrêt appartient aux zones TAD %odt_area%, ne pas oublier de le clore également dans ces zones.
         trip:
             title:
                 list: Services
@@ -567,3 +569,18 @@ tisseo:
                     poi: Points d'intérêts
                 validation:
                     line_version: Vous devez sélectionner une offre pour pouvoir consulter les POI
+            offer_by_line:
+                title: Offre par ligne
+                label:
+                    line_version: Offre
+                    month: Mois
+                    view: Consulter
+                    name: Route
+                    departure: Départ
+                    arrival: Arrivée
+                    show_graph: Voir les graphiques
+                    reset: Réinitialiser le jour et l'heure.
+                    select_all: Sél./Désel. tout.
+                message:
+                    no_result: Il n'y a aucun résultat
+                    cache: Résultat en provenance du cache

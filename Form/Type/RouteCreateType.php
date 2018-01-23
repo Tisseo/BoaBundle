@@ -6,7 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tisseo\CoreBundle\Form\DataTransformer\EntityToIntTransformer;
-use Tisseo\BoaBundle\Form\Type\RouteDatasource;
 use Tisseo\EndivBundle\Entity\Route;
 
 class RouteCreateType extends AbstractType
@@ -16,9 +15,9 @@ class RouteCreateType extends AbstractType
     private function buildTransformers($em)
     {
         $this->lineVersionTransformer = new EntityToIntTransformer($em);
-        $this->lineVersionTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\LineVersion");
-        $this->lineVersionTransformer->setEntityRepository("TisseoEndivBundle:LineVersion");
-        $this->lineVersionTransformer->setEntityType("lineVersion");
+        $this->lineVersionTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\LineVersion');
+        $this->lineVersionTransformer->setEntityRepository('TisseoEndivBundle:LineVersion');
+        $this->lineVersionTransformer->setEntityType('lineVersion');
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

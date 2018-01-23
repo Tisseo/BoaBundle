@@ -5,9 +5,7 @@ namespace Tisseo\BoaBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Tisseo\EndivBundle\Entity\StopHistory;
-use CrEOF\Spatial\PHP\Types\Geometry\Point;
 
 class StopHistoryType extends AbstractType
 {

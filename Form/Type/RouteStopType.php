@@ -15,14 +15,14 @@ class RouteStopType extends AbstractType
     private function buildTransformers($em)
     {
         $this->waypointTransformer = new EntityToIntTransformer($em);
-        $this->waypointTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Waypoint");
-        $this->waypointTransformer->setEntityRepository("TisseoEndivBundle:Waypoint");
-        $this->waypointTransformer->setEntityType("Waypoint");
+        $this->waypointTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\Waypoint');
+        $this->waypointTransformer->setEntityRepository('TisseoEndivBundle:Waypoint');
+        $this->waypointTransformer->setEntityType('Waypoint');
 
         $this->routeTransformer = new EntityToIntTransformer($em);
-        $this->routeTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Route");
-        $this->routeTransformer->setEntityRepository("TisseoEndivBundle:Route");
-        $this->routeTransformer->setEntityType("Route");
+        $this->routeTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\Route');
+        $this->routeTransformer->setEntityRepository('TisseoEndivBundle:Route');
+        $this->routeTransformer->setEntityType('Route');
     }
 
     /**

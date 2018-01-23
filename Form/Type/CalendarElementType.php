@@ -15,9 +15,9 @@ class CalendarElementType extends AbstractType
     private function buildTransformers($em)
     {
         $this->calendarTransformer = new EntityToIntTransformer($em);
-        $this->calendarTransformer->setEntityClass("Tisseo\\EndivBundle\\Entity\\Calendar");
-        $this->calendarTransformer->setEntityRepository("TisseoEndivBundle:Calendar");
-        $this->calendarTransformer->setEntityType("Calendar");
+        $this->calendarTransformer->setEntityClass('Tisseo\\EndivBundle\\Entity\\Calendar');
+        $this->calendarTransformer->setEntityRepository('TisseoEndivBundle:Calendar');
+        $this->calendarTransformer->setEntityType('Calendar');
     }
 
     /**
