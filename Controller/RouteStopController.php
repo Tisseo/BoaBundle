@@ -57,7 +57,8 @@ class RouteStopController extends CoreController
             array(
                 'form' => $form->createView(),
                 'rank' => $rank,
-                'wayArea' => ($route->getWay() == Route::WAY_AREA)
+                'wayArea' => ($route->getWay() == Route::WAY_AREA),
+                'lineVersion' => $route->getLineVersion(),
             )
         );
     }

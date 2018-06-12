@@ -17,7 +17,8 @@ class JsonController extends CoreController
         $this->isAjax($request, Request::METHOD_POST);
 
         $term = $request->request->get('term');
-        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, null, true);
+        $lineVersion = $request->request->get('lineversion');
+        $data = $this->get('tisseo_endiv.stop_manager')->findStopsLike($term, null, true, $lineVersion);
 
         return $this->prepareJsonResponse($data);
     }

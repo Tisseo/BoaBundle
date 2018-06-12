@@ -4,7 +4,7 @@
 {{ form_errors(form) }}
 <td>{{ form_widget(form.rank) }}</td>
 <td></td>
-<td><input type="text" id="stop-search" class="form-control input-sm" data-url="{% if wayArea %}{{ path('tisseo_boa_json_stop_odt_area') }}{% else %}{{ path('tisseo_boa_json_stop') }}{% endif %}"></td>
+<td><input type="text" id="stop-search" class="form-control input-sm" data-lineversion="{{ lineVersion.id }}" data-url="{% if wayArea %}{{ path('tisseo_boa_json_stop_odt_area') }}{% else %}{{ path('tisseo_boa_json_stop') }}{% endif %}"></td>
 <td></td>
 <td>{{ form_widget(form.pickup) }}</td>
 <td>{{ form_widget(form.dropOff) }}</td>
