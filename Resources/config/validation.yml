@@ -99,6 +99,8 @@ Tisseo\EndivBundle\Entity\StopHistory:
             - Tisseo\CoreBundle\Validator\Constraints\GreaterThanField:
                 groups: [close]
                 field: startDate
+            - Tisseo\BoaBundle\Validator\Constraints\UnusedStop:
+                groups: [close]
     constraints:
         - Callback:
             methods: [minStartDate]

@@ -50,7 +50,8 @@ tisseo:
                 co2_emission: CO2 g/km/voyageur
             action:
                 create: Créer un mode de transport
-
+        error:
+            unused_stop: Cet arrêt est utilisé par au moins une offre de transport après la date de cloture.
         accessibility_mode:
             title:
                 list: Modes d'accessibilité
