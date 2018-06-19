@@ -2,10 +2,11 @@ define(['jquery', 'jquery_ui_sortable', 'jquery_ui_autocomplete', 'fosjsrouting'
     var init_autocomplete = function() {
         $('#route-stops-list #stop-search').autocomplete({
             source: function (request, response) {
+                var lineVersion = $(this.element).data('lineversion') || null;
                 $.ajax({
                     url: $(this.element).data('url'),
                     dataType: 'json',
-                    data : { term: request.term },
+                    data : { term: request.term, lineversion: lineVersion },
                     type: 'POST',
                     success: function(data) {
                         if (data.length > 0) {

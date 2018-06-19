@@ -48,3 +48,9 @@ services:
         arguments: ['@tisseo_endiv.line_version_manager']
         tags:
             - { name: form.type, alias: boa_offer_by_line_type }
+
+    tisseo_boa.validator.unused_stop:
+        class: 'Tisseo\BoaBundle\Validator\Constraints\UnusedStopValidator'
+        arguments: ['@doctrine.orm.endiv_entity_manager']
+        tags:
+            -  { name: validator.constraint_validator, alias: tisseo_boa.validator.unused_stop }
