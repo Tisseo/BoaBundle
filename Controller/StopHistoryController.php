@@ -110,8 +110,6 @@ class StopHistoryController extends CoreController
             );
         }
 
-
-
         $stopHistory = $stop->getLatestStopHistory();
 
         $form = $this->createForm(
@@ -126,9 +124,7 @@ class StopHistoryController extends CoreController
         );
 
         $form->handleRequest($request);
-
         if ($form->isValid()) {
-            return false;
             try {
                 $stopManager->saveStopHistory($stopHistory);
                 $this->addFlash('success', 'tisseo.flash.success.closed');
