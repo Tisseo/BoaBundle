@@ -408,6 +408,7 @@ tisseo:
                 code: Code
                 lines: Lignes
                 mastered_by: Arrêt fantôme de l'arrêt : %stop%
+                tts_name: TTS
             validation:
                 min_date: La date de début doit être au minimum celle de demain : %date%.
                 min_date_end: La date de début doit être supérieure à la date de fin de la dernière propriété : %date%.
