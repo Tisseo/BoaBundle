@@ -49,7 +49,13 @@
                     {% endfor %}
                 </td>
                 <td>{{ lineVersion.startDate.date | date('d/m/Y') }}</td>
-                <td>{{ lineVersion.plannedEndDate.date | date('d/m/Y') }}</td>
+                <td>
+                    {%  if lineVersion.endDate is null %}
+                    {{ lineVersion.plannedEndDate.date | date('d/m/Y') }}
+                    {% else %}
+                    {{ lineVersion.endDate.date | date('d/m/Y') }}
+                    {% endif %}
+                </td>
                 <td>
                     {% if (is_granted(['BUSINESS_MANAGE_ROUTES', 'BUSINESS_VIEW_ROUTES'])) %}
                         {% if timecardViewAvailable and is_granted('BUSINESS_MANAGE_ROUTES') %}
