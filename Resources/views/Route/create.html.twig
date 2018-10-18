@@ -63,19 +63,4 @@
         <span class="glyphicon glyphicon-pencil"></span> {{ 'tisseo.global.save'|trans }}
     </button>
     {{ form_end(form) }}
-
-    <script>
-        require(['jquery'], function($) {
-            $(document).ready(function () {
-                $(".way-select").change(function() {
-                    var way = $(this).val();
-
-                    if (way === "{{ constant('Tisseo\\EndivBundle\\Entity\\Route::WAY_FORWARD') }}")
-                        $(".direction-input").val("{{ route.lineVersion.forwardDirection|raw }}");
-                    else if (way === "{{ constant('Tisseo\\EndivBundle\\Entity\\Route::WAY_BACKWARD') }}")
-                        $(".direction-input").val("{{ route.lineVersion.backwardDirection|raw }}");
-                });
-            });
-        });
-    </script>
 {% endblock %}

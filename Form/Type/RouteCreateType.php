@@ -54,9 +54,6 @@ class RouteCreateType extends AbstractType
                         Route::WAY_AREA => 'tisseo.boa.route.label.ways.area'
                     ),
                     'required' => false,
-                    'attr' => array(
-                        'class' => 'way-select'
-                    )
                 )
             )
             ->add(
