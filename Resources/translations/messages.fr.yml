@@ -454,6 +454,8 @@ tisseo:
             message:
                 all_deleted: Les services ont tous été supprimés
                 select_deleted: Les services sélectionnés ont tous été supprimés
+            exception:
+                not_found: Le service n'a pas été trouvé.
 
         trip_calendar:
             label:

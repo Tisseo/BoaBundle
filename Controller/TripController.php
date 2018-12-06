@@ -119,7 +119,15 @@ class TripController extends CoreController
         ));
 
         $tripManager = $this->get('tisseo_endiv.trip_manager');
-        $trip = $tripManager->find($tripId);
+        $trip = $tripManager->getTripWithStops($tripId);
+
+        if (!$trip instanceof Trip) {
+            $this->addFlash('danger', 'tisseo.boa.trip.exception.not_found');
+
+            return $this->redirectToRoute(
+                'tisseo_boa_homepage'
+            );
+        }
 
         $disabled = !$this->isGranted('BUSINESS_MANAGE_ROUTES');
         $form = $this->createForm(
