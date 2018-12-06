@@ -104,7 +104,7 @@
                 <tr>
                     <td>{{ stopTime.routeStop.rank }}</td>
                     <td>
-                        {% if not stopTime.routeStop.isOdtAreaRouteStop %}
+                        {% if (not stopTime.routeStop.isOdtAreaRouteStop and stopTime.routeStop.waypoint.stop.stopArea is not null) %}
                             <a target="_blank" href="{{ path('tisseo_boa_city_edit', {'cityId': stopTime.routeStop.waypoint.stop.stopArea.city.id}) }}">
                                 {{ stopTime.routeStop.waypoint.stop.stopArea.city.name }}
                             </a>
@@ -115,7 +115,7 @@
                             <a target="_blank" href="{{ path('tisseo_boa_odt_area_edit', {'odtAreaId': stopTime.routeStop.waypoint.odtArea.id}) }}">
                                 {{ stopTime.routeStop.waypoint.odtArea.name }}
                             </a>
-                        {% else %}
+                        {% elseif stopTime.routeStop.waypoint.stop.stopArea is not null %}
                             <a target="_blank" href="{{ path('tisseo_boa_stop_area_edit', {'stopAreaId': stopTime.routeStop.waypoint.stop.stopArea.id}) }}">
                                 {{ stopTime.routeStop.waypoint.stop.stopArea.shortName }}
                             </a>
