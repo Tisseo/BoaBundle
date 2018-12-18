@@ -152,16 +152,18 @@
             <thead>
                 <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.short_name'|trans }}</th>
                 <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.long_name'|trans }}</th>
+                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.tts_name'|trans }}</th>
                 <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.start_date'|trans }}</th>
                 <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.end_date'|trans }}</th>
-                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.x'|trans }}</th>
-                <th class="col-md-2">{{ 'tisseo.boa.stop_history.label.y'|trans }}</th>
+                <th class="col-md-1">{{ 'tisseo.boa.stop_history.label.x'|trans }}</th>
+                <th class="col-md-1">{{ 'tisseo.boa.stop_history.label.y'|trans }}</th>
             </thead>
             <tbody>
             {% for stopHistory in stopHistories %}
             <tr>
                 <td>{{ stopHistory.shortName }}</td>
                 <td>{{ stopHistory.longName }}</td>
+                <td>{{ stopHistory.ttsName }}</td>
                 <td>{{ stopHistory.startDate|date("d/m/Y") }}</td>
                 <td>{% if stopHistory.endDate is not empty %}{{ stopHistory.endDate|date("d/m/Y") }}{% endif %}</td>
                 <td>{{ stopHistory.theGeom.x }}</td>

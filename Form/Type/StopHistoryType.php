@@ -33,6 +33,14 @@ class StopHistoryType extends AbstractType
                 )
             )
             ->add(
+                'ttsName',
+                'text',
+                array(
+                    'label' => 'tisseo.boa.stop_history.label.tts_name',
+                    'required' => false
+                )
+            )
+            ->add(
                 'startDate',
                 'tisseo_datepicker',
                 array(
