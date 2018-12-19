@@ -5,7 +5,6 @@ namespace Tisseo\BoaBundle\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use CanalTP\SamEcoreUserManagerBundle\Entity\User;
 use CanalTP\SamCoreBundle\DataFixtures\ORM\RoleTrait;
 
 class FixturesRole extends AbstractFixture implements OrderedFixtureInterface
