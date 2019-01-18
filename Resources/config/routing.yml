@@ -471,17 +471,16 @@ tisseo_boa_monitoring_offer_by_line:
     path: /monitoring/offer
     defaults: { _controller: TisseoBoaBundle:OfferMonitoring:search }
 
-tisseo_boa_monitoring_offer_by_date_json:
-    path: /monitoring/offer/json/{month}/{year}
+tisseo_boa_monitoring_offer_by_line_json:
+    path: /monitoring/offer/json/{lineId}
     defaults: { _controller: TisseoBoaBundle:OfferMonitoring:searchLineVersion }
     requirements:
-        month: \d+
-        year: \d+
+        lineId: \d+
     options:
         expose: true
 tisseo_boa_monitoring_generate_graph:
     path: /monitoring/graph
-    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:generateGraph }
+    defaults: { _controller: TisseoBoaBundle:OfferMonitoring:genGraph }
     methods: [POST]
     options:
         expose: true

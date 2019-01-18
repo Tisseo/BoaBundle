@@ -11,25 +11,19 @@
     <div class="row">
         {{ form_start(form) }}
         <div class="col-md-2 col-sm-4 ">
-            {{ form_widget(form.month.date.day, {'attr': {'class': 'hide'}}) }}
-            {{ form_widget(form.month.time.hour, {'attr': {'class': 'hide'}}) }}
-            {{ form_widget(form.month.time.minute, {'attr': {'class': 'hide'}}) }}
-            {{ form_row(form.month) }}
+            {{ form_row(form.line) }}
         </div>
         <div class="col-md-4 col-sm-4">
             {{ form_row(form.offer) }}
         </div>
         <div class="col-md-6 col-sm-4">
             <div class="boa-inline-button">
-            <button type="button" class="btn btn-default btn-submit ajax_dep_element">
-                {{ 'tisseo.boa.monitoring.offer_by_line.label.view' | trans }}
-            </button>
+            <input type="submit"
+                   class="btn btn-default btn-submit ajax_dep_element"
+                   value=" {{ 'tisseo.boa.monitoring.offer_by_line.label.view' | trans }}" />
             {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
             <img src="{{  asset_url }}" id="loading-indicator" style="display: none;" />
             {% endimage %}
-            </div>
-            <div>
-                {{ form_row(form.reset) }}
             </div>
         </div>
         {{ form_rest(form) }}
@@ -43,118 +37,99 @@
                     <th scope="col" class="col-md-2" colspan="2">
                         <div class="checkbox">
                             <label for="ckb-route-all">
-                                <input type="checkbox" id="ckb-route-all"> {{ 'tisseo.boa.monitoring.offer_by_line.label.select_all' | trans }}
+                                <input type="checkbox" id="ckb-route-all" checked> {{ 'tisseo.boa.monitoring.offer_by_line.label.select_all' | trans }}
                             </label>
                         </div>
                     </th>
                     <th scope="col" class="col-md-1">{{ 'tisseo.boa.monitoring.offer_by_line.label.name' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.departure' | trans }}</th>
                     <th scope="col" class="col-md-3">{{ 'tisseo.boa.monitoring.offer_by_line.label.arrival' | trans }}</th>
-                    <th scope="col" class="col-md-1 label-control text-center">
+                    <th scope="col" class="col-md-1 label-control text-center month_year">
                         <div>
-                            {{ form.vars.value.month|localizeddate('none', 'none', app.request.locale, null, "MMM Y") }}
+                            MONTH / YEAR
                         </div>
-                        <a href="#" class="previous round" data-value="{{ navDate.previous_month }}">&#8249;</a>
-                        <a href="#" class="next round" data-value="{{ navDate.next_month }}">&#8250;</a>
+                        <a href="#" class="previous round" data-value="">&#8249;</a>
+                        <a href="#" class="next round" data-value="">&#8250;</a>
                     </th>
-                    <th scope="col" class="col-md-1 label-control text-center">
-                        <div>{{ form.vars.value.month|date('d/m/Y') }}</div>
-                        <a href="#" class="previous round" data-value="{{ navDate.previous_day }}">&#8249;</a>
-                        <a href="#" class="next round" data-value="{{ navDate.next_day }}">&#8250;</a>
-                    </th>
-                    <th scope="col" class="col-md-1 label-control text-center">
-                        <div>{{ form.vars.value.month|date('H') ~ ' h' }}</div>
-                        <a href="#" class="previous round" data-value="{{ navDate.previous_hour }}">&#8249;</a>
-                        <a href="#" class="next round" data-value="{{ navDate.next_hour }}">&#8250;</a>
+                    <th scope="col" class="col-md-1 label-control text-center day">
+                        <div>
+                            DAY
+                        </div>
+                        <a href="#" class="previous round" data-value="">&#8249;</a>
+                        <a href="#" class="next round" data-value="">&#8250;</a>
                     </th>
                 </thead>
-                <tbody>
-                {%  for result in results %}
-                    {% if result.properties.checked == true %}
-                        {% set checked='checked' %}
-                        {% set activeButtonGraph = true %}
-                    {% else %}
-                        {% set checked='' %}
-                    {% endif %}
-                    <tr>
-                        <th scope="row">
-                            <input type="checkbox" class="ckb-route ckb-route-{{ loop.index }}"
-                                   value="{{ result|json_encode() }}"
-                                   {% if result.properties.checked == true %}checked{% endif %}
-                            />
-                        </th>
-                        <th scope="color">
-                            <div class="input-group colorpicker-component color-picker" title="Using input value">
-                                <input type="text" class="form-control"
-                                       value="{% if result.properties.color is not null %}{{ result.properties.color }}{% else %}#DD0F20{% endif %}"
-                                       data-route="{{ result.name }}"
-                                       data-index="{{ loop.index }}"
-                                />
-                                <span class="input-group-addon"><i></i></span>
-                            </div>
-                        </th>
-                        <td>{{ result.name }}</td>
-                        <td>{{ result.departure }}</td>
-                        <td>{{ result.arrival }}</td>
-                        <td>{% if result.monthCached %}<span
-                                    class="label label-info"
-                                    data-toggle="tooltip"
-                                    title="{{ 'tisseo.boa.monitoring.offer_by_line.message.cache'|trans }}">c</span>
-                            {% endif %}{{ result.month }}</td>
-                        <td>{{ result.day }}</td>
-                        <td>{{ result.hour }}</td>
-                    <tr>
-                {% if loop.last %}
+                <tbody class="routes">
+
+                </tbody>
                 <tfoot>
-                    <td colspan="8">
-                        <button
-                            class="btn btn-default generate-graph"
-                            {% if activeButtonGraph is not defined %}disabled{% endif %}
-                        >
-                            {{ 'tisseo.boa.monitoring.offer_by_line.label.show_graph'|trans }}
-                        </button>
-                        {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
-                        <img src="{{  asset_url }}" id="loading-indicator-graph" style="display: none;" />
-                        {% endimage %}
-                    </td>
+                    <tr>
+                        <td colspan="7">
+                            {% image '@TisseoCoreBundle/Resources/public/images/ajax-loader.gif' %}
+                            <img src="{{  asset_url }}" id="loading-indicator-graph" style="display: none;" />
+                            {% endimage %}
+                        </td>
+                    </tr>
                 </tfoot>
-                {% endif %}
-                {% else %}
-                <tr>
-                    <td colspan="7">{{ 'tisseo.boa.monitoring.offer_by_line.message.no_result'|trans }}</td>
-                <tr>
-                {% endfor %}
+
             </table>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-2 col-md-offset-10 text-right control-graph hide">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default active btn-display">
-                        <input type="radio" name="options" data-type="grid" autocomplete="off" checked> <span class="glyphicon glyphicon-th-large"></span>
-                    </label>
-                    <label class="btn btn-default btn-display">
-                        <input type="radio" name="options" data-type="list" autocomplete="off"> <span class="glyphicon glyphicon-align-justify"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6 chart">
-                <canvas id="chart_month"></canvas>
-            </div>
-            <div class="col-md-6 chart">
-                <canvas id="chart_hour"></canvas>
-            </div>
+        <div id="monthGraph" class="col-md-6 chart">
+            <canvas id="chart_month"></canvas>
+        </div>
+
+        <div id="dayGraph" class="col-md-6 chart">
+            <canvas id="chart_hour"></canvas>
         </div>
     </div>
     {% endif %}
+
+    <!-- Template used by js function.
+    :var: are replaced by the function.
+    This template is used for display the routes.
+    -->
+    <table class="boa-js-template" role="template">
+        <tr class="model">
+            <th scope="row">
+                <input type="checkbox" class="ckb-route ckb-route-:index:"
+                       value=":result:"
+                       :checked:
+                />
+            </th>
+            <th scope="color">
+                <div class="input-group colorpicker-component color-picker" title="Using input value">
+                    <input type="text" class="form-control"
+                           value=":color_value:"
+                           data-route=":route_id:"
+                           data-index=":index:"
+                           data-trips=":trips:"
+                           data-trip_month=":trips_month:"
+                    />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+            </th>
+            <td>:route_name:</td>
+            <td>:route_start:</td>
+            <td>:route_end:</td>
+            <td>:route_number_month:</td>
+            <td>:route_number:</td>
+        <tr>
+    </table>
+    <!-- End template -->
 {% endblock %}
 
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        require(['boa/monitoring/offer/search']);
-        require(['boa/monitoring/offer/graph']);
+        require(['boa/monitoring/offer/search'], function(search) {
+                search.init({
+                  'results' : {% if results %}{{ results|raw }}{% else %}''{% endif %},
+                  'strNoResult': '{{ 'tisseo.boa.monitoring.offer_by_line.message.no_result'|trans }}',
+                  'defaultColors': '{{ defaultColors|raw }}'
+                });
+        });
     </script>
 {% endblock %}

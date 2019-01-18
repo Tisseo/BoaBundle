@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tisseo\EndivBundle\Entity\PhysicalMode;
+use Tisseo\EndivBundle\Services\LineManager;
 use Tisseo\EndivBundle\Services\LineVersionManager;
 
 class OfferByLineType extends AbstractType
@@ -18,14 +19,21 @@ class OfferByLineType extends AbstractType
      */
     private $lvm;
 
+  /**
+   * @var LineManager
+   */
+    private $lm;
+
     /**
      * OfferByLineType constructor.
      *
-     * @param \Tisseo\EndivBundle\Services\LineVersionManager $lvm
+     * @param LineVersionManager $lvm
+     * @param LineManager $lm
      */
-    public function __construct(LineVersionManager $lvm)
+    public function __construct(LineVersionManager $lvm, LineManager $lm)
     {
         $this->lvm = $lvm;
+        $this->lm = $lm;
     }
 
     /**
@@ -34,10 +42,27 @@ class OfferByLineType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $currentDate = new \Datetime('now');
+        /*$currentDate = new \Datetime('now');
         $currentDate->setDate($currentDate->format('Y'), $currentDate->format('m'), 1);
-        $currentDate->setTime(8, 0, 0);
+        $currentDate->setTime(8, 0, 0);*/
+
+        $lvOptions = $this->getLmOptions(
+          $this->lm->findAllLinesByPriority()
+        );
+
         $builder->add(
+          'line',
+          'choice',
+          array(
+            'label' => 'tisseo.boa.monitoring.offer_by_line.label.line',
+            'choices' => $lvOptions,
+            'required' => true,
+            'attr' => [
+              'class' => 'ajax_dep_element',
+            ],
+          )
+        );
+        /*$builder->add(
             'month',
             'datetime',
             array(
@@ -60,7 +85,7 @@ class OfferByLineType extends AbstractType
                     return $value;
                 }
             )
-        );
+        );*/
 
         $builder->add(
             'routes',
@@ -70,7 +95,7 @@ class OfferByLineType extends AbstractType
             ]
         );
 
-        $builder->add(
+        /*$builder->add(
             'reset',
             'checkbox',
             [
@@ -78,13 +103,13 @@ class OfferByLineType extends AbstractType
                 'required' => false,
                 'data' => false
             ]
-        );
+        );*/
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use($lvOptions) {
             $form = $event->getForm();
             $data = $event->getData();
 
-            if (isset($data['month']) && !$data['month'] instanceof \DateTime) {
+            /*if (isset($data['month']) && !$data['month'] instanceof \DateTime) {
                 $strDate = $data['month']['date']['year'].'-'.$data['month']['date']['month'].'-'.$data['month']['date']['day'].'-'.$data['month']['time']['hour'];
                 $data['month'] = \DateTime::createFromFormat(
                     'Y-n-j-G',
@@ -94,10 +119,20 @@ class OfferByLineType extends AbstractType
                 $date = new \DateTime('now');
                 $date->setTime(8, 0, 0);
                 $data['month'] = $date;
-            }
+            }*/
 
-            $lvOptions = $this->getOptions(
-                $this->lvm->findLineVersionSortedByLineNumber($data['month'], [PhysicalMode::PHYSICAL_MODE_TAD])
+            if (!isset($data['line'])) {
+              reset($lvOptions);
+              $data['line'] = key($lvOptions);
+            }
+            $lvOptions = $this->getLvmOptions(
+                //$this->lvm->findLineVersionSortedByLineNumber($data['month'], [PhysicalMode::PHYSICAL_MODE_TAD])
+              $this->lvm->findBy([
+                'line' => $data['line'],
+              ],[
+                'version' => 'ASC',
+                'startDate' => 'ASC',
+              ])
             );
 
             $form->add(
@@ -115,11 +150,33 @@ class OfferByLineType extends AbstractType
         });
     }
 
-    private function getOptions($lineVersions)
+  /**
+   * @param $lines
+   *
+   * @return array
+   */
+  private function getLmOptions($lines)
+  {
+    if (is_array($lines)) {
+      /**
+       * @var $line \Tisseo\EndivBundle\Entity\Line
+       */
+      foreach ($lines as $line) {
+        $options[$line->getId()] = $line->getNumber();
+      }
+    }
+
+    return (isset($options)) ? $options : [];
+  }
+
+    private function getLvmOptions($lineVersions)
     {
         if (is_array($lineVersions)) {
+          /**
+           * @var $lv \Tisseo\EndivBundle\Entity\LineVersion
+           */
             foreach ($lineVersions as $lv) {
-                $options[$lv->getId()] = $lv->getLine()->getNumber().' - '.$lv->getVersion();
+                $options[$lv->getId()] = $lv->getLine()->getNumber().' - '.$lv->getVersion().' - '.$lv->getStartDate()->format('d/m/Y');
             }
         }
 
