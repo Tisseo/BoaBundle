@@ -12,6 +12,8 @@ use Tisseo\CoreBundle\Controller\CoreController;
 class OfferMonitoringController extends CoreController
 {
     /**
+     * Default route. Display the offers by line page.
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -21,6 +23,7 @@ class OfferMonitoringController extends CoreController
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
 
         $data = $request->request->get('boa_offer_by_line_type');
+        $defaultColors = $this->container->getParameter('tisseo_boa.configuration')['defaultColors'];
 
         $form = $this->createForm(
             'boa_offer_by_line_type',
@@ -31,27 +34,8 @@ class OfferMonitoringController extends CoreController
         if ($form->isValid()) {
             $data = $form->getData();
             $monitoring = $this->get('tisseo_boa.monitoring');
-            $results = $monitoring->compute($data['offer'], $data['month']);
-            $defaultColors = $this->container->getParameter('tisseo_boa.configuration')['defaultColors'];
-            if ($data['routes'] != null) {
-                $properties = json_decode($data['routes']);
-                foreach ($results as $key => &$result) {
-                    $defaultColor = isset($defaultColors[$key]) ? $defaultColors[$key] : null;
-                    $result['properties']['color'] = isset($properties[$key]->value) ? $properties[$key]->value : $defaultColor;
-                    $result['properties']['checked'] = isset($properties[$key]->checked) ? $properties[$key]->checked : null;
-                }
-            }
+            $results = $monitoring->search($data['offer']);
 
-            $date = \DateTimeImmutable::createFromMutable($data['month']);
-            $format = 'Y-m-d H:m:i';
-            $navDate = [
-                'previous_month' => $date->modify('-1 month')->format($format),
-                'next_month' => $date->modify('+1 month')->format($format),
-                'previous_day' => $date->modify('-1 day')->format($format),
-                'next_day' => $date->modify('+1 day')->format($format),
-                'previous_hour' => $date->modify('-1 hour')->format($format),
-                'next_hour' => $date->modify('+1 hour')->format($format)
-            ];
         } else {
             $session = new Session();
             $session->set('cachedBitmask', []);
@@ -64,110 +48,98 @@ class OfferMonitoringController extends CoreController
                 'navTitle' => 'tisseo.boa.menu.monitoring.manage',
                 'pageTitle' => 'tisseo.boa.monitoring.offer_by_line.title',
                 'form' => $form->createView(),
-                'results' => isset($results) ? $results : null,
+                'defaultColors' => json_encode($defaultColors),
+                'results' => isset($results) ? json_encode($results) : null,
                 'navDate' => isset($navDate) ? $navDate : null,
             ]
         );
     }
 
-    /**
-     * Search LineVersion who are active for the specified date
-     *
-     * @param $month
-     * @param year
-     *
-     * @return Response JSON
-     */
-    public function searchLineVersionAction($month, $year)
+  /**
+   * Ajax route. Search the LineVersions of a line
+   *
+   * @param $lineId
+   *
+   * @return \Symfony\Component\HttpFoundation\Response JSON
+   * @internal param $month
+   *
+   */
+    public function searchLineVersionAction($lineId)
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
 
         $response = new Response();
         $lvm = $this->get('tisseo_endiv.line_version_manager');
         $serializer = $this->get('jms_serializer');
-        $date = new \DateTime();
-        $date->setDate($year, $month, 1);
 
-        $result = $lvm->findLineVersionSortedByLineNumber($date);
+        $result = $lvm->findBy(['line' => $lineId]);
 
         $response->setContent(
             $serializer->serialize(
                 $result,
                 'json',
-                SerializationContext::create()->setGroups(array('monitoring'))
+                SerializationContext::create()->setGroups(['monitoring'])
             )
         );
 
         return $response;
     }
 
-    public function generateGraphAction(Request $request)
+  /**
+   * Ajax route. Generate data for graph
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @throws \Exception
+   */
+    public function genGraphAction(Request $request)
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
         $response = new JsonResponse();
-
         try {
             $routes = $request->request->get('routes');
             if (!$routes) {
                 throw new \Exception('Aucune route sélectionnée', 500);
             }
-
+            $data = [];
             $monitoring = $this->get('tisseo_boa.monitoring');
             $routeMng = $this->get('tisseo_endiv.route_manager');
-
-            $data = [];
+            $serializer = $this->get('jms_serializer');
 
             foreach ($routes as $key => $route) {
-                $date = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $route['date']);
-                $objRoute = $routeMng->find($route['route_id']);
+              $date = \DateTimeImmutable::createFromFormat('d/m/Y', $request->request->get('current_date'));
+              $objRoute = $routeMng->find($route['route_id']);
 
-                $routeStopDeparture = null;
-                foreach ($objRoute->getRouteStops() as $routeStop) {
-                    if ($routeStop->getRank() == 1) {
-                        $routeStopDeparture = $routeStop;
-                        break;
-                    }
+              $routeStopDeparture = null;
+              foreach ($objRoute->getRouteStops() as $routeStop) {
+                if ($routeStop->getRank() == 1) {
+                  $routeStopDeparture = $routeStop;
+                  break;
                 }
+              }
 
-                // get route trips
-                $trips = $monitoring->getTripsForRoute($objRoute);
-
-                // Compute each day of month
-                $result = $monitoring->tripsByMonth($trips, $date, true);
-
+              // Compute each hour of day
+              if (!is_null($routeStopDeparture)) {
+                $result = $monitoring->tripsByHour($routeStopDeparture, $date);
                 // Format
-                $data['month']['labels'] = array_keys($result);
-                $data['month']['datasets'][] = [
-                    'label' => $route['name'],
-                    'data' => array_values($result),
-                    'backgroundColor' => $route['color'],
-                    'borderColor' => $route['color'],
-                    'borderWidth' => 1,
+                $data['hour']['labels'] = array_keys($result);
+                $data['hour']['datasets'][] = [
+                  'label' => $route['name'],
+                  'data' => array_values($result),
+                  'backgroundColor' => $route['color_value'],
+                  'borderColor' => $route['color_value'],
+                  'borderWidth' => 1,
                 ];
-
-                // Compute each hour of day
-                if (!is_null($routeStopDeparture)) {
-                    $result = $monitoring->tripsByHour($routeStopDeparture, $date, true);
-                    // Format
-                    $data['hour']['labels'] = array_keys($result);
-                    $data['hour']['datasets'][] = [
-                        'label' => $route['name'],
-                        'data' => array_values($result),
-                        'backgroundColor' => $route['color'],
-                        'borderColor' => $route['color'],
-                        'borderWidth' => 1,
-                    ];
-                }
+              }
             }
 
-            $serializer = $this->get('jms_serializer');
             $response->setContent(
                 $serializer->serialize($data, 'json')
             );
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
-
         return $response;
     }
 }

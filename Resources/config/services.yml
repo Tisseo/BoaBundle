@@ -30,11 +30,9 @@ services:
     tisseo_boa.monitoring:
         class: 'Tisseo\BoaBundle\Services\Monitoring'
         arguments:
-            - '@tisseo_endiv.line_version_manager'
             - '@tisseo_endiv.calendar_manager'
             - '@tisseo_endiv.stoptime_manager'
-            - '@tisseo_endiv.trip_manager'
-            - '%tisseo_boa.configuration%'
+            - '@doctrine.orm.endiv_entity_manager'
 
 
     tisseo_boa.type.calendar_selector:
@@ -45,7 +43,9 @@ services:
 
     tisseo_boa.type.monitoring.offer_by_line:
         class: 'Tisseo\BoaBundle\Form\Type\OfferByLineType'
-        arguments: ['@tisseo_endiv.line_version_manager']
+        arguments:
+            - '@tisseo_endiv.line_version_manager'
+            - '@tisseo_endiv.line_manager'
         tags:
             - { name: form.type, alias: boa_offer_by_line_type }
 

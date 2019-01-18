@@ -119,3 +119,7 @@ div.stop-monitoring-container {
 .label-control .round {
     border-radius: 25%;
 }
+
+.boa-js-template {
+    display: none;
+}
