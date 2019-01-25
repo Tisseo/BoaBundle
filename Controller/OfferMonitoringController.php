@@ -72,7 +72,7 @@ class OfferMonitoringController extends CoreController
         $lvm = $this->get('tisseo_endiv.line_version_manager');
         $serializer = $this->get('jms_serializer');
 
-        $result = $lvm->findBy(['line' => $lineId]);
+        $result = $lvm->findBy(['line' => $lineId], ['version' => 'desc']);
 
         $response->setContent(
             $serializer->serialize(
@@ -102,37 +102,10 @@ class OfferMonitoringController extends CoreController
             if (!$routes) {
                 throw new \Exception('Aucune route sélectionnée', 500);
             }
-            $data = [];
+
             $monitoring = $this->get('tisseo_boa.monitoring');
-            $routeMng = $this->get('tisseo_endiv.route_manager');
+            $data = $monitoring->getGraphData($routes);
             $serializer = $this->get('jms_serializer');
-
-            foreach ($routes as $key => $route) {
-              $date = \DateTimeImmutable::createFromFormat('d/m/Y', $request->request->get('current_date'));
-              $objRoute = $routeMng->find($route['route_id']);
-
-              $routeStopDeparture = null;
-              foreach ($objRoute->getRouteStops() as $routeStop) {
-                if ($routeStop->getRank() == 1) {
-                  $routeStopDeparture = $routeStop;
-                  break;
-                }
-              }
-
-              // Compute each hour of day
-              if (!is_null($routeStopDeparture)) {
-                $result = $monitoring->tripsByHour($routeStopDeparture, $date);
-                // Format
-                $data['hour']['labels'] = array_keys($result);
-                $data['hour']['datasets'][] = [
-                  'label' => $route['name'],
-                  'data' => array_values($result),
-                  'backgroundColor' => $route['color_value'],
-                  'borderColor' => $route['color_value'],
-                  'borderWidth' => 1,
-                ];
-              }
-            }
 
             $response->setContent(
                 $serializer->serialize($data, 'json')

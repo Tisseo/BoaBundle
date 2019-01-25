@@ -4,35 +4,19 @@ namespace Tisseo\BoaBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use Tisseo\EndivBundle\Entity\Trip;
-use Tisseo\EndivBundle\Services\CalendarManager;
-//use Tisseo\EndivBundle\Services\LineVersionManager;
 use Tisseo\EndivBundle\Entity\LineVersion;
 use Tisseo\EndivBundle\Entity\Route;
 use Tisseo\EndivBundle\Entity\RouteStop;
+use Tisseo\EndivBundle\Services\RouteManager;
 use Tisseo\EndivBundle\Services\StopTimeManager;
-//use Tisseo\EndivBundle\Services\TripManager;
-//use Symfony\Component\HttpFoundation\Session\Session;
+
 
 class Monitoring
 {
-    /**
-     * @var LineVersionManager
-     */
-    //private $lineVersionManager;
-
-    /**
-     * @var CalendarManager
-     */
-    private $calendarManager;
-
     /** @var StopTimeManager */
     private $stopTimeManager;
 
-    /** @var TripManager */
-    //private $tripManager;
-
-    /** @var array */
-    //private $configuration;
+    private $routeManager;
 
     /** @var  \Doctrine\ORM\EntityManager */
     private $em;
@@ -40,23 +24,26 @@ class Monitoring
     /**
      * Monitoring constructor.
      *
-     * @param LineVersionManager $lineVersionManager
-     * @param CalendarManager    $calendarManager
      * @param StopTimeManager    $stopTimeManager
-     * @param TripManager        $tripManager
-     * @param array              $configuration
+     * @param RouteManager       $routeManager
      * @param EntityManager      $em
      */
     public function __construct(
-        CalendarManager $calendarManager,
         StopTimeManager $stopTimeManager,
+        RouteManager $routeManager,
         EntityManager $em)
     {
-        $this->calendarManager = $calendarManager;
         $this->stopTimeManager = $stopTimeManager;
+        $this->routeManager = $routeManager;
         $this->em = $em;
     }
 
+  /**
+   * Search offers by line version id
+   * @param $lineVersionId
+   *
+   * @return array
+   */
     public function search($lineVersionId) {
       $rawSql = "
       WITH
@@ -98,7 +85,7 @@ class Monitoring
       SELECT 
         count(trip.id) as \"number\", -- nombre de service
         array_agg(trip.id) as \"trips\", -- liste des id des trips pour chaque jour
-        line_version.start_date + idx as \"traffic_date\", -- date de circulation
+        line_version.start_date + idx -1 as \"traffic_date\", -- date de circulation
         route.id as route_id,
         route.name, 
         name_start.name as \"start\", -- arrêt de début 
@@ -118,8 +105,8 @@ class Monitoring
         is_valid AND 
         line_version.id = :lineVersionId AND 
         trip.is_pattern IS FALSE
-      GROUP BY bm_idx.idx, line_version.start_date + idx, route.id, route.name, name_start.name, name_end.name
-      ORDER BY   line_version.start_date + idx;
+      GROUP BY bm_idx.idx, traffic_date, route.id, route.name, name_start.name, name_end.name
+      ORDER BY   traffic_date;
             ";
       $stmt = $this->em->getConnection()->prepare($rawSql);
       $stmt->bindParam(":lineVersionId", $lineVersionId);
@@ -129,54 +116,79 @@ class Monitoring
     }
 
 
-   /**
-     * @param \Tisseo\EndivBundle\Entity\RouteStop $routeStopDeparture
-     * @param \DateTimeInterface                   $date
-     *
-     * @return array|int
-     */
-    public function tripsByHour(RouteStop $routeStopDeparture, \DateTimeInterface $date)
+    public function getGraphData($routes)
     {
-        $startDate = $date->setTime(0, 0, 0);
-        $startTime = intval($startDate->format('H')) * 3600;
+      $data = [];
+      foreach ($routes as $key => $route) {
+        $objRoute = $this->routeManager->find($route['route_id']);
+        $routeStopDeparture = NULL;
+        foreach ($objRoute->getRouteStops() as $routeStop) {
+          if ($routeStop->getRank() == 1) {
+            $routeStopDeparture = $routeStop;
+            break;
+          }
+        }
 
-        $endDate = $date->setTime(23, 59, 59);
-        $endTime = intval($endDate->format('H')) * 3600 + 3599;
+        // Pour chaque trip récupérer stop time le plus tôt et la route id
+        // Compte le nombre de départ par route / heure
+        $trips = explode(
+          ',',
+          substr($route['trips'], 1, strlen($route['trips']) - 2)
+        );
 
-        $stopTimes = $this->stopTimeManager->getStopTimeWhoStartBetween($startTime, $endTime, $routeStopDeparture);
+        // search stopTime for each trip
+        $stopTimes = [];
+        foreach ($trips as $tripId) {
+          $stopTime = $this->stopTimeManager->getStopTimesByTripId($tripId, $routeStopDeparture->getId());
+          if (is_array($stopTime) && !empty($stopTime)) {
+            array_push($stopTimes, $stopTime[0]);
+          }
+        }
 
-        return $this->generateDataDayGraph($stopTimes, $startDate, $endDate);
+
+        // Compute each hour of day
+        if (!empty($stopTimes)) {
+          $result = $this->generateDataDayGraph($stopTimes);
+          // Format
+          $data['hour']['labels'] = array_keys($result);
+          $data['hour']['datasets'][] = [
+            'label' => $route['name'],
+            'data' => array_values($result),
+            'backgroundColor' => $route['color_value'],
+            'borderColor' => $route['color_value'],
+            'borderWidth' => 1,
+          ];
+        }
+      }
+
+      return $data;
     }
 
     /**
-     * @param $stopTimes
-     * @param \DateTimeInterface $startDate
-     * @param \DateTimeInterface $endDate
+     * Return a formatted array for Charjs library
      *
-     * @return array|int
+     * @param $stopTimes array of StopTime
+     *
+     * @return array|false
      */
-    private function generateDataDayGraph($stopTimes, \DateTimeInterface $startDate, \DateTimeInterface $endDate)
+    private function generateDataDayGraph($stopTimes)
     {
         if (empty($stopTimes)) {
-            return 0;
+            return false;
         }
 
-        $arrayBitmask = str_split(str_repeat('0', 24));
-        $cachedBitmask = [];
+        // from 0 to 27h
+        $arrayBitmask = str_split(str_repeat('0', 27));
 
         $sumFunc = function ($t1, $t2) {
             return $t1 + $t2;
         };
 
+        // For each stopTime, do the sum of bitmask
         foreach ($stopTimes as $stopTime) {
-            $bitmask = $this->getBitmask($stopTime->getTrip(), $startDate, $endDate, $cachedBitmask);
-
-            if ($bitmask == 1) {
-                $hourStart = intval($stopTime->getDepartureTime() / 3600);
-                $bitmask = str_repeat('0', $hourStart).'1';
-                $bitmask = str_pad($bitmask, strlen($bitmask) + (24 - strlen($bitmask)), '0', STR_PAD_RIGHT);
-            }
-
+            $hourStart = intval($stopTime->getDepartureTime() / 3600);
+            $bitmask = str_repeat('0', $hourStart) . '1';
+            $bitmask = str_pad($bitmask, strlen($bitmask) + (27 - strlen($bitmask)), '0', STR_PAD_RIGHT);
             $arrayBitmask = array_map($sumFunc, $arrayBitmask, str_split($bitmask));
         }
 
@@ -188,44 +200,5 @@ class Monitoring
         }
 
         return $arrayBitmask;
-    }
-
-    /**
-     * Get bitmask for a trip $trip between $startDate and $endDate
-     *
-     * @param \Tisseo\EndivBundle\Entity\Trip $trip
-     * @param \DateTimeInterface              $startDate
-     * @param \DateTimeInterface              $endDate
-     * @param $cachedBitmask array of cached bitmask (by reference)
-     *
-     * @return string
-     */
-    private function getBitmask(Trip $trip, \DateTimeInterface $startDate, \DateTimeInterface $endDate, &$cachedBitmask)
-    {
-        if (!$trip->getPeriodCalendar()) {
-            return '0';  // ignore trip without period calendar
-        }
-        if (isset($cachedBitmask[$trip->getId()])) {
-            return $cachedBitmask[$trip->getId()];
-        }
-        if (!$trip->getDayCalendar() /* || linedatasoure = 1 (hastus) */) {
-            $bitmask = $this->calendarManager->getCalendarBitmask(
-                $trip->getPeriodCalendar()->getId(),
-                $startDate,
-                $endDate
-            );
-
-            $cachedBitmask[$trip->getId()] = $bitmask;
-        } else {
-            $bitmask = $this->calendarManager->getCalendarsIntersectionBitmask(
-                $trip->getPeriodCalendar()->getId(),
-                $trip->getDayCalendar()->getId(),
-                $startDate,
-                $endDate
-            );
-            $cachedBitmask[$trip->getId()] = $bitmask;
-        }
-
-        return $bitmask;
     }
 }
