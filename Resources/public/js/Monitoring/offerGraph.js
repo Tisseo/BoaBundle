@@ -151,10 +151,11 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
                }
             });
 
-            //objRoute = ;
-            data.routes.push(
-                JSON.parse(JSON.stringify(routeTrips[0]))
-            );
+            if (routeTrips.length > 0) {
+              data.routes.push(
+                  JSON.parse(JSON.stringify(routeTrips[0]))
+              );
+            }
           }));
 
 

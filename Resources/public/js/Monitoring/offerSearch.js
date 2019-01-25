@@ -84,7 +84,7 @@ define(
       routes.forEach(function(el, index) {
         el.number_month = month[el.route_id];
         el.trips_month = tripsOnMonth[el.route_id];
-        el.checked = ($('.ckb-route-'+index).prop('checked') === true);
+        el.checked = ($(document).find('.ckb-route-'+index).prop('checked') === true);
         list.forEach(function(route){
           if (el.route_id === route.route_id) {
             route.number_month = el.number_month;
@@ -113,11 +113,21 @@ define(
             number_month: (undefined !== month[el.route_id])? month[el.route_id] : 0,
             trips_month: tripsOnMonth[el.route_id],
             checked: el.checked,
-            trips: null
+            trips: ''
           });
         }
       });
 
+      // Ordering by name
+      routes.sort(function(a, b) {
+        if (a.name < b.name) {
+          return -1;
+        } else if(a.name > b.name) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
 
       if (display_route(routes, getData())) {
         graph.generate(results);
@@ -276,7 +286,6 @@ define(
 
     $(document).on('click', '.ckb-route', function() {
       graph.ckbRouteState();
-      update_gui(globalCurrentDate);
     });
 
     // Select all / unselect all routes
