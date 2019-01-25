@@ -5,6 +5,7 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
     var ckbRouteAll = $(document).find('#ckb-route-all');
     var monthChart = {};
     var hourChart = {};
+    var filteredResult = [];
 
     graph.ckbRouteState = function () {
         ckbRouteAll.prop('checked', true);
@@ -32,7 +33,11 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
    * @param result
    */
   graph.generate = function(result) {
-      var routes = $(document).find('input.ckb-route:checked');
+      // Get checked routes
+      var routes = $(document).find('tbody.routes input.ckb-route:checked');
+      filteredResult = result;
+
+      // Remove old chart
       graph.removeChart();
 
       if (routes.length > 0) {
@@ -51,6 +56,7 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
         $(routes.each(function (idx, route) {
           route = JSON.parse($(route).val());
           data.routes.push(route);
+
           data.month.datasets.push(
               {
                 label: route.name,
@@ -78,7 +84,7 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
           // Extract service for the month
           var filtered = result.filter(function (el) {
             return (
-                moment(el.traffic_date).format('MM') === current_date.format('MM') &&
+                moment(el.traffic_date).format('MM-YYYY') === current_date.format('MM-YYYY') &&
                 el.route_id === route.route_id
             );
           });
@@ -123,7 +129,8 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
       if (firstPoint !== undefined) {
         var current_date = monthChart.data.labels[firstPoint._index];
         //var value = monthChart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
-        var routes = $(document).find('input.ckb-route:checked');
+        var routes = $(document).find('tbody.routes input.ckb-route:checked');
+
 
         if (routes.length > 0) {
           $('#loading-indicator-graph').show();
@@ -133,18 +140,35 @@ define(['jquery', 'core/moment', 'chartjs', 'fosjsrouting', 'translations/messag
           };
 
           $(routes.each(function (idx, route) {
-            route = JSON.parse($(route).val());
-            data.routes.push(route);
+            var objRoute = JSON.parse($(route).val());
+            var aDate = current_date.split('/');
+            var formatedDate = aDate[2]+'-'+aDate[1]+'-'+aDate[0];
+            var routeTrips = filteredResult.filter(function(el){
+               el.traffic_date = moment(el.traffic_date).format('YYYY-MM-DD');
+               if (el.route_id === objRoute.route_id && el.traffic_date === formatedDate) {
+                 el.color_value = objRoute.color_value;
+                 return true;
+               }
+            });
+
+            //objRoute = ;
+            data.routes.push(
+                JSON.parse(JSON.stringify(routeTrips[0]))
+            );
           }));
 
+
           $.ajax({
-            url: Routing.generate('tisseo_boa_monitoring_generate_graph') + '?XDEBUG_SESSION_START=17877',
+            url: Routing.generate('tisseo_boa_monitoring_generate_graph'),
             type: "POST",
             data: data,
             dataType: 'html',
             success: function (data, status) {
               try {
                 var data = JSON.parse(data);
+                if (hourChart instanceof Chart) {
+                  hourChart.destroy();
+                }
                 var hourCtx = document.getElementById("chart_hour").getContext('2d');
                 hourChart = new Chart(hourCtx, {
                   type: 'bar',

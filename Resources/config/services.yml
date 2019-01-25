@@ -30,8 +30,8 @@ services:
     tisseo_boa.monitoring:
         class: 'Tisseo\BoaBundle\Services\Monitoring'
         arguments:
-            - '@tisseo_endiv.calendar_manager'
             - '@tisseo_endiv.stoptime_manager'
+            - '@tisseo_endiv.route_manager'
             - '@doctrine.orm.endiv_entity_manager'
 
 

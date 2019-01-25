@@ -7,7 +7,7 @@ define(
     var results = {};
     var strNoResult = '';
     var defaultColors = [];
-
+    var globalCurrentDate = '';
     //$(document).find('.color-picker').colorpicker();
     $(document).find('[data-toggle="tooltip"]').tooltip();
 
@@ -19,8 +19,8 @@ define(
       defaultColors = JSON.parse(res.defaultColors);
       // Initialisation de la page, récupère la 1ère date trouvée dans les résultats
       if(results.length > 1) {
-        var current_date = moment(results[0].traffic_date);
-        update_gui(current_date);
+        globalCurrentDate = moment(results[0].traffic_date);
+        update_gui(globalCurrentDate);
       }
     }
 
@@ -45,28 +45,77 @@ define(
       $('.day .next').attr('data-value',  navDate.nextDay);
       $('.day .previous').attr('data-value', navDate.previousDay);
 
-      // Filtre le tableau sur la date courante
+
+      // Extract all routes (create routes list reference)
+      var list = [];
+      results.filter(function(el) {
+        var found = list.find(function(listEl){
+          if (list.length === 0) {
+            return false;
+          }
+          return listEl.route_id === el.route_id;
+        });
+        if (!found) {
+          list.push(el);
+        }
+      });
+
+      // Compute service and trips by month for each route
+      var month = [];
+      var tripsOnMonth = []
+      results.forEach(function(el){
+        if(current_date.format('MM-YYYY') === moment(el.traffic_date).format('MM-YYYY')) {
+          month[el.route_id] = (month[el.route_id] || 0) + el.number;
+          var trips = el.trips.substr(1, el.trips.length - 2);
+          if (el.route_id  in tripsOnMonth) {
+            tripsOnMonth[el.route_id] = tripsOnMonth[el.route_id] +','+ trips;
+          } else {
+            tripsOnMonth[el.route_id] = trips;
+          }
+        }
+      });
+
+      // filtering result array on the current date
       var routes = results.filter(function(el) {
         return el.traffic_date === current_date.format(search.dateformat);
       });
 
-      var month = [];
-      var tripsOnMonth = []
-      results.forEach(function(el){
-          if(current_date.format('MM') === moment(el.traffic_date).format('MM')) {
-            month[el.route_id] = (month[el.route_id] || 0) + el.number;
-            var trips = el.trips.substr(1, el.trips.length - 2);
-            if (el.route_id  in tripsOnMonth) {
-              tripsOnMonth[el.route_id] = tripsOnMonth[el.route_id] +','+ trips;
-            } else {
-              tripsOnMonth[el.route_id] = trips;
-            }
-          }
-      });
+      // For each actual routes (current_date), update data and update routes list reference
       routes.forEach(function(el, index) {
         el.number_month = month[el.route_id];
         el.trips_month = tripsOnMonth[el.route_id];
         el.checked = ($('.ckb-route-'+index).prop('checked') === true);
+        list.forEach(function(route){
+          if (el.route_id === route.route_id) {
+            route.number_month = el.number_month;
+            route.trips_month = el.trips_month;
+            route.checked = el.checked;
+          }
+        });
+      });
+
+
+      // Check all routes are here
+      list.forEach(function(el){
+        var found  = routes.find(function(route){
+          return route.route_id === el.route_id;
+        });
+
+        if (undefined === found) {
+          // Route not found for this day, create route
+          routes.push({
+            route_id: el.route_id,
+            number: 0,
+            end: el.end,
+            start: el.start,
+            name: el.name,
+            traffic_date: current_date.format(search.dateformat),
+            number_month: (undefined !== month[el.route_id])? month[el.route_id] : 0,
+            trips_month: tripsOnMonth[el.route_id],
+            checked: el.checked,
+            trips: null
+          });
+        }
       });
 
 
@@ -141,6 +190,9 @@ define(
     }
 
 
+    /**
+     * Get data for graph
+     */
     function getData() {
         var data = [];
         $('.routes .color-picker input').each(function () {
@@ -217,13 +269,14 @@ define(
     // Change month / day
     $(document).on('click', '.label-control a', function(e) {
       e.preventDefault(e);
-      var current_date = moment(e.currentTarget.dataset.value);
-      update_gui(current_date);
+      globalCurrentDate = moment(e.currentTarget.dataset.value);
+      update_gui(globalCurrentDate);
       return false;
     });
 
     $(document).on('click', '.ckb-route', function() {
       graph.ckbRouteState();
+      update_gui(globalCurrentDate);
     });
 
     // Select all / unselect all routes
@@ -237,10 +290,11 @@ define(
           $(this).prop('checked', false);
         });
       }
+      update_gui(globalCurrentDate);
     });
 
     $(document).on('hidePicker', function(ev) {
-        var current_date = moment(results[0].traffic_date);
+        var current_date = moment(globalCurrentDate);
         update_gui(current_date);
     })
 
