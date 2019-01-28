@@ -64,6 +64,9 @@ define(
       var month = [];
       var tripsOnMonth = []
       results.forEach(function(el){
+        if (month[el.route_id] === undefined) {
+          month[el.route_id] = 0;
+        }
         if(current_date.format('MM-YYYY') === moment(el.traffic_date).format('MM-YYYY')) {
           month[el.route_id] = (month[el.route_id] || 0) + el.number;
           var trips = el.trips.substr(1, el.trips.length - 2);
@@ -79,21 +82,6 @@ define(
       var routes = results.filter(function(el) {
         return el.traffic_date === current_date.format(search.dateformat);
       });
-
-      // For each actual routes (current_date), update data and update routes list reference
-      routes.forEach(function(el, index) {
-        el.number_month = month[el.route_id];
-        el.trips_month = tripsOnMonth[el.route_id];
-        el.checked = ($(document).find('.ckb-route-'+index).prop('checked') === true);
-        list.forEach(function(route){
-          if (el.route_id === route.route_id) {
-            route.number_month = el.number_month;
-            route.trips_month = el.trips_month;
-            route.checked = el.checked;
-          }
-        });
-      });
-
 
       // Check all routes are here
       list.forEach(function(el){
@@ -128,6 +116,23 @@ define(
           return 0;
         }
       });
+
+      // For each actual routes (current_date), update data and update routes list reference
+      routes.forEach(function(el, index) {
+        el.number_month = month[el.route_id];
+        el.trips_month = tripsOnMonth[el.route_id];
+        el.checked = ($(document).find('.ckb-route-'+index).prop('checked') === true);
+        list.forEach(function(route){
+          if (el.route_id === route.route_id) {
+            route.number_month = el.number_month;
+            route.trips_month = el.trips_month;
+            route.checked = el.checked;
+          }
+        });
+      });
+
+
+
 
       if (display_route(routes, getData())) {
         graph.generate(results);
@@ -286,6 +291,7 @@ define(
 
     $(document).on('click', '.ckb-route', function() {
       graph.ckbRouteState();
+      update_gui(globalCurrentDate);
     });
 
     // Select all / unselect all routes
