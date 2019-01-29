@@ -3,7 +3,6 @@
 namespace Tisseo\BoaBundle\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -14,7 +13,8 @@ class UnusedStopValidator extends ConstraintValidator
 {
     private $om = null;
 
-    public function __construct(ObjectManager $om) {
+    public function __construct(ObjectManager $om)
+    {
         $this->om = $om;
     }
 
@@ -29,7 +29,7 @@ class UnusedStopValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $conn = $this->om->getConnection();
-        $query = "
+        $query = '
             SELECT DISTINCT lv.id
             FROM stop s
             LEFT JOIN odt_stop os ON os.stop_id = s.id
@@ -37,7 +37,7 @@ class UnusedStopValidator extends ConstraintValidator
             JOIN route r ON rs.route_id = r.id
             JOIN line_version lv ON r.line_version_id = lv.id
             WHERE(:val < COALESCE(lv.end_date, lv.planned_end_date)) and :stopId = s.id
-        ";
+        ';
 
         $stmt = $conn->prepare($query);
         $stmt->bindValue(':val', $value->format('Y-m-d'));

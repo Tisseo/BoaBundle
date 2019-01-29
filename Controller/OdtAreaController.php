@@ -4,7 +4,6 @@ namespace Tisseo\BoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tisseo\EndivBundle\Entity\OdtArea;
-use Tisseo\EndivBundle\Entity\Stop;
 use Tisseo\CoreBundle\Controller\CoreController;
 use Tisseo\BoaBundle\Form\Type\OdtAreaType;
 
