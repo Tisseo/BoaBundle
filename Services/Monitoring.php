@@ -4,12 +4,9 @@ namespace Tisseo\BoaBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use Tisseo\EndivBundle\Entity\Trip;
-use Tisseo\EndivBundle\Entity\LineVersion;
 use Tisseo\EndivBundle\Entity\Route;
-use Tisseo\EndivBundle\Entity\RouteStop;
 use Tisseo\EndivBundle\Services\RouteManager;
 use Tisseo\EndivBundle\Services\StopTimeManager;
-
 
 class Monitoring
 {
@@ -18,15 +15,15 @@ class Monitoring
 
     private $routeManager;
 
-    /** @var  \Doctrine\ORM\EntityManager */
+    /** @var \Doctrine\ORM\EntityManager */
     private $em;
 
     /**
      * Monitoring constructor.
      *
-     * @param StopTimeManager    $stopTimeManager
-     * @param RouteManager       $routeManager
-     * @param EntityManager      $em
+     * @param StopTimeManager $stopTimeManager
+     * @param RouteManager    $routeManager
+     * @param EntityManager   $em
      */
     public function __construct(
         StopTimeManager $stopTimeManager,
@@ -38,14 +35,16 @@ class Monitoring
         $this->em = $em;
     }
 
-  /**
-   * Search offers by line version id
-   * @param $lineVersionId
-   *
-   * @return array
-   */
-    public function search($lineVersionId) {
-      $rawSql = "
+    /**
+     * Search offers by line version id
+     *
+     * @param $lineVersionId
+     *
+     * @return array
+     */
+    public function search($lineVersionId)
+    {
+        $rawSql = '
       WITH
         max_rank AS (SELECT MAX(rank) as m, route_id FROM route_stop GROUP BY route_id),
         stop_name AS(
@@ -83,13 +82,13 @@ class Monitoring
           ) as calendars
         )
       SELECT 
-        count(trip.id) as \"number\", -- nombre de service
-        array_agg(trip.id) as \"trips\", -- liste des id des trips pour chaque jour
-        line_version.start_date + idx -1 as \"traffic_date\", -- date de circulation
+        count(trip.id) as "number", -- nombre de service
+        array_agg(trip.id) as "trips", -- liste des id des trips pour chaque jour
+        line_version.start_date + idx -1 as "traffic_date", -- date de circulation
         route.id as route_id,
         route.name, 
-        name_start.name as \"start\", -- arrêt de début 
-        name_end.name as \"end\" -- arrêt de fin
+        name_start.name as "start", -- arrêt de début 
+        name_end.name as "end" -- arrêt de fin
       
       FROM
         trip JOIN
@@ -107,61 +106,59 @@ class Monitoring
         trip.is_pattern IS FALSE
       GROUP BY bm_idx.idx, traffic_date, route.id, route.name, name_start.name, name_end.name
       ORDER BY   traffic_date;
-            ";
-      $stmt = $this->em->getConnection()->prepare($rawSql);
-      $stmt->bindParam(":lineVersionId", $lineVersionId);
-      $stmt->execute();
+            ';
+        $stmt = $this->em->getConnection()->prepare($rawSql);
+        $stmt->bindParam(':lineVersionId', $lineVersionId);
+        $stmt->execute();
 
-      return  $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return  $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-
 
     public function getGraphData($routes)
     {
-      $data = [];
-      foreach ($routes as $key => $route) {
-        $objRoute = $this->routeManager->find($route['route_id']);
-        $routeStopDeparture = NULL;
-        foreach ($objRoute->getRouteStops() as $routeStop) {
-          if ($routeStop->getRank() == 1) {
-            $routeStopDeparture = $routeStop;
-            break;
-          }
-        }
+        $data = [];
+        foreach ($routes as $key => $route) {
+            $objRoute = $this->routeManager->find($route['route_id']);
+            $routeStopDeparture = null;
+            foreach ($objRoute->getRouteStops() as $routeStop) {
+                if ($routeStop->getRank() == 1) {
+                    $routeStopDeparture = $routeStop;
+                    break;
+                }
+            }
 
-        // Pour chaque trip récupérer stop time le plus tôt et la route id
-        // Compte le nombre de départ par route / heure
-        $trips = explode(
+            // Pour chaque trip récupérer stop time le plus tôt et la route id
+            // Compte le nombre de départ par route / heure
+            $trips = explode(
           ',',
           substr($route['trips'], 1, strlen($route['trips']) - 2)
         );
 
-        // search stopTime for each trip
-        $stopTimes = [];
-        foreach ($trips as $tripId) {
-          $stopTime = $this->stopTimeManager->getStopTimesByTripId($tripId, $routeStopDeparture->getId());
-          if (is_array($stopTime) && !empty($stopTime)) {
-            array_push($stopTimes, $stopTime[0]);
-          }
-        }
+            // search stopTime for each trip
+            $stopTimes = [];
+            foreach ($trips as $tripId) {
+                $stopTime = $this->stopTimeManager->getStopTimesByTripId($tripId, $routeStopDeparture->getId());
+                if (is_array($stopTime) && !empty($stopTime)) {
+                    array_push($stopTimes, $stopTime[0]);
+                }
+            }
 
-
-        // Compute each hour of day
-        if (!empty($stopTimes)) {
-          $result = $this->generateDataDayGraph($stopTimes);
-          // Format
-          $data['hour']['labels'] = array_keys($result);
-          $data['hour']['datasets'][] = [
+            // Compute each hour of day
+            if (!empty($stopTimes)) {
+                $result = $this->generateDataDayGraph($stopTimes);
+                // Format
+                $data['hour']['labels'] = array_keys($result);
+                $data['hour']['datasets'][] = [
             'label' => $route['name'],
             'data' => array_values($result),
             'backgroundColor' => $route['color_value'],
             'borderColor' => $route['color_value'],
             'borderWidth' => 1,
           ];
+            }
         }
-      }
 
-      return $data;
+        return $data;
     }
 
     /**
@@ -187,7 +184,7 @@ class Monitoring
         // For each stopTime, do the sum of bitmask
         foreach ($stopTimes as $stopTime) {
             $hourStart = intval($stopTime->getDepartureTime() / 3600);
-            $bitmask = str_repeat('0', $hourStart) . '1';
+            $bitmask = str_repeat('0', $hourStart).'1';
             $bitmask = str_pad($bitmask, strlen($bitmask) + (27 - strlen($bitmask)), '0', STR_PAD_RIGHT);
             $arrayBitmask = array_map($sumFunc, $arrayBitmask, str_split($bitmask));
         }

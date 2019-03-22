@@ -19,16 +19,16 @@ class OfferByLineType extends AbstractType
      */
     private $lvm;
 
-  /**
-   * @var LineManager
-   */
+    /**
+     * @var LineManager
+     */
     private $lm;
 
     /**
      * OfferByLineType constructor.
      *
      * @param LineVersionManager $lvm
-     * @param LineManager $lm
+     * @param LineManager        $lm
      */
     public function __construct(LineVersionManager $lvm, LineManager $lm)
     {
@@ -105,7 +105,7 @@ class OfferByLineType extends AbstractType
             ]
         );*/
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use($lvOptions) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($lvOptions) {
             $form = $event->getForm();
             $data = $event->getData();
 
@@ -122,14 +122,14 @@ class OfferByLineType extends AbstractType
             }*/
 
             if (!isset($data['line'])) {
-              reset($lvOptions);
-              $data['line'] = key($lvOptions);
+                reset($lvOptions);
+                $data['line'] = key($lvOptions);
             }
             $lvOptions = $this->getLvmOptions(
                 //$this->lvm->findLineVersionSortedByLineNumber($data['month'], [PhysicalMode::PHYSICAL_MODE_TAD])
               $this->lvm->findBy([
                 'line' => $data['line'],
-              ],[
+              ], [
                 'version' => 'ASC',
                 'startDate' => 'ASC',
               ])
@@ -150,31 +150,31 @@ class OfferByLineType extends AbstractType
         });
     }
 
-  /**
-   * @param $lines
-   *
-   * @return array
-   */
-  private function getLmOptions($lines)
-  {
-    if (is_array($lines)) {
-      /**
-       * @var $line \Tisseo\EndivBundle\Entity\Line
-       */
-      foreach ($lines as $line) {
-        $options[$line->getId()] = $line->getNumber();
-      }
-    }
+    /**
+     * @param $lines
+     *
+     * @return array
+     */
+    private function getLmOptions($lines)
+    {
+        if (is_array($lines)) {
+            /**
+             * @var \Tisseo\EndivBundle\Entity\Line
+             */
+            foreach ($lines as $line) {
+                $options[$line->getId()] = $line->getNumber();
+            }
+        }
 
-    return (isset($options)) ? $options : [];
-  }
+        return (isset($options)) ? $options : [];
+    }
 
     private function getLvmOptions($lineVersions)
     {
         if (is_array($lineVersions)) {
-          /**
-           * @var $lv \Tisseo\EndivBundle\Entity\LineVersion
-           */
+            /**
+             * @var \Tisseo\EndivBundle\Entity\LineVersion
+             */
             foreach ($lineVersions as $lv) {
                 $options[$lv->getId()] = $lv->getLine()->getNumber().' - '.$lv->getVersion().' - '.$lv->getStartDate()->format('d/m/Y');
             }

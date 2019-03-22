@@ -35,7 +35,6 @@ class OfferMonitoringController extends CoreController
             $data = $form->getData();
             $monitoring = $this->get('tisseo_boa.monitoring');
             $results = $monitoring->search($data['offer']);
-
         } else {
             $session = new Session();
             $session->set('cachedBitmask', []);
@@ -55,15 +54,15 @@ class OfferMonitoringController extends CoreController
         );
     }
 
-  /**
-   * Ajax route. Search the LineVersions of a line
-   *
-   * @param $lineId
-   *
-   * @return \Symfony\Component\HttpFoundation\Response JSON
-   * @internal param $month
-   *
-   */
+    /**
+     * Ajax route. Search the LineVersions of a line
+     *
+     * @param $lineId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response JSON
+     *
+     * @internal param $month
+     */
     public function searchLineVersionAction($lineId)
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
@@ -85,14 +84,15 @@ class OfferMonitoringController extends CoreController
         return $response;
     }
 
-  /**
-   * Ajax route. Generate data for graph
-   *
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   * @throws \Exception
-   */
+    /**
+     * Ajax route. Generate data for graph
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
+     * @throws \Exception
+     */
     public function genGraphAction(Request $request)
     {
         $this->denyAccessUnlessGranted('BUSINESS_VIEW_MONITORING');
@@ -113,6 +113,7 @@ class OfferMonitoringController extends CoreController
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
+
         return $response;
     }
 }
